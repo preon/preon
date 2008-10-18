@@ -1,0 +1,572 @@
+<!--
+
+    Copyright (C) 2008 Wilfred Springer
+    
+    This file is part of Preon.
+    
+    Preon is free software; you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation; either version 2, or (at your option) any later version.
+    
+    Preon is distributed in the hope that it will be useful, but WITHOUT ANY
+    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+    A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License along with
+    Preon; see the file COPYING. If not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+    
+    Linking this library statically or dynamically with other modules is making a
+    combined work based on this library. Thus, the terms and conditions of the
+    GNU General Public License cover the whole combination.
+    
+    As a special exception, the copyright holders of this library give you
+    permission to link this library with independent modules to produce an
+    executable, regardless of the license terms of these independent modules, and
+    to copy and distribute the resulting executable under terms of your choice,
+    provided that you also meet, for each linked independent module, the terms
+    and conditions of the license of that module. An independent module is a
+    module which is not derived from or based on this library. If you modify this
+    library, you may extend this exception to your version of the library, but
+    you are not obligated to do so. If you do not wish to do so, delete this
+    exception statement from your version.
+
+-->
+
+<article>
+  <articleinfo>
+    <title>Under The Hood</title>
+    <subtitle>What's going on behind the scenes?</subtitle>
+    <author>
+      <firstname>Wilfred</firstname>
+      <surname>Springer</surname>
+    </author>
+  </articleinfo>
+  <para>
+    The previous chapter introduced a couple of simple introductory
+    cases, showing some of the tricks the framework has up its sleeves
+    if you do not feel the desire to customize anything. While you
+    were reading that chapter, you might have already gone like "hmmm,
+    that's sweet, but unfortunately it doesn't work in my corner
+    case". If that's what you thought, then this is the chapter you
+    need.
+  </para>
+  <para>
+    In this chapter, I will explain what is actually going on under
+    the hood, in order to understand how to extend the framework
+    yourself. The focus in this chapter is on four major abstractions:
+    the Codec interface itself, the CodecFactory interface, the
+    Binding interface and the CodecDecorator interface. In addition to
+    discussing the actual interface, this chapter will also discuss
+    some of the implementations, in order to help you to understand
+    how everything fits together.
+  </para>
+
+  <section>
+    <title>Codec</title>
+    <para>
+      Let's first revisit the Codec interface. In the previous
+      chapter, we already talked about the way you use this
+      interface. In fact, we said that you better use the Codecs
+      convenience class in all cases. If you do that, then there is
+      actually very little to know about the interface itself. It just
+      magically works. Well, sort of.
+    </para>
+    <para>
+      However, if you want to extend the framework yourself, then this
+      is the <emphasis>first</emphasis> interface you really need to
+      understand, since this is probably the interface you need to
+      implement.
+    </para>
+    <figure id="fig-codec-interface">
+      <?dbfo keep-together="auto"?>
+      <title>Codec Interface</title>
+      <programlisting language="java"><xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../main/java/nl/flotsam/preon/Codec.java"
+      parse="text"/></programlisting>
+    </figure>
+    <para>
+      The <methodname>decode(BitBuffer, ReferenceResolver,
+      Builder)</methodname> is obviously the operation that will
+      decode data from the <interfacename>BitBuffer</interfacename> into an
+      instance of <classname>T</classname>. 
+    </para>
+    <para>
+      The <interfacename>ReferenceResolver</interfacename> allows the
+      <interfacename>Codec</interfacename> to resolve references used
+      in Preon annotations.
+    </para>
+    <para>
+      The Codec interface is the interface
+      implemented by objects that are able to decode data from a
+      BitBuffer and to encode data into a BitBuffer<footnote>
+      <para>
+        The latter is currently not supported yet, but it's not
+        unlikely that it's going to be implemented in the future.
+      </para>
+      </footnote>. In addition to that, the Codec needs to be able to
+      make some sort of prediction on the number of bits occupied by
+      the encoded data. And last but not least, the Codec needs to be
+      able to return a CodecDescriptor, used for rendering documents
+      with a description of the Codec.
+    </para>
+    <para>
+      When I just said that Codecs are capable of decoding data from a
+      BitBuffer, you could have actually read 'decoding an object from
+      a BitBuffer'. Codecs are associated to a single type, and are
+      expected to return only a single instances of that type from the
+      BitBuffer.
+    </para>
+    <para>
+      In many cases, your objects will hold references to many other
+      objects. Does that mean that there is a single Codec needs to be
+      able to recursively traverse the object graph and understand how
+      to decode each of the individual members of the objects that it
+      encounters?  
+    </para>
+    <para>
+      I guess the answer to that question is both yes and no. "Yes",
+      since whenever you invoke decode on the Codec, it needs to be
+      able to reproduce all objects that are referenced by the object
+      that is going to be returned. "No", since the Codec does not
+      have to understand all of that itself. It can simply delegate to
+      other Codecs, one for every type of attribute it encounters. 
+    </para>
+    <para>
+      If you are decoding an object, you <emphasis>could</emphasis>
+      actually use the Codec interface directly. If you create an
+      instance using the <classname>Codecs</classname> class, they
+      just magically know what to do. We just learned that Codecs
+      constructed like this, will most likely delegate their work to
+      other Codecs, which in turn will most likely delegate their work
+      to other Codecs, and so on and so forth. This way, the Codec
+      both <emphasis>hides</emphasis> a chain of responsibility, but
+      is also able to be a <emphasis>link</emphasis> inside a chain of
+      responsibility.
+    </para>
+  </section>
+
+  <section>
+    <title>CodecFactory</title>
+    <para>
+      The previous section ended with stating that a single Codec most
+      likely delegates to other Codecs, which in turn delegate to
+      other Codecs, etc. The Codecs had to spring in existence at some
+      moment in time. If you are using the Codecs class to create
+      instances of Codec, then that's of course also when the other
+      "sub-Codecs" were created. But how would the Codecs class know
+      which ones to create?
+    </para>
+    <para>
+      The answer to that question is: the CodecFactory. The
+      CodecFactory dictates only a single operation. It defines a
+      single operation, accepting both a reference to a type and
+      metadata, and is expected to be able to return Codec from that,
+      or return <literal>null</literal>.
+    </para>
+    <figure id="fig-codecfactory-interface">
+      <title>CodecFactory Interface</title>
+      <programlisting language="java"><?dbfo keep-together="auto"?><xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+      href="../main/java/nl/flotsam/preon/CodecFactory.java"
+      parse="text"/></programlisting>
+    </figure>
+    <para>
+      Every type of Codec that you are going to create, will be
+      created by a CodecFactory. If you are searching the Preon
+      codebase for the different type of Codecs supported by it, then
+      chances are you will stumble across CodecFactories only. And if
+      you want to extend the framework with your own Codecs, the thing
+      you actually need to pass to the Codecs class is a CodecFactory,
+      and not a Codec.
+    </para>
+    <para>
+      I just said that the CodecFactory needs to be able to create a
+      Codec from a type reference and metadata. The metadata parameter
+      is an interesting one. As it turns out, the type of this
+      parameter is AnnotatedElement, which is - as you might know -
+      one of the interfaces implemented by the reflection Field
+      class. The purpose of AnnotatedElement is to provide a general
+      way to access annotations on language elements. This is exactly
+      why CodecFactory accepts annotations too. Because of this
+      parameter, Codecs can be customized based on annotations on the
+      field in which the Codec needs to decode its data.
+    </para>
+
+    <section>
+      <title>CompoundCodecFactory</title>
+      <para>
+        The CompoundCodecFactory must be one of the only implementations
+        of CodecFactory that doesn't actually create any other Codec
+        itself. The main purpose of the CompoundCodecFactory is to hide
+        the complexity of choosing a particular type of CodecFactory
+        behind an interface. The CompoundCodecFactory references a list
+        of other CodecFactories. When asked for construction of a Codec,
+        it will simply ask all of the factories it references and try
+        each of them to construct a Codec. If all fails, it will simply
+        return <code>null</code>, just what you would expect for a
+        CodecFactory.
+      </para>
+    </section>
+
+    <section>
+      <title>WholeNumberCodecFactory</title>
+      <para>
+        There are many CodecFactories that create Codecs
+        themselves. (There are also a few other CodecFactories that
+        don't create Codecs themselves, apart from the
+        CompoundCodecFactory, but that's a subject that can wait for a
+        while while.) This section starts with one of the most
+        simplest: the WholeNumberCodecFactory.
+      </para>
+      <para>
+        The WholeNumberCodecFactory creates Codecs capable of decoding -
+        well - whole numbers. I didn't want to say integers, since that
+        might lead you to be believe that its capable of decoding
+        java.lang.Integer and its primitive counterpart only, which is
+        not the case. WholeNumberCodecFactory supports decoding byte,
+        short, int, long and all object representations of those types.
+      </para>
+      <para>
+        The WholeNumberCodecFactory is the first example in which a
+        a CodecFactory could use the metadata passed with annotations to
+        decode the data in the proper way. By default, it will return a
+        Codec for byte, short, int or long type of fields whenever:
+      </para>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            <literal>null</literal> is passed in as metadata;
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            An @Bound instance is passed in as metadata;
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            An @BoundNumber instance is passed in as metadata.
+          </para>
+        </listitem>
+      </itemizedlist>
+      <para>
+        The <literal>null</literal> case is not important for now. The
+        @Bound annotation supports the default case. The CodecFactory
+        will take this annotation as a signal that it actually needs to
+        create a Codec, using the defaults for the type passed in. The
+        @BoundNumber annotation supports the case in which you
+        <emphasis>do</emphasis> want a Codec to be created, but you
+        don't like the defaults.
+      </para>
+      <para>
+        Here are some examples in which you would want to use the
+        @BoundNumber annotation, instead of the @Bound annatation:
+      </para>
+      <itemizedlist spacing="compact">
+        <listitem>
+          <para>
+            You want to decode 4 bits into a byte.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            You want to force little endian when decoding an 32-bit
+            integer.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            You want to decode a 32-bit unsigned integer as a long.
+          </para>
+        </listitem>
+      </itemizedlist>
+      <para>
+        The WholeNumberCodecFactory is a good example of the pattern
+        that you will find implemented in almost all other
+        CodecFactories:
+      </para>
+      <itemizedlist>
+        <listitem>
+          <para>
+            Attempt to return a default Codec whenever
+            <literal>null</literal> or @Bound is passed in.
+          </para>
+        </listitem>
+        <listitem>
+          <para>
+            ...unless there is some other piece of metadata passed in,
+            telling the CodecFactory how to customize the Codec it
+            creates.
+          </para>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>BooleanCodecFactory</title>
+      <para>
+        The BooleanCodecFactory is by far the simplest example of a
+        CodecFactory (and associated Codec) that you could ever come
+        up with. If the CodecFactory is challenged with a boolean type
+        (either the primitive type or the object type) and the
+        presence of an @Bound annotation in the metadata passed in,
+        then it will create a new Codec. Whenever this Codec is asked
+        to decode a value from the BitBuffer, it will read a single
+        bit and return true if the bit is 1, and false otherwise.
+      </para>
+    </section>
+
+    <section>
+      <title>ObjectCodecFactory</title>
+      <para>
+        In theory, it could have been possible to construct Codecs by
+        hand, by using a constructor. However, that's not actually
+        something you want to do yourself. The Codec created would have
+        to closely resemble the datastructure you need to decode. And
+        since every Codec is capable of decoding one value, and there is
+        a fair chance that the object you are trying to decode exists of
+        many other objects, it would even be quite hard to do this
+        yourself.
+      </para>
+      <para>
+        The good news is: you don't have to do all of that
+        yourself. The ObjectCodecFactory basically does it all for you. 
+      </para>
+      <para>
+        The ObjectCodecFactory works on basically all existing
+        objects. If all other CodecFactories fail, then the
+        ObjectCodecFactory might still be able to return a Codec, even
+        though the Codec created might basically be a no-op. (It won't
+        decode anything.) That's why normally every CompoundCodecFactory
+        instance is advised to try the ObjectCodecFactory as a last
+        attempt.
+      </para>
+      <para>
+        The ObjectCodecFactory is probably much simpler than you would
+        expect. Suppose that you want to create a decoder for instances
+        of type A:
+      </para>
+      <procedure>
+        <step>
+          <para>
+            Get the list of all fields declared on type A.
+          </para>
+        </step>
+        <step id="step-create-codec">
+          <para>
+            For each field declared on type A, create a Codec for the type of
+            value accepted by that field, and wrap both the reference to
+            the field and the Codec for its values in a new Binding
+            instance.
+          </para>
+        </step>
+        <step>
+          <para>
+            Create a new Codec that - on an invocation of decode - will
+            always create an instance of type A, and populate its data
+            by giving every Binding the opportunity to load its data
+            from the BitBuffer passed in. (The Binding will simply use
+            the Codec it references to do the actual decoding of the
+            field's value.)
+          </para>
+        </step>
+      </procedure>
+      <para>
+        You may have wondered how the ObjectCodecFactory creates a Codec
+        corresponding to the field's type, in <xref
+        linkend="step-create-codec"/>. The answer is simple: it uses a
+        CodecFactory. It may be different CodecFactory than the
+        ObjectCodecFactory itself, but it's highly likely that it
+        references the ObjectCodecFactory itself somewhere under its
+        covers.
+      </para>
+      <para>
+        We just said that ObjectCodecFactories use Binding objects
+        under the covers. It's important that you know about these
+        guys, since the ObjectCodecFactory actually allows you to
+        override the way they work, by pluging in your own
+        BindingFactory. We are not going to discuss the typical use
+        case yet, but for now it's important at least to know they
+        exist. (Check out <xref
+        linkend="section-conditional-binding"/> for a typical example
+        on how to leverage this plugpoint.)
+      </para>
+    </section>
+
+    <section>
+      <title>ListCodecFactory</title>
+      <para>
+        With the three CodecFactories listed above, we would already be
+        able to decode nested objects, in which each of the objects
+        fields references either a numberic value or another object. But
+        that's not enough. (In fact, we don't even know when it would be
+        enough; that's why Preon is an extensible framework. We leave
+        it up to you to decide when you consider it to be enough.)
+      </para>
+      <para>
+        One of the most important missing cases is support for
+        lists. Many binary encoding standards have some repeating
+        sequences inside. This is where the ListCodecFactory comes in.
+      </para>
+      <para>
+        The ListCodecFactory allows you to decode lists of objects. At
+        this stage, it's limited to a list of a certain size, but it is
+        expected that there will be other implementations that have
+        other ways to demarcate the end of the list.
+      </para>
+      <para>
+        The ListCodecFactory creates a Codec whenever the @BoundList
+        annotation is passed in. It will use the attributes of this
+        annotation to figure out how and what to decode. In the simple
+        case, that could be as little as stating the type and the size
+        of the list.
+      </para>
+      <para>
+        If you would create a Codec simply by passing the type and the
+        size of the list, then the ListCodecFactory can be expected to
+        return a Codec implementation that will - on calling decode() -
+        return a List implementation that allows you to visit all
+        elements in the List. Don't expect one of the default
+        implementations of List though. By default, the Codec created by
+        the ListCodecFactory will return its own implements of List, one
+        that decodes object on the fly, on demand.
+      </para>
+      <para>
+        It is important to emphasize the difference between the Codec
+        that returns the List instance, and the Codec used to decode
+        elements of the List. These are two completely different
+        Codecs. The Codec decoding the List is seeded with a Codec
+        capable of reading the elements of the List. <xref
+        linkend="fig-list-decodig"/> shows how these elements collorate
+        in a real world scenario.
+      </para>
+      <figure id="fig-list-decoding">
+        <title>Decoding a List</title>
+        <mediaobject>
+          <imageobject>
+            <imagedata/>
+          </imageobject>
+        </mediaobject>
+      </figure>
+    </section>
+  </section>
+  <section id="section-conditional-binding">
+    <title>Binding</title>
+    <para>
+      A couple of sections back, I talked about Bindings, and how the
+      Codec created by an ObjectCodecFactory uses these bindings to
+      load and store values from and in a Field. I also said that you
+      can customize the way these Bindings behave. This section is
+      going to give you an example.
+    </para>
+    <para>
+      Many binary formats have some conditional built into the
+      specification. Here are some examples:
+    </para>
+    <itemizedlist spacing="compact">
+      <listitem>
+        <para>
+          If the version of the file is bigger than 400, then read
+          this data structure first, otherwise continue with the next
+          data structure.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          If the first bit read is 1, then read 7 bits and decode it
+          as a byte; otherwise continue to read 7 + 8 bits and
+          decode as a short.
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>
+      All of these cases could have been solved by breaking out of the
+      ordinary framework and implement the entire encoding/decoding
+      logic yourself. That would not only be really hard, but also
+      result in code that will not be self-documenting in the way
+      Preon normally is.
+    </para>
+    <para>
+      Preon takes another approach, and allows you to declaritively
+      specify the conditions in which the framework should try to
+      load data in bound fields, using the @If annotation. The @If
+      annotation takes a single argument, which is the condition
+      stated in Limbo.
+    </para>
+    <para>
+      The reason Preon is capable of dealing with these expression is
+      because it will create a <firstterm>Binding</firstterm> that is
+      capable of loading data from the BitBuffer if the condition
+      holds. Which is why it is sometimes convenient to have the
+      ability to create your own custom Binding implementation instead
+      of the default one.
+    </para>
+  </section>
+
+  <section>
+    <title>CodecDecorator</title>
+    <para>
+      Up til now, we have only seen examples of CodecFactories
+      creating Codecs. Codecs are however not
+      <emphasis>always</emphasis> constructed by CodecFactories. If
+      you want the framework to deal with your own Codec, then there
+      is another way to make it create your own Codec, which is by
+      implementing the CodecDecorator interface.
+    </para>
+    <para>
+      As you may have guessed, the CodecDecorator has something in
+      common with the Decorator Pattern (see GoF). The CodecDecorator
+      allows you to transparenly add additional behaviour to a Codec,
+      by applying some 'decoration'. So, where the CodecFactory
+      accepts the type and metadata indicating the specific Codec you
+      want to construct, the CodecDecorator <emphasis>also</emphasis>
+      accepts the Codec that should be wrapped.
+    </para>
+    
+    <section>
+      <title>LazyLoadingCodecDecorator</title>
+      <para>
+        When you ask the LazyLoadingCodecDecorator to decorate an
+        existing Codec, you get a new Codec that - on receiving a call
+        to decode - will <emphasis>not</emphasis> pass the call on to
+        the Codec it decorates; instead, it will return a proxy that
+        acts as the object that needs to be created by the decororated
+        Codec. The <emphasis>actual</emphasis> object will only be
+        loaded from the BitBuffer right after you call an operation on
+        that proxy for the first time.
+      </para>
+      <para>
+        The LazyLoadingCodecDecorator is triggered by the presence of
+        the LazyLoading annotation on the type you want to have loaded
+        lazily.
+      </para>
+    </section>
+    
+    <section>
+      <title>SlicingCodecDecorator</title>
+      <para>
+        The SlicingCodecDecorator decorates existing Codecs by returning
+        a new Codec that - on receiving a decode call - passes the
+        request on to the decorated Codec, but replacing the BitBuffer
+        passed by taking a slice of the original. 
+      </para>
+      <para>
+        The main reason of having a SlicingCodecDecorator is to
+        support type length value records. The main idea here is that
+        Codecs reading the records data should
+        <emphasis>not</emphasis> be required to know the amount of
+        data to be expected. As you might have seen before, the Codec
+        contracted doesn't support passing in the maximum number of
+        bytes to be read, or anything. And having to implement that
+        logic for all TLV record readers seemed to be a waste.
+      </para>
+      <para>
+        Instead of having every TLV record Codec implement support for
+        detecting the end of the record, the decision was made to
+        externalize that behaviour and put it into a separate Codec,
+        decorating the Codec that reads the data from the TLV record.
+      </para>
+    </section>
+  </section>
+
+</article>

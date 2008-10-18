@@ -1,0 +1,41 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>nl.flotsam.preon</groupId>
+    <artifactId>preon</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>preon-bitbuffer</artifactId>
+  <name>Preon BitBuffer</name>
+  <description>
+    This project aims to provide an abstraction similar to
+    java.nio.ByteBuffer. The main difference is that it does not
+    consider bytes to be the smallest particles it might ever
+    retrieve. Instead, it aims to provide an abstraction that
+    virtualizes access to a stream of bits.
+  </description>
+  <dependencies>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>1.3.1</version>
+    </dependency>
+    <dependency>
+      <groupId>edu.umd.cs</groupId>
+      <artifactId>mtc</artifactId>
+      <version>1.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>2.2</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

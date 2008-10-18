@@ -1,0 +1,116 @@
+<!--
+
+    Copyright (C) 2008 Wilfred Springer
+    
+    This file is part of Preon.
+    
+    Preon is free software; you can redistribute it and/or modify it under the
+    terms of the GNU General Public License as published by the Free Software
+    Foundation; either version 2, or (at your option) any later version.
+    
+    Preon is distributed in the hope that it will be useful, but WITHOUT ANY
+    WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+    A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+    
+    You should have received a copy of the GNU General Public License along with
+    Preon; see the file COPYING. If not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+    
+    Linking this library statically or dynamically with other modules is making a
+    combined work based on this library. Thus, the terms and conditions of the
+    GNU General Public License cover the whole combination.
+    
+    As a special exception, the copyright holders of this library give you
+    permission to link this library with independent modules to produce an
+    executable, regardless of the license terms of these independent modules, and
+    to copy and distribute the resulting executable under terms of your choice,
+    provided that you also meet, for each linked independent module, the terms
+    and conditions of the license of that module. An independent module is a
+    module which is not derived from or based on this library. If you modify this
+    library, you may extend this exception to your version of the library, but
+    you are not obligated to do so. If you do not wish to do so, delete this
+    exception statement from your version.
+
+-->
+
+<article>
+  <articleinfo>
+    <title>Roll Your Own Extension</title>
+  </articleinfo>
+  <para>
+    The previous chapter introduced the major interfaces defined by
+    Preon. If you want to extend the framework, you just implement
+    one of these interfaces. Just the quickly recap the previous
+    chapter, sorted by the relative relevance. The CodecFactory is
+    considered to be the most relevant interface, the BindingFactory
+    is considered to be the least relevant.
+  </para>
+  <variablelist>
+    
+    <varlistentry>
+      <term>CodecFactory</term>
+      <listitem>
+        <para>
+          Implement this interface if you need to roll your own
+          specific type of encoding. Typically used when you want to
+          add support for another datatype, or another compression
+          scheme.
+        </para>
+      </listitem>
+    </varlistentry>
+    
+    <varlistentry>
+      <term>CodecDecorator</term>
+      <listitem>
+        <para>
+          Implement this interface if you want to decorate the
+          behaviour of a Codec that has already been constructed.
+        </para>
+      </listitem>
+    </varlistentry>
+
+    <varlistentry>
+      <term>BindingFactory</term>
+      <listitem>
+        <para>
+          Implement these interfaces if you want to change the way
+          object fields and codecs are associated, to change the way
+          the ObjectCodecFactory behaves.
+        </para>
+      </listitem>
+    </varlistentry>
+
+  </variablelist>
+
+  <para>
+    Given the interfaces above, let's see how you can extend the
+    framework, starting with:
+  </para>
+
+  <section>
+    <title>Adding support for a new datatype</title>
+    <para>
+      Preon will <emphasis>always</emphasis> try at least one
+      strategy for decoding a field that has been marked with the
+      @Bound annotation: if it fails to find decicated support for the
+      datatype, then it will try to create a Codec using the
+      ObjectCodecFactory. This Codec will try to create a default
+      instance of the datatype, and then try to populate its
+      attributes, relying on the Preon annotations on those
+      attributes.
+    </para>
+    <para>
+      It goes without saying that this is not always the desirable
+      result. There are many datatypes that would naturally be encoded
+      in a specific way. Preon allows you to add support for this by
+      implementing the CodecFactory.
+    </para>
+    <para>
+      In this chapter, we are going to add support for Dates, relying
+      on a very simple approach: we expect a Date to be encoded as the
+      number of milisecons elapsed since the epoch. And since it is
+      encoded as a number, we will respect the @BoundNumber annotation.
+    </para>
+  </section>
+
+</article>

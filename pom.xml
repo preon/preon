@@ -1,0 +1,56 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>nl.flotsam.preon</groupId>
+  <artifactId>preon</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>Preon</name>
+  <description>
+    Preon aims to provide a framework for dealing with binary encoded
+    data; or more specifically, it aims to deal with situations in
+    which bytes are considered to be overkill. The project is named
+    after the one of the smallest elementary particles ever found.
+  </description>
+  <scm>
+    <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</connection>
+    <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</developerConnection>
+  </scm>
+  <modules>
+    <module>preon-bitbuffer</module>
+    <module>preon-binding</module>
+    <module>preon-samples</module>
+  </modules>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <!--
+      <plugin>
+        <groupId>com.google.code.maven-license-plugin</groupId>
+        <artifactId>maven-license-plugin</artifactId>
+        <version>1.3.3-SNAPSHOT</version>
+        <inherited>false</inherited>
+        <configuration>
+          <header>${basedir}/src/etc/header.txt</header>
+          <includes>
+            <include>**/*.java</include>
+          </includes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      -->
+    </plugins>
+  </build>
+</project>
