@@ -20,6 +20,13 @@
     <module>preon-binding</module>
     <module>preon-samples</module>
   </modules>
+  <licenses>
+    <license>
+      <name>GNU General Public License, version 2, with the Classpath Exception</name>
+      <url>http://preon.sourceforge.net/COPYING</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <build>
     <plugins>
       <plugin>
