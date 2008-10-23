@@ -37,18 +37,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReadWriteLock;
 
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.buffer.BitBuffer;
-
-
-import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
 
 /**
  * A {@link List} implementation that will lazy load its elements. Big
@@ -60,10 +53,19 @@ import edu.emory.mathcs.backport.java.util.concurrent.CountDownLatch;
  */
 public class UnevenlyDistributedLazyList<E> implements List<E> {
 
+    /**
+     * The {@link Codec} decoding elements of the list.
+     */
     private Codec<E> codec;
 
+    /**
+     * The {@link BitBuffer} to read from.
+     */
     private BitBuffer buffer;
 
+    /**
+     * 
+     */
     private Resolver resolver;
 
     private Builder builder;

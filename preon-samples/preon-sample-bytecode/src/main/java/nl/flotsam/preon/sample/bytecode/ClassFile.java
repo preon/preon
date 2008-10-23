@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -40,7 +40,12 @@ import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.annotation.TypePrefix;
 import nl.flotsam.preon.buffer.ByteOrder;
 
-
+/**
+ * An attempt to capture Java's class file format in Preon.
+ * 
+ * @author Wilfred Springer
+ * 
+ */
 public class ClassFile {
 
     @BoundNumber(size = "32")
@@ -55,11 +60,10 @@ public class ClassFile {
     @BoundNumber(size = "16")
     private int constantPoolCount;
 
-    @BoundList(size = "constantPoolCount-1", types = { ClassCpInfo.class,
-            DoubleCpInfo.class, FieldRefCpInfo.class, FloatCpInfo.class,
-            IntegerCpInfo.class, InterfaceMethodRefCpInfo.class,
-            MethodRefCpInfo.class, NameAndTypeCpInfo.class, StringCpInfo.class,
-            Utf8CpInfo.class })
+    @BoundList(size = "constantPoolCount-1", types = { ClassCpInfo.class, DoubleCpInfo.class,
+            FieldRefCpInfo.class, FloatCpInfo.class, IntegerCpInfo.class,
+            InterfaceMethodRefCpInfo.class, MethodRefCpInfo.class, NameAndTypeCpInfo.class,
+            StringCpInfo.class, Utf8CpInfo.class })
     private CpInfo[] constantPool;
 
     @BoundNumber(size = "16")
@@ -107,7 +111,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "1")
+    @TypePrefix(value = "1", size=8)
     private class Utf8CpInfo extends CpInfo {
 
         @BoundNumber(size = "16")
@@ -120,14 +124,13 @@ public class ClassFile {
             try {
                 return new String(bytes, "UTF-8");
             } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException(
-                        "Expecting UTF-8, but got something else.");
+                throw new IllegalStateException("Expecting UTF-8, but got something else.");
             }
         }
 
     }
 
-    @TypePrefix(value = "9")
+    @TypePrefix(value = "9", size=8)
     private class FieldRefCpInfo extends CpInfo {
 
         @BoundNumber(size = "16")
@@ -138,7 +141,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "10")
+    @TypePrefix(value = "10", size=8)
     private class MethodRefCpInfo extends CpInfo {
 
         @BoundNumber(size = "16")
@@ -149,7 +152,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "11")
+    @TypePrefix(value = "11", size=8)
     private class InterfaceMethodRefCpInfo extends CpInfo {
 
         @BoundNumber(size = "16")
@@ -160,7 +163,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "8")
+    @TypePrefix(value = "8", size=8)
     private class StringCpInfo extends CpInfo {
 
         @BoundNumber(size = "16")
@@ -168,7 +171,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "3")
+    @TypePrefix(value = "3", size=8)
     private class IntegerCpInfo extends CpInfo {
 
         @BoundNumber(endian = ByteOrder.BigEndian)
@@ -176,7 +179,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "4")
+    @TypePrefix(value = "4", size=8)
     private class FloatCpInfo extends CpInfo {
 
         @BoundNumber(endian = ByteOrder.BigEndian)
@@ -184,7 +187,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "6")
+    @TypePrefix(value = "6", size = 8)
     private class DoubleCpInfo extends CpInfo {
 
         @BoundNumber(endian = ByteOrder.BigEndian)
@@ -192,7 +195,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "5")
+    @TypePrefix(value = "5", size=8)
     private class LongCpInfo extends CpInfo {
 
         @BoundNumber(endian = ByteOrder.BigEndian)
@@ -200,7 +203,7 @@ public class ClassFile {
 
     }
 
-    @TypePrefix(value = "12")
+    @TypePrefix(value = "12", size=8)
     private class NameAndTypeCpInfo extends CpInfo {
 
         @BoundNumber(size = "16")
@@ -229,25 +232,23 @@ public class ClassFile {
         private AttributeInfo[] attributes;
 
         public String getName() {
-            return ((Utf8CpInfo) ClassFile.this.constantPool[nameIndex])
-                    .getStringValue();
+            return ((Utf8CpInfo) ClassFile.this.constantPool[nameIndex]).getStringValue();
         }
 
         public String getDescriptor() {
-            return ((Utf8CpInfo) ClassFile.this.constantPool[descriptorIndex])
-                    .getStringValue();
+            return ((Utf8CpInfo) ClassFile.this.constantPool[descriptorIndex]).getStringValue();
         }
 
     }
-    
+
     private abstract class AttributeInfo {
-        
-        @BoundNumber(size="16")
+
+        @BoundNumber(size = "16")
         private int attributeNameIndex;
-        
-        @BoundNumber(size="32")
+
+        @BoundNumber(size = "32")
         private long attributeLength;
-                
+
     }
 
 }

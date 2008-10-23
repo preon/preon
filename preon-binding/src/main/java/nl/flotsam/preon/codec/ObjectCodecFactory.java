@@ -1,4 +1,4 @@
-/*
+/*  
  * Copyright (C) 2008 Wilfred Springer
  * 
  * This file is part of Preon.
@@ -42,7 +42,6 @@ import java.util.List;
 import nl.flotsam.limbo.BindingException;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.pecia.AnnotatedSection;
 import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
@@ -68,7 +67,6 @@ import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.rendering.ClassNameRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
 import nl.flotsam.preon.util.DocumentParaContents;
-import nl.flotsam.preon.util.ParaContentsDocument;
 
 
 /**
@@ -232,7 +230,7 @@ public class ObjectCodecFactory implements CodecFactory {
                 }
                 return result;
             } catch (InstantiationException ie) {
-                throw new DecodingException(ie);
+                throw new DecodingException(type, ie);
             } catch (IllegalAccessException iae) {
                 throw new DecodingException(iae);
             }
@@ -382,6 +380,14 @@ public class ObjectCodecFactory implements CodecFactory {
             } else {
                 return Expressions.createInteger(0, Resolver.class);
             }
+        }
+        
+        /*
+         * (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
+        public String toString() {
+           return "Codec of " + type.getSimpleName(); 
         }
 
     }

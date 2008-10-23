@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -53,7 +53,6 @@ import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.TypePrefix;
 import nl.flotsam.preon.buffer.BitBuffer;
 
-
 /**
  * A {@link CodecSelectorFactory} that will create a {@link CodecSelector} that
  * will look for leading bits, matching a certain value expressed with an
@@ -78,7 +77,8 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                     if (size != -1) {
                         if (size != prefix.size()) {
                             throw new CodecConstructionException(
-                                    "Two distinct prefix sizes are not supported.");
+                                    "Two distinct prefix sizes are not supported: " + "expected "
+                                            + size + ", got " + prefix.size() + " for " + codec);
                         } else {
                             size = prefix.size();
                         }

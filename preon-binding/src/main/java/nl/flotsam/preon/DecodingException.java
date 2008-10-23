@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -42,9 +42,9 @@ import nl.flotsam.preon.buffer.BitBuffer;
  * The exception thrown when the {@link Codec} fails to decode a value from the
  * {@link BitBuffer}. See JavaDoc comments of the constructors for more
  * information on the typical circumstances causing this exception to be thrown.
- *
+ * 
  * @author Wilfred Springer
- *
+ * 
  */
 @SuppressWarnings("serial")
 public class DecodingException extends CodecException {
@@ -52,7 +52,7 @@ public class DecodingException extends CodecException {
     /**
      * Constructs an exception to be thrown when the {@link Codec} fails to
      * instantiate the value.
-     *
+     * 
      * @param ie
      */
     public DecodingException(InstantiationException ie) {
@@ -78,5 +78,9 @@ public class DecodingException extends CodecException {
     public DecodingException(String message) {
         super(message);
     }
-    
+
+    public DecodingException(Class<?> type, InstantiationException ie) {
+        super("Failed to create instance of " + type.getSimpleName(), ie);
+    }
+
 }

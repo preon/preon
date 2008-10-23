@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -36,18 +36,44 @@ package nl.flotsam.preon.util;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
+/**
+ * A wrapper of {@link AnnotatedElement}s, hiding certain annotations.
+ * 
+ * @author Wilfred Springer
+ * 
+ */
 public class HidingAnnotatedElement implements AnnotatedElement {
 
+    /**
+     * The type of annotation that needs to be hidden.
+     */
     private Class<? extends Annotation> hidden;
 
+    /**
+     * The {@link AnnotatedElement} to wrap.
+     */
     private AnnotatedElement delegate;
 
-    public HidingAnnotatedElement(Class<? extends Annotation> hidden,
-            AnnotatedElement delegate) {
+    /**
+     * Constructs a new instance, accepting the annotation that needs to be
+     * hidden, as well as the {@link AnnotatedElement} that (probably) carries
+     * that and other annotations.
+     * 
+     * @param hidden
+     *            The type of annotation that need to be hidden.
+     * @param delegate
+     *            The {@link AnnotatedElement} from which a certain type of
+     *            annotation needs to be hidden.
+     */
+    public HidingAnnotatedElement(Class<? extends Annotation> hidden, AnnotatedElement delegate) {
         this.hidden = hidden;
         this.delegate = delegate;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
+     */
     public <T extends Annotation> T getAnnotation(Class<T> type) {
         if (hidden.equals(type)) {
             return null;
@@ -56,6 +82,10 @@ public class HidingAnnotatedElement implements AnnotatedElement {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.reflect.AnnotatedElement#getAnnotations()
+     */
     public Annotation[] getAnnotations() {
         if (delegate.isAnnotationPresent(hidden)) {
             Annotation[] unhidden = delegate.getAnnotations();
@@ -72,6 +102,10 @@ public class HidingAnnotatedElement implements AnnotatedElement {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
+     */
     public Annotation[] getDeclaredAnnotations() {
         if (delegate.isAnnotationPresent(hidden)) {
             Annotation[] unhidden = delegate.getDeclaredAnnotations();
@@ -88,6 +122,10 @@ public class HidingAnnotatedElement implements AnnotatedElement {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.reflect.AnnotatedElement#isAnnotationPresent(java.lang.Class)
+     */
     public boolean isAnnotationPresent(Class<? extends Annotation> type) {
         if (hidden.equals(type)) {
             return false;
