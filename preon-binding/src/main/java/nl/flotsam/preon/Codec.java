@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -35,7 +35,6 @@ package nl.flotsam.preon;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.buffer.BitBuffer;
-
 
 /**
  * The interface to be implemented by objects that are able to decode/encode
@@ -113,5 +112,14 @@ public interface Codec<T> {
      * @return An array of types constructed potentially by this codec.
      */
     Class<?>[] getTypes();
+
+    /**
+     * Returns the (common super) type of object constructed by this
+     * {@link Codec}.
+     * 
+     * @return The (common super-) type of object constructed by this
+     *         {@link Codec}.
+     */
+    Class<?> getType();
 
 }

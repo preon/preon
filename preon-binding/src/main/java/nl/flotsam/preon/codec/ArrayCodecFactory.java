@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -59,7 +59,6 @@ import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.util.AnnotationWrapper;
 
-
 public class ArrayCodecFactory implements CodecFactory {
 
     /**
@@ -101,7 +100,7 @@ public class ArrayCodecFactory implements CodecFactory {
                 elementCodec = (Codec<Object>) factory.create(
                         new AnnotationWrapper(objectSettings), type.getComponentType(), null);
             }
-            return (Codec<T>) new ArrayCodec(expr, elementCodec, type.getComponentType());
+            return (Codec<T>) new ArrayCodec(expr, elementCodec, type);
         } else {
             return null;
         }
@@ -150,6 +149,9 @@ public class ArrayCodecFactory implements CodecFactory {
          */
         private Codec<?> codec;
 
+        /**
+         * The type of element to be constructed.
+         */
         private Class<?> type;
 
         /**
@@ -171,14 +173,13 @@ public class ArrayCodecFactory implements CodecFactory {
         /*
          * (non-Javadoc)
          * 
-         * @see
-         * nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
+         * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
          * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
          */
         public Object decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
             int length = size.eval(resolver).intValue();
-            Object result = Array.newInstance(type, length);
+            Object result = Array.newInstance(type.getComponentType(), length);
             for (int i = 0; i < length; i++) {
                 Array.set(result, i, codec.decode(buffer, resolver, builder));
             }
@@ -237,12 +238,26 @@ public class ArrayCodecFactory implements CodecFactory {
             };
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.preon.Codec#getTypes()
+         */
         public Class<?>[] getTypes() {
             return codec.getTypes();
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.preon.Codec#getSize()
+         */
         public Expression<Integer, Resolver> getSize() {
             return Expressions.multiply(size, codec.getSize());
+        }
+
+        public Class<?> getType() {
+            return type;
         }
 
     }

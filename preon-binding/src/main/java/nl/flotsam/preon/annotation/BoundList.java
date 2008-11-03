@@ -39,6 +39,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
+import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.buffer.BitBuffer;
 
 
@@ -110,5 +111,5 @@ public @interface BoundList {
      * experimental. Use this with cause.
      */
     boolean ommitTypePrefix() default false;
-
+    
 }

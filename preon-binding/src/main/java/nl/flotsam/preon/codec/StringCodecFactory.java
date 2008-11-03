@@ -192,6 +192,10 @@ public class StringCodecFactory implements CodecFactory {
             return null;
         }
 
+        public Class<?> getType() {
+            return String.class;
+        }
+
     }
 
     public static class FixedLengthStringCodec implements Codec<String> {
@@ -294,6 +298,10 @@ public class StringCodecFactory implements CodecFactory {
 
         public Expression<Integer, Resolver> getSize() {
             return Expressions.multiply(Expressions.createInteger(8, Resolver.class), sizeExpr);
+        }
+
+        public Class<?> getType() {
+            return String.class;
         }
 
     }

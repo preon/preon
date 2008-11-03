@@ -230,6 +230,7 @@ public class ObjectCodecFactory implements CodecFactory {
                 }
                 return result;
             } catch (InstantiationException ie) {
+                ie.printStackTrace();
                 throw new DecodingException(type, ie);
             } catch (IllegalAccessException iae) {
                 throw new DecodingException(iae);
@@ -388,6 +389,10 @@ public class ObjectCodecFactory implements CodecFactory {
          */
         public String toString() {
            return "Codec of " + type.getSimpleName(); 
+        }
+
+        public Class<?> getType() {
+            return type;
         }
 
     }

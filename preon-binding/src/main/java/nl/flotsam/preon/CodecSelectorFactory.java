@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -44,20 +44,20 @@ import java.util.List;
  */
 public interface CodecSelectorFactory {
 
-	/**
-	 * Creates a new {@link CodecSelector}. The {@link CodecSelector}
-	 * constructed will <em>only</em> be able to resolve references
-	 * constructed from the {@link ResolverContext} passed in + the
-	 * <code>BitBuffer</code>.
-	 * 
-	 * @param context
-	 *            The context for creating {@link Reference} instances.
-	 * @param codecs
-	 *            The {@link Codec Codecs} from which the {@link CodecSelector}
-	 *            needs to select.
-	 * @return The {@link CodecSelector} capable of selecting the right
-	 *         {@link Codec}.
-	 */
-	CodecSelector create(ResolverContext context, List<Codec<?>> codecs)
-			throws CodecConstructionException;
+    /**
+     * Creates a new {@link CodecSelector}. The {@link CodecSelector}
+     * constructed will <em>only</em> be able to resolve references constructed
+     * from the {@link ResolverContext} passed in + the <code>BitBuffer</code>.
+     * 
+     * @param context
+     *            The context for creating {@link Reference} instances.
+     * @param codecs
+     *            The {@link Codec Codecs} from which the {@link CodecSelector}
+     *            needs to select.
+     * @return The {@link CodecSelector} capable of selecting the right
+     *         {@link Codec}.
+     */
+    CodecSelector create(ResolverContext context, List<Codec<?>> codecs)
+            throws CodecConstructionException;
+
 }

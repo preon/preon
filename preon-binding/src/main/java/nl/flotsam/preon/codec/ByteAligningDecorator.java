@@ -105,6 +105,10 @@ public class ByteAligningDecorator implements CodecDecorator {
             return null;
         }
 
+        public Class<?> getType() {
+            return decorated.getType();
+        }
+
     }
 
 }

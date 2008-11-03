@@ -61,7 +61,7 @@ public @interface BoundNumber {
      *
      * @return The type of endianness. Defaults to {@link ByteOrder#LittleEndian}.
      */
-    ByteOrder endian() default ByteOrder.LittleEndian;
+    ByteOrder byteOrder() default ByteOrder.LittleEndian;
 
     /**
      * The number of bits used to represent the numeric value. Defaults to 0,

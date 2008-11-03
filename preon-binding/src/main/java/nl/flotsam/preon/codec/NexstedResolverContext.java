@@ -119,6 +119,10 @@ public class NexstedResolverContext implements ObjectResolverContext {
 
         }
 
+        public Class<?> getType() {
+            return ReferenceContext.class;
+        }
+
     }
 
     private static class SteppingStoneReference implements Reference<Resolver> {
@@ -157,6 +161,10 @@ public class NexstedResolverContext implements ObjectResolverContext {
 
         public void document(Document target) {
             wrapped.document(target);
+        }
+
+        public Class<?> getType() {
+            return wrapped.getType();
         }
 
     }

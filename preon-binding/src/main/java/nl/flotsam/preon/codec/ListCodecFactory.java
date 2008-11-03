@@ -297,6 +297,10 @@ public class ListCodecFactory implements CodecFactory {
             return Expressions.multiply(size, codec.getSize());
         }
 
+        public Class<?> getType() {
+            return List.class;
+        }
+
     }
 
     /**
@@ -389,6 +393,10 @@ public class ListCodecFactory implements CodecFactory {
             return null;
         }
 
+        public Class<?> getType() {
+            return List.class;
+        }
+
     }
 
     /**
@@ -466,6 +474,10 @@ public class ListCodecFactory implements CodecFactory {
             return null;
         }
 
+        public Class<?> getType() {
+            return skipListCodec.getType();
+        }
+
     }
 
     private static class IndexedResolverContext implements ResolverContext {
@@ -539,6 +551,10 @@ public class ListCodecFactory implements CodecFactory {
             public void document(Document target) {
                 target.text("the position of an element in ");
                 target.text(descriptor.getLabel());
+            }
+
+            public Class<?> getType() {
+                return Integer.class;
             }
 
         }
@@ -685,6 +701,10 @@ public class ListCodecFactory implements CodecFactory {
 
         public Expression<Integer, Resolver> getSize() {
             return size;
+        }
+
+        public Class<?> getType() {
+            return List.class;
         }
 
     }

@@ -209,6 +209,10 @@ public class CachingCodecFactory implements CodecFactory {
             return codec.getSize();
         }
 
+        public Class<?> getType() {
+            return codec.getType();
+        }
+
     }
 
     private static class Key {

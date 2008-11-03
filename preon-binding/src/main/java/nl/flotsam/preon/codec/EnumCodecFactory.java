@@ -76,7 +76,7 @@ public class EnumCodecFactory implements CodecFactory {
             BoundNumber settings = metadata.getAnnotation(BoundNumber.class);
             Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, settings
                     .size());
-            return new EnumCodec<T>(type, mapping, sizeExpr, settings.endian());
+            return new EnumCodec<T>(type, mapping, sizeExpr, settings.byteOrder());
 
         } else {
             return null;
@@ -164,6 +164,10 @@ public class EnumCodecFactory implements CodecFactory {
 
         public Expression<Integer, Resolver> getSize() {
             return size;
+        }
+
+        public Class<?> getType() {
+            return type;
         }
 
     }

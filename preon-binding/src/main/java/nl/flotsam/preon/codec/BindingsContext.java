@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -45,12 +45,12 @@ import nl.flotsam.limbo.Reference;
 import nl.flotsam.limbo.ctx.ArrayIndexReference;
 import nl.flotsam.limbo.ctx.MultiReference;
 import nl.flotsam.limbo.ctx.PropertyReference;
+import nl.flotsam.limbo.util.ClassUtils;
 import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.binding.Binding;
 import nl.flotsam.preon.util.ParaContentsDocument;
-
 
 public class BindingsContext implements ObjectResolverContext {
 
@@ -73,7 +73,7 @@ public class BindingsContext implements ObjectResolverContext {
 
     public Reference<Resolver> selectAttribute(String name) throws BindingException {
         Binding binding = bindingsByName.get(name);
-        if (name == null) {
+        if (binding == null) {
             throw new BindingException("Failed to create binding for bound data called " + name);
         }
         return new BindingReference(binding);
@@ -99,8 +99,11 @@ public class BindingsContext implements ObjectResolverContext {
 
         private Binding binding;
 
+        private Class<?> commonType;
+
         public BindingReference(Binding binding) {
             this.binding = binding;
+            commonType = binding.getType();
         }
 
         public ResolverContext getReferenceContext() {
@@ -144,16 +147,27 @@ public class BindingsContext implements ObjectResolverContext {
 
         @SuppressWarnings("unchecked")
         public Reference<Resolver> selectItem(Expression<Integer, Resolver> index) {
-            Reference<Resolver>[] references = new Reference[binding.getTypes().length];
-            for (int i = 0; i < binding.getTypes().length; i++) {
-                references[i] = new ArrayIndexReference<Resolver>(this, type.getComponentType(),
-                        index, BindingsContext.this);
+            if (binding.getTypes().length > 1) {
+                Reference<Resolver>[] references = new Reference[binding.getTypes().length];
+                for (int i = 0; i < binding.getTypes().length; i++) {
+                    System.out.println(binding.getTypes()[i]);
+                    System.out.println(binding.getName());
+                    references[i] = new ArrayIndexReference<Resolver>(this, binding.getTypes()[i]
+                            .getComponentType(), index, BindingsContext.this);
+                }
+                return new MultiReference<Resolver>(references);
+            } else {
+                return new ArrayIndexReference<Resolver>(this, binding.getType(), index,
+                        BindingsContext.this);
             }
-            return new MultiReference<Resolver>(references);
         }
 
         public void document(final Document target) {
             binding.writeReference(new ParaContentsDocument(target));
+        }
+
+        public Class<?> getType() {
+            return commonType;
         }
 
     }

@@ -218,6 +218,10 @@ public class DefaultCodecFactory implements CodecFactory {
             return delegate.getSize();
         }
 
+        public Class<?> getType() {
+            return delegate.getType();
+        }
+
     }
 
     /**

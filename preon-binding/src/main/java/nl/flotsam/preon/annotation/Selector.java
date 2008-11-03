@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -38,7 +38,6 @@ import java.lang.annotation.RetentionPolicy;
 
 import nl.flotsam.preon.CodecSelector;
 
-
 /**
  * The annotation used to set a specific Selector when having to choose between
  * multiple {@link Codec Codecs}.
@@ -49,14 +48,14 @@ import nl.flotsam.preon.CodecSelector;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Selector {
 
-	/**
-	 * The type of {@link CodecSelector} to be used when instantiating a policy
-	 * for deciding between different types of {@link Codec Codecs}.
-	 * 
-	 * @return The type of {@link CodecSelector} to be used when instatiating a
-	 *         policy for deciding between different types of
-	 *         {@link Codec Codecs}.
-	 */
-	Class<? extends CodecSelector> value();
+    /**
+     * The type of {@link CodecSelector} to be used when instantiating a policy
+     * for deciding between different types of {@link Codec Codecs}.
+     * 
+     * @return The type of {@link CodecSelector} to be used when instantiating a
+     *         policy for deciding between different types of {@link Codec
+     *         Codecs}.
+     */
+    Class<? extends CodecSelector> value();
 
 }

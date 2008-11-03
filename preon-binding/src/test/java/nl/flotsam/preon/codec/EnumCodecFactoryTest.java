@@ -66,7 +66,7 @@ public class EnumCodecFactoryTest extends TestCase {
         EasyMock.expect(metadata.getAnnotation(BoundNumber.class)).andReturn(
                 boundNumber);
         EasyMock.expect(boundNumber.size()).andReturn("8");
-        EasyMock.expect(boundNumber.endian()).andReturn(ByteOrder.LittleEndian);
+        EasyMock.expect(boundNumber.byteOrder()).andReturn(ByteOrder.LittleEndian);
 
         // Replay
         EasyMock.replay(metadata, boundNumber);

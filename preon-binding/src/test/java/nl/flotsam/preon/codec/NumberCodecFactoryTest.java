@@ -135,7 +135,7 @@ public class NumberCodecFactoryTest extends TestCase {
 					.andReturn(true);
 			EasyMock.expect(metadata.getAnnotation(BoundNumber.class))
 					.andReturn(boundNumber);
-			EasyMock.expect(boundNumber.endian()).andReturn(endian);
+			EasyMock.expect(boundNumber.byteOrder()).andReturn(endian);
 			EasyMock.expect(boundNumber.size()).andReturn(size);
 			verifyRead(readSize, endian, value);
 			EasyMock.replay(metadata, delegate, buffer, resolver, bound,

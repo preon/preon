@@ -216,6 +216,10 @@ public class ConditionalBindingFactory implements BindingFactory {
             return binding.getId();
         }
 
+        public Class<?> getType() {
+            return binding.getType();
+        }
+
     }
 
 }

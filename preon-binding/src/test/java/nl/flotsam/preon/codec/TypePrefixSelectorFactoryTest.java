@@ -40,6 +40,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.easymock.EasyMock;
+
 import nl.flotsam.limbo.Reference;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecSelector;
@@ -98,6 +100,7 @@ public class TypePrefixSelectorFactoryTest extends TestCase {
 		expect(context.selectAttribute("p")).andReturn(reference);
 		expect(bitBuffer.readAsLong(8)).andReturn(1L);
 		expect(reference.resolve(resolver)).andReturn(-2);
+		expect(reference.getType()).andReturn((Class) Integer.class).anyTimes();
 		replay(context, codec1, codec2, resolver, bitBuffer, reference);
 		CodecSelectorFactory factory = new TypePrefixSelectorFactory();
 		List<Codec<?>> codecs = new ArrayList<Codec<?>>();

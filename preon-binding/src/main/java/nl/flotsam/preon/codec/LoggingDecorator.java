@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -45,7 +45,6 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.buffer.BitBuffer;
 
-
 public class LoggingDecorator implements CodecDecorator {
 
     private Logger logger;
@@ -58,8 +57,8 @@ public class LoggingDecorator implements CodecDecorator {
         this(new DefaultLogger());
     }
 
-    public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
-            Class<T> type, ResolverContext context) {
+    public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata, Class<T> type,
+            ResolverContext context) {
         return new LoggingCodec<T>(decorated, logger);
     }
 
@@ -67,8 +66,7 @@ public class LoggingDecorator implements CodecDecorator {
 
         void logStartDecoding(Codec<?> codec, long position, long size);
 
-        void logDoneDecoding(Codec<?> codec, long position, long read,
-                Object result);
+        void logDoneDecoding(Codec<?> codec, long position, long read, Object result);
 
         void logFailedDecoding();
 
@@ -78,12 +76,22 @@ public class LoggingDecorator implements CodecDecorator {
 
         private int level = 0;
 
-        public void logDoneDecoding(Codec<?> codec, long position, long read,
-                Object result) {
+        public void logDoneDecoding(Codec<?> codec, long position, long read, Object result) {
             level--;
-            printMessage("Done decoding "
-                    + codec.getCodecDescriptor().getLabel() + " at " + position
-                    + " (" + read + " bits) : " + result);
+            printMessage("Done decoding " + codec.getCodecDescriptor().getLabel() + " at "
+                    + position + " (" + read + " bits) : " + format(result));
+        }
+
+        private String format(Object result) {
+            if (result instanceof Integer) {
+                return result.toString() + " (0x" + Integer.toHexString((Integer) result) + ")";
+            } else if (result instanceof Long) {
+                return result.toString() + " (0x" + Long.toHexString((Long) result) + ")";
+            } else if (result != null) {
+                return result.toString();
+            } else {
+                return "null";
+            }
         }
 
         public void logFailedDecoding() {
@@ -93,12 +101,10 @@ public class LoggingDecorator implements CodecDecorator {
 
         public void logStartDecoding(Codec<?> codec, long position, long size) {
             if (codec.getCodecDescriptor() == null) {
-                System.err.println("Descriptor of "
-                        + codec.getClass().toString() + " is null.");
+                System.err.println("Descriptor of " + codec.getClass().toString() + " is null.");
             }
-            printMessage("Start decoding "
-                    + codec.getCodecDescriptor().getLabel() + " at " + position
-                    + (size >= 0 ? " (maximal up to " + (position + size) + ")" : ""));
+            printMessage("Start decoding " + codec.getCodecDescriptor().getLabel() + " at "
+                    + position + (size >= 0 ? " (maximal up to " + (position + size) + ")" : ""));
             level++;
         }
 
@@ -133,8 +139,7 @@ public class LoggingDecorator implements CodecDecorator {
                 logger.logFailedDecoding();
                 throw de;
             } finally {
-                logger.logDoneDecoding(codec, buffer.getActualBitPos(), buffer
-                        .getActualBitPos()
+                logger.logDoneDecoding(codec, buffer.getActualBitPos(), buffer.getActualBitPos()
                         - pos, result);
             }
             return result;
@@ -154,6 +159,10 @@ public class LoggingDecorator implements CodecDecorator {
 
         public Expression<Integer, Resolver> getSize() {
             return codec.getSize();
+        }
+
+        public Class<?> getType() {
+            return codec.getType();
         }
 
     }

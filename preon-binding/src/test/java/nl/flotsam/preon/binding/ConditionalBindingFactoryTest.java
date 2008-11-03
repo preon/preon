@@ -187,6 +187,10 @@ public class ConditionalBindingFactoryTest extends TestCase {
             // No way
         }
 
+        public Class<?> getType() {
+            return Integer.class;
+        }
+
     }
 
 }

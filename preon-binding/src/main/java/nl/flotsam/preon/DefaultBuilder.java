@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -42,8 +42,12 @@ package nl.flotsam.preon;
  */
 public class DefaultBuilder implements Builder {
 
-    public <T> T create(Class<T> type) throws InstantiationException,
-            IllegalAccessException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.flotsam.preon.Builder#create(java.lang.Class)
+     */
+    public <T> T create(Class<T> type) throws InstantiationException, IllegalAccessException {
         return type.newInstance();
     }
 

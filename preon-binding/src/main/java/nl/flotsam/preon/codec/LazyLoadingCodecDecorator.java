@@ -132,6 +132,10 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
             return wrapped.getSize();
         }
 
+        public Class<?> getType() {
+            return type;
+        }
+
     }
 
 }

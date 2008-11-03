@@ -112,6 +112,10 @@ public class BooleanCodecFactory implements CodecFactory {
             return Expressions.createInteger(1, Resolver.class);
         }
 
+        public Class<?> getType() {
+            return Boolean.class;
+        }
+
     }
 
 }

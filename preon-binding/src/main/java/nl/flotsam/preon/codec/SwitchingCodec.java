@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -42,6 +42,7 @@ import java.util.Set;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
+import nl.flotsam.limbo.util.ClassUtils;
 import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.preon.Builder;
@@ -51,7 +52,6 @@ import nl.flotsam.preon.CodecSelector;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.buffer.BitBuffer;
-
 
 /**
  * A {@link Codec} that is able to dynamically choose between different types of
@@ -100,6 +100,7 @@ public class SwitchingCodec implements Codec<Object> {
 
     /*
      * (non-Javadoc)
+     * 
      * @see nl.flotsam.preon.Codec#getCodecDescriptor()
      */
     public CodecDescriptor getCodecDescriptor() {
@@ -161,6 +162,7 @@ public class SwitchingCodec implements Codec<Object> {
 
     /*
      * (non-Javadoc)
+     * 
      * @see nl.flotsam.preon.Codec#getTypes()
      */
     public Class<?>[] getTypes() {
@@ -205,6 +207,16 @@ public class SwitchingCodec implements Codec<Object> {
                 return null;
             }
         }
+    }
+
+    public Class<?> getType() {
+        Set<Class<?>> types = new HashSet<Class<?>>();
+        for (Codec<?> codec : selector.getChoices()) {
+            types.add(codec.getType());
+        }
+        Class<?>[] result = new Class<?>[0];
+        result = new ArrayList<Class<?>>(types).toArray(result);
+        return ClassUtils.calculateCommonSuperType(result);
     }
 
 }

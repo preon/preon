@@ -173,4 +173,6 @@ public interface Binding {
      */
     String getId();
 
+    Class<?> getType();
+
 }

@@ -359,12 +359,12 @@ public class IntegrationTest extends TestCase {
 
     public static class Test2 {
 
-        @BoundNumber(endian = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = ByteOrder.BigEndian)
         public int value1;
 
         public int value2;
 
-        @BoundNumber(endian = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = ByteOrder.BigEndian)
         public int value3;
 
     }
@@ -400,7 +400,7 @@ public class IntegrationTest extends TestCase {
     @TypePrefix(size = 8, value = "2")
     public static class Test5b {
 
-        @BoundNumber(endian = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = ByteOrder.BigEndian)
         public short value1;
 
         @Bound

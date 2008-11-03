@@ -214,6 +214,10 @@ public class SlicingCodecDecorator implements CodecDecorator {
             return calculator.getSize();
         }
 
+        public Class<?> getType() {
+            return wrapped.getType();
+        }
+
     }
 
     /**

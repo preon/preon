@@ -85,7 +85,7 @@ public class DescriptionTest extends TestCase {
         @Bound
         private Poi poi;
 
-        @BoundNumber(size = "3", endian = ByteOrder.LittleEndian)
+        @BoundNumber(size = "3", byteOrder = ByteOrder.LittleEndian)
         private int version;
 
         @If("poi.longitude > 2")

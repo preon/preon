@@ -195,7 +195,7 @@ public class NumberCodecFactory implements CodecFactory {
             }
             if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
                 BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
-                ByteOrder endian = numericMetadata.endian();
+                ByteOrder endian = numericMetadata.byteOrder();
                 String size = numericMetadata.size();
                 if (size.length() == 0) {
                     size = Integer.toString(numericType.getDefaultSize());
@@ -224,7 +224,8 @@ public class NumberCodecFactory implements CodecFactory {
 
         public Object decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
-            return type.decode(buffer, size.eval(resolver), endian);
+            int size = ((Number)(this.size.eval(resolver))).intValue();
+            return type.decode(buffer, size, endian);
         }
 
         public int getSize(Resolver resolver) {
@@ -304,6 +305,10 @@ public class NumberCodecFactory implements CodecFactory {
 
         public Expression<Integer, Resolver> getSize() {
             return size;
+        }
+
+        public Class<?> getType() {
+            return type.getType();
         }
 
     }

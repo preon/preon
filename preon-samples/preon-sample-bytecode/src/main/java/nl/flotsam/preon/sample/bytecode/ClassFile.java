@@ -37,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.annotation.Init;
 import nl.flotsam.preon.annotation.TypePrefix;
 import nl.flotsam.preon.buffer.ByteOrder;
 
@@ -48,16 +49,16 @@ import nl.flotsam.preon.buffer.ByteOrder;
  */
 public class ClassFile {
 
-    @BoundNumber(size = "32")
+    @BoundNumber(size = "32", byteOrder=ByteOrder.BigEndian)
     private long magic;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int minorVersion;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int majorVersion;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int constantPoolCount;
 
     @BoundList(size = "constantPoolCount-1", types = { ClassCpInfo.class, DoubleCpInfo.class,
@@ -66,47 +67,52 @@ public class ClassFile {
             StringCpInfo.class, Utf8CpInfo.class })
     private CpInfo[] constantPool;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int accessFlags;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int thisClass;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int superClass;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int interfacesCount;
 
     @BoundList(size = "interfacesCount")
     private int[] interfaces;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int fieldCount;
 
     @BoundList(size = "fieldCount")
     private FieldInfo[] fields;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int methodCount;
 
     @BoundList(size = "methodCount")
     private MethodInfo[] methods;
 
-    @BoundNumber(size = "16")
+    @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int attributeCount;
 
-    @BoundList(size = "attributesCount")
+    @BoundList(size = "attributeCount")
     private AttributeInfo[] attributes;
 
     @TypePrefix(value = "7", size = 8)
     private class ClassCpInfo extends CpInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int nameIndex;
 
         public String getName() {
             return constantPool[nameIndex].toString();
+        }
+        
+        @Init
+        public void init() {
+            System.out.println("Name index " + nameIndex);
         }
 
     }
@@ -114,7 +120,7 @@ public class ClassFile {
     @TypePrefix(value = "1", size=8)
     private class Utf8CpInfo extends CpInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int length;
 
         @BoundList(size = "length")
@@ -127,16 +133,21 @@ public class ClassFile {
                 throw new IllegalStateException("Expecting UTF-8, but got something else.");
             }
         }
+        
+        @Init
+        public void init() {
+            System.out.println("UTF 8 " + getStringValue());
+        }
 
     }
 
     @TypePrefix(value = "9", size=8)
     private class FieldRefCpInfo extends CpInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int classIndex;
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int nameAndTypeIndex;
 
     }
@@ -144,10 +155,10 @@ public class ClassFile {
     @TypePrefix(value = "10", size=8)
     private class MethodRefCpInfo extends CpInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int classIndex;
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int nameAndTypeIndex;
 
     }
@@ -155,10 +166,10 @@ public class ClassFile {
     @TypePrefix(value = "11", size=8)
     private class InterfaceMethodRefCpInfo extends CpInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int classIndex;
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int nameAndTypeIndex;
 
     }
@@ -166,7 +177,7 @@ public class ClassFile {
     @TypePrefix(value = "8", size=8)
     private class StringCpInfo extends CpInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int stringIndex;
 
     }
@@ -174,7 +185,7 @@ public class ClassFile {
     @TypePrefix(value = "3", size=8)
     private class IntegerCpInfo extends CpInfo {
 
-        @BoundNumber(endian = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = ByteOrder.BigEndian)
         private int value;
 
     }
@@ -182,7 +193,7 @@ public class ClassFile {
     @TypePrefix(value = "4", size=8)
     private class FloatCpInfo extends CpInfo {
 
-        @BoundNumber(endian = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = ByteOrder.BigEndian)
         private float value;
 
     }
@@ -190,7 +201,7 @@ public class ClassFile {
     @TypePrefix(value = "6", size = 8)
     private class DoubleCpInfo extends CpInfo {
 
-        @BoundNumber(endian = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = ByteOrder.BigEndian)
         private double value;
 
     }
@@ -198,7 +209,7 @@ public class ClassFile {
     @TypePrefix(value = "5", size=8)
     private class LongCpInfo extends CpInfo {
 
-        @BoundNumber(endian = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = ByteOrder.BigEndian)
         private long value;
 
     }
@@ -206,26 +217,26 @@ public class ClassFile {
     @TypePrefix(value = "12", size=8)
     private class NameAndTypeCpInfo extends CpInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int nameIndex;
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int descriptorIndex;
 
     }
 
     private class MethodInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int accessFlags;
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int nameIndex;
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int descriptorIndex;
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int attributesCount;
 
         @BoundList(size = "attributesCount")
@@ -243,12 +254,16 @@ public class ClassFile {
 
     private abstract class AttributeInfo {
 
-        @BoundNumber(size = "16")
+        @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
         private int attributeNameIndex;
 
-        @BoundNumber(size = "32")
+        @BoundNumber(size = "32", byteOrder=ByteOrder.BigEndian)
         private long attributeLength;
 
+    }
+    
+    private class ConstantValue extends AttributeInfo {
+        
     }
 
 }
