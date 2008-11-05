@@ -45,6 +45,7 @@ import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.annotation.BoundObject;
+import nl.flotsam.preon.annotation.BoundString;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.annotation.If;
 import nl.flotsam.preon.annotation.TypePrefix;
@@ -346,6 +347,13 @@ public class IntegrationTest extends TestCase {
         assertEquals(Test5b.class, value.value.getClass());
     }
 
+    public void testSelectFromCompareString() throws DecodingException {
+        Codec<Test32> codec = Codecs.create(Test32.class);
+        Test32 value = Codecs.decode(codec, new byte[] { (byte) 'a', (byte) 'a', 1, 3, 4, 5, 6, 7, 8 });
+        assertNotNull(value.value);
+        assertEquals(Test5a.class, value.value.getClass());
+    }
+
     private static class TestResolver implements Resolver {
 
         public Object get(String name) {
@@ -623,7 +631,7 @@ public class IntegrationTest extends TestCase {
 
     public static class Test30 {
 
-        @BoundObject(selectFrom = @Choices(size = 8, alternatives = {
+        @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                 @Choice(condition = "prefix==1", type = Test5a.class),
                 @Choice(condition = "prefix==2", type = Test5b.class) }))
         public Object value;
@@ -635,11 +643,23 @@ public class IntegrationTest extends TestCase {
         @BoundList(size="2")
         public byte[] index;
         
-        @BoundObject(selectFrom = @Choices(size = 8, alternatives = {
+        @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                 @Choice(condition = "index[prefix]==5", type = Test5a.class),
                 @Choice(condition = "index[prefix]==6", type = Test5b.class) }))
         public Object value;
 
     }
+    
+    public static class Test32 {
 
+        @BoundString(size="2")
+        public String key;
+        
+        @BoundObject(selectFrom = @Choices(prefixSize = 0, alternatives = {
+                @Choice(condition = "key=='aa'", type = Test5a.class),
+                @Choice(condition = "key=='bb'", type = Test5b.class) }))
+        public Object value;
+
+    }
+    
 }

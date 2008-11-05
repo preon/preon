@@ -33,7 +33,6 @@
 
 package nl.flotsam.preon.codec;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -60,18 +59,15 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundObject;
-import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.annotation.Purpose;
 import nl.flotsam.preon.binding.Binding;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.rendering.ClassNameRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
 import nl.flotsam.preon.util.DocumentParaContents;
 import nl.flotsam.preon.util.HidingAnnotatedElement;
-import nl.flotsam.preon.util.ReplacingAnnotatedElement;
 
 /**
  * The {@link CodecFactory} generating {@link Codec Codecs} capable of decoding
@@ -172,7 +168,8 @@ public class ObjectCodecFactory implements CodecFactory {
         BoundObject settings = metadata.getAnnotation(BoundObject.class);
         // TODO: Handle type incompatibility
         if (Void.class.equals(settings.type())) {
-            if (settings.selectFrom().alternatives().length > 0) {
+            if (settings.selectFrom().alternatives().length > 0
+                    || settings.selectFrom().defaultType() != Void.class) {
                 return (Codec<T>) new SelectFromCodec(type, settings.selectFrom(), context,
                         codecFactory, hideChoices(metadata));
             }

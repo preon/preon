@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -33,23 +33,11 @@
 
 package nl.flotsam.preon.sample.bytecode;
 
-import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.annotation.BoundList;
 
-public class FieldInfo {
+public class AnyAttributeInfo extends AttributeInfo {
 
-	@BoundNumber(size="16")
-	private int accessFlags;
-	
-	@BoundNumber(size="16")
-	private int nameIndex;
-	
-	@BoundNumber(size="16")
-	private int descriptorIndex;
-	
-	@BoundNumber(size="16")
-	private int attributesCount;
-	
-//	@BoundNumber(size="attributesCount")
-//	private AttributeInfo[] attributes;
-	
+    @BoundList(size = "attributeLength")
+    private byte[] data;
+
 }

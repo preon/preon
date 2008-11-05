@@ -117,8 +117,9 @@ public class ObjectCodecFactoryTest extends TestCase {
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(false).anyTimes();
         expect(metadata.isAnnotationPresent(BoundObject.class)).andReturn(true).anyTimes();
         expect(metadata.getAnnotation(BoundObject.class)).andReturn(settings);
-        expect(settings.selectFrom()).andReturn(choices);
+        expect(settings.selectFrom()).andReturn(choices).times(2);
         expect(choices.alternatives()).andReturn(new Choices.Choice[0]);
+        expect(choices.defaultType()).andReturn((Class) Void.class);
         expect(settings.type()).andReturn((Class) Void.class);
         expect(settings.types()).andReturn(new Class[0]);
         TestObject1 value = new TestObject1();
@@ -156,8 +157,9 @@ public class ObjectCodecFactoryTest extends TestCase {
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(false).anyTimes();
         expect(metadata.isAnnotationPresent(BoundObject.class)).andReturn(true).anyTimes();
         expect(metadata.getAnnotation(BoundObject.class)).andReturn(settings);
-        expect(settings.selectFrom()).andReturn(choices);
+        expect(settings.selectFrom()).andReturn(choices).times(2);
         expect(choices.alternatives()).andReturn(new Choices.Choice[0]);
+        expect(choices.defaultType()).andReturn((Class) Void.class);
         expect(settings.type()).andReturn((Class) Void.class);
         expect(settings.types()).andReturn(new Class[] { TestObject1.class, TestObject2.class })
                 .times(2);
@@ -185,8 +187,9 @@ public class ObjectCodecFactoryTest extends TestCase {
         Codec codecTest4 = createMock(Codec.class);
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(false).anyTimes();
         expect(metadata.isAnnotationPresent(BoundObject.class)).andReturn(true).anyTimes();
-        expect(settings.selectFrom()).andReturn(choices);
+        expect(settings.selectFrom()).andReturn(choices).times(2);
         expect(choices.alternatives()).andReturn(new Choices.Choice[0]);
+        expect(choices.defaultType()).andReturn((Class) Void.class);
         expect(metadata.getAnnotation(BoundObject.class)).andReturn(settings);
         expect(settings.type()).andReturn((Class) Void.class);
         expect(settings.types()).andReturn(new Class[] { TestObject3.class, TestObject4.class })

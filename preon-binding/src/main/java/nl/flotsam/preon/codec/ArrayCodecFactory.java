@@ -95,11 +95,11 @@ public class ArrayCodecFactory implements CodecFactory {
             Expression<Integer, Resolver> expr = getSizeExpression(settings, context);
             Codec<Object> elementCodec = null;
             if (type.getComponentType().isPrimitive()) {
-                elementCodec = (Codec<Object>) factory.create(null, type.getComponentType(), null);
+                elementCodec = (Codec<Object>) factory.create(null, type.getComponentType(), context);
             } else {
                 BoundObject objectSettings = getObjectSettings(settings);
                 elementCodec = (Codec<Object>) factory.create(
-                        new AnnotationWrapper(objectSettings), type.getComponentType(), null);
+                        new AnnotationWrapper(objectSettings), type.getComponentType(), context);
             }
             return (Codec<T>) new ArrayCodec(expr, elementCodec, type);
         } else {

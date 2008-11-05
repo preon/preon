@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -37,7 +37,7 @@ import nl.flotsam.preon.buffer.ByteOrder;
 
 /**
  * The annotation allowing you to define a number of choices, based a prefix of
- * a certain {@link #size() size}.
+ * a certain {@link #prefixSize() size}.
  * 
  * @author Wilfred Springer (wis)
  * 
@@ -49,15 +49,15 @@ public @interface Choices {
      * 
      * @return The number of bits to be read for determining the prefix.
      */
-    int size() default 0;
+    int prefixSize() default 0;
 
     /**
      * The byte order to take into account when returning a representation of
-     * the first {@link #size() size} bits read as a prefix.
+     * the first {@link #prefixSize() size} bits read as a prefix.
      * 
      * @return The byte order to take into account when returning a
-     *         representation of the first {@link #size() size} bits read as a
-     *         prefix.
+     *         representation of the first {@link #prefixSize() size} bits read
+     *         as a prefix.
      */
     ByteOrder byteOrder() default ByteOrder.BigEndian;
 
@@ -69,6 +69,11 @@ public @interface Choices {
     Choice[] alternatives() default {};
 
     /**
+     * The default type, if any.
+     */
+    Class<?> defaultType() default Void.class;
+
+    /**
      * The annotation holding a single choice.
      */
     public @interface Choice {
@@ -77,7 +82,7 @@ public @interface Choices {
          * The condition that needs to hold, if an instance of {@link #type()
          * type} is to be decoded. A Limbo expression exposing at least one
          * variable: the variable prefix, representing the value read using the
-         * {@link Choices#size()} and {@link Choices#byteOrder()}
+         * {@link Choices#prefixSize()} and {@link Choices#byteOrder()}
          * specifications.
          * 
          * 
