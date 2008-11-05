@@ -97,8 +97,10 @@ public class ClassFile {
     @BoundNumber(size = "16", byteOrder=ByteOrder.BigEndian)
     private int attributeCount;
 
-    @BoundList(size = "attributeCount")
-    private AttributeInfo[] attributes;
+//    @BoundList(size = "attributeCount", selectFrom = {
+//            @Choice(condition="true", type=ClassCpInfo.class)
+//    })
+//    private AttributeInfo[] attributes;
 
     @TypePrefix(value = "7", size = 8)
     private class ClassCpInfo extends CpInfo {
@@ -261,7 +263,7 @@ public class ClassFile {
         private long attributeLength;
 
     }
-    
+
     private class ConstantValue extends AttributeInfo {
         
     }

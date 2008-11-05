@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -39,9 +39,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
-import nl.flotsam.preon.Codec;
+import nl.flotsam.limbo.ast.Selector;
 import nl.flotsam.preon.buffer.BitBuffer;
-
 
 /**
  * The annotation used to mark {@link List} fields as potential candidates to be
@@ -98,8 +97,8 @@ public @interface BoundList {
     /**
      * The offset for each individual element. A Limbo expression, accepting a
      * parameter 'index', representing the current index. So an expression could
-     * be <code>index*2</code> or <code>offsets[index]</code>, assuming
-     * that a certain offsets variable would be in scope.
+     * be <code>index*2</code> or <code>offsets[index]</code>, assuming that a
+     * certain offsets variable would be in scope.
      * 
      * @return A Limbo expression, representing the offset for the individual
      *         elements.
@@ -111,5 +110,12 @@ public @interface BoundList {
      * experimental. Use this with cause.
      */
     boolean ommitTypePrefix() default false;
+
+    /**
+     * The choices to select from, based on a prefix of a certain size.
+     * 
+     * @return The choices to select from, based on a prefix of a certain size.
+     */
+    Choices selectFrom() default @Choices(alternatives = {});
     
 }

@@ -63,6 +63,13 @@ import nl.flotsam.preon.buffer.BitBuffer;
  */
 public class TypePrefixSelectorFactory implements CodecSelectorFactory {
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nl.flotsam.preon.CodecSelectorFactory#create(nl.flotsam.preon.ResolverContext
+     * , java.util.List)
+     */
     public CodecSelector create(ResolverContext context, List<Codec<?>> allCodecs) {
         int size = -1;
         List<Expression<Integer, Resolver>> expressions = new ArrayList<Expression<Integer, Resolver>>();
@@ -95,6 +102,12 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
         return new TypePrefixSelector(expressions, codecs, size);
     }
 
+    /**
+     * A {@link CodecSelector} that determines its choice on a couple of leading
+     * bits. The correspondence between {@link Codec} and leading bits is based
+     * on the {@link TypePrefix} annotation.
+     * 
+     */
     private static class TypePrefixSelector implements CodecSelector {
 
         private List<Codec<?>> codecs;

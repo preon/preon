@@ -1,4 +1,4 @@
-/*  
+/*
  * Copyright (C) 2008 Wilfred Springer
  * 
  * This file is part of Preon.
@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -33,6 +33,7 @@
 
 package nl.flotsam.preon.codec;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -59,15 +60,18 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundObject;
+import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.annotation.Purpose;
 import nl.flotsam.preon.binding.Binding;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.rendering.ClassNameRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
 import nl.flotsam.preon.util.DocumentParaContents;
-
+import nl.flotsam.preon.util.HidingAnnotatedElement;
+import nl.flotsam.preon.util.ReplacingAnnotatedElement;
 
 /**
  * The {@link CodecFactory} generating {@link Codec Codecs} capable of decoding
@@ -147,7 +151,7 @@ public class ObjectCodecFactory implements CodecFactory {
         } else if (metadata.isAnnotationPresent(Bound.class)) {
             return createCodec(type, context);
         } else if (metadata.isAnnotationPresent(BoundObject.class)) {
-            return createCodec(metadata.getAnnotation(BoundObject.class), type, context);
+            return createCodec(type, context, metadata);
         } else {
             return null;
         }
@@ -163,22 +167,33 @@ public class ObjectCodecFactory implements CodecFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private <T> Codec<T> createCodec(BoundObject metadata, Class<T> type, ResolverContext context) {
+    private <T> Codec<T> createCodec(Class<T> type, ResolverContext context,
+            AnnotatedElement metadata) {
+        BoundObject settings = metadata.getAnnotation(BoundObject.class);
         // TODO: Handle type incompatibility
-        if (Void.class.equals(metadata.type())) {
-            if (metadata.types().length == 0) {
+        if (Void.class.equals(settings.type())) {
+            if (settings.selectFrom().alternatives().length > 0) {
+                return (Codec<T>) new SelectFromCodec(type, settings.selectFrom(), context,
+                        codecFactory, hideChoices(metadata));
+            }
+            if (settings.types().length == 0) {
                 return createCodec(type, context);
             }
             List<Codec<?>> codecs = new ArrayList<Codec<?>>();
-            for (Class valueType : metadata.types()) {
+            for (Class valueType : settings.types()) {
                 codecs.add(codecFactory.create(null, valueType, context));
             }
-            CodecSelectorFactory selectorFactory = new TypePrefixSelectorFactory();
+            CodecSelectorFactory selectorFactory = null;
+            selectorFactory = new TypePrefixSelectorFactory();
             CodecSelector selector = selectorFactory.create(context, codecs);
             return (Codec<T>) new SwitchingCodec(selector);
         } else {
-            return (Codec<T>) createCodec(metadata.type(), context);
+            return (Codec<T>) createCodec(settings.type(), context);
         }
+    }
+
+    private AnnotatedElement hideChoices(AnnotatedElement metadata) {
+        return new HidingAnnotatedElement(BoundObject.class, metadata);
     }
 
     private <T> void harvestBindings(Class<T> type, ObjectResolverContext context) {
@@ -382,13 +397,14 @@ public class ObjectCodecFactory implements CodecFactory {
                 return Expressions.createInteger(0, Resolver.class);
             }
         }
-        
+
         /*
          * (non-Javadoc)
+         * 
          * @see java.lang.Object#toString()
          */
         public String toString() {
-           return "Codec of " + type.getSimpleName(); 
+            return "Codec of " + type.getSimpleName();
         }
 
         public Class<?> getType() {

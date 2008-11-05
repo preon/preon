@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -45,8 +45,10 @@ import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.annotation.BoundObject;
+import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.annotation.If;
 import nl.flotsam.preon.annotation.TypePrefix;
+import nl.flotsam.preon.annotation.Choices.Choice;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.ConditionalBindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
@@ -58,7 +60,6 @@ import nl.flotsam.preon.codec.ObjectCodecFactory;
 import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
 
 import junit.framework.TestCase;
-
 
 public class IntegrationTest extends TestCase {
 
@@ -329,7 +330,20 @@ public class IntegrationTest extends TestCase {
 
     public void testRecursion() throws DecodingException {
         Codec<Test29> codec = Codecs.create(Test29.class);
+    }
 
+    public void testSelectFrom() throws DecodingException {
+        Codec<Test30> codec = Codecs.create(Test30.class);
+        Test30 value = Codecs.decode(codec, new byte[] { 2, 3, 4, 5, 6, 7, 8 });
+        assertNotNull(value.value);
+        assertEquals(Test5b.class, value.value.getClass());
+    }
+    
+    public void testSelectFromUsingLookup() throws DecodingException {
+        Codec<Test31> codec = Codecs.create(Test31.class);
+        Test31 value = Codecs.decode(codec, new byte[] { 5, 6, 1, 3, 4, 5, 6, 7, 8 });
+        assertNotNull(value.value);
+        assertEquals(Test5b.class, value.value.getClass());
     }
 
     private static class TestResolver implements Resolver {
@@ -604,6 +618,27 @@ public class IntegrationTest extends TestCase {
         @If("number < 3")
         @Bound
         public Test29 value;
+
+    }
+
+    public static class Test30 {
+
+        @BoundObject(selectFrom = @Choices(size = 8, alternatives = {
+                @Choice(condition = "prefix==1", type = Test5a.class),
+                @Choice(condition = "prefix==2", type = Test5b.class) }))
+        public Object value;
+
+    }
+    
+    public static class Test31 {
+
+        @BoundList(size="2")
+        public byte[] index;
+        
+        @BoundObject(selectFrom = @Choices(size = 8, alternatives = {
+                @Choice(condition = "index[prefix]==5", type = Test5a.class),
+                @Choice(condition = "index[prefix]==6", type = Test5b.class) }))
+        public Object value;
 
     }
 

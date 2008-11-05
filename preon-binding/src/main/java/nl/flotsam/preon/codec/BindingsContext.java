@@ -45,7 +45,6 @@ import nl.flotsam.limbo.Reference;
 import nl.flotsam.limbo.ctx.ArrayIndexReference;
 import nl.flotsam.limbo.ctx.MultiReference;
 import nl.flotsam.limbo.ctx.PropertyReference;
-import nl.flotsam.limbo.util.ClassUtils;
 import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;

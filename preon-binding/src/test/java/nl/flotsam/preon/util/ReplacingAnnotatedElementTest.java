@@ -31,55 +31,41 @@
  * exception statement from your version.
  */
 
-package nl.flotsam.preon.annotation;
+package nl.flotsam.preon.util;
 
-import java.lang.annotation.ElementType;
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.AnnotatedElement;
 
-/**
- * An annotation for marking fields to be bound to the BitBuffer. Used when the
- * default decoding approach (which is to examine the type of field, and guess a
- * decoder from that) doesn't fit your needs.
- * 
- * @author Wilfred Springer
- * 
- */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface BoundObject {
+import junit.framework.TestCase;
 
-    /**
-     * The type of object to be decoded. (Use this when you want to override the
-     * type detected at runtime.)
-     * 
-     * @return The type of object to be decoded. (Use this when you want to
-     *         override the type detected at runtime.)
-     */
-    Class<?> type() default Void.class;
+public class ReplacingAnnotatedElementTest extends TestCase {
 
-    /**
-     * The types of objects to be decoded. Use this if you want the framework to
-     * select a certain class based on a couple of leading bits prefixing the
-     * actual data. Note that it expects every type in the array to have the
-     * {@link TypePrefix} annotation.
-     * 
-     * @return The types of object to be decoded.
-     */
-    Class<?>[] types() default {};
+    public void testReplacement() {
+        AnnotatedElement element = Test.class;
+        assertEquals("bar", element.getAnnotation(Foo.class).value());
+        element = new ReplacingAnnotatedElement(element, new Foo() {
 
-    /**
-     * Indicates that the type prefix must be ignored. Note that this is fairly
-     * experimental. Use this with cause.
-     */
-    boolean ommitTypePrefix() default false;
+            public String value() {
+                return "foobar";
+            }
 
-    /**
-     * The choices to select from, based on a prefix of a certain size.
-     * 
-     * @return The choices to select from, based on a prefix of a certain size.
-     */
-    Choices selectFrom() default @Choices(alternatives = {});
+            public Class<? extends Annotation> annotationType() {
+                return Foo.class;
+            }
+            
+        });
+        assertEquals("foobar", element.getAnnotation(Foo.class).value());
+    }
+    
+    @Foo("bar")
+    private static class Test {
+    }
+    
+    @Retention(RetentionPolicy.RUNTIME)
+    private static @interface Foo {
+        String value();
+    }
 
 }

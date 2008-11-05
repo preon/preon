@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -38,7 +38,6 @@ import java.util.Collection;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.preon.buffer.BitBuffer;
 
-
 /**
  * The interface to be implemented by objects that have the capability to select
  * a {@link Codec} based on data on the buffer and a context for resolving
@@ -49,35 +48,41 @@ import nl.flotsam.preon.buffer.BitBuffer;
  */
 public interface CodecSelector {
 
-	/**
-	 * Selects a {@link Codec}, based on the bits on the {@link BitBuffer} and
-	 * the references that can be resolved using the resolver.
-	 * 
-	 * @param buffer
-	 *            The buffer providing the bits.
-	 * @param resolver
-	 *            The resolver for resolving references.
-	 * @return The {@link Codec} that needs to be used.
-	 * @throws DecodingException
-	 *             If we fail to select a {@link Codec} for the data found in
-	 *             the {@link BitBuffer}.
-	 */
-	Codec<?> select(BitBuffer buffer, Resolver resolver)
-			throws DecodingException;
+    /**
+     * Selects a {@link Codec}, based on the bits on the {@link BitBuffer} and
+     * the references that can be resolved using the resolver.
+     * 
+     * @param buffer
+     *            The buffer providing the bits.
+     * @param resolver
+     *            The resolver for resolving references.
+     * @return The {@link Codec} that needs to be used.
+     * @throws DecodingException
+     *             If we fail to select a {@link Codec} for the data found in
+     *             the {@link BitBuffer}.
+     */
+    Codec<?> select(BitBuffer buffer, Resolver resolver) throws DecodingException;
 
-	/**
-	 * Returns the collection of all choices this selector will have to choose
-	 * from.
-	 * 
-	 * @return The <code>Collection</code> of all choices this selector will
-	 *         have to choose from.
-	 */
-	Collection<Codec<?>> getChoices();
+    /**
+     * Returns the collection of all choices this selector will have to choose
+     * from.
+     * 
+     * @return The <code>Collection</code> of all choices this selector will
+     *         have to choose from.
+     */
+    Collection<Codec<?>> getChoices();
 
-	/**
-	 * @see Codec#getSize(Resolver)
-	 */
-	int getSize(Resolver resolver);
-	
-	void document(ParaContents<?> para);
+    /**
+     * @see Codec#getSize(Resolver)
+     */
+    int getSize(Resolver resolver);
+
+    /**
+     * Documents the procedure for deciding among a couple of {@link Codec}s.
+     * 
+     * @param para
+     *            The context for generating the content.
+     */
+    void document(ParaContents<?> para);
+    
 }

@@ -56,6 +56,7 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundObject;
+import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.util.AnnotationWrapper;
 
@@ -124,6 +125,10 @@ public class ArrayCodecFactory implements CodecFactory {
 
             public boolean ommitTypePrefix() {
                 return settings.ommitTypePrefix();
+            }
+
+            public Choices selectFrom() {
+                return settings.selectFrom();
             }
 
         };
