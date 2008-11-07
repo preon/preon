@@ -43,6 +43,8 @@ import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.Reference;
 import nl.flotsam.limbo.ReferenceContext;
+import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDescriptor;
@@ -54,27 +56,70 @@ import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
 
+/**
+ * A Codec supporting the {@link Choices} annotation.
+ * 
+ * @author Wilfred Springer (wis)
+ * 
+ * @param <T>
+ *            The type of object to be returned.
+ */
 public class SelectFromCodec<T> implements Codec<T> {
 
+    /**
+     * The name of the variable that holds the prefix's value.
+     */
     private final static String PREFIX_NAME = "prefix";
 
-    private int size;
+    /**
+     * The size of the prefix, in number of bits.
+     */
+    private int prefixSize;
 
+    /**
+     * The byte order of the prefix.
+     */
     private ByteOrder byteOrder;
 
+    /**
+     * A list of all conditions.
+     */
     private List<Expression<Boolean, Resolver>> conditions;
 
+    /**
+     * A list of all {@link Codec}s.
+     */
     private List<Codec<?>> codecs;
 
+    /**
+     * The types potentially returned by this {@link Codec}.
+     */
     private Class<?>[] types;
 
+    /**
+     * The common type.
+     */
     private Class<?> type;
 
+    /**
+     * The {@link Codec} to apply when none of the conditions are met.
+     */
     private Codec<?> defaultCodec;
 
+    /**
+     * Constructs a new instance, accepting the type, choices, a
+     * {@link ResolverContext} to wrap for introducing the <code>prefix</code>
+     * variable, the {@link CodecFactory} to delegate to, and the metadata.
+     * 
+     * @param type
+     * @param choices
+     * @param context
+     * @param factory
+     * @param metadata
+     */
     public SelectFromCodec(Class<?> type, Choices choices, ResolverContext context,
             CodecFactory factory, AnnotatedElement metadata) {
-        this.size = choices.prefixSize();
+        this.prefixSize = choices.prefixSize();
         this.types = new Class<?>[choices.alternatives().length];
         this.byteOrder = choices.byteOrder();
         conditions = new ArrayList<Expression<Boolean, Resolver>>();
@@ -82,7 +127,7 @@ public class SelectFromCodec<T> implements Codec<T> {
         if (choices.defaultType() != Void.class) {
             factory.create(null, choices.defaultType(), context);
         }
-        context = new SelectFromContext(context, size);
+        context = new SelectFromContext(context, prefixSize);
         for (int i = 0; i < choices.alternatives().length; i++) {
             types[i] = choices.alternatives()[i].type();
             conditions.add(Expressions
@@ -92,14 +137,14 @@ public class SelectFromCodec<T> implements Codec<T> {
     }
 
     public T decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException {
-        if (size <= 0) {
+        if (prefixSize <= 0) {
             for (int i = 0; i < conditions.size(); i++) {
                 if (conditions.get(i).eval(resolver)) {
                     return (T) codecs.get(i).decode(buffer, resolver, builder);
                 }
             }
         } else {
-            int size = buffer.readAsInt(this.size, byteOrder);
+            int size = buffer.readAsInt(this.prefixSize, byteOrder);
             Resolver prefixResolver = new PrefixAwareResolver(resolver, size);
             for (int i = 0; i < conditions.size(); i++) {
                 if (conditions.get(i).eval(prefixResolver)) {
@@ -115,8 +160,51 @@ public class SelectFromCodec<T> implements Codec<T> {
     }
 
     public CodecDescriptor getCodecDescriptor() {
-        // TODO Auto-generated method stub
-        return null;
+        return new CodecDescriptor() {
+
+            public String getLabel() {
+                StringBuilder builder = new StringBuilder();
+                int nrcodecs = codecs.size();
+                if (nrcodecs > 1) {
+                    builder.append("either ");
+                }
+                for (int i = 0; i < nrcodecs; i++) {
+                    if (i == nrcodecs - 1) {
+                        builder.append(" or ");
+                    } else if (i != 0) {
+                        builder.append(", ");
+                    }
+                    builder.append(codecs.get(i).getCodecDescriptor().getLabel());
+                }
+                return builder.toString();
+            }
+
+            public String getSize() {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public boolean hasFullDescription() {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            public <T> Contents<T> putFullDescription(Contents<T> contents) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public <T, V extends ParaContents<T>> V putOneLiner(V para) {
+                // TODO Auto-generated method stub
+                return null;
+            }
+
+            public <T> void writeReference(ParaContents<T> contents) {
+                // TODO Auto-generated method stub
+
+            }
+
+        };
     }
 
     public int getSize(Resolver resolver) {
@@ -124,7 +212,26 @@ public class SelectFromCodec<T> implements Codec<T> {
     }
 
     public Expression<Integer, Resolver> getSize() {
-        return null;
+        Integer result = null;
+        for (Codec<?> codec : codecs) {
+            Expression<Integer, Resolver> size = codec.getSize();
+            if (size.isParameterized()) {
+                return null;
+            } else {
+                if (result == null) {
+                    result = size.eval(null); // Not parameterized, so we can do this.
+                } else {
+                    if (!result.equals(size.eval(null))) {
+                        return null;
+                    }
+                }
+            }
+        }
+        if (result != null) {
+            return Expressions.createInteger(result, Resolver.class);
+        } else {
+            return null;
+        }
     }
 
     public Class<?> getType() {

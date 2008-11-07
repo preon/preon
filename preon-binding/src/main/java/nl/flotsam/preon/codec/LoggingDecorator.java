@@ -80,6 +80,7 @@ public class LoggingDecorator implements CodecDecorator {
             level--;
             printMessage("Done decoding " + codec.getCodecDescriptor().getLabel() + " at "
                     + position + " (" + read + " bits) : " + format(result));
+            System.out.println();
         }
 
         private String format(Object result) {

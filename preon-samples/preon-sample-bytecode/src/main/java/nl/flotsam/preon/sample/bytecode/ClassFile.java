@@ -98,7 +98,7 @@ public class ClassFile {
     @BoundNumber(size = "16", byteOrder = ByteOrder.BigEndian)
     private int attributeCount;
 
-    @BoundList(size = "attributeCount", selectFrom = @Choices(prefixSize = 16, defaultType = AnyAttributeInfo.class))
+    @BoundList(size = "attributeCount", type = AttributeInfo.class)
     private AttributeInfo[] attributes;
 
     @TypePrefix(value = "7", size = 8)
@@ -236,7 +236,7 @@ public class ClassFile {
         @BoundNumber(size = "16", byteOrder = ByteOrder.BigEndian)
         private int attributesCount;
 
-        @BoundList(size = "attributesCount", selectFrom = @Choices(prefixSize = 16, byteOrder = ByteOrder.BigEndian, defaultType = AnyAttributeInfo.class))
+        @BoundList(size = "attributesCount", type = AttributeInfo.class)
         private AttributeInfo[] attributes;
 
         public String getName() {
@@ -270,7 +270,7 @@ public class ClassFile {
             @BoundNumber(size = "16", byteOrder = ByteOrder.BigEndian)
             private int attributesCount;
 
-            @BoundList(size = "attributesCount", selectFrom = @Choices(prefixSize = 16, defaultType = AnyAttributeInfo.class))
+            @BoundList(size = "attributesCount", type = AttributeInfo.class)
             private AttributeInfo[] attributes;
 
             public class LineNumberTable extends AttributeInfo {
@@ -377,7 +377,8 @@ public class ClassFile {
         @BoundNumber(size = "16", byteOrder = ByteOrder.BigEndian)
         private int attributesCount;
 
-        @BoundList(size = "attributesCount", selectFrom = @Choices(prefixSize = 16, defaultType = AnyAttributeInfo.class))
+        //        @BoundList(size = "attributesCount", selectFrom = @Choices(prefixSize = 16, defaultType = AnyAttributeInfo.class))
+        @BoundList(size = "attributesCount", type = AttributeInfo.class)
         private AttributeInfo[] attributes;
 
         public String getDescriptor() {

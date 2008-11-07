@@ -338,6 +338,7 @@ public class IntegrationTest extends TestCase {
         Test30 value = Codecs.decode(codec, new byte[] { 2, 3, 4, 5, 6, 7, 8 });
         assertNotNull(value.value);
         assertEquals(Test5b.class, value.value.getClass());
+        assertEquals(0x304, ((Test5b)value.value).value1);
     }
     
     public void testSelectFromUsingLookup() throws DecodingException {

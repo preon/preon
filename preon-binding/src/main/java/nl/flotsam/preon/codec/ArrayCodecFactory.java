@@ -213,7 +213,6 @@ public class ArrayCodecFactory implements CodecFactory {
                 }
 
                 public boolean hasFullDescription() {
-                    // TODO Auto-generated method stub
                     return false;
                 }
 

@@ -48,8 +48,9 @@ public class ClassFileTest extends TestCase {
 
     public void testDecoding() throws FileNotFoundException, IOException, DecodingException {
         Codec<ClassFile> codec = Codecs.create(ClassFile.class, new LoggingDecorator());
-//        ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
-//                "target/classes/nl/flotsam/preon/sample/bytecode/ClassFile.class"));
+//        Codec<ClassFile> codec = Codecs.create(ClassFile.class);
+        ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
+                "src/test/resources/Foo.class"));
     }
 
     public File getBasedir() {
