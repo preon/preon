@@ -137,10 +137,10 @@ public class ObjectCodecFactory implements CodecFactory {
         this.bindingFactory = bindingFactory;
     }
 
-    public <T> ObjectCodec<T> create(Class<T> type) {
-        return createCodec(type, null);
-    }
-
+    /*
+     * (non-Javadoc)
+     * @see nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement, java.lang.Class, nl.flotsam.preon.ResolverContext)
+     */
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
         if (metadata == null) {
             return createCodec(type, context);
@@ -156,7 +156,7 @@ public class ObjectCodecFactory implements CodecFactory {
     private <T> ObjectCodec<T> createCodec(Class<T> type, ResolverContext context) {
         ObjectResolverContext passThroughContext = new BindingsContext(type);
         if (context != null) {
-            passThroughContext = new NexstedResolverContext(context, passThroughContext, "outer");
+            passThroughContext = new CombinedObjectResolverContext(context, passThroughContext, "outer");
         }
         harvestBindings(type, passThroughContext);
         return new ObjectCodec<T>(type, rewriter, passThroughContext);

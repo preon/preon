@@ -42,7 +42,7 @@ import nl.flotsam.limbo.Document;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.Reference;
-import nl.flotsam.limbo.ctx.ArrayIndexReference;
+import nl.flotsam.limbo.ctx.ArrayElementReference;
 import nl.flotsam.limbo.ctx.MultiReference;
 import nl.flotsam.limbo.ctx.PropertyReference;
 import nl.flotsam.limbo.util.StringBuilderDocument;
@@ -151,12 +151,12 @@ public class BindingsContext implements ObjectResolverContext {
                 for (int i = 0; i < binding.getTypes().length; i++) {
                     System.out.println(binding.getTypes()[i]);
                     System.out.println(binding.getName());
-                    references[i] = new ArrayIndexReference<Resolver>(this, binding.getTypes()[i]
-                            .getComponentType(), index, BindingsContext.this);
+                    references[i] = new ArrayElementReference<Resolver>(this,
+                            binding.getTypes()[i], index, BindingsContext.this);
                 }
                 return new MultiReference<Resolver>(references);
             } else {
-                return new ArrayIndexReference<Resolver>(this, binding.getType(), index,
+                return new ArrayElementReference<Resolver>(this, binding.getType().getComponentType(), index,
                         BindingsContext.this);
             }
         }
@@ -204,7 +204,7 @@ public class BindingsContext implements ObjectResolverContext {
                     throw new BindingException("Forbidded to access " + binding.getName(), e);
                 }
             } else {
-                throw new BindingException("Failed to resolve " + name);
+                throw new BindingException("Failed to resolve " + name + " on " + context.getClass());
             }
         }
 

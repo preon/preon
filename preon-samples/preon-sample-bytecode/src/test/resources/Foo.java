@@ -2,7 +2,7 @@ public class Foo {
 
     private String foo;
 
-    private int bar;
+    private int bar = 5;
 
     public Foo(String foo, int bar) {
 	this.foo = foo;

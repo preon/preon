@@ -125,14 +125,14 @@ public class SelectFromCodec<T> implements Codec<T> {
         conditions = new ArrayList<Expression<Boolean, Resolver>>();
         codecs = new ArrayList<Codec<?>>();
         if (choices.defaultType() != Void.class) {
-            factory.create(null, choices.defaultType(), context);
+            defaultCodec = factory.create(null, choices.defaultType(), context);
         }
-        context = new SelectFromContext(context, prefixSize);
+        ResolverContext passThroughContext = new PrefixResolverContext(context, null, prefixSize);
         for (int i = 0; i < choices.alternatives().length; i++) {
             types[i] = choices.alternatives()[i].type();
-            conditions.add(Expressions
-                    .createBoolean(context, choices.alternatives()[i].condition()));
-            codecs.add(factory.create(null, choices.alternatives()[i].type(), context));
+            conditions.add(Expressions.createBoolean(passThroughContext, choices.alternatives()[i]
+                    .condition()));
+            codecs.add(factory.create(null, choices.alternatives()[i].type(), passThroughContext));
         }
     }
 
@@ -144,10 +144,10 @@ public class SelectFromCodec<T> implements Codec<T> {
                 }
             }
         } else {
-            int size = buffer.readAsInt(this.prefixSize, byteOrder);
-            Resolver prefixResolver = new PrefixAwareResolver(resolver, size);
+            int prefix = buffer.readAsInt(this.prefixSize, byteOrder);
             for (int i = 0; i < conditions.size(); i++) {
-                if (conditions.get(i).eval(prefixResolver)) {
+                if (conditions.get(i).eval(new PrefixResolver(resolver, prefix))) {
+                    System.out.println("Found!!!");
                     return (T) codecs.get(i).decode(buffer, resolver, builder);
                 }
             }
@@ -242,101 +242,191 @@ public class SelectFromCodec<T> implements Codec<T> {
         return types;
     }
 
-    private static class SelectFromContext implements ResolverContext {
+    //    private static class SelectFromContext implements ResolverContext {
+    //
+    //        private ResolverContext wrapped;
+    //
+    //        private int size;
+    //
+    //        public SelectFromContext(ResolverContext wrapped, int size) {
+    //            this.wrapped = wrapped;
+    //            this.size = size;
+    //        }
+    //
+    //        public Reference<Resolver> selectAttribute(String name) throws BindingException {
+    //            if (PREFIX_NAME.equals(name)) {
+    //                return new PrefixReference(this, size);
+    //            } else {
+    //                return wrapped.selectAttribute(name);
+    //            }
+    //        }
+    //
+    //        public Reference<Resolver> selectItem(String index) throws BindingException {
+    //            return wrapped.selectItem(index);
+    //        }
+    //
+    //        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
+    //                throws BindingException {
+    //            return wrapped.selectItem(index);
+    //        }
+    //
+    //        public void document(Document target) {
+    //            wrapped.document(target);
+    //        }
+    //
+    //    }
+    //
+    //    private static class PrefixReference implements Reference<Resolver> {
+    //
+    //        private ReferenceContext<Resolver> referenceContext;
+    //
+    //        private int size;
+    //
+    //        public PrefixReference(ReferenceContext<Resolver> context, int size) {
+    //            this.referenceContext = context;
+    //            this.size = size;
+    //        }
+    //
+    //        public ReferenceContext<Resolver> getReferenceContext() {
+    //            return referenceContext;
+    //        }
+    //
+    //        public Class<?> getType() {
+    //            return Integer.class;
+    //        }
+    //
+    //        public boolean isAssignableTo(Class<?> type) {
+    //            return type.isAssignableFrom(Integer.class);
+    //        }
+    //
+    //        public Object resolve(Resolver context) {
+    //            return context.get(PREFIX_NAME);
+    //        }
+    //
+    //        public Reference<Resolver> selectAttribute(String name) throws BindingException {
+    //            throw new BindingException("No attributes defined for Integer.");
+    //        }
+    //
+    //        public Reference<Resolver> selectItem(String index) throws BindingException {
+    //            throw new BindingException("No attributes defined for Integer.");
+    //        }
+    //
+    //        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
+    //                throws BindingException {
+    //            throw new BindingException("No attributes defined for Integer.");
+    //        }
+    //
+    //        public void document(Document target) {
+    //            target.text("the first " + size + " bits of ");
+    //            referenceContext.document(target);
+    //        }
+    //
+    //    }
+    //
 
-        private ResolverContext wrapped;
+    private static class PrefixResolverContext implements ResolverContext {
 
-        private int size;
+        private ResolverContext context;
+        private int prefixSize;
 
-        public SelectFromContext(ResolverContext wrapped, int size) {
-            this.wrapped = wrapped;
-            this.size = size;
+        final public static String PREFIX = "prefix";
+
+        private CodecDescriptor descriptor;
+
+        public PrefixResolverContext(ResolverContext context, CodecDescriptor descriptor,
+                int prefixSize) {
+            this.context = context;
+            this.descriptor = descriptor;
         }
 
-        public Reference<Resolver> selectAttribute(String name) throws BindingException {
-            if (PREFIX_NAME.equals(name)) {
-                return new PrefixReference(this, size);
+        public Reference<Resolver> selectAttribute(String name) {
+            if (PREFIX.equals(name)) {
+                return new PrefixReference(context, descriptor, prefixSize);
             } else {
-                return wrapped.selectAttribute(name);
+                return context.selectAttribute(name);
             }
         }
 
-        public Reference<Resolver> selectItem(String index) throws BindingException {
-            return wrapped.selectItem(index);
+        public Reference<Resolver> selectItem(String index) {
+            return context.selectItem(index);
         }
 
-        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
-                throws BindingException {
-            return wrapped.selectItem(index);
+        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index) {
+            return context.selectItem(index);
         }
 
         public void document(Document target) {
-            wrapped.document(target);
+            target.text(descriptor.getLabel());
+        }
+
+        private static class PrefixReference implements Reference<Resolver> {
+
+            private ReferenceContext<Resolver> context;
+
+            private CodecDescriptor descriptor;
+
+            private int prefixSize;
+
+            public PrefixReference(ReferenceContext<Resolver> context, CodecDescriptor descriptor,
+                    int prefixSize) {
+                this.context = context;
+                this.descriptor = descriptor;
+                this.prefixSize = prefixSize;
+            }
+
+            public ReferenceContext<Resolver> getReferenceContext() {
+                return context;
+            }
+
+            public boolean isAssignableTo(Class<?> type) {
+                return Integer.class.isAssignableFrom(type);
+            }
+
+            public Object resolve(Resolver resolver) {
+                return resolver.get(PREFIX);
+            }
+
+            public Reference<Resolver> selectAttribute(String name) {
+                throw new BindingException("No attribute selection allowed.");
+            }
+
+            public Reference<Resolver> selectItem(String index) {
+                throw new BindingException("No item selection allowed.");
+            }
+
+            public Reference<Resolver> selectItem(Expression<Integer, Resolver> index) {
+                throw new BindingException("No item selection allowed.");
+            }
+
+            public void document(Document target) {
+                target.text("the value of the first ");
+                target.text(Integer.toString(prefixSize));
+                target.text(" prepending ");
+                target.text(descriptor.getLabel());
+            }
+
+            public Class<?> getType() {
+                return Integer.class;
+            }
+
         }
 
     }
 
-    private static class PrefixReference implements Reference<Resolver> {
-
-        private ReferenceContext<Resolver> referenceContext;
-
-        private int size;
-
-        public PrefixReference(ReferenceContext<Resolver> context, int size) {
-            this.referenceContext = context;
-            this.size = size;
-        }
-
-        public ReferenceContext<Resolver> getReferenceContext() {
-            return referenceContext;
-        }
-
-        public Class<?> getType() {
-            return Integer.class;
-        }
-
-        public boolean isAssignableTo(Class<?> type) {
-            return type.isAssignableFrom(Integer.class);
-        }
-
-        public Object resolve(Resolver context) {
-            return context.get(PREFIX_NAME);
-        }
-
-        public Reference<Resolver> selectAttribute(String name) throws BindingException {
-            throw new BindingException("No attributes defined for Integer.");
-        }
-
-        public Reference<Resolver> selectItem(String index) throws BindingException {
-            throw new BindingException("No attributes defined for Integer.");
-        }
-
-        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
-                throws BindingException {
-            throw new BindingException("No attributes defined for Integer.");
-        }
-
-        public void document(Document target) {
-            target.text("the first " + size + " bits of ");
-            referenceContext.document(target);
-        }
-
-    }
-
-    private static class PrefixAwareResolver implements Resolver {
+    private static class PrefixResolver implements Resolver {
 
         private Resolver resolver;
 
-        private int prefixValue;
+        private int prefix;
 
-        public PrefixAwareResolver(Resolver resolver, int prefixValue) {
+        public PrefixResolver(Resolver resolver, int prefix) {
             this.resolver = resolver;
-            this.prefixValue = prefixValue;
+            this.prefix = prefix;
         }
 
-        public Object get(String name) throws BindingException {
-            if (PREFIX_NAME.equals(name)) {
-                return prefixValue;
+        public Object get(String name) {
+            if (PrefixResolverContext.PREFIX.equals(name)) {
+                return prefix;
             } else {
                 return resolver.get(name);
             }

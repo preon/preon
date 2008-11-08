@@ -36,7 +36,7 @@ package nl.flotsam.preon.codec;
 import nl.flotsam.limbo.Reference;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
-import nl.flotsam.preon.codec.NexstedResolverContext;
+import nl.flotsam.preon.codec.CombinedObjectResolverContext;
 import nl.flotsam.preon.codec.ObjectResolverContext;
 
 import junit.framework.TestCase;
@@ -66,7 +66,7 @@ public class NestedContextTest extends TestCase {
 		expect(aReference.selectAttribute("b")).andReturn(bReference);
 		expect(bReference.resolve(resolver)).andReturn(3);
 		replay(inner, outer, aReference, bReference, resolver);
-		NexstedResolverContext context = new NexstedResolverContext(outer, inner, "outer");
+		CombinedObjectResolverContext context = new CombinedObjectResolverContext(outer, inner, "outer");
 		Reference<Resolver> reference = context.selectAttribute("a");
 		reference = reference.selectAttribute("b");
 		assertEquals(3, reference.resolve(resolver));
@@ -76,7 +76,7 @@ public class NestedContextTest extends TestCase {
 	public void testReferenceOuter() {
 		expect(outer.selectAttribute("b")).andReturn(bReference);
 		replay(inner, outer, outerReference, bReference);
-		NexstedResolverContext context = new NexstedResolverContext(outer, inner, "outer");
+		CombinedObjectResolverContext context = new CombinedObjectResolverContext(outer, inner, "outer");
 		Reference<Resolver> reference = context.selectAttribute("outer");
 		reference = reference.selectAttribute("b");
 		verify(inner, outer, outerReference, bReference);

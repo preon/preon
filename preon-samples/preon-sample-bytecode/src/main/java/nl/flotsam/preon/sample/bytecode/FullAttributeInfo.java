@@ -34,16 +34,19 @@
 package nl.flotsam.preon.sample.bytecode;
 
 import nl.flotsam.preon.annotation.BoundList;
-import nl.flotsam.preon.annotation.Init;
+import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.buffer.ByteOrder;
 
-public class AnyAttributeInfo extends QualifiedAttributeInfo {
+public class FullAttributeInfo extends AttributeInfo {
 
+    @BoundNumber(size = "16", byteOrder = ByteOrder.BigEndian)
+    private int attributeNameIndex;
+    
+    @BoundNumber(size = "32", byteOrder = ByteOrder.BigEndian)
+    private long attributeLength;
+    
     @BoundList(size = "attributeLength")
     private byte[] data;
-    
-    @Init
-    public void init() {
-        System.out.println("Got here");
-    }
+
 
 }

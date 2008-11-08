@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -44,19 +44,76 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.binding.Binding;
 
+/**
+ * A {@link ObjectResolverContext} that allows you to combine a
+ * {@link ObjectResolverContext} as well as a {@link ResolverContext}.
+ * {@link #selectAttribute(String)} will resolve into the {@link #outerContext}
+ * if the name of the attribute is a prefix passed in. Otherwise, it will
+ * resolve to an attribute of the second {@link ResolverContext}.
+ * 
+ * @author Wilfred Springer (wis)
+ * 
+ */
+public class CombinedObjectResolverContext implements ObjectResolverContext {
 
-public class NexstedResolverContext implements ObjectResolverContext {
-
+    /**
+     * The object to which the {@link #prefix} will resolve.
+     */
     private ResolverContext outerContext;
 
+    /**
+     * The object resolving all non-{@link #prefix} references.
+     */
     private ObjectResolverContext innerContext;
 
+    /**
+     * The prefix to match for selecting the {@link #outerContext}.
+     */
     private String prefix;
 
-    public NexstedResolverContext(ResolverContext outer, ObjectResolverContext inner, String prefix) {
+    /**
+     * 
+     * @param outer
+     * @param inner
+     * @param prefix
+     */
+    public CombinedObjectResolverContext(ResolverContext outer, ObjectResolverContext inner,
+            String prefix) {
         this.outerContext = outer;
         this.innerContext = inner;
         this.prefix = prefix;
+    }
+
+    /**
+     * 
+     * @param outer
+     * @param inner
+     * @param prefix
+     * @param outerType
+     */
+    public CombinedObjectResolverContext(ResolverContext outer, ObjectResolverContext inner,
+            String prefix, Class<?> outerType) {
+        this.outerContext = outer;
+        this.innerContext = inner;
+        this.prefix = prefix;
+    }
+
+    public Resolver createResolver(final Resolver inner, final Object value) {
+        return new Resolver() {
+
+            public Object get(String name) throws BindingException {
+                if (prefix.equals(name)) {
+                    return value;
+                } else {
+                    return inner.get(name);
+                }
+            }
+
+            public Resolver getOuter() {
+                return inner.getOuter();
+            }
+
+        };
     }
 
     public Reference<Resolver> selectAttribute(String name) {
@@ -115,8 +172,7 @@ public class NexstedResolverContext implements ObjectResolverContext {
         }
 
         public void document(Document target) {
-            // TODO Auto-generated method stub
-
+            context.document(target);
         }
 
         public Class<?> getType() {
@@ -138,8 +194,7 @@ public class NexstedResolverContext implements ObjectResolverContext {
         }
 
         public boolean isAssignableTo(Class<?> type) {
-            // TODO Auto-generated method stub
-            return false;
+            return wrapped.isAssignableTo(type);
         }
 
         public Object resolve(Resolver context) {

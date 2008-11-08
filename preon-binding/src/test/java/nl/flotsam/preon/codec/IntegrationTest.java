@@ -338,9 +338,9 @@ public class IntegrationTest extends TestCase {
         Test30 value = Codecs.decode(codec, new byte[] { 2, 3, 4, 5, 6, 7, 8 });
         assertNotNull(value.value);
         assertEquals(Test5b.class, value.value.getClass());
-        assertEquals(0x304, ((Test5b)value.value).value1);
+        assertEquals(0x304, ((Test5b) value.value).value1);
     }
-    
+
     public void testSelectFromUsingLookup() throws DecodingException {
         Codec<Test31> codec = Codecs.create(Test31.class);
         Test31 value = Codecs.decode(codec, new byte[] { 5, 6, 1, 3, 4, 5, 6, 7, 8 });
@@ -350,11 +350,44 @@ public class IntegrationTest extends TestCase {
 
     public void testSelectFromCompareString() throws DecodingException {
         Codec<Test32> codec = Codecs.create(Test32.class);
-        Test32 value = Codecs.decode(codec, new byte[] { (byte) 'a', (byte) 'a', 1, 3, 4, 5, 6, 7, 8 });
+        Test32 value = Codecs.decode(codec, new byte[] { (byte) 'a', (byte) 'a', 1, 3, 4, 5, 6, 7,
+                8 });
         assertNotNull(value.value);
         assertEquals(Test5a.class, value.value.getClass());
     }
+    
+    public void testSelectFromCompareStringFromArray() throws DecodingException {
+        Codec<Test33> codec = Codecs.create(Test33.class);
+        Test33 value = Codecs.decode(codec, new byte[] { (byte) 'a', (byte) 'b', 1, 3, 4, 5, 6, 7,
+                8 });
+        assertNotNull(value.value);
+        assertEquals(Test5b.class, value.value.getClass());
+    }
 
+//    public void testSelectFromCompareStringFromArrayAndOuter() throws DecodingException {
+//        Codec<Test35> codec = Codecs.create(Test35.class);
+//        Test35 value = Codecs.decode(codec, new byte[] { (byte) 'a', (byte) 'b', 1, 3, 4, 5, 6, 7,
+//                8 });
+//        assertNotNull(value.values[0].value);
+//    }
+//    
+    public void testOuterReferencesFromArray() throws DecodingException {
+        Codec<Test37> codec= Codecs.create(Test37.class);
+        Test37 value = Codecs.decode(codec, new byte[] { 1, (byte) 'a' });
+        assertNotNull(value.values);
+        assertEquals(1, value.values.length);
+    }
+    
+    public void testOuterReferencesFromArrayIncludingLocal() throws DecodingException {
+        Codec<Test39> codec= Codecs.create(Test39.class);
+        Test39 value = Codecs.decode(codec, new byte[] { 2, 1, (byte) 'a', 'b', 'c', 'd' });
+        assertNotNull(value.values);
+        assertEquals(1, value.values.length);
+        assertEquals(1, value.values[0].secondSize);
+        assertNotNull(value.values[0].value);
+        assertEquals("abcd", value.values[0].value);
+    }
+    
     private static class TestResolver implements Resolver {
 
         public Object get(String name) {
@@ -638,29 +671,104 @@ public class IntegrationTest extends TestCase {
         public Object value;
 
     }
-    
+
     public static class Test31 {
 
-        @BoundList(size="2")
+        @BoundList(size = "2")
         public byte[] index;
-        
+
         @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                 @Choice(condition = "index[prefix]==5", type = Test5a.class),
                 @Choice(condition = "index[prefix]==6", type = Test5b.class) }))
         public Object value;
 
     }
-    
+
     public static class Test32 {
 
-        @BoundString(size="2")
+        @BoundString(size = "2")
         public String key;
-        
+
         @BoundObject(selectFrom = @Choices(prefixSize = 0, alternatives = {
                 @Choice(condition = "key=='aa'", type = Test5a.class),
                 @Choice(condition = "key=='bb'", type = Test5b.class) }))
         public Object value;
 
+    }
+
+    public static class Test33 {
+
+        @BoundList(size = "2", type = Test34.class)
+        Test34[] index;
+
+        @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
+                @Choice(condition = "index[prefix].value=='a'", type = Test5a.class),
+                @Choice(condition = "index[prefix].value=='b'", type = Test5b.class) }))
+        public Object value;
+
+    }
+
+    public static class Test34 {
+
+        @BoundString(size = "1")
+        private String value;
+
+    }
+    
+    public static class Test35 {
+
+        @BoundList(size = "2", type = Test34.class)
+        Test34[] index;
+        
+        @BoundList(size="1", type=Test36.class)
+        Test36[] values;
+
+        public static class Test36 {
+            
+            @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
+                    @Choice(condition = "outer.index[prefix].value=='a'", type = Test5a.class),
+                    @Choice(condition = "outer.index[prefix].value=='b'", type = Test5b.class) }))
+            public Object value;
+
+        }
+
+    }
+    
+    public static class Test37 {
+        
+        @BoundNumber(size="8")
+        int size;
+        
+        @BoundList(size="1")
+        Test38[] values;
+        
+        public class Test38 {
+            
+            @BoundString(size="outer.size")
+            String value;
+            
+        }
+        
+    }
+    
+    public static class Test39 {
+        
+        @BoundNumber(size="8")
+        int firstSize;
+        
+        @BoundList(size="1")
+        Test40[] values;
+        
+        public class Test40 {
+            
+            @BoundNumber(size="8")
+            int secondSize;
+            
+            @BoundString(size="outer.firstSize + 2 * secondSize")
+            String value;
+            
+        }
+        
     }
     
 }

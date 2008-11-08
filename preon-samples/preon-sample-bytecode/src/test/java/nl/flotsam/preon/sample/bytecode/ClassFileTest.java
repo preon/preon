@@ -37,18 +37,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import junit.framework.TestCase;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.codec.LoggingDecorator;
-
-import junit.framework.TestCase;
+import nl.flotsam.preon.codec.InitCodecDecorator;
 
 public class ClassFileTest extends TestCase {
 
     public void testDecoding() throws FileNotFoundException, IOException, DecodingException {
-        Codec<ClassFile> codec = Codecs.create(ClassFile.class, new LoggingDecorator());
-//        Codec<ClassFile> codec = Codecs.create(ClassFile.class);
+//        Codec<ClassFile> codec = Codecs.create(ClassFile.class, new LoggingDecorator());
+        Codec<ClassFile> codec = Codecs.create(ClassFile.class, new InitCodecDecorator());
         ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
                 "src/test/resources/Foo.class"));
     }
