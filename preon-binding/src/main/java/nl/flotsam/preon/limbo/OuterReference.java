@@ -31,7 +31,7 @@
  * exception statement from your version.
  */
 
-package nl.flotsam.preon.codec;
+package nl.flotsam.preon.limbo;
 
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;

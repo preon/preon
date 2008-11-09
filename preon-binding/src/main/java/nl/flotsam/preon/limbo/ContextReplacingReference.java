@@ -31,51 +31,63 @@
  * exception statement from your version.
  */
 
-package nl.flotsam.preon.codec;
+package nl.flotsam.preon.limbo;
 
+import nl.flotsam.limbo.BindingException;
+import nl.flotsam.limbo.Document;
+import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Reference;
+import nl.flotsam.limbo.ReferenceContext;
 import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
-import junit.framework.TestCase;
-import static org.easymock.EasyMock.*;
 
-public class OuterReferenceTest extends TestCase {
+public class ContextReplacingReference implements Reference<Resolver> {
 
-    private ResolverContext outerContext;
-    private ResolverContext originalContext;
-    private Reference sampleReference;
-    private Resolver outerResolver;
-    private Resolver originalResolver;
+    private ReferenceContext<Resolver> alternativeContext;
 
-    public void setUp() {
-        outerContext = createMock(ResolverContext.class);
-        originalContext = createMock(ResolverContext.class);
-        sampleReference = createMock(Reference.class);
-        outerResolver = createMock(Resolver.class);
-        originalResolver = createMock(Resolver.class);
+    private Reference<Resolver> reference;
+
+    public ContextReplacingReference(
+            ReferenceContext<Resolver> alternativeContext,
+            Reference<Resolver> reference) {
+        this.alternativeContext = alternativeContext;
+        this.reference = reference;
     }
 
-    public void testCreateReference() {
-        expect(outerContext.selectAttribute("foobar")).andReturn(
-                sampleReference);
-        expect(originalResolver.get(OuterReference.DEFAULT_OUTER_NAME))
-                .andReturn(outerResolver);
-        expect(sampleReference.resolve(isA(Resolver.class))).andReturn("Wilfred");
-        expect(originalResolver.getOriginalResolver()).andReturn(originalResolver);
-
-        // Replay
-        replay(outerContext, originalContext, sampleReference, outerResolver,
-                originalResolver);
-
-        OuterReference reference = new OuterReference(outerContext,
-                originalContext);
-        Reference<Resolver> result = reference.selectAttribute("foobar");
-        assertNotSame(sampleReference, result);
-        assertEquals(originalContext, result.getReferenceContext());
-        result.resolve(originalResolver);
-
-        // Verify
-        verify(outerContext, originalContext, sampleReference, outerResolver,
-                originalResolver);
+    public ReferenceContext<Resolver> getReferenceContext() {
+        return alternativeContext;
     }
+
+    public Class<?> getType() {
+        return reference.getType();
+    }
+
+    public boolean isAssignableTo(Class<?> type) {
+        return reference.isAssignableTo(type);
+    }
+
+    public Object resolve(Resolver context) {
+        return reference.resolve(context);
+    }
+
+    public Reference<Resolver> selectAttribute(String name)
+            throws BindingException {
+        return new ContextReplacingReference(alternativeContext, reference
+                .selectAttribute(name));
+    }
+
+    public Reference<Resolver> selectItem(String index) throws BindingException {
+        return new ContextReplacingReference(alternativeContext, reference
+                .selectItem(index));
+    }
+
+    public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
+            throws BindingException {
+        return new ContextReplacingReference(alternativeContext, reference
+                .selectItem(index));
+    }
+
+    public void document(Document target) {
+        reference.document(target);
+    }
+
 }

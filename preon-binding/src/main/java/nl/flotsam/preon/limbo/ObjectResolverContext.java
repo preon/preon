@@ -31,12 +31,21 @@
  * exception statement from your version.
  */
 
-package nl.flotsam.preon.codec;
+package nl.flotsam.preon.limbo;
+
+import java.util.List;
 
 import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.binding.Binding;
 
-public interface ResolverDecorator {
 
-	Resolver decorate(Resolver decorated);
+public interface ObjectResolverContext extends ResolverContext {
+
+	Resolver getResolver(Object context, Resolver resolver);
 	
+	List<Binding> getBindings();
+	
+    void add(String name, Binding binding);
+    
 }

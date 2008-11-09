@@ -63,6 +63,7 @@ import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.BitBufferUnderflowException;
 import nl.flotsam.preon.buffer.SlicedBitBuffer;
+import nl.flotsam.preon.limbo.ContextReplacingReference;
 import nl.flotsam.preon.util.AnnotationWrapper;
 import nl.flotsam.preon.util.CodecDescriptorHolder;
 import nl.flotsam.preon.util.EvenlyDistributedLazyList;

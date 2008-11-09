@@ -64,6 +64,7 @@ import nl.flotsam.preon.binding.Binding;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.limbo.ObjectResolverContext;
 import nl.flotsam.preon.rendering.ClassNameRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
 import nl.flotsam.preon.util.DocumentParaContents;

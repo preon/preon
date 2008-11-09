@@ -55,6 +55,7 @@ import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
+import nl.flotsam.preon.limbo.ContextReplacingReference;
 
 /**
  * A Codec supporting the {@link Choices} annotation.

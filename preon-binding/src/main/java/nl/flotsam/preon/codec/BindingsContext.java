@@ -48,6 +48,8 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.binding.Binding;
 import nl.flotsam.preon.limbo.ArrayElementReference;
+import nl.flotsam.preon.limbo.ObjectResolverContext;
+import nl.flotsam.preon.limbo.OuterReference;
 import nl.flotsam.preon.limbo.PropertyReference;
 import nl.flotsam.preon.util.ParaContentsDocument;
 
