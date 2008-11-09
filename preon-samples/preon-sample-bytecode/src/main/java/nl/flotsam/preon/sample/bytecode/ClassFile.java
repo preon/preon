@@ -612,6 +612,11 @@ public class ClassFile {
                 byteOrder = ByteOrder.BigEndian
             )
             private int constantValueIndex;
+            
+            @Init
+            private void init() {
+                System.out.println(constantValueIndex);
+            }
 
         }
 

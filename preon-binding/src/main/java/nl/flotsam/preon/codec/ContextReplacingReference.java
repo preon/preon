@@ -62,7 +62,7 @@ public class ContextReplacingReference implements Reference<Resolver> {
     }
 
     public boolean isAssignableTo(Class<?> type) {
-        return type.isAssignableFrom(reference.getType());
+        return reference.isAssignableTo(type);
     }
 
     public Object resolve(Resolver context) {

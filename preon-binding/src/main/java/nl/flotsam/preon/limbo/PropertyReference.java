@@ -130,7 +130,7 @@ public class PropertyReference implements Reference<Resolver> {
     }
 
     public boolean isAssignableTo(Class<?> type) {
-        return field.getType().isAssignableFrom(type);
+        return type.isAssignableFrom(field.getType());
     }
 
 }

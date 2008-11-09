@@ -120,7 +120,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * @see nl.flotsam.limbo.Reference#isAssignableTo(java.lang.Class)
      */
     public boolean isAssignableTo(Class<?> type) {
-        return wrapped.getType().isAssignableFrom(type);
+        return wrapped.isAssignableTo(type);
     }
 
     /*

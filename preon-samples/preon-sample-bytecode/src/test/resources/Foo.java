@@ -2,6 +2,8 @@ public class Foo {
 
     private String foo;
 
+    public final static String LONDON = "London";
+
     private int bar = 5;
 
     public Foo(String foo, int bar) {
