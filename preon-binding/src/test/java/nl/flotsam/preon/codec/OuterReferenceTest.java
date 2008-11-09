@@ -31,33 +31,51 @@
  * exception statement from your version.
  */
 
-package nl.flotsam.preon.sample.bytecode;
+package nl.flotsam.preon.codec;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-
+import nl.flotsam.limbo.Reference;
+import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.ResolverContext;
 import junit.framework.TestCase;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.codec.InitCodecDecorator;
+import static org.easymock.EasyMock.*;
 
-public class ClassFileTest extends TestCase {
+public class OuterReferenceTest extends TestCase {
 
-    public void testDecoding() throws FileNotFoundException, IOException, DecodingException {
-//        Codec<ClassFile> codec = Codecs.create(ClassFile.class, new LoggingDecorator());
-//        Codec<ClassFile> codec = Codecs.create(ClassFile.class, new InitCodecDecorator());
-//        ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
-//                "src/test/resources/Foo.class"));
+    private ResolverContext outerContext;
+    private ResolverContext originalContext;
+    private Reference sampleReference;
+    private Resolver outerResolver;
+    private Resolver originalResolver;
+
+    public void setUp() {
+        outerContext = createMock(ResolverContext.class);
+        originalContext = createMock(ResolverContext.class);
+        sampleReference = createMock(Reference.class);
+        outerResolver = createMock(Resolver.class);
+        originalResolver = createMock(Resolver.class);
     }
 
-    public File getBasedir() {
-        String basedir = System.getProperty("basedir");
-        if (basedir == null) {
-            basedir = System.getProperty("user.dir");
-        }
-        return new File(basedir);
-    }
+    public void testCreateReference() {
+        expect(outerContext.selectAttribute("foobar")).andReturn(
+                sampleReference);
+        expect(originalResolver.get(OuterReference.DEFAULT_OUTER_NAME))
+                .andReturn(outerResolver);
+        expect(sampleReference.resolve(isA(Resolver.class))).andReturn("Wilfred");
+        expect(originalResolver.getOriginalResolver()).andReturn(originalResolver);
 
+        // Replay
+        replay(outerContext, originalContext, sampleReference, outerResolver,
+                originalResolver);
+
+        OuterReference reference = new OuterReference(outerContext,
+                originalContext);
+        Reference<Resolver> result = reference.selectAttribute("foobar");
+        assertNotSame(sampleReference, result);
+        assertEquals(originalContext, result.getReferenceContext());
+        result.resolve(originalResolver);
+
+        // Verify
+        verify(outerContext, originalContext, sampleReference, outerResolver,
+                originalResolver);
+    }
 }

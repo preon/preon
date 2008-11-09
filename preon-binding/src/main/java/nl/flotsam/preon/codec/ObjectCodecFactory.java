@@ -154,10 +154,7 @@ public class ObjectCodecFactory implements CodecFactory {
     }
 
     private <T> ObjectCodec<T> createCodec(Class<T> type, ResolverContext context) {
-        ObjectResolverContext passThroughContext = new BindingsContext(type);
-        if (context != null) {
-            passThroughContext = new CombinedObjectResolverContext(context, passThroughContext, "outer");
-        }
+        ObjectResolverContext passThroughContext = new BindingsContext(type, context);
         harvestBindings(type, passThroughContext);
         return new ObjectCodec<T>(type, rewriter, passThroughContext);
     }

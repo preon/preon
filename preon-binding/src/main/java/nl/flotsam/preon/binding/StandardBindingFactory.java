@@ -98,20 +98,20 @@ public class StandardBindingFactory implements BindingFactory {
             this.codec = codec;
             this.rewriter = rewriter;
             Class<?> declaring = field.getDeclaringClass();
-            Class<?>[] members = declaring.getDeclaredClasses();
-            List<Class<?>> types = Arrays.asList(codec.getTypes());
-            boolean contextualize = false;
-            for (Class<?> member : members) {
-                if (!Modifier.isStatic(member.getModifiers()) && types.contains(member)) {
-                    contextualize = true;
-                    break;
-                }
-            }
-            if (contextualize) {
+//            Class<?>[] members = declaring.getDeclaredClasses();
+//            List<Class<?>> types = Arrays.asList(codec.getTypes());
+//            boolean contextualize = false;
+//            for (Class<?> member : members) {
+//                if (!Modifier.isStatic(member.getModifiers()) && types.contains(member)) {
+//                    contextualize = true;
+//                    break;
+//                }
+//            }
+//            if (contextualize) {
                 builderDecorator = new ContextualBuilderDecorator(declaring);
-            } else {
-                builderDecorator = new NonDecoratingBuilderDecorator();
-            }
+//            } else {
+//                builderDecorator = new NonDecoratingBuilderDecorator();
+//            }
         }
 
         public void load(Object object, BitBuffer buffer, Resolver resolver, Builder builder)

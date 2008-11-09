@@ -42,13 +42,13 @@ import nl.flotsam.limbo.Document;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.Reference;
-import nl.flotsam.limbo.ctx.ArrayElementReference;
 import nl.flotsam.limbo.ctx.MultiReference;
-import nl.flotsam.limbo.ctx.PropertyReference;
 import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.binding.Binding;
+import nl.flotsam.preon.limbo.ArrayElementReference;
+import nl.flotsam.preon.limbo.PropertyReference;
 import nl.flotsam.preon.util.ParaContentsDocument;
 
 public class BindingsContext implements ObjectResolverContext {
@@ -59,10 +59,13 @@ public class BindingsContext implements ObjectResolverContext {
 
     private Class<?> type;
 
-    public BindingsContext(Class<?> type) {
+    private ResolverContext outer;
+
+    public BindingsContext(Class<?> type, ResolverContext outer) {
         this.type = type;
         this.orderedBindings = new ArrayList<Binding>();
         this.bindingsByName = new HashMap<String, Binding>();
+        this.outer = outer;
     }
 
     public void add(String name, Binding binding) {
@@ -70,12 +73,22 @@ public class BindingsContext implements ObjectResolverContext {
         bindingsByName.put(name, binding);
     }
 
-    public Reference<Resolver> selectAttribute(String name) throws BindingException {
-        Binding binding = bindingsByName.get(name);
-        if (binding == null) {
-            throw new BindingException("Failed to create binding for bound data called " + name);
+    public Reference<Resolver> selectAttribute(String name)
+            throws BindingException {
+
+        if ("outer".equals(name)) {
+            return new OuterReference(outer, this);
+        } else {
+            Binding binding = bindingsByName.get(name);
+
+            if (binding == null) {
+                throw new BindingException(
+                        "Failed to create binding for bound data called "
+                                + name);
+            }
+
+            return new BindingReference(binding);
         }
-        return new BindingReference(binding);
     }
 
     public Reference<Resolver> selectItem(String index) throws BindingException {
@@ -90,8 +103,27 @@ public class BindingsContext implements ObjectResolverContext {
     }
 
     public void document(Document target) {
-        // TODO: We need to be able to call back on the Codec that will be
-        // created.
+        if (bindingsByName.size() > 0) {
+            target.text("one of ");
+            boolean passedFirst = false;
+            for (Binding binding : bindingsByName.values()) {
+                if (passedFirst) {
+                    target.text(", ");
+                }
+                target.text(binding.getName());
+                passedFirst = true;
+            }
+        } else {
+            target.text("no variables");
+        }
+    }
+
+    public Resolver getResolver(Object context, Resolver resolver) {
+        return new BindingsResolver(context, resolver);
+    }
+
+    public List<Binding> getBindings() {
+        return orderedBindings;
     }
 
     private class BindingReference implements Reference<Resolver> {
@@ -110,19 +142,24 @@ public class BindingsContext implements ObjectResolverContext {
         }
 
         public boolean isAssignableTo(Class<?> type) {
+
             for (Class<?> bound : binding.getTypes()) {
+
                 if (bound.isAssignableFrom(type)) {
                     return true;
                 }
             }
+
             return false;
         }
 
         public Object resolve(Resolver context) {
             try {
-                return context.get(binding.getName());
+                String name = binding.getName();
+                return context.get(name);
             } catch (IllegalArgumentException e) {
-                throw new BindingException("Failed to bind to " + binding.getName(), e);
+                throw new BindingException("Failed to bind to "
+                        + binding.getName(), e);
             }
         }
 
@@ -130,33 +167,46 @@ public class BindingsContext implements ObjectResolverContext {
         public Reference<Resolver> selectAttribute(String name) {
             Reference<Resolver>[] references = new Reference[binding.getTypes().length];
             int i = 0;
+
             for (Class<?> bound : binding.getTypes()) {
-                references[i] = new PropertyReference<Resolver>(this, bound, name,
-                        BindingsContext.this);
+                references[i] = new PropertyReference(this, bound,
+                        name, BindingsContext.this);
                 i++;
             }
+
             return new MultiReference<Resolver>(references);
         }
 
         public Reference<Resolver> selectItem(String index) {
             Expression<Integer, Resolver> expr;
             expr = Expressions.createInteger(BindingsContext.this, index);
+
             return selectItem(expr);
         }
 
         @SuppressWarnings("unchecked")
-        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index) {
+        public Reference<Resolver> selectItem(
+                Expression<Integer, Resolver> index) {
+
             if (binding.getTypes().length > 1) {
-                Reference<Resolver>[] references = new Reference[binding.getTypes().length];
+                Reference<Resolver>[] references = new Reference[binding
+                        .getTypes().length];
+
                 for (int i = 0; i < binding.getTypes().length; i++) {
                     System.out.println(binding.getTypes()[i]);
                     System.out.println(binding.getName());
-                    references[i] = new ArrayElementReference<Resolver>(this,
+
+                    // This is a problematic area
+                    references[i] = new ArrayElementReference(this,
                             binding.getTypes()[i], index, BindingsContext.this);
                 }
+
                 return new MultiReference<Resolver>(references);
             } else {
-                return new ArrayElementReference<Resolver>(this, binding.getType().getComponentType(), index,
+
+                // This is another problematic area
+                return new ArrayElementReference(this, binding
+                        .getType().getComponentType(), index,
                         BindingsContext.this);
             }
         }
@@ -171,45 +221,76 @@ public class BindingsContext implements ObjectResolverContext {
 
     }
 
-    public Resolver getResolver(Object context, Resolver resolver) {
-        return new BindingsResolver(context);
-    }
-
-    public List<Binding> getBindings() {
-        return orderedBindings;
-    }
-
+    /**
+     * A {@link Resolver} resolving to bindings. In addition, it also resolves
+     * outer.
+     * 
+     * @author Wilfred Springer (wis)
+     * 
+     */
     private class BindingsResolver implements Resolver {
 
+        /**
+         * The instance on which the objects need to be resolved.
+         */
         private Object context;
 
-        public BindingsResolver(Object context) {
+        /**
+         * The outer Resolver.
+         */
+        private Resolver outer;
+
+        /**
+         * Constructs a new instance.
+         * 
+         * @param context
+         *            The object for resolving bindings.
+         * @param outer
+         *            A reference to the outer context.
+         */
+        public BindingsResolver(Object context, Resolver outer) {
             this.context = context;
+            this.outer = outer;
         }
 
         public Object get(String name) {
-            if (bindingsByName.containsKey(name)) {
-                Binding binding = bindingsByName.get(name);
-                if (context == null) {
-                    StringBuilderDocument document = new StringBuilderDocument();
-                    binding.describe(new ParaContentsDocument(document));
-                    throw new BindingException("Failed to resolve " + document.toString()
-                            + " due to incomplete context.");
-                }
-                try {
-                    return binding.get(context);
-                } catch (IllegalArgumentException e) {
-                    throw new BindingException("Failed to bind to " + binding.getName(), e);
-                } catch (IllegalAccessException e) {
-                    throw new BindingException("Forbidded to access " + binding.getName(), e);
-                }
+            if ("outer".equals(name)) {
+                return outer;
             } else {
-                throw new BindingException("Failed to resolve " + name + " on " + context.getClass());
+
+                if (bindingsByName.containsKey(name)) {
+                    Binding binding = bindingsByName.get(name);
+
+                    if (context == null) {
+                        StringBuilderDocument document = new StringBuilderDocument();
+                        binding.describe(new ParaContentsDocument(document));
+                        throw new BindingException("Failed to resolve "
+                                + document.toString()
+                                + " due to incomplete context.");
+                    }
+
+                    try {
+                        return binding.get(context);
+                    } catch (IllegalArgumentException e) {
+                        throw new BindingException("Failed to bind to "
+                                + binding.getName(), e);
+                    } catch (IllegalAccessException e) {
+                        throw new BindingException("Forbidded to access "
+                                + binding.getName(), e);
+                    }
+                } else {
+                    throw new BindingException("Failed to resolve " + name
+                            + " on " + context.getClass());
+                }
             }
         }
 
         public Resolver getOuter() {
-            return null;
+            return outer;
+        }
+
+        public Resolver getOriginalResolver() {
+            return this;
         }
 
     }

@@ -43,12 +43,20 @@ import nl.flotsam.limbo.BindingException;
  */
 public class NullResolver implements Resolver {
 
+    /*
+     * (non-Javadoc)
+     * @see nl.flotsam.preon.Resolver#get(java.lang.String)
+     */
     public Object get(String name) throws BindingException {
         throw new BindingException("Failed to resolve reference called " + name);
     }
 
-    public Resolver getOuter() {
-        return null;
+    /*
+     * (non-Javadoc)
+     * @see nl.flotsam.preon.Resolver#getOriginalResolver()
+     */
+    public Resolver getOriginalResolver() {
+        return this;
     }
 
 }

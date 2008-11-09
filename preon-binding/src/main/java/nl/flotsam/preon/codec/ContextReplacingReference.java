@@ -31,37 +31,63 @@
  * exception statement from your version.
  */
 
-package nl.flotsam.preon;
+package nl.flotsam.preon.codec;
 
 import nl.flotsam.limbo.BindingException;
+import nl.flotsam.limbo.Document;
+import nl.flotsam.limbo.Expression;
+import nl.flotsam.limbo.Reference;
+import nl.flotsam.limbo.ReferenceContext;
+import nl.flotsam.preon.Resolver;
 
-/**
- * A simple interface for resolving variable values. The interface is introduced
- * to have a flexible bridge between Limbo and Preon. With this interface, we
- * can still have different ways of retrieving values.
- * 
- * @author Wilfred Springer
- * 
- */
-public interface Resolver {
+public class ContextReplacingReference implements Reference<Resolver> {
 
-    /**
-     * Returns the value for a named variable.
-     * 
-     * @param name
-     *            The name.
-     * @return The value.
-     * @throws BindingException
-     *             If the name does not happen to be bound to a variable at
-     *             runtime.
-     */
-    Object get(String name) throws BindingException;
+    private ReferenceContext<Resolver> alternativeContext;
 
-    /**
-     * Returns a reference to the original Resolver for an expression.
-     * 
-     * @return The original {@link Resolver}.
-     */
-    Resolver getOriginalResolver();
+    private Reference<Resolver> reference;
+
+    public ContextReplacingReference(
+            ReferenceContext<Resolver> alternativeContext,
+            Reference<Resolver> reference) {
+        this.alternativeContext = alternativeContext;
+        this.reference = reference;
+    }
+
+    public ReferenceContext<Resolver> getReferenceContext() {
+        return alternativeContext;
+    }
+
+    public Class<?> getType() {
+        return reference.getType();
+    }
+
+    public boolean isAssignableTo(Class<?> type) {
+        return type.isAssignableFrom(reference.getType());
+    }
+
+    public Object resolve(Resolver context) {
+        return reference.resolve(context);
+    }
+
+    public Reference<Resolver> selectAttribute(String name)
+            throws BindingException {
+        return new ContextReplacingReference(alternativeContext, reference
+                .selectAttribute(name));
+    }
+
+    public Reference<Resolver> selectItem(String index) throws BindingException {
+        return new ContextReplacingReference(alternativeContext, reference
+                .selectItem(index));
+    }
+
+    public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
+            throws BindingException {
+        return new ContextReplacingReference(alternativeContext, reference
+                .selectItem(index));
+    }
+
+    public void document(Document target) {
+        reference.document(target);
+    }
 
 }

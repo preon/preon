@@ -30,57 +30,57 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-
-package nl.flotsam.preon.codec;
-
-import nl.flotsam.limbo.Reference;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
-import nl.flotsam.preon.codec.CombinedObjectResolverContext;
-import nl.flotsam.preon.codec.ObjectResolverContext;
-
-import junit.framework.TestCase;
-
-import static org.easymock.EasyMock.*;
-
-public class NestedContextTest extends TestCase {
-
-	private ObjectResolverContext inner;
-	private ResolverContext outer;
-	private Reference<Resolver> aReference;
-	private Reference<Resolver> bReference;
-	private Reference<Resolver> outerReference;
-	private Resolver resolver;
-	
-	public void setUp() {
-		inner = createMock(ObjectResolverContext.class);
-		outer = createMock(ResolverContext.class);
-		aReference = createMock(Reference.class);
-		bReference = createMock(Reference.class);
-		outerReference = createMock(Reference.class);
-		resolver = createMock(Resolver.class);
-	}
-	
-	public void testReferenceJustInner() {
-		expect(inner.selectAttribute("a")).andReturn(aReference);
-		expect(aReference.selectAttribute("b")).andReturn(bReference);
-		expect(bReference.resolve(resolver)).andReturn(3);
-		replay(inner, outer, aReference, bReference, resolver);
-		CombinedObjectResolverContext context = new CombinedObjectResolverContext(outer, inner, "outer");
-		Reference<Resolver> reference = context.selectAttribute("a");
-		reference = reference.selectAttribute("b");
-		assertEquals(3, reference.resolve(resolver));
-		verify(inner, outer, aReference, bReference, resolver);
-	}
-	
-	public void testReferenceOuter() {
-		expect(outer.selectAttribute("b")).andReturn(bReference);
-		replay(inner, outer, outerReference, bReference);
-		CombinedObjectResolverContext context = new CombinedObjectResolverContext(outer, inner, "outer");
-		Reference<Resolver> reference = context.selectAttribute("outer");
-		reference = reference.selectAttribute("b");
-		verify(inner, outer, outerReference, bReference);
-	}
-	
-	
-}
+//
+//package nl.flotsam.preon.codec;
+//
+//import nl.flotsam.limbo.Reference;
+//import nl.flotsam.preon.Resolver;
+//import nl.flotsam.preon.ResolverContext;
+//import nl.flotsam.preon.codec.CombinedObjectResolverContext;
+//import nl.flotsam.preon.codec.ObjectResolverContext;
+//
+//import junit.framework.TestCase;
+//
+//import static org.easymock.EasyMock.*;
+//
+//public class NestedContextTest extends TestCase {
+//
+//	private ObjectResolverContext inner;
+//	private ResolverContext outer;
+//	private Reference<Resolver> aReference;
+//	private Reference<Resolver> bReference;
+//	private Reference<Resolver> outerReference;
+//	private Resolver resolver;
+//	
+//	public void setUp() {
+//		inner = createMock(ObjectResolverContext.class);
+//		outer = createMock(ResolverContext.class);
+//		aReference = createMock(Reference.class);
+//		bReference = createMock(Reference.class);
+//		outerReference = createMock(Reference.class);
+//		resolver = createMock(Resolver.class);
+//	}
+//	
+//	public void testReferenceJustInner() {
+//		expect(inner.selectAttribute("a")).andReturn(aReference);
+//		expect(aReference.selectAttribute("b")).andReturn(bReference);
+//		expect(bReference.resolve(resolver)).andReturn(3);
+//		replay(inner, outer, aReference, bReference, resolver);
+//		CombinedObjectResolverContext context = new CombinedObjectResolverContext(outer, inner, "outer");
+//		Reference<Resolver> reference = context.selectAttribute("a");
+//		reference = reference.selectAttribute("b");
+//		assertEquals(3, reference.resolve(resolver));
+//		verify(inner, outer, aReference, bReference, resolver);
+//	}
+//	
+//	public void testReferenceOuter() {
+//		expect(outer.selectAttribute("b")).andReturn(bReference);
+//		replay(inner, outer, outerReference, bReference);
+//		CombinedObjectResolverContext context = new CombinedObjectResolverContext(outer, inner, "outer");
+//		Reference<Resolver> reference = context.selectAttribute("outer");
+//		reference = reference.selectAttribute("b");
+//		verify(inner, outer, outerReference, bReference);
+//	}
+//	
+//	
+//}

@@ -127,7 +127,7 @@ public class SelectFromCodec<T> implements Codec<T> {
         if (choices.defaultType() != Void.class) {
             defaultCodec = factory.create(null, choices.defaultType(), context);
         }
-        ResolverContext passThroughContext = new PrefixResolverContext(context, null, prefixSize);
+        ResolverContext passThroughContext = new PrefixResolverContext(context, prefixSize);
         for (int i = 0; i < choices.alternatives().length; i++) {
             types[i] = choices.alternatives()[i].type();
             conditions.add(Expressions.createBoolean(passThroughContext, choices.alternatives()[i]
@@ -327,50 +327,49 @@ public class SelectFromCodec<T> implements Codec<T> {
     private static class PrefixResolverContext implements ResolverContext {
 
         private ResolverContext context;
+        
         private int prefixSize;
 
         final public static String PREFIX = "prefix";
 
-        private CodecDescriptor descriptor;
-
-        public PrefixResolverContext(ResolverContext context, CodecDescriptor descriptor,
+        public PrefixResolverContext(ResolverContext context, 
                 int prefixSize) {
             this.context = context;
-            this.descriptor = descriptor;
+            this.prefixSize = prefixSize;
         }
 
         public Reference<Resolver> selectAttribute(String name) {
             if (PREFIX.equals(name)) {
-                return new PrefixReference(context, descriptor, prefixSize);
+                Reference result = new PrefixReference(context, prefixSize);
+                return result;
             } else {
-                return context.selectAttribute(name);
+                return new ContextReplacingReference(this, context.selectAttribute(name));
             }
         }
 
         public Reference<Resolver> selectItem(String index) {
-            return context.selectItem(index);
+            return new ContextReplacingReference(this, context.selectItem(index));
         }
 
         public Reference<Resolver> selectItem(Expression<Integer, Resolver> index) {
-            return context.selectItem(index);
+            return new ContextReplacingReference(this, context.selectItem(index));
         }
 
         public void document(Document target) {
-            target.text(descriptor.getLabel());
+            target.text("either the prefix variable or ");
+            context.document(target);
+            target.text(" (" + context.getClass() + ")");
         }
 
         private static class PrefixReference implements Reference<Resolver> {
 
             private ReferenceContext<Resolver> context;
 
-            private CodecDescriptor descriptor;
-
             private int prefixSize;
 
-            public PrefixReference(ReferenceContext<Resolver> context, CodecDescriptor descriptor,
+            public PrefixReference(ReferenceContext<Resolver> context, 
                     int prefixSize) {
                 this.context = context;
-                this.descriptor = descriptor;
                 this.prefixSize = prefixSize;
             }
 
@@ -401,8 +400,7 @@ public class SelectFromCodec<T> implements Codec<T> {
             public void document(Document target) {
                 target.text("the value of the first ");
                 target.text(Integer.toString(prefixSize));
-                target.text(" prepending ");
-                target.text(descriptor.getLabel());
+                target.text(" bits");
             }
 
             public Class<?> getType() {
@@ -432,8 +430,8 @@ public class SelectFromCodec<T> implements Codec<T> {
             }
         }
 
-        public Resolver getOuter() {
-            return resolver.getOuter();
+        public Resolver getOriginalResolver() {
+            return this;
         }
 
     }

@@ -119,7 +119,8 @@ public class IntegrationTest extends TestCase {
 
     public void testListSingleElement() throws DecodingException {
         Codec<Test3> codec = Codecs.create(Test3.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 1, 2, 3, 4, 5, 6 });
+        ByteBuffer byteBuffer = ByteBuffer
+                .wrap(new byte[] { 1, 2, 3, 4, 5, 6 });
         Test3 result = Codecs.decode(codec, byteBuffer);
         assertNotNull(result);
         assertEquals(2, result.elements.size());
@@ -134,9 +135,11 @@ public class IntegrationTest extends TestCase {
         assertEquals(48, codec.getSize(null));
     }
 
-    public void testListMultipleElements() throws DecodingException, FileNotFoundException {
+    public void testListMultipleElements() throws DecodingException,
+            FileNotFoundException {
         Codec<Test4> codec = Codecs.create(Test4.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 1, 1, 2, 3, 2, 0, 16, 2 });
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 1, 1, 2, 3, 2, 0,
+                16, 2 });
         Test4 result = Codecs.decode(codec, byteBuffer);
         assertNotNull(result);
         assertEquals(2, result.elements.size());
@@ -212,7 +215,8 @@ public class IntegrationTest extends TestCase {
 
     public void testDynamicListSingleElement() throws DecodingException {
         Codec<Test3> codec = Codecs.create(Test3.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 1, 2, 3, 4, 5, 6 });
+        ByteBuffer byteBuffer = ByteBuffer
+                .wrap(new byte[] { 1, 2, 3, 4, 5, 6 });
         Test3 result = Codecs.decode(codec, byteBuffer);
         assertNotNull(result);
         assertEquals(2, result.elements.size());
@@ -240,14 +244,15 @@ public class IntegrationTest extends TestCase {
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 3, (byte) 0xff });
         Test15 result = Codecs.decode(codec, byteBuffer);
         assertEquals(3, result.size);
-        assertEquals(7, result.value.value);
+        assertEquals(7, result.value.fooBar);
         assertNotNull(codec.getSize());
         assertTrue(codec.getSize().isParameterized());
     }
 
     public void testEnclosingReferencesWithList() throws DecodingException {
         Codec<Test17> codec = Codecs.create(Test17.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 8, 0, (byte) 0xff });
+        ByteBuffer byteBuffer = ByteBuffer
+                .wrap(new byte[] { 8, 0, (byte) 0xff });
         Test17 result = Codecs.decode(codec, byteBuffer);
         assertEquals(8, result.size);
         assertEquals(1, result.values.size());
@@ -255,9 +260,11 @@ public class IntegrationTest extends TestCase {
         assertNull(codec.getSize());
     }
 
-    public void testDoubleNestedEnclosingReferencesWithList() throws DecodingException {
+    public void testDoubleNestedEnclosingReferencesWithList()
+            throws DecodingException {
         Codec<Test21> codec = Codecs.create(Test21.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 8, 0, (byte) 0xff });
+        ByteBuffer byteBuffer = ByteBuffer
+                .wrap(new byte[] { 8, 0, (byte) 0xff });
         Test21 result = Codecs.decode(codec, byteBuffer);
         assertEquals(8, result.size);
         assertEquals(1, result.values.size());
@@ -283,10 +290,11 @@ public class IntegrationTest extends TestCase {
         assertNull(codec.getSize());
     }
 
-    public void testUnboundedListMultipleElementTypes() throws DecodingException {
+    public void testUnboundedListMultipleElementTypes()
+            throws DecodingException {
         Codec<Test22> codec = Codecs.create(Test22.class);
-        Test22 result = Codecs.decode(codec, new byte[] { 1, 2, 3, 4, 2, (byte) 0xff, (byte) 0xff,
-                7 });
+        Test22 result = Codecs.decode(codec, new byte[] { 1, 2, 3, 4, 2,
+                (byte) 0xff, (byte) 0xff, 7 });
         assertEquals(2, result.elements.size());
         assertEquals(2, ((Test5a) result.elements.get(0)).value1);
         assertEquals(3, ((Test5a) result.elements.get(0)).value2);
@@ -322,7 +330,8 @@ public class IntegrationTest extends TestCase {
      */
     public void testComplexLookup() throws DecodingException {
         Codec<Test27> codec = Codecs.create(Test27.class);
-        Test27 result = Codecs.decode(codec, new byte[] { 1, 2, 0, (byte) 255 });
+        Test27 result = Codecs
+                .decode(codec, new byte[] { 1, 2, 0, (byte) 255 });
         assertEquals(2, result.elements.length);
         assertEquals(1, result.elements[0]);
         assertEquals(2, result.elements[1]);
@@ -343,51 +352,76 @@ public class IntegrationTest extends TestCase {
 
     public void testSelectFromUsingLookup() throws DecodingException {
         Codec<Test31> codec = Codecs.create(Test31.class);
-        Test31 value = Codecs.decode(codec, new byte[] { 5, 6, 1, 3, 4, 5, 6, 7, 8 });
+        Test31 value = Codecs.decode(codec, new byte[] { 5, 6, 1, 3, 4, 5, 6,
+                7, 8 });
         assertNotNull(value.value);
         assertEquals(Test5b.class, value.value.getClass());
     }
 
     public void testSelectFromCompareString() throws DecodingException {
         Codec<Test32> codec = Codecs.create(Test32.class);
-        Test32 value = Codecs.decode(codec, new byte[] { (byte) 'a', (byte) 'a', 1, 3, 4, 5, 6, 7,
-                8 });
+        Test32 value = Codecs.decode(codec, new byte[] { (byte) 'a',
+                (byte) 'a', 1, 3, 4, 5, 6, 7, 8 });
         assertNotNull(value.value);
         assertEquals(Test5a.class, value.value.getClass());
     }
-    
+
     public void testSelectFromCompareStringFromArray() throws DecodingException {
         Codec<Test33> codec = Codecs.create(Test33.class);
-        Test33 value = Codecs.decode(codec, new byte[] { (byte) 'a', (byte) 'b', 1, 3, 4, 5, 6, 7,
-                8 });
+        Test33 value = Codecs.decode(codec, new byte[] { (byte) 'a',
+                (byte) 'b', 1, 3, 4, 5, 6, 7, 8 });
         assertNotNull(value.value);
         assertEquals(Test5b.class, value.value.getClass());
     }
 
-//    public void testSelectFromCompareStringFromArrayAndOuter() throws DecodingException {
-//        Codec<Test35> codec = Codecs.create(Test35.class);
-//        Test35 value = Codecs.decode(codec, new byte[] { (byte) 'a', (byte) 'b', 1, 3, 4, 5, 6, 7,
-//                8 });
-//        assertNotNull(value.values[0].value);
-//    }
-//    
+    public void testSelectFromCompareStringFromArrayAndOuter()
+            throws DecodingException {
+        Codec<Test35> codec = Codecs.create(Test35.class);
+        Test35 value = Codecs.decode(codec, new byte[] { (byte) 'a',
+                (byte) 'b', 1, 3, 4, 5, 6, 7, 8 });
+        assertNotNull(value.values[0].value);
+    }
+
     public void testOuterReferencesFromArray() throws DecodingException {
-        Codec<Test37> codec= Codecs.create(Test37.class);
+        Codec<Test37> codec = Codecs.create(Test37.class);
         Test37 value = Codecs.decode(codec, new byte[] { 1, (byte) 'a' });
         assertNotNull(value.values);
         assertEquals(1, value.values.length);
     }
-    
-    public void testOuterReferencesFromArrayIncludingLocal() throws DecodingException {
-        Codec<Test39> codec= Codecs.create(Test39.class);
-        Test39 value = Codecs.decode(codec, new byte[] { 2, 1, (byte) 'a', 'b', 'c', 'd' });
+
+    public void testOuterReferencesFromArrayIncludingLocal()
+            throws DecodingException {
+        Codec<Test39> codec = Codecs.create(Test39.class);
+        Test39 value = Codecs.decode(codec, new byte[] { 2, 1, (byte) 'a', 'b',
+                'c', 'd' });
         assertNotNull(value.values);
         assertEquals(1, value.values.length);
         assertEquals(1, value.values[0].secondSize);
         assertNotNull(value.values[0].value);
         assertEquals("abcd", value.values[0].value);
     }
-    
+
+    public void testOuterIndexReferences() throws DecodingException {
+        Codec<Test41> codec = Codecs.create(Test41.class);
+        Test41 value = Codecs.decode(codec, new byte[] { 1, 2, 'a', 'b', 'c',
+                'd' });
+        assertNotNull(value.values);
+        assertEquals(1, value.values.length);
+        assertNotNull(value.values[0].value);
+        assertEquals("a", value.values[0].value);
+    }
+
+    public void testOuterIndexReferencesIndexedByLocal()
+            throws DecodingException {
+        Codec<Test43> codec = Codecs.create(Test43.class);
+        Test43 value = Codecs.decode(codec, new byte[] { 1, 2, 1, 'a', 'b',
+                'c', 'd' });
+        assertNotNull(value.values);
+        assertEquals(1, value.values.length);
+        assertNotNull(value.values[0].value);
+        assertEquals("ab", value.values[0].value);
+    }
+
     private static class TestResolver implements Resolver {
 
         public Object get(String name) {
@@ -396,6 +430,10 @@ public class IntegrationTest extends TestCase {
 
         public Resolver getOuter() {
             return null;
+        }
+
+        public Resolver getOriginalResolver() {
+            return this;
         }
 
     }
@@ -542,7 +580,7 @@ public class IntegrationTest extends TestCase {
         public class Test16 {
 
             @BoundNumber(size = "outer.size + 0")
-            public byte value;
+            public byte fooBar;
 
         }
 
@@ -714,17 +752,17 @@ public class IntegrationTest extends TestCase {
         private String value;
 
     }
-    
+
     public static class Test35 {
 
         @BoundList(size = "2", type = Test34.class)
         Test34[] index;
-        
-        @BoundList(size="1", type=Test36.class)
+
+        @BoundList(size = "1", type = Test36.class)
         Test36[] values;
 
         public static class Test36 {
-            
+
             @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                     @Choice(condition = "outer.index[prefix].value=='a'", type = Test5a.class),
                     @Choice(condition = "outer.index[prefix].value=='b'", type = Test5b.class) }))
@@ -733,42 +771,79 @@ public class IntegrationTest extends TestCase {
         }
 
     }
-    
+
     public static class Test37 {
-        
-        @BoundNumber(size="8")
+
+        @BoundNumber(size = "8")
         int size;
-        
-        @BoundList(size="1")
+
+        @BoundList(size = "1")
         Test38[] values;
-        
+
         public class Test38 {
-            
-            @BoundString(size="outer.size")
+
+            @BoundString(size = "outer.size")
             String value;
-            
+
         }
-        
+
     }
-    
+
     public static class Test39 {
-        
-        @BoundNumber(size="8")
+
+        @BoundNumber(size = "8")
         int firstSize;
-        
-        @BoundList(size="1")
+
+        @BoundList(size = "1")
         Test40[] values;
-        
+
         public class Test40 {
-            
-            @BoundNumber(size="8")
+
+            @BoundNumber(size = "8")
             int secondSize;
-            
-            @BoundString(size="outer.firstSize + 2 * secondSize")
+
+            @BoundString(size = "outer.firstSize + 2 * secondSize")
             String value;
-            
+
         }
-        
+
     }
-    
+
+    public static class Test41 {
+
+        @BoundList(size = "2")
+        byte[] size;
+
+        @BoundList(size = "1")
+        Test42[] values;
+
+        public class Test42 {
+
+            @BoundString(size = "outer.size[0]")
+            String value;
+
+        }
+
+    }
+
+    public static class Test43 {
+
+        @BoundList(size = "2")
+        byte[] size;
+
+        @BoundList(size = "1")
+        Test44[] values;
+
+        public class Test44 {
+
+            @BoundNumber
+            byte item;
+
+            @BoundString(size = "outer.size[item]")
+            String value;
+
+        }
+
+    }
+
 }
