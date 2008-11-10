@@ -16,6 +16,19 @@
     <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</connection>
     <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</developerConnection>
   </scm>
+  <developers>
+    <developer>
+      <id>springerw</id>
+      <name>Wilfred Springer</name>
+      <email>wilfredspringer@gmail.com</email>
+      <roles>
+        <role>initiator</role>
+        <role>developer</role>
+        <role>architect</role>
+      </roles>
+      <timezone>+1</timezone>
+    </developer>
+  </developers>
   <modules>
     <module>preon-bitbuffer</module>
     <module>preon-binding</module>
