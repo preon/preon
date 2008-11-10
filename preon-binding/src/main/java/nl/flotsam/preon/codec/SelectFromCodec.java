@@ -148,7 +148,6 @@ public class SelectFromCodec<T> implements Codec<T> {
             int prefix = buffer.readAsInt(this.prefixSize, byteOrder);
             for (int i = 0; i < conditions.size(); i++) {
                 if (conditions.get(i).eval(new PrefixResolver(resolver, prefix))) {
-                    System.out.println("Found!!!");
                     return (T) codecs.get(i).decode(buffer, resolver, builder);
                 }
             }

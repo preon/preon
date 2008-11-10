@@ -672,7 +672,6 @@ public class ListCodecFactory implements CodecFactory {
             for (int i = 0; i < maxSize; i++) {
                 indexResolver.setIndex(i);
                 int offset = offsets.eval(indexResolver);
-                System.out.println("Offset " + offset);
                 if (i < maxSize - 1) {
                     indexResolver.setIndex(i + 1);
                     int nextOffset = offsets.eval(indexResolver) - 1;

@@ -53,31 +53,60 @@ import nl.flotsam.preon.limbo.OuterReference;
 import nl.flotsam.preon.limbo.PropertyReference;
 import nl.flotsam.preon.util.ParaContentsDocument;
 
+/**
+ * A {@link ResolverContext} based on a collection of {@link Binding Bindings}.
+ * 
+ * @author Wilfred Springer (wis)
+ * 
+ */
 public class BindingsContext implements ObjectResolverContext {
 
+    /**
+     * All {@link Binding}s.
+     */
     private List<Binding> orderedBindings;
 
+    /**
+     * All {@link Binding}s, indexed by their name.
+     */
     private HashMap<String, Binding> bindingsByName;
 
-    private Class<?> type;
-
+    /**
+     * The "outer" {@link ResolverContext}.
+     */
     private ResolverContext outer;
 
+    /**
+     * Constructs a new instance.
+     * 
+     * @param type
+     * @param outer
+     *            The "outer" {@link ResolverContext}.
+     */
     public BindingsContext(Class<?> type, ResolverContext outer) {
-        this.type = type;
         this.orderedBindings = new ArrayList<Binding>();
         this.bindingsByName = new HashMap<String, Binding>();
         this.outer = outer;
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.flotsam.preon.limbo.ObjectResolverContext#add(java.lang.String,
+     * nl.flotsam.preon.binding.Binding)
+     */
     public void add(String name, Binding binding) {
         orderedBindings.add(binding);
         bindingsByName.put(name, binding);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
+     */
     public Reference<Resolver> selectAttribute(String name)
             throws BindingException {
-
         if ("outer".equals(name)) {
             return new OuterReference(outer, this);
         } else {
@@ -88,15 +117,25 @@ public class BindingsContext implements ObjectResolverContext {
                         "Failed to create binding for bound data called "
                                 + name);
             }
-
             return new BindingReference(binding);
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
+     */
     public Reference<Resolver> selectItem(String index) throws BindingException {
         throw new BindingException("Cannot resolve index on BindingContext.");
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression)
+     */
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
             throws BindingException {
         StringBuilder builder = new StringBuilder();
@@ -104,6 +143,11 @@ public class BindingsContext implements ObjectResolverContext {
         throw new BindingException("Cannot resolve index on BindingContext.");
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
+     */
     public void document(Document target) {
         if (bindingsByName.size() > 0) {
             target.text("one of ");
@@ -120,29 +164,67 @@ public class BindingsContext implements ObjectResolverContext {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nl.flotsam.preon.limbo.ObjectResolverContext#getResolver(java.lang.Object
+     * , nl.flotsam.preon.Resolver)
+     */
     public Resolver getResolver(Object context, Resolver resolver) {
         return new BindingsResolver(context, resolver);
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nl.flotsam.preon.limbo.ObjectResolverContext#getBindings()
+     */
     public List<Binding> getBindings() {
         return orderedBindings;
     }
 
+    /**
+     * A {@link Reference} referring to a {@link Binding}.
+     */
     private class BindingReference implements Reference<Resolver> {
 
+        /**
+         * The {@link Binding} it refers to.
+         */
         private Binding binding;
 
+        /**
+         * The most specific supertype of anything that can be returned from
+         * this {@link Reference}.
+         */
         private Class<?> commonType;
 
+        /**
+         * Constructs a new instance.
+         * 
+         * @param binding
+         *            The {@link Binding}.
+         */
         public BindingReference(Binding binding) {
             this.binding = binding;
             commonType = binding.getType();
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.limbo.Reference#getReferenceContext()
+         */
         public ResolverContext getReferenceContext() {
             return BindingsContext.this;
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.limbo.Reference#isAssignableTo(java.lang.Class)
+         */
         public boolean isAssignableTo(Class<?> type) {
 
             for (Class<?> bound : binding.getTypes()) {
@@ -155,6 +237,11 @@ public class BindingsContext implements ObjectResolverContext {
             return false;
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.limbo.Reference#resolve(java.lang.Object)
+         */
         public Object resolve(Resolver context) {
             try {
                 String name = binding.getName();
@@ -165,20 +252,31 @@ public class BindingsContext implements ObjectResolverContext {
             }
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
+         */
         @SuppressWarnings("unchecked")
         public Reference<Resolver> selectAttribute(String name) {
             Reference<Resolver>[] references = new Reference[binding.getTypes().length];
             int i = 0;
 
             for (Class<?> bound : binding.getTypes()) {
-                references[i] = new PropertyReference(this, bound,
-                        name, BindingsContext.this);
+                references[i] = new PropertyReference(this, bound, name,
+                        BindingsContext.this);
                 i++;
             }
 
             return new MultiReference<Resolver>(references);
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
+         */
         public Reference<Resolver> selectItem(String index) {
             Expression<Integer, Resolver> expr;
             expr = Expressions.createInteger(BindingsContext.this, index);
@@ -186,6 +284,13 @@ public class BindingsContext implements ObjectResolverContext {
             return selectItem(expr);
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see
+         * nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression
+         * )
+         */
         @SuppressWarnings("unchecked")
         public Reference<Resolver> selectItem(
                 Expression<Integer, Resolver> index) {
@@ -195,28 +300,31 @@ public class BindingsContext implements ObjectResolverContext {
                         .getTypes().length];
 
                 for (int i = 0; i < binding.getTypes().length; i++) {
-                    System.out.println(binding.getTypes()[i]);
-                    System.out.println(binding.getName());
-
-                    // This is a problematic area
-                    references[i] = new ArrayElementReference(this,
-                            binding.getTypes()[i], index, BindingsContext.this);
+                    references[i] = new ArrayElementReference(this, binding
+                            .getTypes()[i], index, BindingsContext.this);
                 }
 
                 return new MultiReference<Resolver>(references);
             } else {
-
-                // This is another problematic area
-                return new ArrayElementReference(this, binding
-                        .getType().getComponentType(), index,
-                        BindingsContext.this);
+                return new ArrayElementReference(this, binding.getType()
+                        .getComponentType(), index, BindingsContext.this);
             }
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
+         */
         public void document(final Document target) {
             binding.writeReference(new ParaContentsDocument(target));
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.limbo.Reference#getType()
+         */
         public Class<?> getType() {
             return commonType;
         }
@@ -255,6 +363,11 @@ public class BindingsContext implements ObjectResolverContext {
             this.outer = outer;
         }
 
+        /*
+         * (non-Javadoc)
+         * 
+         * @see nl.flotsam.preon.Resolver#get(java.lang.String)
+         */
         public Object get(String name) {
             if ("outer".equals(name)) {
                 return outer;
@@ -287,10 +400,17 @@ public class BindingsContext implements ObjectResolverContext {
             }
         }
 
+        /**
+         * Returns the "outer" {@link Resolver}.
+         */
         public Resolver getOuter() {
             return outer;
         }
 
+        /**
+         * Returns the {@link Resolver} from which all new references need to be
+         * constructed.
+         */
         public Resolver getOriginalResolver() {
             return this;
         }

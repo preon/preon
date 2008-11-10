@@ -138,7 +138,6 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                     return codecs.get(i);
                 }
             }
-            System.out.println("No matching Codec found for value " + index);
             throw new DecodingException("No matching Codec found for value " + index);
         }
 
