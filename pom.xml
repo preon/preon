@@ -10,7 +10,10 @@
     Preon aims to provide a framework for dealing with binary encoded
     data; or more specifically, it aims to deal with situations in
     which bytes are considered to be overkill. The project is named
-    after the one of the smallest elementary particles ever found.
+    after the "point-like" particles, conceived to be subcomponents of
+    quarks and leptons. Let's just say very small particles that you
+    don't see with the naked eye, but you probably rely on them
+    without knowing.
   </description>
   <scm>
     <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</connection>
