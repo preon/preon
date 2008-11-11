@@ -1,17 +1,17 @@
 /*
  * Copyright 2008 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
  */
 
 package nl.flotsam.preon.limbo;
@@ -27,12 +27,29 @@ import nl.flotsam.limbo.Reference;
 import nl.flotsam.limbo.ReferenceContext;
 import nl.flotsam.preon.Resolver;
 
+/**
+ * A {@link Reference} to a property. (And in this case, property means a
+ * private field, not a bean property.)
+ * 
+ * @author Wilfred Springer (wis)
+ * 
+ */
 public class PropertyReference implements Reference<Resolver> {
 
+    /**
+     * The field representing the property.
+     */
     private Field field;
 
+    /**
+     * The {@link Reference} to the object this {@link PropertyReference} is
+     * based upon.
+     */
     private Reference<Resolver> reference;
 
+    /**
+     * The context for constructing references.
+     */
     private ReferenceContext<Resolver> context;
 
     /**
@@ -40,6 +57,19 @@ public class PropertyReference implements Reference<Resolver> {
      */
     private boolean includeType = true;
 
+    /**
+     * Constructs a new {@link Reference}.
+     * 
+     * @param reference
+     *            The source for this property.
+     * @param type
+     *            The type of the source.
+     * @param name
+     *            The name of the property.
+     * @param context
+     *            The original context, to be used when constructing other
+     *            references.
+     */
     public PropertyReference(Reference<Resolver> reference, Class<?> type,
             String name, ReferenceContext<Resolver> context) {
         this.reference = reference;
@@ -78,8 +108,8 @@ public class PropertyReference implements Reference<Resolver> {
 
     public Reference<Resolver> selectItem(String index) {
         try {
-            Expression<Integer, Resolver> expr = Expressions.createInteger(context,
-                    index);
+            Expression<Integer, Resolver> expr = Expressions.createInteger(
+                    context, index);
             return selectItem(expr);
         } catch (InvalidExpressionException e) {
             throw new BindingException("Invalid index.", e);

@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -51,7 +51,6 @@ import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.LazyLoading;
 import nl.flotsam.preon.buffer.BitBuffer;
 
-
 /**
  * An attempt to create a general purpose {@link CodecFactory} whose
  * {@link Codec Codecs} will only load their data once operations are invoked
@@ -78,21 +77,46 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
         }
     }
 
+    /**
+     * A {@link Codec} that will only start loading the data when one of the
+     * methods of that object are invoked.
+     * 
+     * @author Wilfred Springer (wis)
+     * 
+     * @param <T>
+     */
     public static class LazyLoadingCodec<T> implements Codec<T> {
 
+        /**
+         * The {@link Codec} to use.
+         */
         private Codec<T> wrapped;
 
+        /**
+         * The type of object created.
+         */
         private Class<T> type;
 
+        /**
+         * Constructs a new instance.
+         * 
+         * @param wrapped
+         *            The {@link Codec} to use when loading the data.
+         * @param type
+         *            The type of object that will be returned.
+         */
         public LazyLoadingCodec(Codec<T> wrapped, Class<T> type) {
             this.wrapped = wrapped;
             this.type = type;
         }
 
+        /*
+         * (non-Javadoc)
+         * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer, nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
+         */
         @SuppressWarnings("unchecked")
-        public T decode(final BitBuffer buffer,
-                final Resolver resolver, final Builder builder)
-                throws DecodingException {
+        public T decode(final BitBuffer buffer, final Resolver resolver,
+                final Builder builder) throws DecodingException {
             final int size = wrapped.getSize(resolver);
             final long pos = buffer.getBitPos();
             ClassLoader loader = this.getClass().getClassLoader();
@@ -116,22 +140,42 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
             return (T) enhancer.create();
         }
 
+        /*
+         * (non-Javadoc)
+         * @see nl.flotsam.preon.Codec#getCodecDescriptor()
+         */
         public CodecDescriptor getCodecDescriptor() {
             return wrapped.getCodecDescriptor();
         }
 
+        /*
+         * (non-Javadoc)
+         * @see nl.flotsam.preon.Codec#getSize(nl.flotsam.preon.Resolver)
+         */
         public int getSize(Resolver resolver) {
             return wrapped.getSize(resolver);
         }
 
+        /*
+         * (non-Javadoc)
+         * @see nl.flotsam.preon.Codec#getTypes()
+         */
         public Class<?>[] getTypes() {
             return wrapped.getTypes();
         }
 
+        /*
+         * (non-Javadoc)
+         * @see nl.flotsam.preon.Codec#getSize()
+         */
         public Expression<Integer, Resolver> getSize() {
             return wrapped.getSize();
         }
 
+        /*
+         * (non-Javadoc)
+         * @see nl.flotsam.preon.Codec#getType()
+         */
         public Class<?> getType() {
             return type;
         }

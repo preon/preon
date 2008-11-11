@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -41,9 +41,19 @@ import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.BoundExplicitly;
 
-
+/**
+ * A {@link CodecFactory} allowing you to explicitly set the {@link Codec} to
+ * use. (Triggered by the {@link BoundExplicitly} annotation.
+ * 
+ * @author Wilfred Springer (wis)
+ * 
+ */
 public class ExplicitCodecFactory implements CodecFactory {
 
+    /*
+     * (non-Javadoc)
+     * @see nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement, java.lang.Class, nl.flotsam.preon.ResolverContext)
+     */
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
             ResolverContext context) {
         if (metadata != null

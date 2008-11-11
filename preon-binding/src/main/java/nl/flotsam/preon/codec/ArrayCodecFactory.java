@@ -60,6 +60,15 @@ import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.util.AnnotationWrapper;
 
+/**
+ * A {@link CodecFactory} that will be triggered by {@link Bound} or
+ * {@link BoundList} annotations on arrays. Note that {@link Codec}s created by
+ * this class will always read all data eagerly. (Unlike {@link List}s, you
+ * cannot implement arrays yourself.)
+ * 
+ * @author Wilfred Springer (wis)
+ * 
+ */
 public class ArrayCodecFactory implements CodecFactory {
 
     /**
@@ -88,18 +97,23 @@ public class ArrayCodecFactory implements CodecFactory {
      * java.lang.Class, nl.flotsam.preon.ResolverContext)
      */
     @SuppressWarnings("unchecked")
-    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
+    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
+            ResolverContext context) {
         BoundList settings = null;
-        if (metadata != null && (settings = metadata.getAnnotation(BoundList.class)) != null
+        if (metadata != null
+                && (settings = metadata.getAnnotation(BoundList.class)) != null
                 && type.isArray()) {
-            Expression<Integer, Resolver> expr = getSizeExpression(settings, context);
+            Expression<Integer, Resolver> expr = getSizeExpression(settings,
+                    context);
             Codec<Object> elementCodec = null;
             if (type.getComponentType().isPrimitive()) {
-                elementCodec = (Codec<Object>) factory.create(null, type.getComponentType(), context);
+                elementCodec = (Codec<Object>) factory.create(null, type
+                        .getComponentType(), context);
             } else {
                 BoundObject objectSettings = getObjectSettings(settings);
                 elementCodec = (Codec<Object>) factory.create(
-                        new AnnotationWrapper(objectSettings), type.getComponentType(), context);
+                        new AnnotationWrapper(objectSettings), type
+                                .getComponentType(), context);
             }
             return (Codec<T>) new ArrayCodec(expr, elementCodec, type);
         } else {
@@ -169,7 +183,8 @@ public class ArrayCodecFactory implements CodecFactory {
          *            The {@link Codec} constructing elements in the
          *            {@link List}.
          */
-        public ArrayCodec(Expression<Integer, Resolver> expr, Codec<?> codec, Class<?> type) {
+        public ArrayCodec(Expression<Integer, Resolver> expr, Codec<?> codec,
+                Class<?> type) {
             this.size = expr;
             this.codec = codec;
             this.type = type;
@@ -181,8 +196,8 @@ public class ArrayCodecFactory implements CodecFactory {
          * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
          * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
          */
-        public Object decode(BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
+        public Object decode(BitBuffer buffer, Resolver resolver,
+                Builder builder) throws DecodingException {
             int length = size.eval(resolver).intValue();
             Object result = Array.newInstance(type.getComponentType(), length);
             for (int i = 0; i < length; i++) {
@@ -209,7 +224,8 @@ public class ArrayCodecFactory implements CodecFactory {
             return new CodecDescriptor() {
 
                 public String getLabel() {
-                    return "a list of " + codec.getCodecDescriptor().getLabel() + " elements";
+                    return "a list of " + codec.getCodecDescriptor().getLabel()
+                            + " elements";
                 }
 
                 public boolean hasFullDescription() {
@@ -229,7 +245,8 @@ public class ArrayCodecFactory implements CodecFactory {
                 public String getSize() {
                     StringBuilder builder = new StringBuilder();
                     size.document(new StringBuilderDocument(builder));
-                    builder.append(" times " + codec.getCodecDescriptor().getSize());
+                    builder.append(" times "
+                            + codec.getCodecDescriptor().getSize());
                     return builder.toString();
                 }
 
@@ -274,8 +291,9 @@ public class ArrayCodecFactory implements CodecFactory {
      *            The annotation, holding the expression.
      * @return An {@link Expression} instance, representing the expression.
      */
-    private Expression<Integer, Resolver> getSizeExpression(BoundList listSettings,
-            ResolverContext context) throws CodecConstructionException {
+    private Expression<Integer, Resolver> getSizeExpression(
+            BoundList listSettings, ResolverContext context)
+            throws CodecConstructionException {
         try {
             return Expressions.createInteger(context, listSettings.size());
         } catch (InvalidExpressionException ece) {

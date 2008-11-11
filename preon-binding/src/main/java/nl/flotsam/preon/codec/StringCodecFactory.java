@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -56,7 +56,6 @@ import nl.flotsam.preon.annotation.BoundString.ByteConverter;
 import nl.flotsam.preon.annotation.BoundString.Encoding;
 import nl.flotsam.preon.buffer.BitBuffer;
 
-
 /**
  * A {@link CodecFactory} generating {@link Codecs} capable of generating String
  * from {@link BitBuffer} content.
@@ -67,7 +66,8 @@ import nl.flotsam.preon.buffer.BitBuffer;
 public class StringCodecFactory implements CodecFactory {
 
     @SuppressWarnings("unchecked")
-    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
+    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
+            ResolverContext context) {
         if (metadata == null) {
             return null;
         }
@@ -77,12 +77,14 @@ public class StringCodecFactory implements CodecFactory {
                 if (settings.size().length() > 0) {
                     Expression<Integer, Resolver> expr;
                     expr = Expressions.createInteger(context, settings.size());
-                    return (Codec<T>) new FixedLengthStringCodec(settings.encoding(), expr,
-                            settings.match(), settings.converter().newInstance());
+                    return (Codec<T>) new FixedLengthStringCodec(settings
+                            .encoding(), expr, settings.match(), settings
+                            .converter().newInstance());
 
                 } else {
-                    return (Codec<T>) new NullTerminatedStringCodec(settings.encoding(), settings
-                            .match(), settings.converter().newInstance());
+                    return (Codec<T>) new NullTerminatedStringCodec(settings
+                            .encoding(), settings.match(), settings.converter()
+                            .newInstance());
                 }
             } catch (InstantiationException e) {
                 throw new CodecConstructionException(e.getMessage());
@@ -94,6 +96,14 @@ public class StringCodecFactory implements CodecFactory {
         }
     }
 
+    /**
+     * A {@link Codec} that reads null-terminated Strings. Basically, it will
+     * read bytes until it encounters a '\0' character, in which case it
+     * considers itself to be done, and construct a String from the bytes read.
+     * 
+     * @author Wilfred Springer (wis)
+     * 
+     */
     public static class NullTerminatedStringCodec implements Codec<String> {
 
         private Encoding encoding;
@@ -109,8 +119,8 @@ public class StringCodecFactory implements CodecFactory {
             this.byteConverter = byteConverter;
         }
 
-        public String decode(BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
+        public String decode(BitBuffer buffer, Resolver resolver,
+                Builder builder) throws DecodingException {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             byte value;
             while ((value = buffer.readAsByte(8)) != 0x00) {
@@ -198,6 +208,13 @@ public class StringCodecFactory implements CodecFactory {
 
     }
 
+    /**
+     * A {@link Codec} decoding Strings based on a fixed number of
+     * <em>bytes</em>. (Note that it says <i>bytes</i>, not <i>characters</i>.)
+     * 
+     * @author Wilfred Springer (wis)
+     * 
+     */
     public static class FixedLengthStringCodec implements Codec<String> {
 
         private Encoding encoding;
@@ -208,16 +225,17 @@ public class StringCodecFactory implements CodecFactory {
 
         private ByteConverter byteConverter;
 
-        public FixedLengthStringCodec(Encoding encoding, Expression<Integer, Resolver> sizeExpr,
-                String match, ByteConverter byteConverter) {
+        public FixedLengthStringCodec(Encoding encoding,
+                Expression<Integer, Resolver> sizeExpr, String match,
+                ByteConverter byteConverter) {
             this.encoding = encoding;
             this.sizeExpr = sizeExpr;
             this.match = match;
             this.byteConverter = byteConverter;
         }
 
-        public String decode(BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
+        public String decode(BitBuffer buffer, Resolver resolver,
+                Builder builder) throws DecodingException {
             int size = sizeExpr.eval(resolver);
             byte[] bytes = new byte[size];
             for (int i = 0; i < size; i++) {
@@ -231,8 +249,9 @@ public class StringCodecFactory implements CodecFactory {
             }
             if (match.length() > 0) {
                 if (!match.equals(result)) {
-                    throw new DecodingException(new IllegalStateException("Expected \"" + match
-                            + "\", but got \"" + result + "\"."));
+                    throw new DecodingException(new IllegalStateException(
+                            "Expected \"" + match + "\", but got \"" + result
+                                    + "\"."));
                 }
             }
             return result;
@@ -297,7 +316,8 @@ public class StringCodecFactory implements CodecFactory {
         }
 
         public Expression<Integer, Resolver> getSize() {
-            return Expressions.multiply(Expressions.createInteger(8, Resolver.class), sizeExpr);
+            return Expressions.multiply(Expressions.createInteger(8,
+                    Resolver.class), sizeExpr);
         }
 
         public Class<?> getType() {
