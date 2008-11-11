@@ -265,7 +265,7 @@ public class BindingsContext implements ObjectResolverContext {
 
             for (Class<?> bound : binding.getTypes()) {
                 references[i] = new PropertyReference(this, bound, name,
-                        BindingsContext.this);
+                        BindingsContext.this, false);
                 i++;
             }
 

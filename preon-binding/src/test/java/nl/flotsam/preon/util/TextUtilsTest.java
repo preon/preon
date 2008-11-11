@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -31,53 +31,23 @@
  * exception statement from your version.
  */
 
-package nl.flotsam.preon.sample.bmp;
+package nl.flotsam.preon.util;
 
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.annotation.Purpose;
+import junit.framework.TestCase;
 
-@Purpose("Bitmap information.")
-public class BitmapInformation {
+public class TextUtilsTest extends TestCase {
 
-    @BoundNumber(size="32")
-    private long headerSize;
-
-    @BoundNumber(size="32")
-    private long bitmapWidth;
-
-    @BoundNumber(size="32")
-    private long bitmapHeight;
-
-    @BoundNumber(size="16")
-    private int numberOfColorPlanes;
-
-    @BoundNumber(size="16")
-    private int colorDepth;
-
-    @BoundNumber(size="32")
-    private long compressionMethod;
-
-    @BoundNumber(size="32")
-    private long imageSize;
-
-    @BoundNumber(size="32")
-    private long horizontalResolution;
-
-    @BoundNumber(size="32")
-    private long verticalResolution;
-
-    @BoundNumber(size="32")
-    private long numberOfColors;
-
-    @BoundNumber(size="32")
-    private long numberOfImportantColors;
-
-    public long getHeight() {
-        return bitmapHeight;
+    public void testNumberToText() {
+        assertEquals("zero", TextUtils.getNumberAsText(0));
+        assertEquals("twenty", TextUtils.getNumberAsText(20));
+        assertEquals("-1", TextUtils.getNumberAsText(-1));
+        assertEquals("22", TextUtils.getNumberAsText(22));
     }
-
-    public long getWidth() {
-        return bitmapWidth;
+    
+    public void testPositionToText() {
+        assertEquals("first", TextUtils.getPositionAsText(0));
+        assertEquals("second", TextUtils.getPositionAsText(1));
+        assertEquals("23th", TextUtils.getPositionAsText(22));
     }
-
+    
 }
