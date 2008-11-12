@@ -19,6 +19,28 @@
     <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</connection>
     <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</developerConnection>
   </scm>
+  <repositories>
+    <repository>
+      <id>limbo-snapshots</id>
+      <url>http://limbo.sourceforge.net/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>pecia-snapshots</id>
+      <url>http://pecia.sourceforge.net/snapshots</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+  </repositories>
   <developers>
     <developer>
       <id>springerw</id>
