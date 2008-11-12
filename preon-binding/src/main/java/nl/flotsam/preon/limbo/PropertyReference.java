@@ -26,6 +26,8 @@ import nl.flotsam.limbo.InvalidExpressionException;
 import nl.flotsam.limbo.Reference;
 import nl.flotsam.limbo.ReferenceContext;
 import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.rendering.CamelCaseRewriter;
+import nl.flotsam.preon.rendering.IdentifierRewriter;
 
 /**
  * A {@link Reference} to a property. (And in this case, property means a
@@ -35,6 +37,8 @@ import nl.flotsam.preon.Resolver;
  * 
  */
 public class PropertyReference implements Reference<Resolver> {
+
+    private static IdentifierRewriter rewriter = new CamelCaseRewriter(false);
 
     /**
      * The field representing the property.
@@ -142,7 +146,7 @@ public class PropertyReference implements Reference<Resolver> {
     }
 
     public void document(Document target) {
-        target.text("the " + field.getName());
+        target.text("the " + rewriter.rewrite(field.getName()));
         if (includeType) {
             target.text(" (a ");
             target.text(getType().getSimpleName());
@@ -152,7 +156,6 @@ public class PropertyReference implements Reference<Resolver> {
         }
         target.text("of ");
         reference.document(target);
-
     }
 
     public ReferenceContext<Resolver> getReferenceContext() {

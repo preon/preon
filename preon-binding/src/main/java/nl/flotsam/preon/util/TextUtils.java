@@ -113,4 +113,44 @@ public class TextUtils {
         }
     }
 
+    /**
+     * Returns a boolean indicating whether or not the class is capable of
+     * turning the value passed in into a textual representation.
+     * 
+     * @param value
+     *            The value to be turned into a text representation.
+     * @return The text representation of the value.
+     */
+    public static boolean hasNumberAsText(int value) {
+        return (value >= 0 || value < NUMBER_TRANSLATIONS.length);
+    }
+
+    public static String startWithUppercase(String text) {
+        if (text.length() > 2) {
+            return Character.toUpperCase(text.charAt(0)) + text.substring(1);
+        } else {
+            return text;
+        }
+    }
+
+    public static String bitsToText(int nrbits) {
+        StringBuilder builder = new StringBuilder();
+        if (nrbits >= 8) {
+            builder.append(nrbits);
+            builder.append(" (");
+            int nrbytes = nrbits / 8;
+            if (nrbytes == 1) {
+                builder.append("1 byte");
+            } else {
+                builder.append(nrbytes).append(" bytes");
+            }
+            if (nrbits % 8 > 0) {
+                builder.append(" and ").append(nrbits % 8).append(" bits");
+            }
+            builder.append(")");
+            return builder.toString();
+        } else {
+            return Integer.toString(nrbits);
+        }
+    }
 }

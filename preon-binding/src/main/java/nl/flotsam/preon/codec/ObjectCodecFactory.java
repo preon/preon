@@ -69,6 +69,7 @@ import nl.flotsam.preon.rendering.ClassNameRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
 import nl.flotsam.preon.util.DocumentParaContents;
 import nl.flotsam.preon.util.HidingAnnotatedElement;
+import nl.flotsam.preon.util.TextUtils;
 
 /**
  * The {@link CodecFactory} generating {@link Codec Codecs} capable of decoding
@@ -133,16 +134,21 @@ public class ObjectCodecFactory implements CodecFactory {
      * @param bindingFactory
      *            The object used to create <code>Bindings</code>.
      */
-    public ObjectCodecFactory(CodecFactory codecFactory, BindingFactory bindingFactory) {
+    public ObjectCodecFactory(CodecFactory codecFactory,
+            BindingFactory bindingFactory) {
         this.codecFactory = codecFactory;
         this.bindingFactory = bindingFactory;
     }
 
     /*
      * (non-Javadoc)
-     * @see nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement, java.lang.Class, nl.flotsam.preon.ResolverContext)
+     * 
+     * @see
+     * nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement,
+     * java.lang.Class, nl.flotsam.preon.ResolverContext)
      */
-    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
+    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
+            ResolverContext context) {
         if (metadata == null) {
             return createCodec(type, context);
         } else if (metadata.isAnnotationPresent(Bound.class)) {
@@ -154,8 +160,10 @@ public class ObjectCodecFactory implements CodecFactory {
         }
     }
 
-    private <T> ObjectCodec<T> createCodec(Class<T> type, ResolverContext context) {
-        ObjectResolverContext passThroughContext = new BindingsContext(type, context);
+    private <T> ObjectCodec<T> createCodec(Class<T> type,
+            ResolverContext context) {
+        ObjectResolverContext passThroughContext = new BindingsContext(type,
+                context);
         harvestBindings(type, passThroughContext);
         return new ObjectCodec<T>(type, rewriter, passThroughContext);
     }
@@ -168,8 +176,9 @@ public class ObjectCodecFactory implements CodecFactory {
         if (Void.class.equals(settings.type())) {
             if (settings.selectFrom().alternatives().length > 0
                     || settings.selectFrom().defaultType() != Void.class) {
-                return (Codec<T>) new SelectFromCodec(type, settings.selectFrom(), context,
-                        codecFactory, hideChoices(metadata));
+                return (Codec<T>) new SelectFromCodec(type, settings
+                        .selectFrom(), context, codecFactory,
+                        hideChoices(metadata));
             }
             if (settings.types().length == 0) {
                 return createCodec(type, context);
@@ -191,7 +200,8 @@ public class ObjectCodecFactory implements CodecFactory {
         return new HidingAnnotatedElement(BoundObject.class, metadata);
     }
 
-    private <T> void harvestBindings(Class<T> type, ObjectResolverContext context) {
+    private <T> void harvestBindings(Class<T> type,
+            ObjectResolverContext context) {
         if (Object.class.equals(type)) {
             return;
         }
@@ -201,10 +211,13 @@ public class ObjectCodecFactory implements CodecFactory {
         // ReferenceContext, allowing us to incrementally bind to references
         // of fields declared before.
         for (Field field : fields) {
-            if (!Modifier.isStatic(field.getModifiers()) && !field.isSynthetic()) {
-                Codec<?> codec = codecFactory.create(field, field.getType(), context);
+            if (!Modifier.isStatic(field.getModifiers())
+                    && !field.isSynthetic()) {
+                Codec<?> codec = codecFactory.create(field, field.getType(),
+                        context);
                 if (codec != null) {
-                    Binding binding = bindingFactory.create(field, field, codec, context);
+                    Binding binding = bindingFactory.create(field, field,
+                            codec, context);
                     context.add(field.getName(), binding);
                 }
             }
@@ -223,7 +236,8 @@ public class ObjectCodecFactory implements CodecFactory {
 
         private ObjectResolverContext context;
 
-        public ObjectCodec(Class<T> type, IdentifierRewriter rewriter, ObjectResolverContext context) {
+        public ObjectCodec(Class<T> type, IdentifierRewriter rewriter,
+                ObjectResolverContext context) {
             this.type = type;
             this.rewriter = rewriter;
             this.context = context;
@@ -294,34 +308,49 @@ public class ObjectCodecFactory implements CodecFactory {
                     }
                     if (context.getBindings().size() > 0) {
                         Table3Cols<?> table = section.table3Cols();
-                        table.header().entry().para().text("Name").end().entry().para().text(
-                                "Description").end().entry().para().text("Size (in bits)").end()
+                        table.header().entry().para().text("Name").end()
+                                .entry().para().text("Description").end()
+                                .entry().para().text("Size (in bits)").end()
                                 .end();
                         for (int i = 0; i < context.getBindings().size(); i++) {
                             Binding binding = context.getBindings().get(i);
-                            Expression<Integer, Resolver> size = binding.getSize();
+                            Expression<Integer, Resolver> size = binding
+                                    .getSize();
                             if (size != null) {
                                 size = size.simplify();
                             }
 
                             if (size == null) {
                                 binding.describe(
-                                        table.row().entry().para().term(binding.getId(),
-                                                rewriter.rewrite(binding.getName())).end().entry()
-                                                .para()).end().entry().para().text("unknown").end()
-                                        .end();
+                                        table.row().entry().para().term(
+                                                binding.getId(),
+                                                rewriter.rewrite(binding
+                                                        .getName())).end()
+                                                .entry().para()).end().entry()
+                                        .para().text("unknown").end().end();
                             } else {
                                 final Expression<Integer, Resolver> holder = size;
                                 final Documenter<ParaContents<?>> documenter = new Documenter<ParaContents<?>>() {
                                     public void document(ParaContents<?> context) {
-                                        holder.document(new DocumentParaContents(context));
+                                        if (holder.isParameterized()) {
+                                            holder
+                                                    .document(new DocumentParaContents(
+                                                            context));
+                                        } else {
+                                            context.text(TextUtils
+                                                    .bitsToText(holder
+                                                            .eval(null)));
+                                        }
                                     }
                                 };
                                 binding.describe(
-                                        table.row().entry().para().term(binding.getId(),
-                                                rewriter.rewrite(binding.getName())).end().entry()
-                                                .para()).end().entry().para().document(documenter)
-                                        .end().end();
+                                        table.row().entry().para().term(
+                                                binding.getId(),
+                                                rewriter.rewrite(binding
+                                                        .getName())).end()
+                                                .entry().para()).end().entry()
+                                        .para().document(documenter).end()
+                                        .end();
                             }
                         }
                         table.end();
@@ -342,7 +371,8 @@ public class ObjectCodecFactory implements CodecFactory {
                 }
 
                 public String getSize() {
-                    Expression<Integer, Resolver> sizeExpr = ObjectCodec.this.getSize();
+                    Expression<Integer, Resolver> sizeExpr = ObjectCodec.this
+                            .getSize();
                     if (sizeExpr == null) {
                         return "unknown in advance";
                     } else {

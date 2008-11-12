@@ -46,9 +46,9 @@ import nl.flotsam.preon.codec.InitCodecDecorator;
 public class ClassFileTest extends TestCase {
 
     public void testDecoding() throws FileNotFoundException, IOException, DecodingException {
-//        Codec<ClassFile> codec = Codecs.create(ClassFile.class, new InitCodecDecorator());
-//        ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
-//                "src/test/resources/Foo.class"));
+        Codec<ClassFile> codec = Codecs.create(ClassFile.class, new InitCodecDecorator());
+        ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
+                "src/test/resources/Foo.class"));
     }
 
     public File getBasedir() {

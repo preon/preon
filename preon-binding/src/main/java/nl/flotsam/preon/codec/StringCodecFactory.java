@@ -55,6 +55,7 @@ import nl.flotsam.preon.annotation.BoundString;
 import nl.flotsam.preon.annotation.BoundString.ByteConverter;
 import nl.flotsam.preon.annotation.BoundString.Encoding;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.util.TextUtils;
 
 /**
  * A {@link CodecFactory} generating {@link Codecs} capable of generating String
@@ -80,7 +81,6 @@ public class StringCodecFactory implements CodecFactory {
                     return (Codec<T>) new FixedLengthStringCodec(settings
                             .encoding(), expr, settings.match(), settings
                             .converter().newInstance());
-
                 } else {
                     return (Codec<T>) new NullTerminatedStringCodec(settings
                             .encoding(), settings.match(), settings.converter()
@@ -262,9 +262,17 @@ public class StringCodecFactory implements CodecFactory {
 
                 public String getLabel() {
                     StringBuilder builder = new StringBuilder();
-                    builder.append("A number of characters (");
-                    sizeExpr.document(new StringBuilderDocument(builder));
-                    builder.append(") encoded in ");
+                    if (!sizeExpr.isParameterized()
+                            && TextUtils.hasNumberAsText(sizeExpr.eval(null))) {
+                        builder.append(TextUtils.startWithUppercase(TextUtils
+                                .getNumberAsText(sizeExpr.eval(null))));
+                        builder.append(" characters");
+                    } else {
+                        builder.append("A number of characters (");
+                        sizeExpr.document(new StringBuilderDocument(builder));
+                        builder.append(")");
+                    }
+                    builder.append(" encoded in ");
                     builder.append(encoding);
                     if (!"".equals(match)) {
                         builder.append(" matching \"");

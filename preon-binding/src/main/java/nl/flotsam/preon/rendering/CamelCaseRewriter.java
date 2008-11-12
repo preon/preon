@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -36,8 +36,25 @@ package nl.flotsam.preon.rendering;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * An object that will take a camelcase identifier, and break it apart into
+ * different chunks.
+ * 
+ * @author Wilfred Springer (wis)
+ * 
+ */
 public class CamelCaseRewriter implements IdentifierRewriter {
 
+    private boolean startWithUppercase;
+    
+    public CamelCaseRewriter() {
+        startWithUppercase = true;
+    }
+    
+    public CamelCaseRewriter(boolean startWithUppercase) {
+        this.startWithUppercase = startWithUppercase;
+    }
+    
     public String rewrite(String name, boolean startWithCapital) {
         List<String> parts = new ArrayList<String>();
         StringBuilder portion = new StringBuilder();
@@ -75,7 +92,7 @@ public class CamelCaseRewriter implements IdentifierRewriter {
     }
 
     public String rewrite(String name) {
-        return rewrite(name, true);
+        return rewrite(name, startWithUppercase);
     }
 
 }
