@@ -45,6 +45,7 @@ import org.apache.commons.logging.LogFactory;
  * An implementation of {@link BitBuffer} wrapping a {@link ByteBuffer}.
  * 
  * 
+ * @author Bartosz Wieczorek
  * @since Feb 18, 2007
  * 
  */
