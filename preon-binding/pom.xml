@@ -55,6 +55,22 @@
     <plugins>
       <plugin>
         <groupId>com.agilejava.docbkx</groupId>
+        <artifactId>docbkx-fop-support</artifactId>
+        <executions>
+          <execution>
+            <phase>pre-site</phase>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <ansi>true</ansi>
+              <sourceDirectory>${fonts.dir}</sourceDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.agilejava.docbkx</groupId>
         <artifactId>docbkx-maven-plugin</artifactId>
         <executions>
           <execution>
@@ -73,10 +89,43 @@
           <htmlStylesheet>css/docbkx-style.css</htmlStylesheet>
           <alignment>left</alignment>
           <bodyStartIndent>2cm</bodyStartIndent>
+          <bodyFontFamily>Calibri</bodyFontFamily>
+          <titleFontFamily>Calibri</titleFontFamily>
+          <monospaceFontFamily>Consola</monospaceFontFamily>
           <headerRule>0</headerRule>
           <footerRule>0</footerRule>
           <foCustomization>${basedir}/src/docbkx/customizations.xsl</foCustomization>
           <htmlCustomization>${basedir}/src/docbkx/customizations-html.xsl</htmlCustomization>
+          <fonts>
+            <font>
+              <name>Consola</name>
+              <style>normal</style>
+              <weight>normal</weight>
+              <embedFile>${fonts.dir}/consola.ttf</embedFile>
+              <metricsFile>${basedir}/target/fonts/consola-metrics.xml</metricsFile>
+            </font>
+            <font>
+              <name>Calibri</name>
+              <style>normal</style>
+              <weight>normal</weight>
+              <embedFile>${fonts.dir}/calibri.ttf</embedFile>
+              <metricsFile>${basedir}/target/fonts/calibri-metrics.xml</metricsFile>
+            </font>
+            <font>
+              <name>Calibri</name>
+              <style>italic</style>
+              <weight>normal</weight>
+              <embedFile>${fonts.dir}/calibrii.ttf</embedFile>
+              <metricsFile>${basedir}/target/fonts/calibrii-metrics.xml</metricsFile>
+            </font>
+            <font>
+              <name>Calibri</name>
+              <style>normal</style>
+              <weight>bold</weight>
+              <embedFile>${fonts.dir}/calibrib.ttf</embedFile>
+              <metricsFile>${basedir}/target/fonts/calibrib-metrics.xml</metricsFile>
+            </font>
+          </fonts>
           <xincludeSupported>true</xincludeSupported>
           <sectionAutolabel>1</sectionAutolabel>
           <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
@@ -86,4 +135,7 @@
       </plugin>
     </plugins>
   </build>
+  <properties>
+    <fonts.dir>/Users/wilfred/Library/Fonts</fonts.dir>
+  </properties>
 </project>

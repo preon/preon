@@ -100,10 +100,9 @@
       attributes.
     </para>
     <para>
-      It goes without saying that this is not always the desirable
-      result. There are many datatypes that would naturally be encoded
-      in a specific way. Preon allows you to add support for this by
-      implementing the CodecFactory.
+      This may not be what you want. There are many datatypes that
+      have a more natural encoded representation. Preon allows you to
+      add support for this by implementing the CodecFactory.
     </para>
     <para>
       In this chapter, we are going to add support for Dates, relying

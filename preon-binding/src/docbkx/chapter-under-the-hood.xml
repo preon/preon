@@ -69,8 +69,8 @@
       chapter, we already talked about the way you use this
       interface. In fact, we said that you better use the Codecs
       convenience class in all cases. If you do that, then there is
-      actually very little to know about the interface itself. It just
-      magically works. Well, sort of.
+      actually very little to know about the Codec interface
+      itself. It just magically works.
     </para>
     <para>
       However, if you want to extend the framework yourself, then this
@@ -82,17 +82,17 @@
       <?dbfo keep-together="auto"?>
       <title>Codec Interface</title>
       <programlisting language="java"><xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../main/java/nl/flotsam/preon/Codec.java"
+      href="Codec.java"
       parse="text"/></programlisting>
     </figure>
     <para>
-      The <methodname>decode(BitBuffer, ReferenceResolver,
+      The <methodname>decode(BitBuffer, Resolver,
       Builder)</methodname> is obviously the operation that will
-      decode data from the <interfacename>BitBuffer</interfacename> into an
-      instance of <classname>T</classname>. 
+      decode data from the <interfacename>BitBuffer</interfacename>
+      into an instance of <classname>T</classname>.
     </para>
     <para>
-      The <interfacename>ReferenceResolver</interfacename> allows the
+      The <interfacename>Resolver</interfacename> allows the
       <interfacename>Codec</interfacename> to resolve references used
       in Preon annotations.
     </para>
@@ -119,18 +119,18 @@
     </para>
     <para>
       In many cases, your objects will hold references to many other
-      objects. Does that mean that there is a single Codec needs to be
-      able to recursively traverse the object graph and understand how
-      to decode each of the individual members of the objects that it
-      encounters?  
+      objects. Does that mean that a single Codec needs to be able to
+      recursively traverse the object graph and understand how to
+      decode each of the individual members of the objects that it
+      encounters?
     </para>
     <para>
-      I guess the answer to that question is both yes and no. "Yes",
-      since whenever you invoke decode on the Codec, it needs to be
-      able to reproduce all objects that are referenced by the object
-      that is going to be returned. "No", since the Codec does not
-      have to understand all of that itself. It can simply delegate to
-      other Codecs, one for every type of attribute it encounters. 
+      The answer to that question is both yes and no. "Yes", since
+      whenever you invoke decode on the Codec, it needs to be able to
+      reproduce all objects that are referenced by the object that is
+      going to be returned. "No", since the Codec does not have to
+      understand all of that itself. It can simply delegate to other
+      Codecs, one for every type of attribute it encounters.
     </para>
     <para>
       If you are decoding an object, you <emphasis>could</emphasis>
@@ -141,8 +141,8 @@
       other Codecs, which in turn will most likely delegate their work
       to other Codecs, and so on and so forth. This way, the Codec
       both <emphasis>hides</emphasis> a chain of responsibility, but
-      is also able to be a <emphasis>link</emphasis> inside a chain of
-      responsibility.
+      is also able to act as a <emphasis>link</emphasis> inside a
+      chain of responsibility.
     </para>
   </section>
 
@@ -151,47 +151,159 @@
     <para>
       The previous section ended with stating that a single Codec most
       likely delegates to other Codecs, which in turn delegate to
-      other Codecs, etc. The Codecs had to spring in existence at some
-      moment in time. If you are using the Codecs class to create
-      instances of Codec, then that's of course also when the other
-      "sub-Codecs" were created. But how would the Codecs class know
-      which ones to create?
+      other Codecs, etc. Obviously, each Codec has to be constructed
+      before it can be used. All of these instances are created as a
+      result of the create() method on Codecs. But how does the Codecs
+      class know which ones to create?
     </para>
     <para>
-      The answer to that question is: the CodecFactory. The
-      CodecFactory dictates only a single operation. It defines a
-      single operation, accepting both a reference to a type and
-      metadata, and is expected to be able to return Codec from that,
-      or return <literal>null</literal>.
+      As you might have already have guessed by its name, it is of
+      course the CodecFactory. The CodecFactory a single operation,
+      that is expected to be able to return Codec from the context
+      passed in, or return <literal>null</literal>.
     </para>
     <figure id="fig-codecfactory-interface">
       <title>CodecFactory Interface</title>
       <programlisting language="java"><?dbfo keep-together="auto"?><xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="../main/java/nl/flotsam/preon/CodecFactory.java"
+      href="CodecFactory.java"
       parse="text"/></programlisting>
     </figure>
     <para>
-      Every type of Codec that you are going to create, will be
-      created by a CodecFactory. If you are searching the Preon
-      codebase for the different type of Codecs supported by it, then
-      chances are you will stumble across CodecFactories only. And if
-      you want to extend the framework with your own Codecs, the thing
-      you actually need to pass to the Codecs class is a CodecFactory,
-      and not a Codec.
+      Almost every type of Codec you will ever use, will be created by
+      a CodecFactory. If you are searching the Preon codebase for the
+      different type of Codecs supported by it, then chances are you
+      will stumble across CodecFactories only. And if you want to
+      extend the framework with your own Codecs, the thing you
+      actually need to pass to the Codecs class is a CodecFactory, and
+      not a Codec.
     </para>
     <para>
-      I just said that the CodecFactory needs to be able to create a
-      Codec from a type reference and metadata. The metadata parameter
-      is an interesting one. As it turns out, the type of this
-      parameter is AnnotatedElement, which is - as you might know -
-      one of the interfaces implemented by the reflection Field
-      class. The purpose of AnnotatedElement is to provide a general
-      way to access annotations on language elements. This is exactly
-      why CodecFactory accepts annotations too. Because of this
-      parameter, Codecs can be customized based on annotations on the
-      field in which the Codec needs to decode its data.
+      The CodecFactory needs to be able to create a Codec from three
+      parameters passed in. The type of object expected, a socalled
+      ResolverContext and metadata. If the Codec is used to decode
+      data to be injected in a field, then the metadata provides
+      access to the annotations defined on that field<footnote>
+      <para>
+        In general, the CodecFactory should not rely on the assumption
+        that the metadata passed in is based on a field. It should
+        just treat it as a number of hints suggesting how to decode
+        data.
+      </para>
+      </footnote>.
     </para>
-
+    <para>
+      The third parameter (ResolverContext) is a Limbo
+      ReferenceContext. This is the object that supports your
+      CodecFactory in creating references to the context of the field
+      for which it is currently trying to create a reference.
+    </para>
+    <example id="example-things">
+      <title>Expression sample</title>
+    <programlisting><![CDATA[class Stuff {
+  @Bound int nrOfThings;
+  @BoundList(size="nrThings") Thing[] things;
+}]]></programlisting>
+    </example>
+    <para>
+      Let's take the class above as an example, and assume that your
+      CodecFactory needs to see if it is able to construct a Codec for
+      the "things" field. The annotation contains an expression
+      defining the number of "things" in the array. However, the
+      <envar>size</envar> annotation attribute is just a String.
+    </para>
+    <para>
+      In order to be able to turn the expresion "nrOfThings" into
+      something usable, we need to turn that expression into something
+      we can actually evaluate - in this case, a Limbo Expression
+      object. And if there is a problem with this expression, we
+      obviously want to find out early.
+    </para>
+    <figure id="fig-expr-relevance">
+      <title>Expression applied</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="src/docbkx/things-sample.png" width="13cm"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>
+      There are basically two things that could be wrong with the
+      expression: either the expression cannot be interpreted, or the
+      expression contains references to variables not available in the
+      context in which the expression will be evaluated. The
+      ResolverContext supports detecting the latter case. 
+    </para>
+    <para>
+      This is the way it works: whenever your CodecFactory gets a
+      chance to create a Codec based on metadata, type information and
+      a ResolverContext passed in, it will have to use the
+      ResolverContext to create Expression objects. The Expressions
+      class used to create Expression instances accepts a
+      ReferenceContext as a parameter, and ResolverContext is nothing
+      but a special ReferenceContext. (One specific to Preon.)
+      Normally, you would pass the ResolverContext directly, but there
+      are cases in which you could consider replacing or wrapping the
+      ResolverContext<footnote>
+      <para>
+        There are actually cases in which you might want to replace
+        that ResolverContext with another one. Typically when you want
+        to <emphasis>introduce</emphasis> new variables, or if you are
+        basically 'popping' or 'pushing' the stack. (If your current
+        context changes into the context of the attributes type.)
+      </para>
+      </footnote>.
+    </para>
+    <para>
+      So, the first and most important purpose of the ResolverContext
+      is early validation of your expression. The second and also
+      important purpose of the ResolverContext is to facilitate
+      <emphasis>documentation</emphasis> getting generated from your
+      Codec.
+    </para>
+    <para>
+      <emphasis>If</emphasis> your CodecFactory constructs a Codec
+      based on an expression, then the documentation generated by that
+      Codec probably needs to take that into account.
+    </para>
+    <para>
+      In case of the example of <xref linkend="fig-expr-relevance"/>,
+      you would expect a description similar to this: "First you read
+      a 32-bit integer. Then you read a list of items with the size
+      corresponding to the 32-bit integer you just read before."
+    </para>
+    <para>
+      Any type of realistic documentation of this file format needs to
+      include this dependency. You want the documentation to clearly
+      state that the size of the list size is dependent on the 32 bits
+      you just read before. That last bit "the 32 bits you just read
+      before" is encapsulated in a Reference. And the ResolverContext
+      allows the Expressions class to obtain these references without
+      having to analyze the entire class again.
+    </para> 
+    <para>
+      So, the Expression "nrOfElements" will be parsed into a
+      Reference to the nrOfElements attribute defined before. It's the
+      responsibility of the Reference to render itself in a useful
+      way. The Codec or CodecFactory does not even
+      <emphasis>try</emphasis> to make sense out of it. It just relies
+      on the ResolverContext to return a proper reference.
+    </para>
+    <programlisting><![CDATA[
+Expression expr = Expressions.create("nrOfElements", resolverContext);
+// Potentially results in" 
+// "the number of elements defined before"
+expr.document(....); 
+    ]]></programlisting>
+    <para>
+      Now, this may be one of the areas in which the flexibility is
+      getting a litle in the way of understanding what's going on
+      here. However, just to comfort you a little, it's just object
+      orientation. That's all it is. The Reference
+      <emphasis>itself</emphasis> decides how it needs to be
+      represented. And the type of ResolverContext passed to the Codec
+      decides how these References are getting constructed. With that,
+      sky is the limit.
+    </para>
     <section>
       <title>CompoundCodecFactory</title>
       <para>
@@ -203,7 +315,7 @@
         of other CodecFactories. When asked for construction of a Codec,
         it will simply ask all of the factories it references and try
         each of them to construct a Codec. If all fails, it will simply
-        return <code>null</code>, just what you would expect for a
+        return <literal>null</literal>, just what you would expect for a
         CodecFactory.
       </para>
     </section>
@@ -556,7 +668,7 @@
         Codecs reading the records data should
         <emphasis>not</emphasis> be required to know the amount of
         data to be expected. As you might have seen before, the Codec
-        contracted doesn't support passing in the maximum number of
+        constructed doesn't support passing in the maximum number of
         bytes to be read, or anything. And having to implement that
         logic for all TLV record readers seemed to be a waste.
       </para>

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Limbo">
+<project name="Preon">
   <skin>
     <groupId>nl.flotsam.kubrik</groupId>
     <artifactId>kubrik-skin</artifactId>
@@ -7,6 +7,17 @@
   </skin>
 
   <body>
+
+    <menu name="Documentation">
+      <item name="Under the Hood" 
+            href="http://www.scribd.com/doc/7988375/Preon-Under-the-Hood"/>
+      <item name="J-Fall Slides"
+            href="http://www.slideshare.net/springerw/preon-jfall-2008-presentation-746831?type=powerpoint"/>
+    </menu> 
+    <menu name="Other">
+      <item name="Donations"
+            href="http://sourceforge.net/donate/index.php?group_id=241871"/>
+    </menu>
 
     <menu ref="modules"/>
     <menu ref="reports"/>
