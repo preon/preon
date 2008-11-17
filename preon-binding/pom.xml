@@ -85,7 +85,7 @@
           <generateIdAttributes>1</generateIdAttributes>
           <cssDecoration>1</cssDecoration>
           <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
-          <includes>whitepaper.xml,chapter-under-the-hood.xml</includes>
+          <includes>chapter-introduction.xml,chapter-under-the-hood.xml</includes>
           <htmlStylesheet>css/docbkx-style.css</htmlStylesheet>
           <alignment>left</alignment>
           <bodyStartIndent>2cm</bodyStartIndent>
