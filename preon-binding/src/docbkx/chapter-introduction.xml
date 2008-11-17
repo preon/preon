@@ -275,13 +275,13 @@ Rectangle rect = Codecs.decode(codec, buffer);
     <example id="example-rectangle-colored">
       <title>Colored Rectangle</title>
       <programlisting><![CDATA[class Rectangle {
-      @Bound private RgbColor fillColor;
-      @Bound private RgbColor borderColor;
-      @Bound private int x1;
-      @Bound private int y1;
-      @Bound private int x2;
-      @Bound private int y2;
-      }]]></programlisting>
+  @Bound private RgbColor fillColor;
+  @Bound private RgbColor borderColor;
+  @Bound private int x1;
+  @Bound private int y1;
+  @Bound private int x2;
+  @Bound private int y2;
+}]]></programlisting>
     </example>
   </section>
   <section>
