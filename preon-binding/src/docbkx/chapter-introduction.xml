@@ -84,13 +84,12 @@ exception statement from your version.
     </para>
     <example id="example-rectangle">
       <title>First data structure</title>
-      <programlisting><![CDATA[
-      class Rectangle {
-      private int x1;
-      private int y1;
-      private int x2;
-      private int y2;
-      }
+      <programlisting><![CDATA[class Rectangle {
+private int x1;
+private int y1;
+private int x2;
+private int y2;
+}
       ]]></programlisting>
     </example>
     <para>
@@ -99,14 +98,14 @@ exception statement from your version.
       would decode a Rectangle from a file:
     </para>
     <programlisting><![CDATA[
-    byte[] buffer = new byte[] {
-    0, 0, 0, 1,
-    0, 0, 0, 2,
-    0, 0, 0, 3, 
-    0, 0, 0, 4
-    };
-    Codec<Rectangle> codec = Codecs.create(Rectangle.class);
-    Rectangle rect = Codecs.decode(codec, buffer); 
+byte[] buffer = new byte[] {
+  0, 0, 0, 1,
+  0, 0, 0, 2,
+  0, 0, 0, 3, 
+  0, 0, 0, 4
+};
+Codec<Rectangle> codec = Codecs.create(Rectangle.class);
+Rectangle rect = Codecs.decode(codec, buffer); 
     ]]></programlisting>
     <para>
       That's how easy it is. Although... To be perfectly honest, the
@@ -120,14 +119,12 @@ exception statement from your version.
     </para>
     <example id="example-rectangle-annoted">
       <title>First data structure annotated</title>
-      <programlisting><![CDATA[
-      class Rectangle {
-      @Bound private int x1;
-      @Bound private int y1;
-      @Bound private int x2;
-      @Bound private int y2;
-      }
-      ]]></programlisting>
+      <programlisting><![CDATA[class Rectangle {
+  @Bound private int x1;
+  @Bound private int y1;
+  @Bound private int x2;
+  @Bound private int y2;
+}]]></programlisting>
     </example>
     <para>
       If you run the same code now, you will get a populated
@@ -157,11 +154,11 @@ exception statement from your version.
     <example id="example-two-bytes">
       <title>Encoding integers using two bytes</title>
       <programlisting><![CDATA[class Rectangle {
-      @BoundNumber(size="16") private int x1;
-      @BoundNumber(size="16") private int y1;
-      @BoundNumber(size="16") private int x2;
-      @BoundNumber(size="16") private int y2;
-      }]]></programlisting>
+  @BoundNumber(size="16") private int x1;
+  @BoundNumber(size="16") private int y1;
+  @BoundNumber(size="16") private int x2;
+  @BoundNumber(size="16") private int y2;
+}]]></programlisting>
     </example>
     <para>
       <xref linkend="example-two-bytes"/> changes the example given
@@ -172,11 +169,11 @@ exception statement from your version.
     <example id="example-two-bytes-little-endian">
       <title>Encoding integers using little endian byte order</title>
       <programlisting><![CDATA[class Rectangle {
-      @BoundNumber(byteOrder=LittleEndian) private int x1;
-      @BoundNumber(byteOrder=LittleEndian) private int y1;
-      @BoundNumber(byteOrder=LittleEndian) private int x2;
-      @BoundNumber(byteOrder=LittleEndian) private int y2;
-      }]]></programlisting>
+  @BoundNumber(byteOrder=LittleEndian) private int x1;
+  @BoundNumber(byteOrder=LittleEndian) private int y1;
+  @BoundNumber(byteOrder=LittleEndian) private int x2;
+  @BoundNumber(byteOrder=LittleEndian) private int y2;
+}]]></programlisting>
     </example>
   </section>
   <section>
@@ -186,16 +183,15 @@ exception statement from your version.
       already supports much more than that. Here are some examples:
     </para>
     <programlisting><![CDATA[
-    // Will just read one bit, interpreting 1 as true, and 0 als false
-    @Bound boolean visible;
+// Will just read one bit, interpreting 1 as true, and 0 als false
+@Bound boolean visible;
 
-    // Reads a String from a fixed number of bytes
-    @BoundString(size="10") String value;
+// Reads a String from a fixed number of bytes
+@BoundString(size="10") String value;
 
-    // Reads a bit from the buffer, and interprets it as an enum value, 
-    // interpreting the number as its ordinal value.
-    @BoundNumber(size="1") Type type;
-    ]]></programlisting>
+// Reads a bit from the buffer, and interprets it as an enum value, 
+// interpreting the number as its ordinal value.
+@BoundNumber(size="1") Type type;]]></programlisting>
     <para>
       The first example is a good example of convention over
       configuration; an @Bound annoation on a boolean attribute will
@@ -234,19 +230,18 @@ exception statement from your version.
       solution?
     </para>
     <programlisting><![CDATA[
-    @Bound int fillRed;
-    @Bound int fillGreen;
-    @Bound int fillBlue;
-    @Bound int borderRed;
-    @Bound int borderGreen;
-    @Bound int borderBlue;
-    ]]></programlisting>
+@Bound int fillRed;
+@Bound int fillGreen;
+@Bound int fillBlue;
+@Bound int borderRed;
+@Bound int borderGreen;
+@Bound int borderBlue;]]></programlisting>
     <para>
       ... or would you rather have this?
     </para>
     <programlisting><![CDATA[
-    @Bound RgbColor fillColor;
-    @Bound RgbColor borderColor;
+@Bound RgbColor fillColor;
+@Bound RgbColor borderColor;
     ]]></programlisting>
     <para>
       I hope you agree with me that the second option would be the
@@ -318,23 +313,23 @@ exception statement from your version.
     <example id="example-shape-inheritance">
       <title>Shape Inheritance</title>
       <programlisting><![CDATA[
-      class Shape {
-      @Bound fillColor;
-      @Bound lineColor;
-      }
+class Shape {
+  @Bound fillColor;
+  @Bound lineColor;
+}
 
-      class Rectangle extends Shape {
-      @Bound private int x1;
-      @Bound private int y1;
-      @Bound private int x2;
-      @Bound private int y2;
-      }
+class Rectangle extends Shape {
+  @Bound private int x1;
+  @Bound private int y1;
+  @Bound private int x2;
+  @Bound private int y2;
+}
 
-      class Circle extends Shape {
-      @Bound int centerX;
-      @Bound int centerY;
-      @Bound int radius;
-      }]]></programlisting>
+class Circle extends Shape {
+  @Bound int centerX;
+  @Bound int centerY;
+  @Bound int radius;
+}]]></programlisting>
     </example>
     <para>
       When Preon is required to decode a subclass, it will always
@@ -344,7 +339,7 @@ exception statement from your version.
     </para>
   </section>
   <section>
-    <title>Sequences</title>
+    <title>Lists</title>
     <para>
       The 'struct'-type of support highlighted in the previous
       sections is an important concept, but not sufficient. We also
@@ -361,10 +356,10 @@ exception statement from your version.
       you could use code like this:
     </para>
     <programlisting><![CDATA[
-    class PseudoMondriaan {
-    @BoundList(type=Rectangle.class, size="20") 
-    Rectangle[] rectangles;
-    }]]></programlisting>
+class PseudoMondriaan {
+  @BoundList(type=Rectangle.class, size="20") 
+  Rectangle[] rectangles;
+}]]></programlisting>
     <para>
       The code given above simply states that - whenever you want to
       decode a PseudoMondriaan, read 20 Rectangle instances
@@ -380,8 +375,215 @@ exception statement from your version.
     </para>
   </section>
   <section>
-    <title>Conditions</title>
+    <title>Lazy loading lists</title>
     <para>
+      Arrays are not the only type of lists supported by default;
+      Preon also supports Lists (the java.util.List) kind, as you
+      might have expected. There is however a difference with the way
+      it treats Lists.
     </para>
+    <para>
+      Whenever Preon decodes a List of items from the bit buffer,
+      there is a chance it will inject a lazy-loading List into the
+      List type attribute instead of fully-populated eagerly loaded
+      List instance. I say there is 'a chance', since it really
+      depends on a number of conditions if it will do so. The actual
+      conditions are quite complex, but they can be summarized as "the
+      principle of the least surprise."
+    </para>
+    <programlisting><![CDATA[
+class PseudoMondriaan {
+  @BoundList(size="20", type=Rectangle.class)
+  private List<Rectangle> rectangles;
+}
+    ]]></programlisting>
+    <para>
+      Preon has a preference for loading data lazily. In the above
+      case, the size of each Rectangle instance is known in
+      advance. In fact, we know that the number of bits occupied by
+      the entire List will be 20 times the size of single
+      Rectangle. And we also know that - in order to get the third
+      element - we just need to skip over the first two elements (the
+      number of bits of a single Rectangle element, multiplied by
+      two). 
+    </para>
+    <para>
+      Using a lazy loading List is in the above case probably a fairly
+      efficient thing to do. There are other cases in which this would
+      be much harder, typically when the List item's size is
+      determined at runtime. In cases like these, Preon will
+      automatically pick an alternative Codec, most likely one that
+      eagerly loads the data.
+    </para>
+  </section>
+  <section id="section-expressions">
+    <title>Expressions</title>
+    <para>
+      By now, you probably wondered a couple of times why the size
+      attribute on @BoundList and @BoundString accepts String values
+      instead of numbers. It seems rather a wasteful, and the compiler
+      is not going to help you to make sure you enter numeric values
+      in these situations.
+    </para>
+    <para>
+      The truth is, these attributes expect more than just numeric
+      values: a lot of annotations in Preon allow you to pass in
+      expressions, instead of numeric values. The size attribute on
+      @BoundList and @BoundString are just examples of cases in which
+      these expresions are accepted.
+    </para>
+    <programlisting><![CDATA[class PseudoMondriaan {
+  @Bound int numberOfRectangles;
+  @BoundList(size="numberOfRectangles", type=Rectangle.class)
+    List<Rectangle> rectangles;
+}]]></programlisting>
+    <para>
+      The example above is still a fairly simple example. It refers to
+      a variable called numberOfRectangles, and it's now hard to guess
+      how this variable is getting resolved: by default, Preon will
+      try to resolve variables into bound attributes defined
+      before. (There are other types of references, but let's stick
+      with this simple example for now.)
+    </para>
+    <para>
+      Now, you can obviously construct more complex expressions than
+      this. And in order to do that, you can use a range of arithmetic
+      or logical operators. Here are some examples:
+    </para>
+    <programlisting><![CDATA[
+@BoundList(size="width * height") byte[] pixels;
+@BoundNumber(size="nrBits * 2") int value;
+// Clearly pointless, but you know...
+@BoundString(size="x * (y + z) / 23 ^ t");
+    ]]></programlisting>
+  </section>
+  <section>
+    <title>Limbo</title>
+    <para>
+      The expression language used in the examples of the previous
+      language is Limbo. Limbo is a fairly small expression language,
+      and is explicitly aiming at <emphasis>not</emphasis> being as
+      feature rich as JSP's EL or OGNL. And there is a specific
+      reason why.
+    </para>
+    <para>
+      First of all, JSP's EL and OGNL allow you to call methods on
+      objects. Limbo does <emphasis>not</emphasis> allow you to call
+      methods, because <emphasis>it wants to capture the meaning of
+      the expression explicitly</emphasis>. And it would be impossible
+      to capture the meaning of your expression if it would involve
+      operations defined outside of Limbo itself. So, Limbo works on
+      data only, and the number of operators is finite.
+    </para>
+    <para>
+      Limbo is not just about evaluating expressions. It also wants to
+      capture those expressions in such a way that it will be able to
+      generate <emphasis>human-readable</emphasis> expressions from it
+      afterwards. So, if these would be the Limbo expressions:
+    </para>
+    <screen><![CDATA[
+width * height
+a^2 + b^2 == c^2
+    ]]></screen>
+    <para>
+      ... then Limbo wants to be capable of turning this into this:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          width of the image times the height of the image
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          the sum of a to the power of 2 and b to the power of two
+          equals c to the power of two
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>
+      In a couple of sections, we will see why this is relevant.
+    </para>
+  </section>
+  <section>
+    <title>Conditionals</title>
+    <para>
+      The size attribute defined on the @BoundList annotation
+      obviously acts as a type of control mechanism. However, in order
+      to be able to deal with the majority of encoding formats, we
+      need to introduce a couple of other control structures, in order
+      to support with conditionals.
+    </para>
+    <para>
+      Now, the number of places in which you would be able to use a
+      condition is again open-ended. Preon is extensible, so you can
+      define your own annotations using conditions wherever you
+      like. However, the framework supports some by default, and we
+      are going to mention two here.
+    </para>
+    <para>
+      The first one is the @If annotations. By putting this annotation
+      in front of an attribute, you basically state that - whatever
+      attribute is following - it should only be decoded if the
+      condition inside the @If holds.
+    </para>
+    <para>
+      Now, let's see what that means in our example. Let's just say
+      that a Shape allows you to specify that you want a dashed
+      border, and that it defines some additional attributes allowing
+      you to control how the dashes are drawn.
+    </para>
+    <programlisting><![CDATA[
+class Shape {
+@Bound Color fillColor;
+@Bound Color borderColor;
+@Bound boolean dashed;
+@If("dashed")
+@Bound int spaceBetweenDashes;
+}
+    ]]></programlisting>
+  </section>
+  <section>
+    <title>Complex references</title>
+    <para>
+      <xref linkend="section-expressions"/> already mentioned that
+      Preon does not limit you to refer to other bound attributes on
+      the same class only. It also supports the dot operator (to
+      access attributes of objects referenced) and the item operator (
+      to access items in list-type attributes). <xref
+      linkend="example-valid-references"/> lists some sample references.
+    </para>
+    <example id="example-valid-references">
+      <title>Valid references</title>
+      <programlisting><![CDATA[
+a.b.c
+a.b[0].d
+a.b[e].d
+a.b[e * 21].d
+    ]]></programlisting>
+    </example>
+    <para>
+      Another thing that Preon allows you to do is to refer to the
+      <firstterm>outer</firstterm> context. <xref
+      linkend="example-outer-context"/> relies on this to refer to the
+      <envar>bitsPerColorComponent</envar> variable in the Image, from
+      within the RgbColor object.
+    </para>
+    <example id="example-outer-context">
+      <title>Outer context references</title>
+      <programlisting><![CDATA[
+public class Image {
+  @Bound int bitsPerColorComponent;
+  @Bound int nrColors;
+  @BoundList(size="nrColors") RgbColor[] colors;
+  ...
+  public class RgbColor {
+    @BoundNumber(size="outer.bitsPerColorComponent") red;
+    @BoundNumber(size="outer.bitsPerColorComponent") green;
+    @BoundNumber(size="outer.bitsPerColorComponent") blue;
+  }
+}
+      ]]></programlisting>
+    </example>
   </section>
 </article>
