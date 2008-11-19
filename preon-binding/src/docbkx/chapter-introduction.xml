@@ -36,16 +36,28 @@ exception statement from your version.
 
   <articleinfo>
     <title>Introduction</title>
+    <author>
+      <firstname>Wilfred</firstname>
+      <surname>Springer</surname>
+    </author>
   </articleinfo>
   
   <section>
     <title>Introduction</title>
     <para>
       Decoding a compressed data format in Java can be quite a mundane
-      task. This chapter will hopefully convince you that it doesn't
-      need to be all that complicated. To that end, we are going to
-      work through an example, in order to guide you doing your first
-      steps using Preon.
+      task. This chapter will hopefully convince you that it does not
+      need to be all that complicated. Preon aims to provide a simple
+      and powerful solution.
+    </para>
+    <para>
+      This chapter will introduce the most important principles behind
+      Preon. Don't expect this chapter to be an exhaustive reference
+      guide for everything Preon has to offer. Completeness is not
+      considered to be achieved if there is nothing else to add; it is
+      considered to be achieved if there is nothing left to be taken
+      out. The sole objective of this chapter is to prevent surprises
+      once you start to use Preon.
     </para>
   </section>
   <section>
@@ -117,7 +129,7 @@ Rectangle rect = Codecs.decode(codec, buffer);
       the x1, y1, x2 and y2 fields, you will need to explicitly
       state it in the definition of the data structure, like this:
     </para>
-    <example id="example-rectangle-annoted">
+    <example id="example-rectangle-annotated">
       <title>First data structure annotated</title>
       <programlisting><![CDATA[class Rectangle {
   @Bound private int x1;
@@ -229,8 +241,7 @@ Rectangle rect = Codecs.decode(codec, buffer);
       it to have a fill and border color as well? Would this be the
       solution?
     </para>
-    <programlisting><![CDATA[
-@Bound int fillRed;
+    <programlisting><![CDATA[@Bound int fillRed;
 @Bound int fillGreen;
 @Bound int fillBlue;
 @Bound int borderRed;
@@ -239,10 +250,8 @@ Rectangle rect = Codecs.decode(codec, buffer);
     <para>
       ... or would you rather have this?
     </para>
-    <programlisting><![CDATA[
-@Bound RgbColor fillColor;
-@Bound RgbColor borderColor;
-    ]]></programlisting>
+    <programlisting><![CDATA[@Bound RgbColor fillColor;
+@Bound RgbColor borderColor;]]></programlisting>
     <para>
       I hope you agree with me that the second option would be the
       preferred one. And it turns out this is possible. If you
@@ -254,10 +263,10 @@ Rectangle rect = Codecs.decode(codec, buffer);
     <example id="example-rgb-color">
       <title>RGB Color</title>
       <programlisting><![CDATA[class RgbColor {
-      @Bound int red;
-      @Bound int green;
-      @Bound int blue;
-      }]]></programlisting>
+  @Bound int red;
+  @Bound int green;
+  @Bound int blue;
+}]]></programlisting>
     </example>
     <para>
       It's imporant to emphasize that - from a processing
@@ -288,7 +297,7 @@ Rectangle rect = Codecs.decode(codec, buffer);
     <title>Inheritance</title>
     <para>
       In the previous section (<xref
-      linkend="example-composite-content"/>), we saw one way of
+      linkend="section-composite-content"/>), we saw one way of
       factoring out commonalities. Preon allows you to factor out
       recurring snippets of content and use those definitions at
       various places. However, it is <emphasis>not</emphasis> the
@@ -296,7 +305,7 @@ Rectangle rect = Codecs.decode(codec, buffer);
       another way.
     </para>
     <para>
-      <xref linkend="example-colored-rectangle"/> defines just one
+      <xref linkend="example-rectangle-colored"/> defines just one
       shape. And of course, that shape also defines some color
       attributes. But what if your application defines more
       shapes. And what if you want all of those shapes to define the
@@ -370,8 +379,8 @@ class PseudoMondriaan {
       Now, it is of course questionable if it is realistic to expect
       that every PseudoMondriaan contains exactly 20
       rectangles. However, the @BoundList's size attribute also
-      takes expressions that are evaluated at runtime. More on that
-      later on.
+      takes expressions that are evaluated at runtime. More on that in
+      <xref linkend="section-expressions"/>.
     </para>
   </section>
   <section>
@@ -457,14 +466,13 @@ class PseudoMondriaan {
 @BoundString(size="x * (y + z) / 23 ^ t");
     ]]></programlisting>
   </section>
-  <section>
+  <section id="section-limbo">
     <title>Limbo</title>
     <para>
       The expression language used in the examples of the previous
       language is Limbo. Limbo is a fairly small expression language,
       and is explicitly aiming at <emphasis>not</emphasis> being as
-      feature rich as JSP's EL or OGNL. And there is a specific
-      reason why.
+      feature rich as JSP's EL or OGNL, and for good reason.
     </para>
     <para>
       First of all, JSP's EL and OGNL allow you to call methods on
@@ -481,14 +489,12 @@ class PseudoMondriaan {
       generate <emphasis>human-readable</emphasis> expressions from it
       afterwards. So, if these would be the Limbo expressions:
     </para>
-    <screen><![CDATA[
-width * height
-a^2 + b^2 == c^2
-    ]]></screen>
+    <screen><![CDATA[width * height
+a^2 + b^2 == c^2]]></screen>
     <para>
       ... then Limbo wants to be capable of turning this into this:
     </para>
-    <itemizedlist>
+    <itemizedlist spacing="compact">
       <listitem>
         <para>
           width of the image times the height of the image
@@ -535,11 +541,11 @@ a^2 + b^2 == c^2
     </para>
     <programlisting><![CDATA[
 class Shape {
-@Bound Color fillColor;
-@Bound Color borderColor;
-@Bound boolean dashed;
-@If("dashed")
-@Bound int spaceBetweenDashes;
+  @Bound Color fillColor;
+  @Bound Color borderColor;
+  @Bound boolean dashed;
+  @If("dashed")
+  @Bound int spaceBetweenDashes;
 }
     ]]></programlisting>
   </section>
@@ -585,5 +591,55 @@ public class Image {
 }
       ]]></programlisting>
     </example>
+  </section>
+  <section>
+    <title>Documentation</title>
+    <para>
+      Various sections in this chapter already alluded to the fact
+      that Preon aims at capturing dependencies between different
+      pieces of data explicitly, in order to be able to generate
+      documentation. If this is the first time you read about Preon,
+      you might wonder what that was all about.
+    </para>
+    <para>
+      Preon was born out of unease with an existing situation. In that
+      existing situation, one guy was responsible for the software for
+      decoding a complicated file format, while another was
+      responsible for encoding data; both of them were responsible to
+      keep documentation in sync. In the end, everything turned to be
+      out of sync. Keeping the encoder in sync with the decoder was
+      hard, and the documentation was always out of whack.
+    </para>
+    <para>
+      Preon aims to change all of that: it set of to provide a
+      framework in which you specify the encoding format once, and get
+      decoders, encoders <emphasis>and documentation</emphasis> for
+      free.
+    </para>
+    <para>
+      So, how does it work? Well, if you remember the first example in
+      this chapter, we constructed a Codec and used a Codec using the
+      Codecs class, like this:
+    </para>
+    <programlisting><![CDATA[Codec<Rectangle> codec = Codecs.create(Rectangle.class);
+Rectangle rect = Codecs.decode(codec, buffer);]]></programlisting>
+    <para>
+      Generating documentation just requires using another operation
+      on Codecs:
+    </para>
+    <programlisting><![CDATA[Codec<Rectangle> codec = Codecs.create(Rectangle.class);
+Codecs.document(codec, DocumentType.Html, new File(...);]]></programlisting>
+    <para>
+      When you apply that to <xref
+      linkend="example-shape-inheritance"/>, this is what you get:
+    </para>
+    <figure>
+      <title>Sample report</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata width="9cm" fileref="src/docbkx/report.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
   </section>
 </article>
