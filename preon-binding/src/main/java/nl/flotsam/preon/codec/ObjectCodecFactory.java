@@ -363,10 +363,10 @@ public class ObjectCodecFactory implements CodecFactory {
                     Purpose purpose = type.getAnnotation(Purpose.class);
                     if (purpose != null && purpose.value() != null) {
                         para.text(purpose.value());
-                        para.text(" (Find details ");
-                        para.link(getLabel(), "here");
-                        para.text(".)");
                     }
+                    para.text(" (Find details ");
+                    para.link(getLabel(), "here");
+                    para.text(".)");
                     return para;
                 }
 

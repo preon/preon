@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -33,6 +33,7 @@
 
 package nl.flotsam.preon.codec;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.Date;
 
@@ -41,7 +42,6 @@ import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.codec.CachingCodecFactory;
 
 import org.easymock.EasyMock;
-
 
 import junit.framework.TestCase;
 
@@ -68,17 +68,19 @@ public class CachingCodecFactoryTest extends TestCase {
      * for identical requests.
      */
     public void testCachingStrategy() {
-        EasyMock.expect(delegate.create(metadata, String.class, null)).andReturn(
-                codec1);
-        EasyMock.expect(delegate.create(metadata, Date.class, null))
-                .andReturn(codec2);
-        EasyMock.replay(delegate, codec1, codec2);
+        EasyMock.expect(delegate.create(metadata, String.class, null))
+                .andReturn(codec1);
+        EasyMock.expect(delegate.create(metadata, Date.class, null)).andReturn(
+                codec2);
+        EasyMock.expect(metadata.getAnnotations()).andReturn(new Annotation[0])
+                .anyTimes();
+        EasyMock.replay(metadata, delegate, codec1, codec2);
         CachingCodecFactory factory = new CachingCodecFactory(delegate);
         assertEquals(codec1, factory.create(metadata, String.class, null));
         assertEquals(codec2, factory.create(metadata, Date.class, null));
         Codec<String> cacheRef = factory.create(metadata, String.class, null);
         assertNotNull(cacheRef);
-        EasyMock.verify(delegate, codec1, codec2);
+        EasyMock.verify(metadata, delegate, codec1, codec2);
     }
 
 }

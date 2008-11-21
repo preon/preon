@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -33,6 +33,7 @@
 
 package nl.flotsam.preon.codec;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,7 +52,7 @@ import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.buffer.BitBuffer;
-
+import nl.flotsam.preon.util.AnnotationUtils;
 
 /**
  * An implementation of the {@link CodecFactory} interface that will prevent the
@@ -237,8 +238,8 @@ public class CachingCodecFactory implements CodecFactory {
             } else {
                 Key key = (Key) obj;
                 // TODO: Add ResolverContext
-                return ((metadata == null && key.metadata == null) || metadata
-                        .equals(key.metadata))
+                return ((metadata == null && key.metadata == null) || AnnotationUtils
+                        .equivalent(metadata, key.metadata))
                         && ((type == null && key.type == null) || type
                                 .equals(key.type));
             }
@@ -248,7 +249,10 @@ public class CachingCodecFactory implements CodecFactory {
         public int hashCode() {
             // TODO: Add ResolverContext
             int result = 7;
-            result = result * 31 + (metadata == null ? 0 : metadata.hashCode());
+            result = result
+                    * 31
+                    + (metadata == null ? 0 : AnnotationUtils
+                            .calculateHashCode(metadata));
             result = result * 31 + (type == null ? 0 : type.hashCode());
             return result;
         }
