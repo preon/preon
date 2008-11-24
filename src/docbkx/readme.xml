@@ -1,0 +1,72 @@
+<article>
+  <title>README</title>
+  <subtitle><?eval ${project.version}?></subtitle>
+  <para>
+    <?eval ${project.description}?>
+  </para>
+  <bridgehead>Current Status</bridgehead>
+  <para>
+    <?eval ${project.name}?> is not released yet. There are a couple
+    of known issues that will have to be resolved, and some interface
+    choices that need to be clarified. Version 1.0 of Preon is
+    expected to be released in Q1 2009. 
+  </para>
+  <bridgehead>Limitations</bridgehead>
+  <para>
+    Not listed here, until version 1.0 is released.
+  </para>
+  <bridgehead>Contents</bridgehead>
+  <para>
+    The binary distribution of <?eval ${project.name}?> includes two
+    Preon libraries in <filename>lib</filename>. 
+  </para>
+  <variablelist>
+    <varlistentry>
+      <term><filename>preon-bitbuffer-<?eval ${project.version}?>.jar</filename></term>
+      <listitem>
+        <para>
+          The library providing a ByteBuffer-alike abstraction for
+          accessing potentially non-byte-aligned sequences of bits,
+          and a number of implementations.
+        </para>
+      </listitem>
+    </varlistentry>
+    <varlistentry>
+      <term><filename>preon-binding-<?eval ${project.version}?></filename></term>
+      <listitem>
+        <para>
+          The library providing the classes, interfaces and
+          annotations for binding a Java-based data structure to a
+          binary encoded representation.
+        </para>
+      </listitem>
+    </varlistentry>
+  </variablelist>
+  <para>
+    The directory <filename>lib/ext</filename> includes additional
+    libraries that may be required to use <?eval ${project.name}?>,
+    depending on your needs.
+  </para>
+  <para>
+    The directory <filename>doc</filename> includes a number of PDF
+    documents that will hopefully some grow into a full manual. It
+    also includes the Javadoc documentation of all Preon classes and
+    interfaces.
+  </para>
+  <bridgehead>License</bridgehead>
+  <para>
+    <?eval ${project.name}?> is licensed under a GNU General Public
+    License, version 2, with the Classpath Exception. If this license
+    does not meet your requirements, other licenses are
+    negotiable. 
+  </para>
+  <bridgehead>Distribution</bridgehead>
+  <para>
+    The full distribution of <?eval ${project.name}?> can be
+    downloaded from <ulink
+    url="http://sourceforge.net/projects/preon/"/>. However, it may be
+    easier to point Maven to the snapshot repository, at <ulink
+    url="http://preon.sourceforge.net/snapshots/"/>. You are allowed
+    to distribute <?eval ${project.name}?> through a Maven repository.
+  </para>
+ </article>

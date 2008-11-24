@@ -1,0 +1,65 @@
+README
+
+  1.0-SNAPSHOT
+
+   --------------------------------------------------------------------------
+
+   Preon aims to provide a framework for dealing with binary encoded data; or
+   more specifically, it aims to deal with situations in which bytes are
+   considered to be overkill. The project is named after the "point-like"
+   particles, conceived to be subcomponents of quarks and leptons. Let's just
+   say very small particles that you don't see with the naked eye, but you
+   probably rely on them without knowing.
+
+Current Status
+
+   Preon is not released yet. There are a couple of known issues that will
+   have to be resolved, and some interface choices that need to be clarified.
+   Version 1.0 of Preon is expected to be released in Q1 2009.
+
+Limitations
+
+   Not listed here, until version 1.0 is released.
+
+Contents
+
+   The binary distribution of Preon includes two Preon libraries in lib.
+
+   preon-bitbuffer-1.0-SNAPSHOT.jar
+
+           The library providing a ByteBuffer-alike abstraction for accessing
+           potentially non-byte-aligned sequences of bits, and a number of
+           implementations.
+
+   preon-binding-1.0-SNAPSHOT
+
+           The library providing the classes, interfaces and annotations for
+           binding a Java-based data structure to a binary encoded
+           representation.
+
+   The directory lib/ext includes additional libraries that may be required
+   to use Preon, depending on your needs.
+
+   The directory doc includes a number of PDF documents that will hopefully
+   some grow into a full manual. It also includes the Javadoc documentation
+   of all Preon classes and interfaces.
+
+License
+
+   Preon is licensed under a GNU General Public License, version 2, with the
+   Classpath Exception. If this license does not meet your requirements,
+   other licenses are negotiable.
+
+Distribution
+
+   The full distribution of Preon can be downloaded from
+   [1]http://sourceforge.net/projects/preon/. However, it may be easier to
+   point Maven to the snapshot repository, at
+   [2]http://preon.sourceforge.net/snapshots/. You are allowed to distribute
+   Preon through a Maven repository.
+
+References
+
+   Visible links
+   1. http://sourceforge.net/projects/preon/
+   2. http://preon.sourceforge.net/snapshots/
