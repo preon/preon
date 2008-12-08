@@ -147,7 +147,6 @@ public class StandardBindingFactory implements BindingFactory {
         public <T, V extends ParaContents<T>> V describe(V contents) {
             CodecDescriptor codecDescriptor = codec.getCodecDescriptor();
             codecDescriptor.putOneLiner(contents);
-            contents.text(".");
             return contents;
         }
 

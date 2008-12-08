@@ -260,16 +260,23 @@ public class BindingsContext implements ObjectResolverContext {
          */
         @SuppressWarnings("unchecked")
         public Reference<Resolver> selectAttribute(String name) {
-            Reference<Resolver>[] references = new Reference[binding.getTypes().length];
-            int i = 0;
-
+            Reference<Resolver>[] template = new Reference[0];
+            List<Reference<Resolver>> references = new ArrayList<Reference<Resolver>>();
             for (Class<?> bound : binding.getTypes()) {
-                references[i] = new PropertyReference(this, bound, name,
-                        BindingsContext.this, false);
-                i++;
+                try {
+                    references.add(new PropertyReference(this, bound, name,
+                            BindingsContext.this, false));
+                } catch (BindingException be) {
+                    // Ok, let's skip this one.
+                }
             }
-
-            return new MultiReference<Resolver>(references);
+            if (references.size() == 0) {
+                throw new BindingException("Attribute " + name
+                        + " not defined for any type.");
+            } else {
+                return new MultiReference<Resolver>(references
+                        .toArray(template));
+            }
         }
 
         /*

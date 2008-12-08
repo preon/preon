@@ -35,7 +35,7 @@ exception statement from your version.
 <article>
 
   <articleinfo>
-    <title>Introduction</title>
+    <title>Preon Introduction</title>
     <author>
       <firstname>Wilfred</firstname>
       <surname>Springer</surname>
@@ -84,7 +84,7 @@ exception statement from your version.
       load data from a sequence of bits and reconstruct a data
       structure? What is the recipe? It turns out, the recipe is the
       data structure itself; it's just classes and attributes,
-      period. And in case it the information provided by the data
+      period. And in case the information provided by the data
       structure is not enough, we will just augment it using
       annotations.
     </para>
@@ -105,9 +105,9 @@ private int y2;
       ]]></programlisting>
     </example>
     <para>
-      Let's just say that the data would be encoded on disk as four
-      consecutive 32-bit integers. In that case, this is the way you
-      would decode a Rectangle from a file:
+      Let's just say that the data would be encoded on disk as a
+      sequence of four 32-bit integers. In that case, this is the way
+      you would decode a Rectangle from a file:
     </para>
     <programlisting><![CDATA[
 byte[] buffer = new byte[] {
@@ -121,13 +121,14 @@ Rectangle rect = Codecs.decode(codec, buffer);
     ]]></programlisting>
     <para>
       That's how easy it is. Although... To be perfectly honest, the
-      example is not entirely complete yet. If you would use the
-      code as-is, you would not get anything at all. (Well, an empty
+      example is not entirely complete yet. If you would use the code
+      as-is, you would not get anything at all. (Well, an empty
       Rectangle, maybe.) Problem is, Preon does
-      <emphasis>not</emphasis> assume anything about your decoding
-      requirements. In order to tell Preon that it needs to decode
-      the x1, y1, x2 and y2 fields, you will need to explicitly
-      state it in the definition of the data structure, like this:
+      <emphasis>not</emphasis> assume anything unless you explicitly
+      specify at least something. In order to tell Preon that it needs
+      to decode the x1, y1, x2 and y2 fields, you will need to
+      explicitly state it in the definition of the data structure,
+      like this:
     </para>
     <example id="example-rectangle-annotated">
       <title>First data structure annotated</title>

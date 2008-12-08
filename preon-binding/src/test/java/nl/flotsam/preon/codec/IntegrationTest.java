@@ -33,6 +33,7 @@
 
 package nl.flotsam.preon.codec;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.List;
@@ -41,6 +42,7 @@ import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.Codecs.DocumentType;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
@@ -421,6 +423,14 @@ public class IntegrationTest extends TestCase {
         assertNotNull(value.values[0].value);
         assertEquals("ab", value.values[0].value);
     }
+
+    public void testReferencesPartiallyResolvable() throws DecodingException, FileNotFoundException {
+        Codec<Test45> codec = Codecs.create(Test45.class);
+        Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
+    }
+//        
+////        Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
+//    }
 
     private static class TestResolver implements Resolver {
 
@@ -844,6 +854,32 @@ public class IntegrationTest extends TestCase {
 
         }
 
+    }
+
+    public static class Test45 {
+        @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
+                @Choice(condition = "prefix==0", type = Test46.class),
+                @Choice(condition = "prefix==1", type = Test47.class) }))
+        Object object;
+        
+        @If("object.value >= 0")
+        @Bound boolean booleanValue;
+    }
+
+    public static class Test46 {
+        @Bound
+        int value;
+    }
+
+    public static class Test47 {
+        @Bound
+        byte value1;
+        @Bound
+        byte value2;
+        @Bound
+        byte value3;
+        @Bound
+        byte value4;
     }
 
 }
