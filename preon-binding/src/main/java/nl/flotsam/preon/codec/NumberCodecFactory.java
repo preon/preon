@@ -37,8 +37,12 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilder;
+
+import nl.flotsam.limbo.Document;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
+import nl.flotsam.limbo.util.Converters;
 import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.ParaContents;
@@ -191,7 +195,7 @@ public class NumberCodecFactory implements CodecFactory {
                 int size = numericType.getDefaultSize();
                 Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, Integer
                         .toString(size));
-                return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType);
+                return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, null);
             }
             if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
                 BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
@@ -201,7 +205,11 @@ public class NumberCodecFactory implements CodecFactory {
                     size = Integer.toString(numericType.getDefaultSize());
                 }
                 Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, size);
-                return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType);
+                Expression<Integer, Resolver> matchExpr = null;
+                if (numericMetadata.match().trim().length() != 0) {
+                    matchExpr = Expressions.createInteger(context, numericMetadata.match());
+                }
+                return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, matchExpr);
             }
         }
         return null;
@@ -209,28 +217,47 @@ public class NumberCodecFactory implements CodecFactory {
 
     private static class NumericCodec implements Codec<Object> {
 
-        protected Expression<Integer, Resolver> size;
+        protected Expression<Integer, Resolver> sizeExpr;
 
         protected ByteOrder endian;
 
         protected NumericType type;
 
+        private Expression<Integer, Resolver> matchExpr;
+
         public NumericCodec(Expression<Integer, Resolver> sizeExpr, ByteOrder endian,
-                NumericType type) {
-            this.size = sizeExpr;
+                NumericType type, Expression<Integer, Resolver> matchExpr) {
+            this.sizeExpr = sizeExpr;
             this.endian = endian;
             this.type = type;
+            this.matchExpr = matchExpr;
         }
 
         public Object decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
-            int size = ((Number)(this.size.eval(resolver))).intValue();
-            return type.decode(buffer, size, endian);
+            int size = ((Number)(this.sizeExpr.eval(resolver))).intValue();
+            Object result = type.decode(buffer, size, endian);
+            if (matchExpr != null) {
+                if (!matchExpr.eval(resolver).equals(Converters.toInt(result))) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    Document document = new StringBuilderDocument(stringBuilder);
+                    if (matchExpr.isParameterized()) {
+                        stringBuilder.append("Expected different value than " + result);
+                    } else {
+                        stringBuilder.append("Expected ");
+                        matchExpr.document(document);
+                        stringBuilder.append(" but got ");
+                        stringBuilder.append(result);
+                    }
+                    throw new DecodingException(stringBuilder.toString());
+                }
+            }
+            return result;
         }
 
         public int getSize(Resolver resolver) {
             if (resolver != null) {
-                return size.eval(resolver);
+                return sizeExpr.eval(resolver);
             } else {
                 return -1;
             }
@@ -288,7 +315,7 @@ public class NumberCodecFactory implements CodecFactory {
 
                 public String getSize() {
                     StringBuilder builder = new StringBuilder();
-                    size.document(new StringBuilderDocument(builder));
+                    sizeExpr.document(new StringBuilderDocument(builder));
                     return builder.toString();
                 }
 
@@ -304,7 +331,7 @@ public class NumberCodecFactory implements CodecFactory {
         }
 
         public Expression<Integer, Resolver> getSize() {
-            return size;
+            return sizeExpr;
         }
 
         public Class<?> getType() {

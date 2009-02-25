@@ -84,5 +84,10 @@ public @interface BoundNumber {
      * @return The number of bits used to represent the numeric value.
      */
     String size() default "";
+    
+    /**
+     * The value to match.
+     */
+    String match() default "";
 
 }
