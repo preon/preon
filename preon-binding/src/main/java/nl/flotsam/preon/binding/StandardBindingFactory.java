@@ -120,10 +120,6 @@ public class StandardBindingFactory implements BindingFactory {
                 ReflectionUtils.makeAssessible(field);
                 Object value = codec.decode(buffer, resolver, builderDecorator.decorate(builder,
                         object));
-                // System.err.println("Decoded " + value + "("
-                // + field.getType().getSimpleName() + ") into "
-                // + field.getName() + " of "
-                // + field.getDeclaringClass().getSimpleName());
                 field.set(object, value);
             } catch (IllegalAccessException iae) {
                 throw new DecodingException(iae);

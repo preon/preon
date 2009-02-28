@@ -191,6 +191,14 @@ public class ConditionalBindingFactoryTest extends TestCase {
             return Integer.class;
         }
 
+        public Reference<Resolver> narrow(Class<?> type) {
+            if (type.isAssignableFrom(Integer.class)) {
+                return this;
+            } else {
+                return null;
+            }
+        }
+
     }
 
 }

@@ -90,4 +90,13 @@ public class ContextReplacingReference implements Reference<Resolver> {
         reference.document(target);
     }
 
+    public Reference<Resolver> narrow(Class<?> type) {
+        Reference<Resolver> narrowed = this.reference.narrow(type);
+        if (narrowed == null) {
+            return null;
+        } else {
+            return new ContextReplacingReference(alternativeContext, narrowed);
+        }
+    }
+
 }

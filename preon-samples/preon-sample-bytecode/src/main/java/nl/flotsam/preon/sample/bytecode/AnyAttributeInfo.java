@@ -36,7 +36,7 @@ package nl.flotsam.preon.sample.bytecode;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.Init;
 
-public class AnyAttributeInfo extends QualifiedAttributeInfo {
+public class AnyAttributeInfo extends AttributeInfo {
 
     @BoundList(size = "attributeLength")
     private byte[] data;

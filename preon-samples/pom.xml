@@ -14,5 +14,6 @@
   <modules>
     <module>preon-sample-bmp</module>
     <module>preon-sample-bytecode</module>
+    <module>preon-sample-mpeg</module>
   </modules>
 </project>

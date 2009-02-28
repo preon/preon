@@ -37,8 +37,11 @@ import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.annotation.BoundString;
+import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.annotation.Init;
 import nl.flotsam.preon.annotation.TypePrefix;
+import nl.flotsam.preon.annotation.Choices.Choice;
+
 
 /**
  * An attempt to capture Java's class file format in Preon.
@@ -60,11 +63,8 @@ public class ClassFile {
     @BoundNumber(size = "16", byteOrder = BigEndian)
     private int constantPoolCount;
 
-    @BoundList(size = "constantPoolCount-1", types = { ClassCpInfo.class,
-            DoubleCpInfo.class, FieldRefCpInfo.class, FloatCpInfo.class,
-            IntegerCpInfo.class, InterfaceMethodRefCpInfo.class,
-            MethodRefCpInfo.class, NameAndTypeCpInfo.class, StringCpInfo.class,
-            Utf8CpInfo.class })
+    @BoundList(size = "constantPoolCount-1", types = {ClassCpInfo.class, DoubleCpInfo.class, FieldRefCpInfo.class, FloatCpInfo.class,
+            IntegerCpInfo.class, InterfaceMethodRefCpInfo.class, MethodRefCpInfo.class, NameAndTypeCpInfo.class, StringCpInfo.class, Utf8CpInfo.class})
     private CpInfo[] constantPool;
 
     @BoundNumber(size = "16", byteOrder = BigEndian)
@@ -97,8 +97,8 @@ public class ClassFile {
     @BoundNumber(size = "16", byteOrder = BigEndian)
     private int attributeCount;
 
-    @BoundList(size = "attributeCount", type = AttributeInfo.class)
-    private AttributeInfo[] attributes;
+    @BoundList(size = "attributeCount", type = GenericAttributeInfo.class)
+    private GenericAttributeInfo[] attributes;
 
     @TypePrefix(value = "7", size = 8)
     public class ClassCpInfo extends CpInfo {
@@ -110,9 +110,8 @@ public class ClassFile {
             return constantPool[nameIndex].toString();
         }
 
-        @Init
-        public void init() {
-            System.out.println("Name index " + nameIndex);
+        public String toString() {
+            return "name: " + nameIndex;
         }
 
     }
@@ -130,9 +129,8 @@ public class ClassFile {
             return value;
         }
 
-        @Init
-        public void init() {
-            System.out.println("UTF 8 " + getStringValue());
+        public String toString() {
+            return "\"" + value + "\"";
         }
 
     }
@@ -157,6 +155,10 @@ public class ClassFile {
         @BoundNumber(size = "16", byteOrder = BigEndian)
         private int nameAndTypeIndex;
 
+        public String toString() {
+            return "class index: " + classIndex + "; name and type index: " + nameAndTypeIndex;
+        }
+
     }
 
     @TypePrefix(value = "11", size = 8)
@@ -175,6 +177,10 @@ public class ClassFile {
 
         @BoundNumber(size = "16", byteOrder = BigEndian)
         private int stringIndex;
+
+        public String toString() {
+            return "string index: " + stringIndex;
+        }
 
     }
 
@@ -235,20 +241,18 @@ public class ClassFile {
         @BoundNumber(size = "16", byteOrder = BigEndian)
         private int attributesCount;
 
-        @BoundList(size = "attributesCount", type = AttributeInfo.class)
+        @BoundList(size = "attributesCount", type = GenericAttributeInfo.class)
         private Object[] attributes;
 
         public String getName() {
-            return ((Utf8CpInfo) ClassFile.this.constantPool[nameIndex])
-                    .getStringValue();
+            return ((Utf8CpInfo) ClassFile.this.constantPool[nameIndex]).getStringValue();
         }
 
         public String getDescriptor() {
-            return ((Utf8CpInfo) ClassFile.this.constantPool[descriptorIndex])
-                    .getStringValue();
+            return ((Utf8CpInfo) ClassFile.this.constantPool[descriptorIndex]).getStringValue();
         }
 
-        public class Code extends AttributeInfo {
+        public class Code extends GenericAttributeInfo {
 
             @BoundNumber(size = "16", byteOrder = BigEndian)
             private int maxStack;
@@ -271,10 +275,10 @@ public class ClassFile {
             @BoundNumber(size = "16", byteOrder = BigEndian)
             private int attributesCount;
 
-            @BoundList(size = "attributesCount", type = AttributeInfo.class)
-            private AttributeInfo[] attributes;
+            @BoundList(size = "attributesCount", type = GenericAttributeInfo.class)
+            private GenericAttributeInfo[] attributes;
 
-            public class LineNumberTable extends AttributeInfo {
+            public class LineNumberTable extends GenericAttributeInfo {
 
                 @BoundNumber(size = "16", byteOrder = BigEndian)
                 int lineNumberTableLength;
@@ -294,7 +298,7 @@ public class ClassFile {
 
             }
 
-            public class LocalVariableTable extends AttributeInfo {
+            public class LocalVariableTable extends GenericAttributeInfo {
 
                 @BoundNumber(size = "16", byteOrder = BigEndian)
                 private int localVariableTableLength;
@@ -341,7 +345,7 @@ public class ClassFile {
 
         }
 
-        public class Exceptions extends AttributeInfo {
+        public class Exceptions extends GenericAttributeInfo {
 
             @BoundNumber(size = "16", byteOrder = BigEndian)
             int numberOfExceptions;
@@ -353,14 +357,13 @@ public class ClassFile {
 
     }
 
-    public class SourceFile extends AttributeInfo {
+    public class SourceFile extends GenericAttributeInfo {
 
         @BoundNumber(size = "16", byteOrder = BigEndian)
         private int sourceFileIndex;
 
         public String getName() {
-            return ((Utf8CpInfo) constantPool[sourceFileIndex])
-                    .getStringValue();
+            return ((Utf8CpInfo) constantPool[sourceFileIndex]).getStringValue();
         }
 
     }
@@ -379,23 +382,20 @@ public class ClassFile {
         @BoundNumber(size = "16", byteOrder = BigEndian)
         private int attributesCount;
 
-        @BoundList(size = "attributesCount", type = AttributeInfo.class)
+        @BoundList(size = "attributesCount", 
+                selectFrom = @Choices(prefixSize = 16, byteOrder = BigEndian, alternatives = {
+                        @Choice(condition = "outer.constantPool[prefix-1].value=='ConstantValue'", type = ConstantValue.class)
+                        }))
         private AttributeInfo[] attributes;
-
+        
         public String getDescriptor() {
-            return ((Utf8CpInfo) constantPool[descriptorIndex])
-                    .getStringValue();
+            return ((Utf8CpInfo) constantPool[descriptorIndex]).getStringValue();
         }
 
-        private class ConstantValue extends QualifiedAttributeInfo {
+        private class ConstantValue extends AttributeInfo {
 
             @BoundNumber(size = "16", byteOrder = BigEndian)
             private int constantValueIndex;
-
-            @Init
-            private void init() {
-                System.out.println(constantValueIndex);
-            }
 
         }
 

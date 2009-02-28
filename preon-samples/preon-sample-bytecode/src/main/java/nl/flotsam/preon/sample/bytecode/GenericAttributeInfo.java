@@ -33,18 +33,19 @@
 
 package nl.flotsam.preon.sample.bytecode;
 
+import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.ByteOrder;
 
-/**
- * 
- * 
- * @author Wilfred Springer (wis)
- *
- */
-public class AttributeInfo {
+public class GenericAttributeInfo {
 
+    @BoundNumber(size = "16", byteOrder = ByteOrder.BigEndian)
+    private int attributeNameIndex;
+    
     @BoundNumber(size = "32", byteOrder = ByteOrder.BigEndian)
     private long attributeLength;
     
+    @BoundList(size = "attributeLength")
+    private byte[] data;
+
 }

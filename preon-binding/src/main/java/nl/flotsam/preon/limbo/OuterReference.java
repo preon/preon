@@ -163,4 +163,8 @@ public class OuterReference implements Reference<Resolver> {
         return outerContext;
     }
 
+    public Reference<Resolver> narrow(Class<?> type) {
+        return null;
+    }
+
 }

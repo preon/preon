@@ -166,4 +166,12 @@ public class PropertyReference implements Reference<Resolver> {
         return type.isAssignableFrom(field.getType());
     }
 
+    public Reference<Resolver> narrow(Class<?> type) {
+        if (type.isAssignableFrom(field.getType())) {
+            return this;
+        } else {
+            return null;
+        }
+    }
+
 }

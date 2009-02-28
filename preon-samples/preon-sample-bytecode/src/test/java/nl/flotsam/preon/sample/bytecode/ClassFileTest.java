@@ -41,12 +41,11 @@ import junit.framework.TestCase;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.codec.InitCodecDecorator;
 
 public class ClassFileTest extends TestCase {
 
     public void testDecoding() throws FileNotFoundException, IOException, DecodingException {
-        Codec<ClassFile> codec = Codecs.create(ClassFile.class, new InitCodecDecorator());
+        Codec<ClassFile> codec = Codecs.create(ClassFile.class);
         ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
                 "src/test/resources/Foo.class"));
     }

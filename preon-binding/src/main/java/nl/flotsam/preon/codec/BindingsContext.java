@@ -336,6 +336,14 @@ public class BindingsContext implements ObjectResolverContext {
             return commonType;
         }
 
+        public Reference<Resolver> narrow(Class<?> type) {
+            if (type.isAssignableFrom(binding.getType())) {
+                return this;
+            } else {
+                return null;
+            }
+        }
+
     }
 
     /**

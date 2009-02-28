@@ -204,4 +204,14 @@ public class OuterResolvingReference implements Reference<Resolver> {
 
     }
 
+    public Reference<Resolver> narrow(Class<?> type) {
+        Reference<Resolver> narrowed = wrapped.narrow(type);
+        if (narrowed == null) {
+            return this;
+        } else {
+            return new OuterResolvingReference(outerName, originalContext,
+                    narrowed);
+        }
+    }
+
 }

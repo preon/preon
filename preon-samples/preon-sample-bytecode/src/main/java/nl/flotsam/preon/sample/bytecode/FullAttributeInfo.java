@@ -37,7 +37,7 @@ import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.ByteOrder;
 
-public class FullAttributeInfo extends AttributeInfo {
+public class FullAttributeInfo extends GenericAttributeInfo {
 
     @BoundNumber(size = "16", byteOrder = ByteOrder.BigEndian)
     private int attributeNameIndex;

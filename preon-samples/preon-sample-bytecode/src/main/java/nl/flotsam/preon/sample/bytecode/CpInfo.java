@@ -33,6 +33,14 @@
 
 package nl.flotsam.preon.sample.bytecode;
 
+
 public abstract class CpInfo {
+    
+    private static int index;
+    
+//    @Init
+//    public void init() {
+//        System.out.println((index++) + " " + this.getClass().getSimpleName() + ": " + this.toString());
+//    }
 
 }

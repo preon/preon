@@ -201,7 +201,8 @@ public class ArrayCodecFactory implements CodecFactory {
             int length = size.eval(resolver).intValue();
             Object result = Array.newInstance(type.getComponentType(), length);
             for (int i = 0; i < length; i++) {
-                Array.set(result, i, codec.decode(buffer, resolver, builder));
+                Object value = codec.decode(buffer, resolver, builder);
+                Array.set(result, i, value);
             }
             return result;
         }

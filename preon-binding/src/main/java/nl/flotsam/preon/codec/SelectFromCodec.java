@@ -407,6 +407,14 @@ public class SelectFromCodec<T> implements Codec<T> {
                 return Integer.class;
             }
 
+            public Reference<Resolver> narrow(Class<?> type) {
+                if (type == Integer.class) {
+                    return this;
+                } else {
+                    return null;
+                }
+            }
+
         }
 
     }

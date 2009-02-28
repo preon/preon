@@ -102,9 +102,6 @@ public class ArrayElementReference implements Reference<Resolver> {
      * @see nl.flotsam.limbo.Reference#resolve(java.lang.Object)
      */
     public Object resolve(Resolver context) {
-        StringBuilder builder = new StringBuilder();
-        this.document(new StringBuilderDocument(builder));
-        System.out.println(builder.toString());
         Object array = arrayReference.resolve(context);
         int i = index.eval(context.getOriginalResolver());
         return Array.get(array, i);
@@ -207,6 +204,14 @@ public class ArrayElementReference implements Reference<Resolver> {
      */
     public Class<?> getType() {
         return elementType;
+    }
+
+    public Reference<Resolver> narrow(Class<?> type) {
+        if (type == elementType) {
+            return this;
+        } else {
+            return null;
+        }
     }
 
 }
