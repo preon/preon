@@ -143,14 +143,6 @@ public class InitCodecDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
-         * @see nl.flotsam.preon.Codec#getSize(nl.flotsam.preon.Resolver)
-         */
-        public int getSize(Resolver resolver) {
-            return codec.getSize(resolver);
-        }
-
-        /*
-         * (non-Javadoc)
          * @see nl.flotsam.preon.Codec#getTypes()
          */
         public Class<?>[] getTypes() {

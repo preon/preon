@@ -135,19 +135,11 @@ public class StandardBindingFactory implements BindingFactory {
                 throw bbe;
             }
         }
-
-        public int getSize(Resolver resolver) {
-            return codec.getSize(resolver);
-        }
-
+        
         public <T, V extends ParaContents<T>> V describe(V contents) {
             CodecDescriptor codecDescriptor = codec.getCodecDescriptor();
             codecDescriptor.putOneLiner(contents);
             return contents;
-        }
-
-        public String getSizeAsText() {
-            return codec.getCodecDescriptor().getSize();
         }
 
         public Class<?>[] getTypes() {

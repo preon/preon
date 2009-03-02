@@ -43,6 +43,7 @@ import static org.easymock.EasyMock.verify;
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
+import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
@@ -75,6 +76,8 @@ public class ListCodecFactoryTest extends TestCase {
     private Builder builder;
 
     private ResolverContext context;
+    
+    private Expression<Integer,Resolver> sizeExpr;
 
     public void setUp() {
         delegate = createMock(CodecFactory.class);
@@ -85,6 +88,7 @@ public class ListCodecFactoryTest extends TestCase {
         resolver = createMock(Resolver.class);
         builder = createMock(Builder.class);
         context = createMock(ResolverContext.class);
+        sizeExpr = createMock(Expression.class);
     }
 
     public void testStaticListDecoding() throws DecodingException {
@@ -97,8 +101,7 @@ public class ListCodecFactoryTest extends TestCase {
         expect(delegate.create(isA(AnnotatedElement.class), eq(Object.class), eq(context)))
                 .andReturn(elementCodec);
         expect(buffer.getBitPos()).andReturn(Long.valueOf(10));
-        expect(elementCodec.getSize()).andReturn(Expressions.createInteger(10, Resolver.class));
-        expect(elementCodec.getSize(resolver)).andReturn(10).times(1);
+        expect(elementCodec.getSize()).andReturn(Expressions.createInteger(10, Resolver.class)).times(2);
 
         // Set expectations for retrieving the values
         TestElement element1 = new TestElement();

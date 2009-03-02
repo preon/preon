@@ -35,6 +35,7 @@ package nl.flotsam.preon;
 
 import java.util.Collection;
 
+import nl.flotsam.limbo.Expression;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.preon.buffer.BitBuffer;
 
@@ -61,7 +62,8 @@ public interface CodecSelector {
      *             If we fail to select a {@link Codec} for the data found in
      *             the {@link BitBuffer}.
      */
-    Codec<?> select(BitBuffer buffer, Resolver resolver) throws DecodingException;
+    Codec<?> select(BitBuffer buffer, Resolver resolver)
+            throws DecodingException;
 
     /**
      * Returns the collection of all choices this selector will have to choose
@@ -73,16 +75,17 @@ public interface CodecSelector {
     Collection<Codec<?>> getChoices();
 
     /**
-     * @see Codec#getSize(Resolver)
-     */
-    int getSize(Resolver resolver);
-
-    /**
      * Documents the procedure for deciding among a couple of {@link Codec}s.
      * 
      * @param para
      *            The context for generating the content.
      */
     void document(ParaContents<?> para);
-    
+
+    /**
+     * Returns an expression representing the number of bits inhabited by the
+     * actual selecting bit.
+     */
+    Expression<Integer, Resolver> getSize();
+
 }

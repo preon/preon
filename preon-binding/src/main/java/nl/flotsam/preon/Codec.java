@@ -70,26 +70,6 @@ public interface Codec<T> {
     T decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException;
 
     /**
-     * Attempts to determine the size (in bits) of the data encoded/decoded. If
-     * the {@link Codec} cannot guarantee that the number of bits required for
-     * encoding/decoding is a fixed number, then it is expected to return a
-     * negative number.
-     * 
-     * <p>
-     * Note that this operation might be deprecated in the future, because of
-     * {@link #getSize()}.
-     * </p>
-     * 
-     * @param resolver
-     *            An object that will be used to determine the size of the
-     *            object if it is a function of variables in the context
-     *            provided by the environment. (This is tricky. Might need to
-     *            change that.)
-     * @return The size of the encoded/decoded data in number of bits.
-     */
-    int getSize(Resolver resolver);
-
-    /**
      * Returns the number of bits occupied by objects created by this Codec, as
      * a function of the context to which variables will be resolved.
      * 

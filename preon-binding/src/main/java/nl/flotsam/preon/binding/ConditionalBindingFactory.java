@@ -149,14 +149,6 @@ public class ConditionalBindingFactory implements BindingFactory {
             this.binding = binding;
         }
 
-        public int getSize(Resolver resolver) {
-            if (expr.eval(resolver)) {
-                return binding.getSize(resolver);
-            } else {
-                return 0;
-            }
-        }
-
         public void load(Object object, BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
             if (expr.eval(resolver)) {
@@ -187,10 +179,6 @@ public class ConditionalBindingFactory implements BindingFactory {
             return contents;
         }
 
-        public String getSizeAsText() {
-            return binding.getSizeAsText();
-        }
-
         public Class<?>[] getTypes() {
             return binding.getTypes();
         }
@@ -208,8 +196,7 @@ public class ConditionalBindingFactory implements BindingFactory {
         }
 
         public Expression<Integer, Resolver> getSize() {
-            // We really cannot guarantee that this we *will* read all of the bytes.
-            return null;
+            return new ConditionalValue(expr, binding.getSize());
         }
 
         public String getId() {
@@ -220,6 +207,51 @@ public class ConditionalBindingFactory implements BindingFactory {
             return binding.getType();
         }
 
+    }
+    
+    private static class ConditionalValue implements Expression<Integer,Resolver> {
+
+        private Expression<Boolean, Resolver> condition;
+        
+        private Expression<Integer, Resolver> expr;
+        
+        public ConditionalValue(Expression<Boolean, Resolver> condition, Expression<Integer, Resolver> expr) {
+            this.condition = condition;
+            this.expr = expr;
+        }
+
+        public Integer eval(Resolver resolver) throws BindingException {
+            if (condition.eval(resolver)) {
+                return expr.eval(resolver); 
+            } else {
+                return 0;
+            }
+        }
+
+        public Set<Reference<Resolver>> getReferences() {
+            return expr.getReferences();
+        }
+
+        public Class<Integer> getType() {
+            return Integer.class;
+        }
+
+        public boolean isParameterized() {
+            return condition.isParameterized() || expr.isParameterized();
+        }
+
+        public Expression<Integer, Resolver> simplify() {
+            return new ConditionalValue(condition.simplify(), expr.simplify());
+        }
+
+        public void document(Document document) {
+            expr.document(document);
+            document.text(" if ");
+            condition.document(document);
+            document.text(" or else 0");
+        }
+        
+        
     }
 
 }

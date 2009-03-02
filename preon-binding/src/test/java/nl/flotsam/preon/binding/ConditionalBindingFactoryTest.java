@@ -84,6 +84,8 @@ public class ConditionalBindingFactoryTest extends TestCase {
     private Builder builder;
 
     private ResolverContext context;
+    
+    private Expression<Integer, Resolver> sizeExpr;
 
     public void setUp() {
         binding = createMock(Binding.class);
@@ -97,6 +99,7 @@ public class ConditionalBindingFactoryTest extends TestCase {
         factory = new ConditionalBindingFactory(decorated);
         builder = createMock(Builder.class);
         context = createMock(ResolverContext.class);
+        sizeExpr = createMock(Expression.class);
     }
 
     private static Field getTestField() {
@@ -129,19 +132,22 @@ public class ConditionalBindingFactoryTest extends TestCase {
             expect(resolver.get("b")).andReturn(Integer.valueOf(b)).anyTimes();
         }
         if (bindingAction) {
-            expect(binding.getSize(resolver)).andReturn(6);
+            expect(binding.getSize()).andReturn(sizeExpr);
+            expect(sizeExpr.eval(resolver)).andReturn(6);
             binding.load(test, buffer, resolver, builder);
+        } else {
+            expect(binding.getSize()).andReturn(sizeExpr);
         }
-        replay(decorated, buffer, resolver, metadata, codec, condition, binding, builder, context);
+        replay(decorated, buffer, resolver, metadata, codec, condition, binding, builder, context, sizeExpr);
         Binding conditionalBinding = factory.create(metadata, field, codec, context);
         if (bindingAction) {
-            assertEquals(6, conditionalBinding.getSize(resolver));
+            assertEquals(Integer.valueOf(6), conditionalBinding.getSize().eval(resolver));
         } else {
-            assertEquals(0, conditionalBinding.getSize(resolver));
+            assertEquals(Integer.valueOf(0), conditionalBinding.getSize().eval(resolver));
         }
         conditionalBinding.load(test, buffer, resolver, builder);
-        verify(decorated, buffer, resolver, metadata, codec, condition, binding, builder, context);
-        reset(decorated, buffer, resolver, metadata, codec, condition, binding, builder, context);
+        verify(decorated, buffer, resolver, metadata, codec, condition, binding, builder, context, sizeExpr);
+        reset(decorated, buffer, resolver, metadata, codec, condition, binding, builder, context, sizeExpr);
     }
 
     public static class Test {

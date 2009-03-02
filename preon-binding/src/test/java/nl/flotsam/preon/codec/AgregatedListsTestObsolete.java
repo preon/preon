@@ -46,7 +46,7 @@ import nl.flotsam.preon.annotation.Slice;
 import junit.framework.TestCase;
 
 
-public class AgregatedListsTest extends TestCase {
+public class AgregatedListsTestObsolete extends TestCase {
 
     public void testVariableResolutionInClassReferedByAnotherClass()
             throws DecodingException {

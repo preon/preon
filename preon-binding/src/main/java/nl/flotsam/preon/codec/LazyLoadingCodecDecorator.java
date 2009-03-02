@@ -117,7 +117,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
         @SuppressWarnings("unchecked")
         public T decode(final BitBuffer buffer, final Resolver resolver,
                 final Builder builder) throws DecodingException {
-            final int size = wrapped.getSize(resolver);
+            final int size = wrapped.getSize().eval(resolver);
             final long pos = buffer.getBitPos();
             ClassLoader loader = this.getClass().getClassLoader();
             Enhancer enhancer = new Enhancer();
@@ -146,14 +146,6 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
          */
         public CodecDescriptor getCodecDescriptor() {
             return wrapped.getCodecDescriptor();
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see nl.flotsam.preon.Codec#getSize(nl.flotsam.preon.Resolver)
-         */
-        public int getSize(Resolver resolver) {
-            return wrapped.getSize(resolver);
         }
 
         /*

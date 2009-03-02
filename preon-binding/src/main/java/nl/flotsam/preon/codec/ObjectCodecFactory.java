@@ -261,32 +261,7 @@ public class ObjectCodecFactory implements CodecFactory {
             }
         }
 
-        public int getSize(Resolver resolver) {
-            // Keep in mind that while determining the size, we may not be able
-            // to resolve all references. That's something to deal with. (This
-            // means that all Bindings have the obligation to return a negative
-            // value if they fail to return a relevant value from the context
-            // passed in. Also note that we need to decorate the Resolver passed
-            // in order to make sure that we are illegally returning values from
-            // the containing object context.)
-            int size = 0;
-            resolver = context.getResolver(null, resolver);
-            try {
-                for (Binding binding : context.getBindings()) {
-                    int bindingSize = binding.getSize(resolver);
-                    if (bindingSize >= 0) {
-                        size += bindingSize;
-                    } else {
-                        return -1;
-                    }
-                }
-                return size;
-            } catch (BindingException be) {
-                return -1;
-            }
-        }
-
-        public CodecDescriptor getCodecDescriptor() {
+         public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public String getLabel() {

@@ -128,7 +128,7 @@ public class EvenlyDistributedLazyList<E> implements List<E> {
         this.builder = builder;
         this.maxSize = maxSize;
         this.resolver = resolver;
-        this.elementSize = codec.getSize(resolver);
+        this.elementSize = codec.getSize().eval(resolver);
         this.policy = new CodecExceptionPolicy<E>() {
 
             public E handle(CodecException ce) {

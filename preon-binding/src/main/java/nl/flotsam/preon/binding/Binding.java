@@ -87,29 +87,6 @@ public interface Binding {
             throws DecodingException;
 
     /**
-     * Calculates the number of bits inhabited by the encoded data, or a value
-     * smaller than zero if the size cannot be determined.
-     * 
-     * TODO: Check this.
-     * 
-     * @param resolver
-     *            The object responsible for resolving values from references
-     *            passed in.
-     * @return The number of bits inhabited by the encoded data, or a value
-     *         smaller than zero if the size cannot be determined.
-     */
-    int getSize(Resolver resolver);
-
-    /**
-     * Returns the number of bits inhabited by values decoded/encoded by this
-     * binding as a String.
-     * 
-     * @return The number of bits inhabited by values decoded/encoded by this
-     *         {@link Binding}.
-     */
-    String getSizeAsText();
-
-    /**
      * Describes this {@link Binding} in the paragraph passed in.
      * 
      * @param <T>

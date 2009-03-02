@@ -116,7 +116,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(4, ((Test5a) result.value).value3);
         assertNotNull(codec.getSize());
         assertFalse(codec.getSize().isParameterized());
-        assertEquals(24, codec.getSize().eval(null).intValue());
+        assertEquals(32, codec.getSize().eval(null).intValue());
     }
 
     public void testListSingleElement() throws DecodingException {
@@ -134,13 +134,13 @@ public class IntegrationTest extends TestCase {
         assertEquals(6, result.elements.get(1).value3);
         assertNotNull(codec.getSize());
         assertFalse(codec.getSize().isParameterized());
-        assertEquals(48, codec.getSize(null));
+        assertEquals(Integer.valueOf(48), codec.getSize().eval(null));
     }
 
     public void testListMultipleElements() throws DecodingException,
             FileNotFoundException {
         Codec<Test4> codec = Codecs.create(Test4.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 1, 1, 2, 3, 2, 0,
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 1, 1, 2, 3 , 2, 0,
                 16, 2 });
         Test4 result = Codecs.decode(codec, byteBuffer);
         assertNotNull(result);
@@ -166,7 +166,7 @@ public class IntegrationTest extends TestCase {
         result = Codecs.decode(codec, buffer);
         assertEquals(1, result.value1);
         assertEquals(0, result.value2);
-        assertNull(codec.getSize());
+        assertNotNull(codec.getSize());
     }
 
     public void testCompoundObject() throws DecodingException {

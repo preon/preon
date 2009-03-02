@@ -210,15 +210,6 @@ public class ArrayCodecFactory implements CodecFactory {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.preon.Codec#getSize(nl.flotsam.preon.Resolver)
-         */
-        public int getSize(Resolver resolver) {
-            return size.eval(resolver) * codec.getSize(resolver);
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
          * @see nl.flotsam.preon.Codec#getCodecDescriptor()
          */
         public CodecDescriptor getCodecDescriptor() {
@@ -241,14 +232,6 @@ public class ArrayCodecFactory implements CodecFactory {
                 public <T, V extends ParaContents<T>> V putOneLiner(V para) {
                     writeReference(para);
                     return para;
-                }
-
-                public String getSize() {
-                    StringBuilder builder = new StringBuilder();
-                    size.document(new StringBuilderDocument(builder));
-                    builder.append(" times "
-                            + codec.getCodecDescriptor().getSize());
-                    return builder.toString();
                 }
 
                 public <T> void writeReference(ParaContents<T> contents) {

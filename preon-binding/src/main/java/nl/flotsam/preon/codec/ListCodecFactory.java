@@ -254,16 +254,6 @@ public class ListCodecFactory implements CodecFactory {
                     buffer, size.eval(resolver), builder, resolver);
         }
 
-        public int getSize(Resolver resolver) {
-            return size.eval(resolver) * codec.getSize(resolver);
-            //            Expression<Integer, Resolver> sizeExpr = getSize();
-            //            if (sizeExpr == null) {
-            //                return -1;
-            //            } else {
-            //                return getSize().eval(resolver);
-            //            }
-        }
-
         public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
@@ -435,7 +425,8 @@ public class ListCodecFactory implements CodecFactory {
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
                 Builder builder) throws DecodingException {
-            if (skipListCodec.getSize(resolver) >= 0) {
+            Expression<Integer, Resolver> sizeExpr = skipListCodec.getSize();
+            if (sizeExpr != null && sizeExpr.eval(resolver) >= 0) {
                 return skipListCodec.decode(buffer, resolver, builder);
             } else {
                 return nonSkipListCodec.decode(buffer, resolver, builder);
@@ -476,11 +467,11 @@ public class ListCodecFactory implements CodecFactory {
         }
 
         public int getSize(Resolver resolver) {
-            int skipSize = skipListCodec.getSize(resolver);
+            int skipSize = skipListCodec.getSize().eval(resolver);
             if (skipSize >= 0) {
                 return skipSize;
             } else {
-                return nonSkipListCodec.getSize(resolver);
+                return nonSkipListCodec.getSize().eval(resolver);
             }
         }
 

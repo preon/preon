@@ -56,5 +56,4 @@ public interface CodecDescriptor {
 
     <T> Contents<T> putFullDescription(Contents<T> contents);
 
-    String getSize();
 }

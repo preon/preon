@@ -194,10 +194,6 @@ public class CachingCodecFactory implements CodecFactory {
             return codec.getCodecDescriptor();
         }
 
-        public int getSize(Resolver resolver) {
-            return codec.getSize(resolver);
-        }
-
         public Class<?>[] getTypes() {
             return new Class<?>[] { type };
         }

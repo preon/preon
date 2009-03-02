@@ -35,6 +35,7 @@ package nl.flotsam.preon.codec;
 
 import java.lang.reflect.AnnotatedElement;
 
+import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
@@ -63,6 +64,8 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
     private LazyLoading annotation;
     
     private Resolver resolver;
+    
+    private Expression<Integer, Resolver> sizeExpr;
 
     public void setUp() {
         wrapped = createMock(Codec.class);
@@ -71,6 +74,7 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
         metadata = createMock(AnnotatedElement.class);
         annotation = createMock(LazyLoading.class);
         resolver = createMock(Resolver.class);
+        sizeExpr = createMock(Expression.class);
     }
 
     @SuppressWarnings("unchecked")
@@ -81,7 +85,8 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
         // Stuff expected when Codec is getting constructed
         expect(metadata.isAnnotationPresent(LazyLoading.class))
                 .andReturn(true);
-        expect(wrapped.getSize(resolver)).andReturn(32);
+        expect(wrapped.getSize()).andReturn(sizeExpr);
+        expect(sizeExpr.eval(resolver)).andReturn(32);
         
         // Stuff expected when Test instance is constructed using Codec
         expect(buffer.getBitPos()).andReturn(64L);
@@ -92,7 +97,7 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
         expect(wrapped.decode(buffer, resolver, null)).andReturn(test);
         
         // Replay
-        replay(wrapped, buffer, metadata, annotation, resolver);
+        replay(wrapped, buffer, metadata, annotation, resolver, sizeExpr);
         Codec<Test> codec = factory.decorate(wrapped, metadata, Test.class, null);
         assertNotNull(codec);
         Test result = codec.decode(buffer, resolver, null);
@@ -100,7 +105,7 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
         assertEquals("bar", result.getFoo());
         // Second time should not cause reload.
         assertEquals("bar", result.getFoo());
-        verify(wrapped, buffer, metadata, annotation, resolver);
+        verify(wrapped, buffer, metadata, annotation, resolver, sizeExpr);
     }
 
     public static class Test {

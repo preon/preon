@@ -47,10 +47,6 @@ public class CodecDescriptorHolder implements CodecDescriptor {
         return descriptor.getLabel();
     }
 
-    public String getSize() {
-        return descriptor.getSize();
-    }
-
     public boolean hasFullDescription() {
         return descriptor.hasFullDescription();
     }

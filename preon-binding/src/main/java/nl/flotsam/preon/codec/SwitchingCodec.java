@@ -92,15 +92,6 @@ public class SwitchingCodec implements Codec<Object> {
     /*
      * (non-Javadoc)
      * 
-     * @see nl.flotsam.preon.Codec#getSize(nl.flotsam.preon.Resolver)
-     */
-    public int getSize(Resolver resolver) {
-        return selector.getSize(resolver);
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see nl.flotsam.preon.Codec#getCodecDescriptor()
      */
     public CodecDescriptor getCodecDescriptor() {
@@ -135,12 +126,6 @@ public class SwitchingCodec implements Codec<Object> {
             public <T, V extends ParaContents<T>> V putOneLiner(V para) {
                 selector.document(para);
                 return para;
-            }
-
-            public String getSize() {
-                StringBuilder builder = new StringBuilder();
-                builder.append("It depends.");
-                return builder.toString();
             }
 
             public <T> void writeReference(ParaContents<T> contents) {
@@ -202,7 +187,7 @@ public class SwitchingCodec implements Codec<Object> {
                 }
             }
             if (size != null) {
-                return Expressions.createInteger(size, Resolver.class);
+                return Expressions.add(Expressions.createInteger(size, Resolver.class), selector.getSize());
             } else {
                 return null;
             }

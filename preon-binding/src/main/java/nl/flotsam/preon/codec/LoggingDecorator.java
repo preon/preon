@@ -267,7 +267,7 @@ public class LoggingDecorator implements CodecDecorator {
                 throws DecodingException {
             T result = null;
             long pos = buffer.getActualBitPos();
-            logger.logStartDecoding(codec, pos, codec.getSize(resolver));
+            logger.logStartDecoding(codec, pos, codec.getSize().eval(resolver));
             try {
                 result = codec.decode(buffer, resolver, builder);
             } catch (DecodingException de) {
@@ -287,14 +287,6 @@ public class LoggingDecorator implements CodecDecorator {
          */
         public CodecDescriptor getCodecDescriptor() {
             return codec.getCodecDescriptor();
-        }
-
-        /*
-         * (non-Javadoc)
-         * @see nl.flotsam.preon.Codec#getSize(nl.flotsam.preon.Resolver)
-         */
-        public int getSize(Resolver resolver) {
-            return codec.getSize(resolver);
         }
 
         /*

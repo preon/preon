@@ -173,10 +173,6 @@ public class DefaultCodecFactory implements CodecFactory {
                     return delegate.getCodecDescriptor().getLabel();
                 }
 
-                public String getSize() {
-                    return delegate.getCodecDescriptor().getSize();
-                }
-
                 public boolean hasFullDescription() {
                     return delegate.getCodecDescriptor().hasFullDescription();
                 }
@@ -204,10 +200,6 @@ public class DefaultCodecFactory implements CodecFactory {
                 }
 
             };
-        }
-
-        public int getSize(Resolver resolver) {
-            return delegate.getSize(resolver);
         }
 
         public Class<?>[] getTypes() {

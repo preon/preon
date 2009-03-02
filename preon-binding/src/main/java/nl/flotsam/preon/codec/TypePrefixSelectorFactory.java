@@ -70,13 +70,15 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
      * nl.flotsam.preon.CodecSelectorFactory#create(nl.flotsam.preon.ResolverContext
      * , java.util.List)
      */
-    public CodecSelector create(ResolverContext context, List<Codec<?>> allCodecs) {
+    public CodecSelector create(ResolverContext context,
+            List<Codec<?>> allCodecs) {
         int size = -1;
         List<Expression<Integer, Resolver>> expressions = new ArrayList<Expression<Integer, Resolver>>();
         List<Codec<?>> codecs = new ArrayList<Codec<?>>();
         for (Codec<?> codec : allCodecs) {
             for (Class<?> valueType : codec.getTypes()) {
-                TypePrefix prefix = (TypePrefix) valueType.getAnnotation(TypePrefix.class);
+                TypePrefix prefix = (TypePrefix) valueType
+                        .getAnnotation(TypePrefix.class);
                 if (prefix == null) {
                     throw new CodecConstructionException(
                             "To little context to decide between codecs.");
@@ -84,16 +86,17 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                     if (size != -1) {
                         if (size != prefix.size()) {
                             throw new CodecConstructionException(
-                                    "Two distinct prefix sizes are not supported: " + "expected "
-                                            + size + ", got " + prefix.size() + " for " + codec);
+                                    "Two distinct prefix sizes are not supported: "
+                                            + "expected " + size + ", got "
+                                            + prefix.size() + " for " + codec);
                         } else {
                             size = prefix.size();
                         }
                     }
                     if (size == -1)
                         size = prefix.size();
-                    Expression<Integer, Resolver> value = Expressions.createInteger(context, prefix
-                            .value());
+                    Expression<Integer, Resolver> value = Expressions
+                            .createInteger(context, prefix.value());
                     expressions.add(value);
                     codecs.add(codec);
                 }
@@ -118,7 +121,8 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
 
         private int size;
 
-        public TypePrefixSelector(List<Expression<Integer, Resolver>> expressions,
+        public TypePrefixSelector(
+                List<Expression<Integer, Resolver>> expressions,
                 List<Codec<?>> codecs, int size) {
             uniqueCodecs = new HashSet<Codec<?>>();
             this.codecs = codecs;
@@ -131,31 +135,16 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
             return uniqueCodecs;
         }
 
-        public Codec<?> select(BitBuffer buffer, Resolver resolver) throws DecodingException {
+        public Codec<?> select(BitBuffer buffer, Resolver resolver)
+                throws DecodingException {
             long index = buffer.readAsLong(size);
             for (int i = 0; i < codecs.size(); i++) {
                 if (index == expressions.get(i).eval(resolver)) {
                     return codecs.get(i);
                 }
             }
-            throw new DecodingException("No matching Codec found for value " + index);
-        }
-
-        public int getSize(Resolver resolver) {
-            int result = -1;
-            for (Codec<?> codec : codecs) {
-                int size = codec.getSize(resolver);
-                if (size < 0)
-                    return -1;
-                if (result < 0) {
-                    result = size;
-                } else {
-                    if (size != result) {
-                        return -1;
-                    }
-                }
-            }
-            return result + this.size;
+            throw new DecodingException("No matching Codec found for value "
+                    + index);
         }
 
         public void document(final ParaContents<?> para) {
@@ -181,9 +170,15 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                     }
 
                 });
-                para.text(", then the " + codec.getCodecDescriptor().getLabel());
+                para
+                        .text(", then the "
+                                + codec.getCodecDescriptor().getLabel());
                 para.text(" will be choosen.");
             }
+        }
+
+        public Expression<Integer, Resolver> getSize() {
+            return Expressions.createInteger(size, Resolver.class);
         }
 
     }
