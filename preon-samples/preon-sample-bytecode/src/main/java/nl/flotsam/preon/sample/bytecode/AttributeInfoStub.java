@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Wilfred Springer
+ * Copyright (C) 2009 Wilfred Springer
  * 
  * This file is part of Preon.
  * 
@@ -33,31 +33,11 @@
 
 package nl.flotsam.preon.sample.bytecode;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import nl.flotsam.preon.annotation.BoundList;
 
-import junit.framework.TestCase;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Codecs.DocumentType;
-
-public class ClassFileTest extends TestCase {
-
-    public void testDecoding() throws FileNotFoundException, IOException, DecodingException {
-        Codec<ClassFile> codec = Codecs.create(ClassFile.class);
-        ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
-                "src/test/resources/Foo.class"));
-        Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
-    }
-
-    public File getBasedir() {
-        String basedir = System.getProperty("basedir");
-        if (basedir == null) {
-            basedir = System.getProperty("user.dir");
-        }
-        return new File(basedir);
-    }
+public class AttributeInfoStub extends AttributeInfo {
+    
+    @BoundList(size="attributeLength")
+    private byte[] buffer;
 
 }

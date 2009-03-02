@@ -215,7 +215,7 @@ public class SelectFromCodec<T> implements Codec<T> {
         Integer result = null;
         for (Codec<?> codec : codecs) {
             Expression<Integer, Resolver> size = codec.getSize();
-            if (size.isParameterized()) {
+            if (size == null || size.isParameterized()) {
                 return null;
             } else {
                 if (result == null) {

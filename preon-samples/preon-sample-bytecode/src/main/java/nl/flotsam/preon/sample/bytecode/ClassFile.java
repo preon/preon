@@ -97,8 +97,10 @@ public class ClassFile {
     @BoundNumber(size = "16", byteOrder = BigEndian)
     private int attributeCount;
 
-    @BoundList(size = "attributeCount", type = GenericAttributeInfo.class)
-    private GenericAttributeInfo[] attributes;
+    @BoundList(size = "attributeCount", selectFrom = @Choices(prefixSize = 16, byteOrder = BigEndian, alternatives = {
+            @Choice(condition = "constantPool[prefix-1].value=='SourceFile'", type = SourceFile.class),
+            @Choice(condition = "constantPool[prefix-1].value=='Deprecated'", type = Deprecated.class)}))
+    private AttributeInfo[] attributes;
 
     @TypePrefix(value = "7", size = 8)
     public class ClassCpInfo extends CpInfo {
@@ -241,18 +243,22 @@ public class ClassFile {
         @BoundNumber(size = "16", byteOrder = BigEndian)
         private int attributesCount;
 
-        @BoundList(size = "attributesCount", type = GenericAttributeInfo.class)
+        @BoundList(size = "attributesCount", selectFrom = @Choices(prefixSize = 16, byteOrder = BigEndian, alternatives = {
+                @Choice(condition = "outer.constantPool[prefix-1].value=='Code'", type = Code.class),
+                @Choice(condition = "outer.constantPool[prefix-1].value=='Exceptions'", type = Exceptions.class),
+                @Choice(condition = "outer.constantPool[prefix-1].value=='Synthetic'", type = Synthetic.class),
+                @Choice(condition = "outer.constantPool[prefix-1].value=='Deprecated'", type = Deprecated.class)}))
         private Object[] attributes;
 
         public String getName() {
-            return ((Utf8CpInfo) ClassFile.this.constantPool[nameIndex]).getStringValue();
+            return ((Utf8CpInfo) ClassFile.this.constantPool[nameIndex - 1]).getStringValue();
         }
 
         public String getDescriptor() {
-            return ((Utf8CpInfo) ClassFile.this.constantPool[descriptorIndex]).getStringValue();
+            return ((Utf8CpInfo) ClassFile.this.constantPool[descriptorIndex - 1]).getStringValue();
         }
 
-        public class Code extends GenericAttributeInfo {
+        public class Code extends AttributeInfo {
 
             @BoundNumber(size = "16", byteOrder = BigEndian)
             private int maxStack;
@@ -266,7 +272,7 @@ public class ClassFile {
             @BoundList(size = "codeLength")
             private byte[] code;
 
-            @BoundNumber(size = "32", byteOrder = BigEndian)
+            @BoundNumber(size = "16", byteOrder = BigEndian)
             private int exceptionTableLength;
 
             @BoundNumber(size = "exceptionTableLength")
@@ -275,10 +281,12 @@ public class ClassFile {
             @BoundNumber(size = "16", byteOrder = BigEndian)
             private int attributesCount;
 
-            @BoundList(size = "attributesCount", type = GenericAttributeInfo.class)
-            private GenericAttributeInfo[] attributes;
+            @BoundList(size = "attributesCount", selectFrom = @Choices(prefixSize = 16, byteOrder = BigEndian, alternatives = {
+                    @Choice(condition = "outer.outer.constantPool[prefix-1].value=='LineNumberTable'", type = LineNumberTable.class),
+                    @Choice(condition = "outer.outer.constantPool[prefix-1].value=='LocalVariableTable'", type = LocalVariableTable.class)}))
+            private AttributeInfo[] attributes;
 
-            public class LineNumberTable extends GenericAttributeInfo {
+            public class LineNumberTable extends AttributeInfo {
 
                 @BoundNumber(size = "16", byteOrder = BigEndian)
                 int lineNumberTableLength;
@@ -298,7 +306,7 @@ public class ClassFile {
 
             }
 
-            public class LocalVariableTable extends GenericAttributeInfo {
+            public class LocalVariableTable extends AttributeInfo {
 
                 @BoundNumber(size = "16", byteOrder = BigEndian)
                 private int localVariableTableLength;
@@ -345,25 +353,30 @@ public class ClassFile {
 
         }
 
-        public class Exceptions extends GenericAttributeInfo {
+        public class Exceptions extends AttributeInfo {
 
             @BoundNumber(size = "16", byteOrder = BigEndian)
-            int numberOfExceptions;
+            private int numberOfExceptions;
 
             @BoundList(size = "numberOfExceptions")
-            ClassCpInfo[] exceptionIndexTable;
+            private int[] exceptionIndexTable;
 
         }
 
     }
 
-    public class SourceFile extends GenericAttributeInfo {
+    public class SourceFile extends AttributeInfo {
 
         @BoundNumber(size = "16", byteOrder = BigEndian)
         private int sourceFileIndex;
 
+        @Init
+        public void init() {
+            System.err.println(getName());
+        }
+
         public String getName() {
-            return ((Utf8CpInfo) constantPool[sourceFileIndex]).getStringValue();
+            return ((Utf8CpInfo) constantPool[sourceFileIndex - 1]).getStringValue();
         }
 
     }
@@ -382,12 +395,12 @@ public class ClassFile {
         @BoundNumber(size = "16", byteOrder = BigEndian)
         private int attributesCount;
 
-        @BoundList(size = "attributesCount", 
-                selectFrom = @Choices(prefixSize = 16, byteOrder = BigEndian, alternatives = {
-                        @Choice(condition = "outer.constantPool[prefix-1].value=='ConstantValue'", type = ConstantValue.class)
-                        }))
+        @BoundList(size = "attributesCount", selectFrom = @Choices(prefixSize = 16, byteOrder = BigEndian, alternatives = {
+                @Choice(condition = "outer.constantPool[prefix-1].value=='ConstantValue'", type = ConstantValue.class),
+                @Choice(condition = "outer.constantPool[prefix-1].value=='Synthetic'", type = Synthetic.class),
+                @Choice(condition = "outer.constantPool[prefix-1].value=='Deprecated'", type = Deprecated.class)}))
         private AttributeInfo[] attributes;
-        
+
         public String getDescriptor() {
             return ((Utf8CpInfo) constantPool[descriptorIndex]).getStringValue();
         }
@@ -398,6 +411,14 @@ public class ClassFile {
             private int constantValueIndex;
 
         }
+
+    }
+
+    private static class Synthetic extends AttributeInfo {
+
+    }
+
+    private static class Deprecated extends AttributeInfo {
 
     }
 

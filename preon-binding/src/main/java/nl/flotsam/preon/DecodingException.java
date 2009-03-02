@@ -78,7 +78,7 @@ public class DecodingException extends CodecException {
     public DecodingException(String message) {
         super(message);
     }
-
+    
     public DecodingException(Class<?> type, InstantiationException ie) {
         super("Failed to create instance of " + type.getSimpleName(), ie);
     }
