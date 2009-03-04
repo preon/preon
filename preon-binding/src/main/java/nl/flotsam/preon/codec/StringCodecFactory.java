@@ -166,10 +166,6 @@ public class StringCodecFactory implements CodecFactory {
                     return builder.toString();
                 }
 
-                public String getSize() {
-                    return "unknown";
-                }
-
                 public boolean hasFullDescription() {
                     return false;
                 }
@@ -188,10 +184,6 @@ public class StringCodecFactory implements CodecFactory {
                 }
 
             };
-        }
-
-        public int getSize(Resolver resolver) {
-            return -1;
         }
 
         public Class<?>[] getTypes() {
@@ -288,13 +280,6 @@ public class StringCodecFactory implements CodecFactory {
                     return builder.toString();
                 }
 
-                public String getSize() {
-                    StringBuilder builder = new StringBuilder();
-                    sizeExpr.document(new StringBuilderDocument(builder));
-                    builder.append(" times 8");
-                    return builder.toString();
-                }
-
                 public boolean hasFullDescription() {
                     return false;
                 }
@@ -313,10 +298,6 @@ public class StringCodecFactory implements CodecFactory {
                 }
 
             };
-        }
-
-        public int getSize(Resolver resolver) {
-            return sizeExpr.eval(resolver);
         }
 
         public Class<?>[] getTypes() {

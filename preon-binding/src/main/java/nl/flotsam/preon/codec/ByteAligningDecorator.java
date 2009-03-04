@@ -91,11 +91,6 @@ public class ByteAligningDecorator implements CodecDecorator {
             return null;
         }
 
-        public int getSize(Resolver resolver) {
-            // TODO Auto-generated method stub
-            return 0;
-        }
-
         public Class<?>[] getTypes() {
             // TODO Auto-generated method stub
             return null;

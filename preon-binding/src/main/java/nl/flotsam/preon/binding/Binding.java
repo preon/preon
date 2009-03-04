@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -41,7 +41,6 @@ import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.codec.ObjectCodecFactory;
-
 
 /**
  * The interface of objects that are able to load object state from a
@@ -83,8 +82,8 @@ public interface Binding {
      *             If we fail to decode the fields value from the
      *             {@link BitBuffer}.
      */
-    void load(Object object, BitBuffer buffer, Resolver resolver, Builder builder)
-            throws DecodingException;
+    void load(Object object, BitBuffer buffer, Resolver resolver,
+            Builder builder) throws DecodingException;
 
     /**
      * Describes this {@link Binding} in the paragraph passed in.
@@ -123,7 +122,8 @@ public interface Binding {
      *            The object to bind to.
      * @return The value.
      */
-    Object get(Object context) throws IllegalArgumentException, IllegalAccessException;
+    Object get(Object context) throws IllegalArgumentException,
+            IllegalAccessException;
 
     /**
      * Returns the name of the binding.
@@ -143,13 +143,18 @@ public interface Binding {
 
     /**
      * Returns a unique identifier for this binding. (Guaranteed to be unique
-     * for the Codec created.) Note that this decorators are expected to leave
+     * for the Codec created.) Note that decorators are expected to leave
      * this id untouched.
      * 
      * @return A unique identifier for this binding.
      */
     String getId();
 
+    /**
+     * Returns the type of object expected to be loaded by this binding.
+     * 
+     * @return The type of object expected to be loaded by this binding.
+     */
     Class<?> getType();
 
 }

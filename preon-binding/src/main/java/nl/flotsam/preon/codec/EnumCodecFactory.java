@@ -154,10 +154,6 @@ public class EnumCodecFactory implements CodecFactory {
             };
         }
 
-        public int getSize(Resolver resolver) {
-            return size.eval(resolver);
-        }
-
         public Class<?>[] getTypes() {
             return new Class[] { type };
         }

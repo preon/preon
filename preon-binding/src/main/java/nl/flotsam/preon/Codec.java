@@ -67,11 +67,22 @@ public interface Codec<T> {
      * @throws DecodingException
      *             If the {@link Codec} fails to decode the value.
      */
-    T decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException;
+    T decode(BitBuffer buffer, Resolver resolver, Builder builder)
+            throws DecodingException;
 
     /**
-     * Returns the number of bits occupied by objects created by this Codec, as
-     * a function of the context to which variables will be resolved.
+     * Returns an expression that is expected to return the number of bits
+     * occupied by objects created by this Codec, as a function of the context
+     * to which variables will be resolved.
+     * 
+     * <p>
+     * This method may return null, indicating that it is impossible to state
+     * anything at all on the expected number of bits. Note that if this method
+     * <em>does</em> return an {@link Expression}, then it will require a
+     * {@link Resolver} to resolve variables inside this expression,
+     * <em>unless {@link Expression#isParameterized()} returns <code>true</code></em>
+     * .
+     * </p>
      * 
      * @return A Limbo {@link Expression}, expressing the number of bits
      *         occupied by instance loaded and stored by this Codec.

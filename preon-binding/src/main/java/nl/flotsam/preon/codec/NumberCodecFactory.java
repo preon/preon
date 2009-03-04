@@ -37,8 +37,6 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-
 import nl.flotsam.limbo.Document;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
@@ -255,14 +253,6 @@ public class NumberCodecFactory implements CodecFactory {
             return result;
         }
 
-        public int getSize(Resolver resolver) {
-            if (resolver != null) {
-                return sizeExpr.eval(resolver);
-            } else {
-                return -1;
-            }
-        }
-
         public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
@@ -311,12 +301,6 @@ public class NumberCodecFactory implements CodecFactory {
                 public <T, V extends ParaContents<T>> V putOneLiner(V para) {
                     para.text("A ").text(getLabel());
                     return para;
-                }
-
-                public String getSize() {
-                    StringBuilder builder = new StringBuilder();
-                    sizeExpr.document(new StringBuilderDocument(builder));
-                    return builder.toString();
                 }
 
                 public <T> void writeReference(ParaContents<T> contents) {

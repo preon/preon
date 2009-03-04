@@ -175,10 +175,6 @@ public class SlicingCodecDecorator implements CodecDecorator {
                     return wrapped.getCodecDescriptor().getLabel() + " of a maximum length";
                 }
 
-                public String getSize() {
-                    return "unknown";
-                }
-
                 public boolean hasFullDescription() {
                     // TODO Auto-generated method stub
                     return false;
@@ -200,10 +196,6 @@ public class SlicingCodecDecorator implements CodecDecorator {
                 }
 
             };
-        }
-
-        public int getSize(Resolver resolver) {
-            return (int) calculator.getSize(resolver);
         }
 
         public Class<?>[] getTypes() {

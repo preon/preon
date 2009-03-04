@@ -39,7 +39,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.flotsam.limbo.BindingException;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.pecia.AnnotatedSection;
@@ -343,20 +342,6 @@ public class ObjectCodecFactory implements CodecFactory {
                     para.link(getLabel(), "here");
                     para.text(".)");
                     return para;
-                }
-
-                public String getSize() {
-                    Expression<Integer, Resolver> sizeExpr = ObjectCodec.this
-                            .getSize();
-                    if (sizeExpr == null) {
-                        return "unknown in advance";
-                    } else {
-                        if (sizeExpr.isParameterized()) {
-                            return "depending on other data";
-                        } else {
-                            return Integer.toString(sizeExpr.eval(null));
-                        }
-                    }
                 }
 
                 public <U> void writeReference(ParaContents<U> contents) {

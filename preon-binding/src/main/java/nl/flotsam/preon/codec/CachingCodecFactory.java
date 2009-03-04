@@ -33,7 +33,6 @@
 
 package nl.flotsam.preon.codec;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.Collections;

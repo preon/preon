@@ -277,12 +277,6 @@ public class ListCodecFactory implements CodecFactory {
                     return para;
                 }
 
-                public String getSize() {
-                    StringBuilderDocument document = new StringBuilderDocument();
-                    StaticListCodec.this.getSize().document(document);
-                    return document.toString();
-                }
-
                 public <U> void writeReference(ParaContents<U> contents) {
                     contents.text("A list of ");
                     codec.getCodecDescriptor().writeReference(contents);
@@ -360,11 +354,6 @@ public class ListCodecFactory implements CodecFactory {
                             + " elements";
                 }
 
-                public String getSize() {
-                    // We don't know, but the SlicingDecorator might know.
-                    return "unknown";
-                }
-
                 public boolean hasFullDescription() {
                     return false;
                 }
@@ -383,11 +372,6 @@ public class ListCodecFactory implements CodecFactory {
                 }
 
             };
-        }
-
-        public int getSize(Resolver resolver) {
-            // TODO Auto-generated method stub
-            return -1;
         }
 
         public Class<?>[] getTypes() {
@@ -441,10 +425,6 @@ public class ListCodecFactory implements CodecFactory {
                             + skipListCodec.getCodecDescriptor().getLabel()
                             + " or "
                             + nonSkipListCodec.getCodecDescriptor().getLabel();
-                }
-
-                public String getSize() {
-                    return "uknown";
                 }
 
                 public boolean hasFullDescription() {
@@ -694,10 +674,6 @@ public class ListCodecFactory implements CodecFactory {
                             + " elements";
                 }
 
-                public String getSize() {
-                    return "unknown";
-                }
-
                 public boolean hasFullDescription() {
                     return false;
                 }
@@ -717,10 +693,6 @@ public class ListCodecFactory implements CodecFactory {
                 }
 
             };
-        }
-
-        public int getSize(Resolver resolver) {
-            return size.eval(resolver);
         }
 
         public Class<?>[] getTypes() {
