@@ -43,11 +43,13 @@ import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.Init;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
 
 /**
  * A decorator that will inspect all methods on the object constructed by the
@@ -159,6 +161,10 @@ public class InitCodecDecorator implements CodecDecorator {
 
         public Class<?> getType() {
             return codec.getType();
+        }
+
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor2(), false);
         }
 
     }

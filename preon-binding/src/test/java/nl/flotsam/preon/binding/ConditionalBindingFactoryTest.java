@@ -124,7 +124,7 @@ public class ConditionalBindingFactoryTest extends TestCase {
         test.value = "whatever";
         expect(metadata.getAnnotation(If.class)).andReturn(condition);
         expect(condition.value()).andReturn(expr);
-        expect(decorated.create(metadata, field, codec, context)).andReturn(binding);
+        expect(decorated.create(metadata, field, codec, context, null)).andReturn(binding);
         if (!compilationFailure) {
             expect(context.selectAttribute("a")).andReturn(new SimpleIntegerReference("a")); // Reference not used
             expect(context.selectAttribute("b")).andReturn(new SimpleIntegerReference("b")); // Reference not used
@@ -139,7 +139,7 @@ public class ConditionalBindingFactoryTest extends TestCase {
             expect(binding.getSize()).andReturn(sizeExpr);
         }
         replay(decorated, buffer, resolver, metadata, codec, condition, binding, builder, context, sizeExpr);
-        Binding conditionalBinding = factory.create(metadata, field, codec, context);
+        Binding conditionalBinding = factory.create(metadata, field, codec, context, null);
         if (bindingAction) {
             assertEquals(Integer.valueOf(6), conditionalBinding.getSize().eval(resolver));
         } else {

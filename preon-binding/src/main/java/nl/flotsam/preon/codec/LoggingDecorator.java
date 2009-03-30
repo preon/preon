@@ -40,10 +40,12 @@ import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
 
 /**
  * A {@link CodecDecorator} that will log a message before and after the
@@ -251,8 +253,10 @@ public class LoggingDecorator implements CodecDecorator {
         /**
          * Constructs a new instance.
          * 
-         * @param codec The {@link Codec} to wrap.
-         * @param logger The {@link Logger} to use.
+         * @param codec
+         *            The {@link Codec} to wrap.
+         * @param logger
+         *            The {@link Logger} to use.
          */
         public LoggingCodec(Codec<T> codec, Logger logger) {
             this.codec = codec;
@@ -261,7 +265,9 @@ public class LoggingDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
-         * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer, nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
+         * 
+         * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
+         * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
          */
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
@@ -283,6 +289,7 @@ public class LoggingDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
+         * 
          * @see nl.flotsam.preon.Codec#getCodecDescriptor()
          */
         public CodecDescriptor getCodecDescriptor() {
@@ -291,6 +298,7 @@ public class LoggingDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
+         * 
          * @see nl.flotsam.preon.Codec#getTypes()
          */
         public Class<?>[] getTypes() {
@@ -299,6 +307,7 @@ public class LoggingDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
+         * 
          * @see nl.flotsam.preon.Codec#getSize()
          */
         public Expression<Integer, Resolver> getSize() {
@@ -307,10 +316,16 @@ public class LoggingDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
+         * 
          * @see nl.flotsam.preon.Codec#getType()
          */
         public Class<?> getType() {
             return codec.getType();
+        }
+
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor2(),
+                    false);
         }
 
     }

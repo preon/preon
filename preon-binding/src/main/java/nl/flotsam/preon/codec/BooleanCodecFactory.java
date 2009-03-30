@@ -37,16 +37,19 @@ import java.lang.reflect.AnnotatedElement;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.descriptor.DefaultDescriptor;
 
 
 /**
@@ -93,11 +96,48 @@ public class BooleanCodecFactory implements CodecFactory {
         }
 
         public CodecDescriptor getCodecDescriptor() {
-            return new DefaultDescriptor();
+            return null;
         }
+        
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
 
-        public int getSize(Resolver resolver) {
-            return 1;
+                public <T extends SimpleContents<?>> Documenter<T> details(
+                        String bufferReference) {
+                    return new Documenter<T>() {
+                        public void document(T target) {
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <T extends ParaContents<?>> Documenter<T> reference(
+                        final Adjective adjective) {
+                    return new Documenter<T>() {
+                        public void document(T target) {
+                            target.text(adjective == Adjective.A ? "a " : "the ");
+                            target.text("boolean value");
+                        }
+                    };
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <T extends ParaContents<?>> Documenter<T> summary() {
+                    return new Documenter<T>() {
+                        public void document(T target) {
+                            target.text("A one-bit representation of a boolean value: ");
+                            target.text("1 = true; 0 = false.");
+                        }
+                    };
+                }
+                
+            };
         }
 
         public Class<?>[] getTypes() {

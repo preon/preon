@@ -50,6 +50,7 @@ import nl.flotsam.preon.CodecSelectorFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.CodecDescriptor2.Adjective;
 import nl.flotsam.preon.annotation.TypePrefix;
 import nl.flotsam.preon.buffer.BitBuffer;
 
@@ -171,8 +172,8 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
 
                 });
                 para
-                        .text(", then the "
-                                + codec.getCodecDescriptor().getLabel());
+                        .text(", then ").document(
+                                codec.getCodecDescriptor2().reference(Adjective.THE));
                 para.text(" will be choosen.");
             }
         }

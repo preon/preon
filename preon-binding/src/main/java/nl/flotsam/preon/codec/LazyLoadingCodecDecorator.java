@@ -44,12 +44,14 @@ import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.LazyLoading;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
 
 /**
  * An attempt to create a general purpose {@link CodecFactory} whose
@@ -112,7 +114,9 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
-         * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer, nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
+         * 
+         * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
+         * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
          */
         @SuppressWarnings("unchecked")
         public T decode(final BitBuffer buffer, final Resolver resolver,
@@ -142,6 +146,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
+         * 
          * @see nl.flotsam.preon.Codec#getCodecDescriptor()
          */
         public CodecDescriptor getCodecDescriptor() {
@@ -150,6 +155,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
+         * 
          * @see nl.flotsam.preon.Codec#getTypes()
          */
         public Class<?>[] getTypes() {
@@ -158,6 +164,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
+         * 
          * @see nl.flotsam.preon.Codec#getSize()
          */
         public Expression<Integer, Resolver> getSize() {
@@ -166,10 +173,16 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
 
         /*
          * (non-Javadoc)
+         * 
          * @see nl.flotsam.preon.Codec#getType()
          */
         public Class<?> getType() {
             return type;
+        }
+
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new PassThroughCodecDescriptor2(wrapped
+                    .getCodecDescriptor2(), false);
         }
 
     }

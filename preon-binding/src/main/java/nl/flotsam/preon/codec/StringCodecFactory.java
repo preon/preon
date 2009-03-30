@@ -41,11 +41,14 @@ import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionException;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
@@ -55,6 +58,7 @@ import nl.flotsam.preon.annotation.BoundString;
 import nl.flotsam.preon.annotation.BoundString.ByteConverter;
 import nl.flotsam.preon.annotation.BoundString.Encoding;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.util.TextUtils;
 
 /**
@@ -166,15 +170,15 @@ public class StringCodecFactory implements CodecFactory {
                     return builder.toString();
                 }
 
-                public boolean hasFullDescription() {
+                public boolean requiresDedicatedSection() {
                     return false;
                 }
 
-                public <T> Contents<T> putFullDescription(Contents<T> contents) {
+                public <T> Contents<T> writeSection(Contents<T> contents) {
                     return contents;
                 }
 
-                public <T, V extends ParaContents<T>> V putOneLiner(V para) {
+                public <T, V extends ParaContents<T>> V writePara(V para) {
                     para.text(getLabel());
                     return para;
                 }
@@ -198,6 +202,52 @@ public class StringCodecFactory implements CodecFactory {
             return String.class;
         }
 
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        String bufferReference) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            if (match != null && match.length() > 0) {
+                                target.para().text(
+                                        "The string is expected to match \"")
+                                        .text(match).text("\".").end();
+                            }
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        final Adjective adjective) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.text(adjective.asTextPreferA()).text(
+                                    "string of characters");
+                        }
+                    };
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target
+                                    .text("A null-terminated sequence of characters, encoded in "
+                                            + encoding + ".");
+                        }
+                    };
+                }
+
+            };
+        }
     }
 
     /**
@@ -280,15 +330,15 @@ public class StringCodecFactory implements CodecFactory {
                     return builder.toString();
                 }
 
-                public boolean hasFullDescription() {
+                public boolean requiresDedicatedSection() {
                     return false;
                 }
 
-                public <T> Contents<T> putFullDescription(Contents<T> contents) {
+                public <T> Contents<T> writeSection(Contents<T> contents) {
                     return null;
                 }
 
-                public <T, V extends ParaContents<T>> V putOneLiner(V para) {
+                public <T, V extends ParaContents<T>> V writePara(V para) {
                     para.text(getLabel());
                     return para;
                 }
@@ -313,6 +363,58 @@ public class StringCodecFactory implements CodecFactory {
             return String.class;
         }
 
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        String bufferReference) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target
+                                    .para()
+                                    .text("The number of characters of the string is ")
+                                    .document(
+                                            Documenters.forExpression(sizeExpr))
+                                    .text(".").end();
+                            if (match != null && match.length() > 0) {
+                                target.para().text(
+                                        "The string is expected to match \"")
+                                        .text(match).text("\".").end();
+                            }
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        final Adjective adjective) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.text(adjective.asTextPreferA()).text(
+                                    "string of characters");
+                        }
+                    };
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target
+                                    .text("A sequence of characters, encoded in "
+                                            + encoding + ".");
+                        }
+                    };
+                }
+
+            };
+        }
     }
 
 }

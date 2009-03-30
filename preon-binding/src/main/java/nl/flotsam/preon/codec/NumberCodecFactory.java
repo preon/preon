@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -43,10 +43,13 @@ import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.util.Converters;
 import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
@@ -55,7 +58,8 @@ import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
-
+import nl.flotsam.preon.descriptor.Documenters;
+import nl.flotsam.preon.descriptor.NullDocumenter;
 
 /**
  * A {@link CodecFactory} generating {@link Codec Codecs} capable of decoding
@@ -94,7 +98,8 @@ public class NumberCodecFactory implements CodecFactory {
             }
 
             public Object decode(BitBuffer buffer, int size, ByteOrder endian) {
-                return java.lang.Double.longBitsToDouble(buffer.readAsLong(size, endian));
+                return java.lang.Double.longBitsToDouble(buffer.readAsLong(
+                        size, endian));
             }
 
             public Class<?> getType() {
@@ -161,13 +166,15 @@ public class NumberCodecFactory implements CodecFactory {
 
         public abstract int getDefaultSize();
 
-        public abstract Object decode(BitBuffer buffer, int size, ByteOrder endian);
+        public abstract Object decode(BitBuffer buffer, int size,
+                ByteOrder endian);
 
         public abstract Class<?> getType();
 
     }
 
-    private static Map<Class<?>, NumericType> NUMERIC_TYPES = new HashMap<Class<?>, NumericType>(8);
+    private static Map<Class<?>, NumericType> NUMERIC_TYPES = new HashMap<Class<?>, NumericType>(
+            8);
 
     static {
         NUMERIC_TYPES.put(Integer.class, NumericType.Integer);
@@ -185,29 +192,36 @@ public class NumberCodecFactory implements CodecFactory {
     }
 
     @SuppressWarnings( { "unchecked" })
-    public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type, ResolverContext context) {
+    public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type,
+            ResolverContext context) {
         if (NUMERIC_TYPES.keySet().contains(type)) {
             NumericType numericType = NUMERIC_TYPES.get(type);
             if (overrides == null || overrides.isAnnotationPresent(Bound.class)) {
                 ByteOrder endian = ByteOrder.LittleEndian;
                 int size = numericType.getDefaultSize();
-                Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, Integer
-                        .toString(size));
-                return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, null);
+                Expression<Integer, Resolver> sizeExpr = Expressions
+                        .createInteger(context, Integer.toString(size));
+                return (Codec<T>) new NumericCodec(sizeExpr, endian,
+                        numericType, null);
             }
-            if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
-                BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
+            if (overrides != null
+                    && overrides.isAnnotationPresent(BoundNumber.class)) {
+                BoundNumber numericMetadata = overrides
+                        .getAnnotation(BoundNumber.class);
                 ByteOrder endian = numericMetadata.byteOrder();
                 String size = numericMetadata.size();
                 if (size.length() == 0) {
                     size = Integer.toString(numericType.getDefaultSize());
                 }
-                Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, size);
+                Expression<Integer, Resolver> sizeExpr = Expressions
+                        .createInteger(context, size);
                 Expression<Integer, Resolver> matchExpr = null;
                 if (numericMetadata.match().trim().length() != 0) {
-                    matchExpr = Expressions.createInteger(context, numericMetadata.match());
+                    matchExpr = Expressions.createInteger(context,
+                            numericMetadata.match());
                 }
-                return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, matchExpr);
+                return (Codec<T>) new NumericCodec(sizeExpr, endian,
+                        numericType, matchExpr);
             }
         }
         return null;
@@ -223,24 +237,26 @@ public class NumberCodecFactory implements CodecFactory {
 
         private Expression<Integer, Resolver> matchExpr;
 
-        public NumericCodec(Expression<Integer, Resolver> sizeExpr, ByteOrder endian,
-                NumericType type, Expression<Integer, Resolver> matchExpr) {
+        public NumericCodec(Expression<Integer, Resolver> sizeExpr,
+                ByteOrder endian, NumericType type,
+                Expression<Integer, Resolver> matchExpr) {
             this.sizeExpr = sizeExpr;
             this.endian = endian;
             this.type = type;
             this.matchExpr = matchExpr;
         }
 
-        public Object decode(BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
-            int size = ((Number)(this.sizeExpr.eval(resolver))).intValue();
+        public Object decode(BitBuffer buffer, Resolver resolver,
+                Builder builder) throws DecodingException {
+            int size = ((Number) (this.sizeExpr.eval(resolver))).intValue();
             Object result = type.decode(buffer, size, endian);
             if (matchExpr != null) {
                 if (!matchExpr.eval(resolver).equals(Converters.toInt(result))) {
                     StringBuilder stringBuilder = new StringBuilder();
                     Document document = new StringBuilderDocument(stringBuilder);
                     if (matchExpr.isParameterized()) {
-                        stringBuilder.append("Expected different value than " + result);
+                        stringBuilder.append("Expected different value than "
+                                + result);
                     } else {
                         stringBuilder.append("Expected ");
                         matchExpr.document(document);
@@ -258,7 +274,8 @@ public class NumberCodecFactory implements CodecFactory {
 
                 public String getLabel() {
                     StringBuilder builder = new StringBuilder();
-                    Expression<Integer, Resolver> sizeExpr = NumericCodec.this.getSize();
+                    Expression<Integer, Resolver> sizeExpr = NumericCodec.this
+                            .getSize();
                     if (sizeExpr != null && !sizeExpr.isParameterized()) {
                         builder.append(Integer.toString(sizeExpr.eval(null)));
                         builder.append("-bit ");
@@ -287,19 +304,29 @@ public class NumberCodecFactory implements CodecFactory {
                             builder.append("double");
                         }
                     }
+                    switch (endian) {
+                        case BigEndian: {
+                            builder.append(" (big endian)");
+                            break;
+                        }
+                        case LittleEndian: {
+                            builder.append(" (little endian)");
+                            break;
+                        }
+                    }
                     return builder.toString();
                 }
 
-                public boolean hasFullDescription() {
+                public boolean requiresDedicatedSection() {
                     return false;
                 }
 
-                public <T> Contents<T> putFullDescription(Contents<T> contents) {
+                public <T> Contents<T> writeSection(Contents<T> contents) {
                     return null;
                 }
 
-                public <T, V extends ParaContents<T>> V putOneLiner(V para) {
-                    para.text("A ").text(getLabel());
+                public <T, V extends ParaContents<T>> V writePara(V para) {
+                    para.text("a ").text(getLabel());
                     return para;
                 }
 
@@ -320,6 +347,72 @@ public class NumberCodecFactory implements CodecFactory {
 
         public Class<?> getType() {
             return type.getType();
+        }
+
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        String bufferReference) {
+                    if (sizeExpr.isParameterized()) {
+                        return new Documenter<C>() {
+                            public void document(C target) {
+                                target
+                                        .para()
+                                        .text("The number of bits is ")
+                                        .document(
+                                                Documenters
+                                                        .forExpression(sizeExpr))
+                                        .text(".").end();
+                            }
+                        };
+                    } else {
+                        return new NullDocumenter<C>();
+                    }
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        final Adjective adjective) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            if (sizeExpr.isParameterized()) {
+                                target.text(adjective.asTextPreferAn()).text(
+                                        " integer value (").document(
+                                        Documenters.forByteOrder(endian)).text(
+                                        ")");
+                            } else {
+                                target
+                                        .text(adjective.asTextPreferA())
+                                        .text(" ")
+                                        .document(
+                                                Documenters
+                                                        .forExpression(sizeExpr))
+                                        .text("-bit integer value (").document(
+                                                Documenters
+                                                        .forByteOrder(endian))
+                                        .text(")");
+                            }
+                        }
+                    };
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.document(reference(Adjective.A)).text(".");
+                        }
+                    };
+                }
+
+            };
         }
 
     }

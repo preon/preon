@@ -37,7 +37,9 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.Set;
 
+import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.DecodingException;
@@ -45,6 +47,7 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.If;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.Documenters;
 
 import nl.flotsam.limbo.BindingException;
 import nl.flotsam.limbo.Document;
@@ -92,7 +95,7 @@ public class ConditionalBindingFactory implements BindingFactory {
      * nl.flotsam.preon.ResolverContext)
      */
     public Binding create(AnnotatedElement metadata, Field field, Codec<?> codec,
-            ResolverContext context) {
+            ResolverContext context, Documenter<ParaContents<?>> containerReference) {
         If condition = metadata.getAnnotation(If.class);
         if (condition != null) {
             Expression<Boolean, Resolver> expr = null;
@@ -132,9 +135,9 @@ public class ConditionalBindingFactory implements BindingFactory {
 
                 };
             }
-            return new ConditionalBinding(expr, decorated.create(metadata, field, codec, context));
+            return new ConditionalBinding(expr, decorated.create(metadata, field, codec, context, containerReference));
         } else {
-            return decorated.create(metadata, field, codec, context);
+            return decorated.create(metadata, field, codec, context, containerReference);
         }
     }
 
@@ -157,7 +160,6 @@ public class ConditionalBindingFactory implements BindingFactory {
         }
 
         public <T, V extends ParaContents<T>> V describe(final V contents) {
-            binding.describe(contents);
             contents.text(" Only if ");
             expr.document(new Document() {
 
@@ -205,6 +207,12 @@ public class ConditionalBindingFactory implements BindingFactory {
 
         public Class<?> getType() {
             return binding.getType();
+        }
+
+        public <V extends SimpleContents<?>> V describe(V contents) {
+            binding.describe(contents);
+            contents.para().text("Only if ").document(Documenters.forExpression(expr)).text(".").end();
+            return contents;
         }
 
     }

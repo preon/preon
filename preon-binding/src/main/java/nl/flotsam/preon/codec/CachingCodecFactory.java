@@ -41,16 +41,21 @@ import java.util.List;
 import java.util.Map;
 
 import nl.flotsam.limbo.Expression;
+import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionListener;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
 import nl.flotsam.preon.util.AnnotationUtils;
 
 /**
@@ -207,6 +212,11 @@ public class CachingCodecFactory implements CodecFactory {
 
         public Class<?> getType() {
             return codec.getType();
+        }
+
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor2(),
+                    codec.getCodecDescriptor2().requiresDedicatedSection());
         }
 
     }

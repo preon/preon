@@ -44,10 +44,14 @@ import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.Reference;
 import nl.flotsam.limbo.ReferenceContext;
 import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
+import nl.flotsam.pecia.Table2Cols;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
@@ -55,6 +59,7 @@ import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
+import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.limbo.ContextReplacingReference;
 
 /**
@@ -118,8 +123,9 @@ public class SelectFromCodec<T> implements Codec<T> {
      * @param factory
      * @param metadata
      */
-    public SelectFromCodec(Class<?> type, Choices choices, ResolverContext context,
-            CodecFactory factory, AnnotatedElement metadata) {
+    public SelectFromCodec(Class<?> type, Choices choices,
+            ResolverContext context, CodecFactory factory,
+            AnnotatedElement metadata) {
         this.prefixSize = choices.prefixSize();
         this.types = new Class<?>[choices.alternatives().length];
         this.byteOrder = choices.byteOrder();
@@ -128,16 +134,19 @@ public class SelectFromCodec<T> implements Codec<T> {
         if (choices.defaultType() != Void.class) {
             defaultCodec = factory.create(null, choices.defaultType(), context);
         }
-        ResolverContext passThroughContext = new PrefixResolverContext(context, prefixSize);
+        ResolverContext passThroughContext = new PrefixResolverContext(context,
+                prefixSize);
         for (int i = 0; i < choices.alternatives().length; i++) {
             types[i] = choices.alternatives()[i].type();
-            conditions.add(Expressions.createBoolean(passThroughContext, choices.alternatives()[i]
-                    .condition()));
-            codecs.add(factory.create(null, choices.alternatives()[i].type(), passThroughContext));
+            conditions.add(Expressions.createBoolean(passThroughContext,
+                    choices.alternatives()[i].condition()));
+            codecs.add(factory.create(null, choices.alternatives()[i].type(),
+                    passThroughContext));
         }
     }
 
-    public T decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException {
+    public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
+            throws DecodingException {
         if (prefixSize <= 0) {
             for (int i = 0; i < conditions.size(); i++) {
                 if (conditions.get(i).eval(resolver)) {
@@ -147,7 +156,8 @@ public class SelectFromCodec<T> implements Codec<T> {
         } else {
             int prefix = buffer.readAsInt(this.prefixSize, byteOrder);
             for (int i = 0; i < conditions.size(); i++) {
-                if (conditions.get(i).eval(new PrefixResolver(resolver, prefix))) {
+                if (conditions.get(i)
+                        .eval(new PrefixResolver(resolver, prefix))) {
                     return (T) codecs.get(i).decode(buffer, resolver, builder);
                 }
             }
@@ -174,27 +184,23 @@ public class SelectFromCodec<T> implements Codec<T> {
                     } else if (i != 0) {
                         builder.append(", ");
                     }
-                    builder.append(codecs.get(i).getCodecDescriptor().getLabel());
+                    builder.append(codecs.get(i).getCodecDescriptor()
+                            .getLabel());
                 }
                 return builder.toString();
             }
 
-            public String getSize() {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            public boolean hasFullDescription() {
+            public boolean requiresDedicatedSection() {
                 // TODO Auto-generated method stub
                 return false;
             }
 
-            public <T> Contents<T> putFullDescription(Contents<T> contents) {
+            public <T> Contents<T> writeSection(Contents<T> contents) {
                 // TODO Auto-generated method stub
                 return null;
             }
 
-            public <T, V extends ParaContents<T>> V putOneLiner(V para) {
+            public <T, V extends ParaContents<T>> V writePara(V para) {
                 // TODO Auto-generated method stub
                 return null;
             }
@@ -207,10 +213,6 @@ public class SelectFromCodec<T> implements Codec<T> {
         };
     }
 
-    public int getSize(Resolver resolver) {
-        return -1;
-    }
-
     public Expression<Integer, Resolver> getSize() {
         Integer result = null;
         for (Codec<?> codec : codecs) {
@@ -219,7 +221,8 @@ public class SelectFromCodec<T> implements Codec<T> {
                 return null;
             } else {
                 if (result == null) {
-                    result = size.eval(null); // Not parameterized, so we can do this.
+                    result = size.eval(null); // Not parameterized, so we can do
+                    // this.
                 } else {
                     if (!result.equals(size.eval(null))) {
                         return null;
@@ -242,98 +245,103 @@ public class SelectFromCodec<T> implements Codec<T> {
         return types;
     }
 
-    //    private static class SelectFromContext implements ResolverContext {
+    // private static class SelectFromContext implements ResolverContext {
     //
-    //        private ResolverContext wrapped;
+    // private ResolverContext wrapped;
     //
-    //        private int size;
+    // private int size;
     //
-    //        public SelectFromContext(ResolverContext wrapped, int size) {
-    //            this.wrapped = wrapped;
-    //            this.size = size;
-    //        }
+    // public SelectFromContext(ResolverContext wrapped, int size) {
+    // this.wrapped = wrapped;
+    // this.size = size;
+    // }
     //
-    //        public Reference<Resolver> selectAttribute(String name) throws BindingException {
-    //            if (PREFIX_NAME.equals(name)) {
-    //                return new PrefixReference(this, size);
-    //            } else {
-    //                return wrapped.selectAttribute(name);
-    //            }
-    //        }
+    // public Reference<Resolver> selectAttribute(String name) throws
+    // BindingException {
+    // if (PREFIX_NAME.equals(name)) {
+    // return new PrefixReference(this, size);
+    // } else {
+    // return wrapped.selectAttribute(name);
+    // }
+    // }
     //
-    //        public Reference<Resolver> selectItem(String index) throws BindingException {
-    //            return wrapped.selectItem(index);
-    //        }
+    // public Reference<Resolver> selectItem(String index) throws
+    // BindingException {
+    // return wrapped.selectItem(index);
+    // }
     //
-    //        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
-    //                throws BindingException {
-    //            return wrapped.selectItem(index);
-    //        }
+    // public Reference<Resolver> selectItem(Expression<Integer, Resolver>
+    // index)
+    // throws BindingException {
+    // return wrapped.selectItem(index);
+    // }
     //
-    //        public void document(Document target) {
-    //            wrapped.document(target);
-    //        }
+    // public void document(Document target) {
+    // wrapped.document(target);
+    // }
     //
-    //    }
+    // }
     //
-    //    private static class PrefixReference implements Reference<Resolver> {
+    // private static class PrefixReference implements Reference<Resolver> {
     //
-    //        private ReferenceContext<Resolver> referenceContext;
+    // private ReferenceContext<Resolver> referenceContext;
     //
-    //        private int size;
+    // private int size;
     //
-    //        public PrefixReference(ReferenceContext<Resolver> context, int size) {
-    //            this.referenceContext = context;
-    //            this.size = size;
-    //        }
+    // public PrefixReference(ReferenceContext<Resolver> context, int size) {
+    // this.referenceContext = context;
+    // this.size = size;
+    // }
     //
-    //        public ReferenceContext<Resolver> getReferenceContext() {
-    //            return referenceContext;
-    //        }
+    // public ReferenceContext<Resolver> getReferenceContext() {
+    // return referenceContext;
+    // }
     //
-    //        public Class<?> getType() {
-    //            return Integer.class;
-    //        }
+    // public Class<?> getType() {
+    // return Integer.class;
+    // }
     //
-    //        public boolean isAssignableTo(Class<?> type) {
-    //            return type.isAssignableFrom(Integer.class);
-    //        }
+    // public boolean isAssignableTo(Class<?> type) {
+    // return type.isAssignableFrom(Integer.class);
+    // }
     //
-    //        public Object resolve(Resolver context) {
-    //            return context.get(PREFIX_NAME);
-    //        }
+    // public Object resolve(Resolver context) {
+    // return context.get(PREFIX_NAME);
+    // }
     //
-    //        public Reference<Resolver> selectAttribute(String name) throws BindingException {
-    //            throw new BindingException("No attributes defined for Integer.");
-    //        }
+    // public Reference<Resolver> selectAttribute(String name) throws
+    // BindingException {
+    // throw new BindingException("No attributes defined for Integer.");
+    // }
     //
-    //        public Reference<Resolver> selectItem(String index) throws BindingException {
-    //            throw new BindingException("No attributes defined for Integer.");
-    //        }
+    // public Reference<Resolver> selectItem(String index) throws
+    // BindingException {
+    // throw new BindingException("No attributes defined for Integer.");
+    // }
     //
-    //        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
-    //                throws BindingException {
-    //            throw new BindingException("No attributes defined for Integer.");
-    //        }
+    // public Reference<Resolver> selectItem(Expression<Integer, Resolver>
+    // index)
+    // throws BindingException {
+    // throw new BindingException("No attributes defined for Integer.");
+    // }
     //
-    //        public void document(Document target) {
-    //            target.text("the first " + size + " bits of ");
-    //            referenceContext.document(target);
-    //        }
+    // public void document(Document target) {
+    // target.text("the first " + size + " bits of ");
+    // referenceContext.document(target);
+    // }
     //
-    //    }
+    // }
     //
 
     private static class PrefixResolverContext implements ResolverContext {
 
         private ResolverContext context;
-        
+
         private int prefixSize;
 
         final public static String PREFIX = "prefix";
 
-        public PrefixResolverContext(ResolverContext context, 
-                int prefixSize) {
+        public PrefixResolverContext(ResolverContext context, int prefixSize) {
             this.context = context;
             this.prefixSize = prefixSize;
         }
@@ -343,16 +351,20 @@ public class SelectFromCodec<T> implements Codec<T> {
                 Reference result = new PrefixReference(context, prefixSize);
                 return result;
             } else {
-                return new ContextReplacingReference(this, context.selectAttribute(name));
+                return new ContextReplacingReference(this, context
+                        .selectAttribute(name));
             }
         }
 
         public Reference<Resolver> selectItem(String index) {
-            return new ContextReplacingReference(this, context.selectItem(index));
+            return new ContextReplacingReference(this, context
+                    .selectItem(index));
         }
 
-        public Reference<Resolver> selectItem(Expression<Integer, Resolver> index) {
-            return new ContextReplacingReference(this, context.selectItem(index));
+        public Reference<Resolver> selectItem(
+                Expression<Integer, Resolver> index) {
+            return new ContextReplacingReference(this, context
+                    .selectItem(index));
         }
 
         public void document(Document target) {
@@ -367,7 +379,7 @@ public class SelectFromCodec<T> implements Codec<T> {
 
             private int prefixSize;
 
-            public PrefixReference(ReferenceContext<Resolver> context, 
+            public PrefixReference(ReferenceContext<Resolver> context,
                     int prefixSize) {
                 this.context = context;
                 this.prefixSize = prefixSize;
@@ -393,7 +405,8 @@ public class SelectFromCodec<T> implements Codec<T> {
                 throw new BindingException("No item selection allowed.");
             }
 
-            public Reference<Resolver> selectItem(Expression<Integer, Resolver> index) {
+            public Reference<Resolver> selectItem(
+                    Expression<Integer, Resolver> index) {
                 throw new BindingException("No item selection allowed.");
             }
 
@@ -444,4 +457,103 @@ public class SelectFromCodec<T> implements Codec<T> {
 
     }
 
+    public CodecDescriptor2 getCodecDescriptor2() {
+        return new CodecDescriptor2() {
+
+            public <C extends SimpleContents<?>> Documenter<C> details(
+                    String bufferReference) {
+                return new Documenter<C>() {
+                    public void document(C target) {
+                        target
+                                .para()
+                                .text(
+                                        "The particular type of data structure is selected based on the value of "
+                                                + prefixSize + " leading bits.")
+                                .text(
+                                        " These bits are interpreted as an unsigned int.")
+                                .text(
+                                        " The table below lists the conditions, and the data structure assumed when these conditions are met.")
+                                .end();
+                        Table2Cols<?> table2Cols = target.table2Cols();
+                        table2Cols
+                            .header()
+                                .entry()
+                                    .para()
+                                        .text("Condition")
+                                    .end()
+                                .entry()
+                                    .para()
+                                        .text("Data structure")
+                                    .end()
+                                .end();
+                        for (int i = 0; i < conditions.size(); i++) {
+                            table2Cols.row().entry().para().document(
+                                    Documenters
+                                            .forExpression(conditions.get(i)))
+                                    .end().entry().para().document(
+                                            codecs.get(i).getCodecDescriptor2()
+                                                    .reference(Adjective.A))
+                                    .end().end();
+                        }
+                        table2Cols.end();
+                    }
+                };
+            }
+
+            public String getTitle() {
+                return null;
+            }
+
+            public <C extends ParaContents<?>> Documenter<C> reference(
+                    final Adjective adjective) {
+                return new Documenter<C>() {
+                    public void document(C target) {
+                        if (conditions.size() > 3) {
+                            switch (adjective) {
+                                case A:
+                                    target
+                                            .text("a data structure selected from a list of "
+                                                    + conditions.size());
+                                    break;
+                                case THE:
+                                    target
+                                            .text("the data structure selected from a list of "
+                                                    + conditions.size());
+                                    break;
+                                case NONE:
+                                    target.text("either one of "
+                                            + conditions.size());
+                                    break;
+                            }
+                        } else {
+                            for (int i = 0; i < conditions.size(); i++) {
+                                target.document(codecs.get(i)
+                                        .getCodecDescriptor2().reference(
+                                                adjective));
+                                if (i < conditions.size() - 2) {
+                                    target.text(", ");
+                                }
+                                if (i == conditions.size() - 2) {
+                                    target.text(" or ");
+                                }
+                            }
+                        }
+                    }
+                };
+            }
+
+            public boolean requiresDedicatedSection() {
+                return false;
+            }
+
+            public <C extends ParaContents<?>> Documenter<C> summary() {
+                return new Documenter<C>() {
+                    public void document(C target) {
+                        target.document(reference(Adjective.A)).text(".");
+                    }
+                };
+            }
+
+        };
+    }
 }

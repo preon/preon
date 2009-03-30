@@ -37,8 +37,11 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
 import nl.flotsam.limbo.ReferenceContext;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.buffer.BitBuffer;
 
 /**
  * A factory for {@link Binding} instances.
@@ -60,10 +63,11 @@ public interface BindingFactory {
      *            of object to be injected in the {@link Field field}.
      * @param context
      *            The {@link ReferenceContext context} for creating references.
+     * @param containerReference TODO
      * @return A new {@link Binding} instance, capable of loading data from a
      *         {@link BitBuffer} into an object's field.
      */
     Binding create(AnnotatedElement metadata, Field field, Codec<?> codec,
-            ResolverContext context);
+            ResolverContext context, Documenter<ParaContents<?>> containerReference);
 
 }

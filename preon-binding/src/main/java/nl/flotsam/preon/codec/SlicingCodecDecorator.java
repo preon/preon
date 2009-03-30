@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -39,11 +39,14 @@ import java.lang.reflect.AnnotatedElement;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
@@ -52,7 +55,7 @@ import nl.flotsam.preon.annotation.LengthPrefix;
 import nl.flotsam.preon.annotation.Slice;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
-
+import nl.flotsam.preon.descriptor.Documenters;
 
 /**
  * A {@link CodecFactory} creating {@link Codec Codecs} slicing the
@@ -65,8 +68,8 @@ import nl.flotsam.preon.buffer.ByteOrder;
  */
 public class SlicingCodecDecorator implements CodecDecorator {
 
-    public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+    public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
+            Class<T> type, ResolverContext context) {
         LengthPrefix prefix = getAnnotation(metadata, type, LengthPrefix.class);
         if (prefix != null) {
             return createCodecFromLengthPrefix(decorated, prefix, context);
@@ -78,8 +81,8 @@ public class SlicingCodecDecorator implements CodecDecorator {
         return decorated;
     }
 
-    private <T, V extends Annotation> V getAnnotation(AnnotatedElement metadata, Class<T> type,
-            Class<V> annotation) {
+    private <T, V extends Annotation> V getAnnotation(
+            AnnotatedElement metadata, Class<T> type, Class<V> annotation) {
         if (type.isAnnotationPresent(annotation)) {
             return type.getAnnotation(annotation);
         }
@@ -89,11 +92,12 @@ public class SlicingCodecDecorator implements CodecDecorator {
         return null;
     }
 
-    private <T> Codec<T> createCodecFromLengthPrefix(Codec<T> decorated, LengthPrefix prefix,
-            ResolverContext context) {
+    private <T> Codec<T> createCodecFromLengthPrefix(Codec<T> decorated,
+            LengthPrefix prefix, ResolverContext context) {
         Expression<Integer, Resolver> sizeExpr;
         sizeExpr = Expressions.createInteger(context, prefix.size());
-        return new SlicingCodec<T>(decorated, new PrefixSizeCalculator(sizeExpr, prefix.endian()));
+        return new SlicingCodec<T>(decorated, new PrefixSizeCalculator(
+                sizeExpr, prefix.endian()));
     }
 
     private <T> Codec<T> createCodecFromSlice(Codec<T> decorated, Slice slice,
@@ -131,7 +135,8 @@ public class SlicingCodecDecorator implements CodecDecorator {
 
         private ByteOrder endian;
 
-        public PrefixSizeCalculator(Expression<Integer, Resolver> sizeExpr, ByteOrder endian) {
+        public PrefixSizeCalculator(Expression<Integer, Resolver> sizeExpr,
+                ByteOrder endian) {
             this.sizeExpr = sizeExpr;
             this.endian = endian;
         }
@@ -164,7 +169,8 @@ public class SlicingCodecDecorator implements CodecDecorator {
 
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
-            BitBuffer slice = buffer.slice(calculator.getSize(buffer, resolver));
+            BitBuffer slice = buffer
+                    .slice(calculator.getSize(buffer, resolver));
             return wrapped.decode(slice, resolver, builder);
         }
 
@@ -172,20 +178,21 @@ public class SlicingCodecDecorator implements CodecDecorator {
             return new CodecDescriptor() {
 
                 public String getLabel() {
-                    return wrapped.getCodecDescriptor().getLabel() + " of a maximum length";
+                    return wrapped.getCodecDescriptor().getLabel()
+                            + " of a maximum length";
                 }
 
-                public boolean hasFullDescription() {
+                public boolean requiresDedicatedSection() {
                     // TODO Auto-generated method stub
                     return false;
                 }
 
-                public <U> Contents<U> putFullDescription(Contents<U> contents) {
+                public <U> Contents<U> writeSection(Contents<U> contents) {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public <U, V extends ParaContents<U>> V putOneLiner(V para) {
+                public <U, V extends ParaContents<U>> V writePara(V para) {
                     // TODO Auto-generated method stub
                     return null;
                 }
@@ -210,6 +217,47 @@ public class SlicingCodecDecorator implements CodecDecorator {
             return wrapped.getType();
         }
 
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        final String bufferReference) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.para().text("The format reserves only ")
+                                    .document(
+                                            Documenters
+                                                    .forExpression(calculator
+                                                            .getSize())).text(
+                                            " bits for ").document(
+                                            wrapped.getCodecDescriptor2()
+                                                    .reference(Adjective.THE))
+                                    .end();
+                            target.document(wrapped.getCodecDescriptor2()
+                                    .details(bufferReference));
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        Adjective adjective) {
+                    return wrapped.getCodecDescriptor2().reference(adjective);
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return wrapped.getCodecDescriptor2().summary();
+                }
+
+            };
+        }
     }
 
     /**

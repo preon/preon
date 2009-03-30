@@ -44,16 +44,16 @@ public class DefaultDescriptor implements CodecDescriptor {
         return null;
     }
 
-    public boolean hasFullDescription() {
+    public boolean requiresDedicatedSection() {
         // TODO Auto-generated method stub
         return false;
     }
 
-    public <T> Contents<T> putFullDescription(Contents<T> contents) {
+    public <T> Contents<T> writeSection(Contents<T> contents) {
         return contents;
     }
 
-    public <T, V extends ParaContents<T>> V putOneLiner(V para) {
+    public <T, V extends ParaContents<T>> V writePara(V para) {
         return para;
     }
 

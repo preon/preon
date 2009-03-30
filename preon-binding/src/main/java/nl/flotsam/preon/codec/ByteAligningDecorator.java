@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -36,16 +36,19 @@ package nl.flotsam.preon.codec;
 import java.lang.reflect.AnnotatedElement;
 
 import nl.flotsam.limbo.Expression;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.ByteAlign;
 import nl.flotsam.preon.buffer.BitBuffer;
-
 
 /**
  * A {@link CodecDecorator} that will make sure that reading stops at a
@@ -76,8 +79,8 @@ public class ByteAligningDecorator implements CodecDecorator {
             this.decorated = decorated;
         }
 
-        public T decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+        public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
+                throws DecodingException {
             T result = decorated.decode(buffer, resolver, builder);
             long pos = buffer.getBitPos() % 8;
             if (pos > 0) {
@@ -102,6 +105,48 @@ public class ByteAligningDecorator implements CodecDecorator {
 
         public Class<?> getType() {
             return decorated.getType();
+        }
+
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        String bufferReference) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target
+                                    .para()
+                                    .text("If - after reading ")
+                                    .document(
+                                            decorated.getCodecDescriptor2()
+                                                    .reference(Adjective.THE))
+                                    .text(" - the pointer is ")
+                                    .emphasis("not")
+                                    .text(
+                                            " at the end of the byte, then the last couple of bits will be skipped.")
+                                    .end();
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        Adjective adjective) {
+                    return decorated.getCodecDescriptor2().reference(adjective);
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return decorated.getCodecDescriptor2().summary();
+                }
+
+            };
         }
 
     }

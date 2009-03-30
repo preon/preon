@@ -44,14 +44,19 @@ import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.util.ClassUtils;
 import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.Para;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecSelector;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.Documenters;
 
 /**
  * A {@link Codec} that is able to dynamically choose between different types of
@@ -100,7 +105,8 @@ public class SwitchingCodec implements Codec<Object> {
             public String getLabel() {
                 StringBuilder result = new StringBuilder();
                 result.append(" either ");
-                List<Codec<?>> members = new ArrayList<Codec<?>>(selector.getChoices());
+                List<Codec<?>> members = new ArrayList<Codec<?>>(selector
+                        .getChoices());
                 for (int i = 0; i < members.size(); i++) {
                     if (i != 0) {
                         if (i == members.size() - 1) {
@@ -109,28 +115,30 @@ public class SwitchingCodec implements Codec<Object> {
                             result.append(", ");
                         }
                     }
-                    result.append(members.get(i).getCodecDescriptor().getLabel());
+                    result.append(members.get(i).getCodecDescriptor()
+                            .getLabel());
                 }
                 return result.toString();
             }
 
-            public boolean hasFullDescription() {
+            public boolean requiresDedicatedSection() {
                 return false;
             }
 
-            public <T> Contents<T> putFullDescription(Contents<T> contents) {
+            public <T> Contents<T> writeSection(Contents<T> contents) {
                 // TODO Auto-generated method stub
                 return contents;
             }
 
-            public <T, V extends ParaContents<T>> V putOneLiner(V para) {
+            public <T, V extends ParaContents<T>> V writePara(V para) {
                 selector.document(para);
                 return para;
             }
 
             public <T> void writeReference(ParaContents<T> contents) {
                 contents.text(" either ");
-                List<Codec<?>> members = new ArrayList<Codec<?>>(selector.getChoices());
+                List<Codec<?>> members = new ArrayList<Codec<?>>(selector
+                        .getChoices());
                 for (int i = 0; i < members.size(); i++) {
                     if (i != 0) {
                         if (i == members.size() - 1) {
@@ -139,7 +147,8 @@ public class SwitchingCodec implements Codec<Object> {
                             contents.text(", ");
                         }
                     }
-                    members.get(i).getCodecDescriptor().writeReference(contents);
+                    members.get(i).getCodecDescriptor()
+                            .writeReference(contents);
                 }
             }
         };
@@ -187,7 +196,8 @@ public class SwitchingCodec implements Codec<Object> {
                 }
             }
             if (size != null) {
-                return Expressions.add(Expressions.createInteger(size, Resolver.class), selector.getSize());
+                return Expressions.add(Expressions.createInteger(size,
+                        Resolver.class), selector.getSize());
             } else {
                 return null;
             }
@@ -202,6 +212,83 @@ public class SwitchingCodec implements Codec<Object> {
         Class<?>[] result = new Class<?>[0];
         result = new ArrayList<Class<?>>(types).toArray(result);
         return ClassUtils.calculateCommonSuperType(result);
+    }
+
+    public CodecDescriptor2 getCodecDescriptor2() {
+        return new CodecDescriptor2() {
+
+            public <C extends SimpleContents<?>> Documenter<C> details(
+                    String bufferReference) {
+                return new Documenter<C>() {
+                    public void document(C target) {
+                        Para<?> para = target.para();
+                        selector.document(para);
+                        para.end();
+                    }
+                };
+            }
+
+            public String getTitle() {
+                return null;
+            }
+
+            public <C extends ParaContents<?>> Documenter<C> reference(
+                    final Adjective adjective) {
+                return new Documenter<C>() {
+                    public void document(C target) {
+                        if (selector.getChoices().size() <= 3) {
+                            target.text(adjective.asTextPreferA()).text(
+                                    "either ");
+                            List<Codec<?>> codecs = Arrays.asList(selector
+                                    .getChoices().toArray(new Codec<?>[0]));
+                            for (int i = 0; i < codecs.size(); i++) {
+                                target.document(codecs.get(i)
+                                        .getCodecDescriptor2().reference(
+                                                Adjective.NONE));
+                                if (i > codecs.size() - 2) {
+                                    // Do nothing
+                                } else if (i == codecs.size() - 2) {
+                                    target.text(" or ");
+                                } else if (i < codecs.size() - 2) {
+                                    target.text(", ");
+                                }
+                            }
+                            target.text(" elements");
+                        } else {
+                            target.text(adjective.asTextPreferA()).text(
+                                    "list of elements");
+                        }
+                    }
+                };
+            }
+
+            public boolean requiresDedicatedSection() {
+                return false;
+            }
+
+            public <C extends ParaContents<?>> Documenter<C> summary() {
+                return new Documenter<C>() {
+                    public void document(C target) {
+                        target.text("A list of ");
+                        List<Codec<?>> codecs = Arrays.asList(selector
+                                .getChoices().toArray(new Codec<?>[0]));
+                        for (int i = 0; i < codecs.size(); i++) {
+                            target.document(codecs.get(i).getCodecDescriptor2()
+                                    .reference(Adjective.NONE));
+                            if (i > codecs.size() - 2) {
+                                // Do nothing
+                            } else if (i == codecs.size() - 2) {
+                                target.text(" or ");
+                            } else if (i < codecs.size() - 2) {
+                                target.text(", ");
+                            }
+                        }
+                        target.text(" elements.");
+                    }
+                };
+            }
+
+        };
     }
 
 }

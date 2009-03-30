@@ -393,7 +393,8 @@ public class BindingsContext implements ObjectResolverContext {
 
                     if (context == null) {
                         StringBuilderDocument document = new StringBuilderDocument();
-                        binding.describe(new ParaContentsDocument(document));
+                        // TODO:
+//                        binding.describe(new ParaContentsDocument(document));
                         throw new BindingException("Failed to resolve "
                                 + document.toString()
                                 + " due to incomplete context.");

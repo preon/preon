@@ -12,8 +12,8 @@
  * A PARTICULAR PURPOSE. See the GNU General Public License for more details.
  * 
  * You should have received a copy of the GNU General Public License along with
- * Preon; see the file COPYING. If not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ * Preon; see the file COPYING. If not, write to the Free Software Foundation,
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  * 
  * Linking this library statically or dynamically with other modules is making a
  * combined work based on this library. Thus, the terms and conditions of the
@@ -41,12 +41,16 @@ import java.util.Map;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ItemizedList;
+import nl.flotsam.pecia.Para;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
@@ -54,7 +58,7 @@ import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
-
+import nl.flotsam.preon.descriptor.Documenters;
 
 /**
  * A {@link CodecFactory} creating {@link Codec Codecs} capable of decoding enum
@@ -66,7 +70,8 @@ import nl.flotsam.preon.buffer.ByteOrder;
  */
 public class EnumCodecFactory implements CodecFactory {
 
-    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type, ResolverContext context) {
+    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
+            ResolverContext context) {
         Map<Integer, T> mapping = new HashMap<Integer, T>();
         if (type.isEnum() && metadata.isAnnotationPresent(BoundNumber.class)) {
             T[] values = type.getEnumConstants();
@@ -74,9 +79,10 @@ public class EnumCodecFactory implements CodecFactory {
                 mapping.put(i, values[i]);
             }
             BoundNumber settings = metadata.getAnnotation(BoundNumber.class);
-            Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, settings
-                    .size());
-            return new EnumCodec<T>(type, mapping, sizeExpr, settings.byteOrder());
+            Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(
+                    context, settings.size());
+            return new EnumCodec<T>(type, mapping, sizeExpr, settings
+                    .byteOrder());
 
         } else {
             return null;
@@ -88,19 +94,19 @@ public class EnumCodecFactory implements CodecFactory {
         private Class<T> type;
         private Map<Integer, T> mapping;
         private Expression<Integer, Resolver> size;
-        private ByteOrder endian;
+        private ByteOrder byteOrder;
 
         public EnumCodec(Class<T> type, Map<Integer, T> mapping,
                 Expression<Integer, Resolver> sizeExpr, ByteOrder endian) {
             this.type = type;
             this.mapping = mapping;
             this.size = sizeExpr;
-            this.endian = endian;
+            this.byteOrder = endian;
         }
 
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
-            int value = buffer.readAsInt(size.eval(resolver), endian);
+            int value = buffer.readAsInt(size.eval(resolver), byteOrder);
             return mapping.get(value);
         }
 
@@ -111,7 +117,8 @@ public class EnumCodecFactory implements CodecFactory {
                     StringBuilder builder = new StringBuilder();
                     builder.append(size);
                     builder.append(" bits, evaluating to either ");
-                    List<Integer> keys = new ArrayList<Integer>(mapping.keySet());
+                    List<Integer> keys = new ArrayList<Integer>(mapping
+                            .keySet());
                     for (int i = 0; i < keys.size(); i++) {
                         if (i != 0) {
                             if (i != keys.size() - 1) {
@@ -128,21 +135,15 @@ public class EnumCodecFactory implements CodecFactory {
                     return builder.toString();
                 }
 
-                public String getSize() {
-                    StringBuilder builder = new StringBuilder();
-                    size.document(new StringBuilderDocument(builder));
-                    return builder.toString();
-                }
-
-                public boolean hasFullDescription() {
+                public boolean requiresDedicatedSection() {
                     return false;
                 }
 
-                public <U> Contents<U> putFullDescription(Contents<U> contents) {
+                public <U> Contents<U> writeSection(Contents<U> contents) {
                     return contents;
                 }
 
-                public <U, V extends ParaContents<U>> V putOneLiner(V para) {
+                public <U, V extends ParaContents<U>> V writePara(V para) {
                     para.text(getLabel());
                     return para;
                 }
@@ -166,6 +167,76 @@ public class EnumCodecFactory implements CodecFactory {
             return type;
         }
 
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        String bufferReference) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            Para<?> para = target.para();
+                            if (!size.isParameterized()) {
+                                para.text("The symbol is represented as a ")
+                                        .document(
+                                                Documenters.forNumericValue(
+                                                        size.eval(null),
+                                                        byteOrder)).text(".");
+                            } else {
+                                para
+                                        .text(
+                                                "The symbol is represented as a numeric value (")
+                                        .document(
+                                                Documenters
+                                                        .forByteOrder(byteOrder))
+                                        .text(". The number of bits is ")
+                                        .document(
+                                                Documenters.forExpression(size))
+                                        .text(".");
+                            }
+                            para
+                                    .text(
+                                            " The numeric value corresponds to the following symbols:")
+                                    .end();
+                            ItemizedList<?> itemizedList = target
+                                    .itemizedList();
+                            for (int i = 0; i < mapping.size(); i++) {
+                                itemizedList.item(Integer.valueOf(i) + ": "
+                                        + ((Enum<?>) mapping.get(i)).name());
+                            }
+                            itemizedList.end();
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        final Adjective adjective) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.text(adjective.asTextPreferAn()).text(
+                                    "index of an enumeration");
+                        }
+                    };
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target
+                                    .text("A value from a set of symbols, represented by a numeric value.");
+                        }
+                    };
+                }
+
+            };
+        }
     }
 
 }

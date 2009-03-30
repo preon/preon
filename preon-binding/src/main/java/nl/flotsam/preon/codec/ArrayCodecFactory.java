@@ -42,22 +42,26 @@ import nl.flotsam.limbo.BindingException;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.InvalidExpressionException;
-import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionException;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.util.AnnotationWrapper;
 
 /**
@@ -220,22 +224,24 @@ public class ArrayCodecFactory implements CodecFactory {
                             + " elements";
                 }
 
-                public boolean hasFullDescription() {
+                public boolean requiresDedicatedSection() {
                     return false;
                 }
 
-                public <T> Contents<T> putFullDescription(Contents<T> contents) {
+                public <T> Contents<T> writeSection(Contents<T> contents) {
                     // TODO Auto-generated method stub
                     return null;
                 }
 
-                public <T, V extends ParaContents<T>> V putOneLiner(V para) {
+                public <T, V extends ParaContents<T>> V writePara(V para) {
                     writeReference(para);
                     return para;
                 }
 
                 public <T> void writeReference(ParaContents<T> contents) {
-                    contents.text("a list of ");
+                    contents.text("a list of");
+                    // size.document(new DocumentParaContents(contents));
+                    // contents.text(" ");
                     codec.getCodecDescriptor().writeReference(contents);
                     contents.text(" elements");
                 }
@@ -265,6 +271,62 @@ public class ArrayCodecFactory implements CodecFactory {
             return type;
         }
 
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        final String bufferReference) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            if (size != null) {
+                                target
+                                        .para()
+                                        .text(
+                                                "The number of elements in the list ")
+                                        .text("is ")
+                                        .document(
+                                                Documenters.forExpression(ArrayCodec.this.size))
+                                        .text(".").end();
+                            }
+                            if (!codec.getCodecDescriptor2().requiresDedicatedSection()) {
+                                target.document(codec.getCodecDescriptor2().details(bufferReference));
+                            }
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return null;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        final Adjective adjective) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.text(adjective.asTextPreferA()).text(
+                                    "list of ").document(
+                                    codec.getCodecDescriptor2().reference(
+                                            Adjective.NONE)).text(" elements.");
+                        }
+                    };
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return false;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.document(codec.getCodecDescriptor2()
+                                    .reference(Adjective.A));
+                            target.text(".");
+                        }
+                    };
+                }
+
+            };
+        }
     }
 
     /**

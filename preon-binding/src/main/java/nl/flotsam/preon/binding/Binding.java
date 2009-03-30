@@ -35,6 +35,7 @@ package nl.flotsam.preon.binding;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.DecodingException;
@@ -99,7 +100,7 @@ public interface Binding {
      *            way.
      * @return The same object as passed in.
      */
-    <T, V extends ParaContents<T>> V describe(V contents);
+    <V extends SimpleContents<?>> V describe(V contents);
 
     /**
      * Writes a (potentially hyperlinked) reference in the paragraph passed in.

@@ -98,6 +98,14 @@ public interface Codec<T> {
     CodecDescriptor getCodecDescriptor();
 
     /**
+     * Returns an object that is capable of rendering a description of the data
+     * structure encoded/decoded by this Codec.
+     * 
+     * @return An object capable of describing the {@link Codec}.
+     */
+    CodecDescriptor2 getCodecDescriptor2();
+
+    /**
      * Returns an array of types constructed potentially by this Codec.
      * 
      * @return An array of types constructed potentially by this codec.

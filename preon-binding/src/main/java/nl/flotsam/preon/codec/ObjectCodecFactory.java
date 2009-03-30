@@ -46,16 +46,19 @@ import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.Para;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Table3Cols;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.CodecSelector;
 import nl.flotsam.preon.CodecSelectorFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.CodecDescriptor2.Adjective;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.annotation.Purpose;
@@ -63,6 +66,7 @@ import nl.flotsam.preon.binding.Binding;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.limbo.ObjectResolverContext;
 import nl.flotsam.preon.rendering.ClassNameRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
@@ -163,8 +167,11 @@ public class ObjectCodecFactory implements CodecFactory {
             ResolverContext context) {
         ObjectResolverContext passThroughContext = new BindingsContext(type,
                 context);
-        harvestBindings(type, passThroughContext);
-        return new ObjectCodec<T>(type, rewriter, passThroughContext);
+        CodecReference reference = new CodecReference();
+        harvestBindings(type, passThroughContext, reference);
+        ObjectCodec<T> result = new ObjectCodec<T>(type, rewriter, passThroughContext);
+        reference.setCodec(result);
+        return result;
     }
 
     @SuppressWarnings("unchecked")
@@ -200,11 +207,11 @@ public class ObjectCodecFactory implements CodecFactory {
     }
 
     private <T> void harvestBindings(Class<T> type,
-            ObjectResolverContext context) {
+            ObjectResolverContext context, CodecReference reference) {
         if (Object.class.equals(type)) {
             return;
         }
-        harvestBindings(type.getSuperclass(), context);
+        harvestBindings(type.getSuperclass(), context, reference);
         Field[] fields = type.getDeclaredFields();
         // For creating the Codecs, we already need a modified
         // ReferenceContext, allowing us to incrementally bind to references
@@ -216,7 +223,7 @@ public class ObjectCodecFactory implements CodecFactory {
                         context);
                 if (codec != null) {
                     Binding binding = bindingFactory.create(field, field,
-                            codec, context);
+                            codec, context, reference);
                     context.add(field.getName(), binding);
                 }
             }
@@ -260,18 +267,18 @@ public class ObjectCodecFactory implements CodecFactory {
             }
         }
 
-         public CodecDescriptor getCodecDescriptor() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public String getLabel() {
                     return rewriter.rewrite(type.getName());
                 }
 
-                public boolean hasFullDescription() {
+                public boolean requiresDedicatedSection() {
                     return true;
                 }
 
-                public <V> Contents<V> putFullDescription(Contents<V> contents) {
+                public <V> Contents<V> writeSection(Contents<V> contents) {
                     AnnotatedSection<?> section = contents.section(getLabel());
                     section.mark(getLabel());
                     Purpose purpose = type.getAnnotation(Purpose.class);
@@ -282,8 +289,8 @@ public class ObjectCodecFactory implements CodecFactory {
                     }
                     if (context.getBindings().size() > 0) {
                         Table3Cols<?> table = section.table3Cols();
-                        table.header().entry().para().text("Name").end()
-                                .entry().para().text("Description").end()
+                        table = table.header().entry().para().text("Name")
+                                .end().entry().para().text("Description").end()
                                 .entry().para().text("Size (in bits)").end()
                                 .end();
                         for (int i = 0; i < context.getBindings().size(); i++) {
@@ -295,13 +302,13 @@ public class ObjectCodecFactory implements CodecFactory {
                             }
 
                             if (size == null) {
-                                binding.describe(
-                                        table.row().entry().para().term(
-                                                binding.getId(),
-                                                rewriter.rewrite(binding
-                                                        .getName())).end()
-                                                .entry().para()).end().entry()
-                                        .para().text("unknown").end().end();
+//                                binding.describe(
+//                                        table.row().entry().para().term(
+//                                                binding.getId(),
+//                                                rewriter.rewrite(binding
+//                                                        .getName())).end()
+//                                                .entry().para()).end().entry()
+//                                        .para().text("unknown").end().end();
                             } else {
                                 final Expression<Integer, Resolver> holder = size;
                                 final Documenter<ParaContents<?>> documenter = new Documenter<ParaContents<?>>() {
@@ -317,14 +324,14 @@ public class ObjectCodecFactory implements CodecFactory {
                                         }
                                     }
                                 };
-                                binding.describe(
-                                        table.row().entry().para().term(
-                                                binding.getId(),
-                                                rewriter.rewrite(binding
-                                                        .getName())).end()
-                                                .entry().para()).end().entry()
-                                        .para().document(documenter).end()
-                                        .end();
+//                                binding.describe(
+//                                        table.row().entry().para().term(
+//                                                binding.getId(),
+//                                                rewriter.rewrite(binding
+//                                                        .getName())).end()
+//                                                .entry().para()).end().entry()
+//                                        .para().document(documenter).end()
+//                                        .end();
                             }
                         }
                         table.end();
@@ -333,7 +340,7 @@ public class ObjectCodecFactory implements CodecFactory {
                     return contents;
                 }
 
-                public <U, V extends ParaContents<U>> V putOneLiner(V para) {
+                public <U, V extends ParaContents<U>> V writePara(V para) {
                     Purpose purpose = type.getAnnotation(Purpose.class);
                     if (purpose != null && purpose.value() != null) {
                         para.text(purpose.value());
@@ -396,6 +403,100 @@ public class ObjectCodecFactory implements CodecFactory {
             return type;
         }
 
+        public CodecDescriptor2 getCodecDescriptor2() {
+            return new CodecDescriptor2() {
+
+                public <C extends SimpleContents<?>> Documenter<C> details(
+                        String bufferReference) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target
+                                    .para()
+                                    .document(reference(Adjective.THE))
+                                    .text(
+                                            " is composed out of several other smaller elements.")
+                                    .text(
+                                            " The table below provides an overview.")
+                                    .end();
+                            Table3Cols<?> table3Cols = target.table3Cols();
+                            table3Cols = table3Cols
+                                .header()
+                                    .entry()
+                                        .para().text("Name").end()
+                                    .entry()
+                                        .para().text("Description").end()
+                                    .entry()
+                                        .para().text("Size (in bits)").end()
+                                    .end();
+                            for (Binding binding : ObjectCodec.this.context
+                                    .getBindings()) {
+                                table3Cols
+                                    .row()
+                                        .entry()
+                                            .para()
+                                                .document(
+                                                    Documenters.forBindingName(
+                                                            binding, rewriter))
+                                            .end()
+                                        .entry()
+                                                .document(
+                                                    Documenters
+                                                            .forBindingDescription(binding))
+                                        .entry()
+                                            .para()
+                                                .document(
+                                                    Documenters.forBits(binding
+                                                        .getSize()))
+                                            .end()
+                                        .end();
+                            }
+                            table3Cols.end();
+                        }
+                    };
+                }
+
+                public String getTitle() {
+                    return rewriter.rewrite(type.getName());
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> reference(
+                        Adjective adjective) {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.link(getTitle(), getTitle());
+                        }
+                    };
+                }
+
+                public boolean requiresDedicatedSection() {
+                    return true;
+                }
+
+                public <C extends ParaContents<?>> Documenter<C> summary() {
+                    return new Documenter<C>() {
+                        public void document(C target) {
+                            target.text("A ").link(getTitle(), getTitle());
+                        }
+                    };
+                }
+
+            };
+        }
+
+    }
+    
+    private static class CodecReference implements Documenter<ParaContents<?>> {
+        
+        private Codec<?> codec;
+
+        public void document(ParaContents<?> target) {
+            target.document(codec.getCodecDescriptor2().reference(Adjective.THE));
+        }
+        
+        public void setCodec(Codec<?> codec) {
+            this.codec = codec;
+        }
+        
     }
 
 }

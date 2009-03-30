@@ -39,15 +39,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.ctx.VariableResolver;
+import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
@@ -74,9 +75,10 @@ public class StandardBindingFactory implements BindingFactory {
 
     private IdentifierRewriter rewriter = new CamelCaseRewriter();
 
-    public Binding create(AnnotatedElement metadata, Field field, Codec codec,
-            ResolverContext context) {
-        return new FieldBinding(field, codec, rewriter);
+    public Binding create(AnnotatedElement metadata, Field field,
+            Codec<?> codec, ResolverContext context,
+            Documenter<ParaContents<?>> containerReference) {
+        return new FieldBinding(field, codec, rewriter, containerReference);
     }
 
     private static class FieldBinding implements Binding {
@@ -93,33 +95,39 @@ public class StandardBindingFactory implements BindingFactory {
 
         private Decorator<VariableResolver> resolverDecorator;
 
-        public FieldBinding(Field field, Codec<?> codec, IdentifierRewriter rewriter) {
+        private Documenter<ParaContents<?>> containerReference;
+
+        public FieldBinding(Field field, Codec<?> codec,
+                IdentifierRewriter rewriter,
+                Documenter<ParaContents<?>> containerReference) {
             this.field = field;
             this.codec = codec;
             this.rewriter = rewriter;
+            this.containerReference = containerReference;
             Class<?> declaring = field.getDeclaringClass();
-//            Class<?>[] members = declaring.getDeclaredClasses();
-//            List<Class<?>> types = Arrays.asList(codec.getTypes());
-//            boolean contextualize = false;
-//            for (Class<?> member : members) {
-//                if (!Modifier.isStatic(member.getModifiers()) && types.contains(member)) {
-//                    contextualize = true;
-//                    break;
-//                }
-//            }
-//            if (contextualize) {
-                builderDecorator = new ContextualBuilderDecorator(declaring);
-//            } else {
-//                builderDecorator = new NonDecoratingBuilderDecorator();
-//            }
+            // Class<?>[] members = declaring.getDeclaredClasses();
+            // List<Class<?>> types = Arrays.asList(codec.getTypes());
+            // boolean contextualize = false;
+            // for (Class<?> member : members) {
+            // if (!Modifier.isStatic(member.getModifiers()) &&
+            // types.contains(member)) {
+            // contextualize = true;
+            // break;
+            // }
+            // }
+            // if (contextualize) {
+            builderDecorator = new ContextualBuilderDecorator(declaring);
+            // } else {
+            // builderDecorator = new NonDecoratingBuilderDecorator();
+            // }
         }
 
-        public void load(Object object, BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
+        public void load(Object object, BitBuffer buffer, Resolver resolver,
+                Builder builder) throws DecodingException {
             try {
                 ReflectionUtils.makeAssessible(field);
-                Object value = codec.decode(buffer, resolver, builderDecorator.decorate(builder,
-                        object));
+                Object value = codec.decode(buffer, resolver, builderDecorator
+                        .decorate(builder, object));
                 field.set(object, value);
             } catch (IllegalAccessException iae) {
                 throw new DecodingException(iae);
@@ -135,10 +143,11 @@ public class StandardBindingFactory implements BindingFactory {
                 throw bbe;
             }
         }
-        
-        public <T, V extends ParaContents<T>> V describe(V contents) {
-            CodecDescriptor codecDescriptor = codec.getCodecDescriptor();
-            codecDescriptor.putOneLiner(contents);
+
+        public <V extends SimpleContents<?>> V describe(V contents) {
+            CodecDescriptor2 codecDescriptor = codec.getCodecDescriptor2();
+            contents.para().document(codecDescriptor.summary()).end();
+            contents.document(codecDescriptor.details("buffer"));
             return contents;
         }
 
@@ -146,7 +155,8 @@ public class StandardBindingFactory implements BindingFactory {
             return codec.getTypes();
         }
 
-        public Object get(Object context) throws IllegalArgumentException, IllegalAccessException {
+        public Object get(Object context) throws IllegalArgumentException,
+                IllegalAccessException {
             return field.get(context);
         }
 
@@ -155,7 +165,8 @@ public class StandardBindingFactory implements BindingFactory {
         }
 
         public <T, V extends ParaContents<T>> V writeReference(V contents) {
-            contents.link(getId(), rewriter.rewrite(getName()));
+            System.out.println(containerReference);
+            contents.link(getId(), rewriter.rewrite(getName())).text(" of ").document(containerReference);
             return contents;
         }
 
@@ -179,7 +190,8 @@ public class StandardBindingFactory implements BindingFactory {
 
     }
 
-    private static class NonDecoratingBuilderDecorator implements Decorator<Builder> {
+    private static class NonDecoratingBuilderDecorator implements
+            Decorator<Builder> {
 
         public Builder decorate(Builder builder, Object context) {
             return builder;
@@ -187,7 +199,8 @@ public class StandardBindingFactory implements BindingFactory {
 
     }
 
-    private static class ContextualBuilderDecorator implements Decorator<Builder> {
+    private static class ContextualBuilderDecorator implements
+            Decorator<Builder> {
 
         private Class enclosing;
 
@@ -214,8 +227,8 @@ public class StandardBindingFactory implements BindingFactory {
             private Builder delegate;
             private Object context;
 
-            public ContextualBuilder(Class enclosing, List<Class> members, Builder delegate,
-                    Object context) {
+            public ContextualBuilder(Class enclosing, List<Class> members,
+                    Builder delegate, Object context) {
                 this.enclosing = enclosing;
                 this.members = members;
                 this.delegate = delegate;
@@ -226,16 +239,19 @@ public class StandardBindingFactory implements BindingFactory {
                     IllegalAccessException {
                 if (members.contains(type)) {
                     try {
-                        Constructor<T> constructor = type.getDeclaredConstructor(enclosing);
+                        Constructor<T> constructor = type
+                                .getDeclaredConstructor(enclosing);
                         constructor.setAccessible(true);
                         return constructor.newInstance(context);
                     } catch (NoSuchMethodException nsme) {
-                        throw new InstantiationException("Missing valid default constructor.");
+                        throw new InstantiationException(
+                                "Missing valid default constructor.");
                     } catch (IllegalArgumentException e) {
                         throw new InstantiationException(
                                 "Enclosing instance not accepted as argument.");
                     } catch (InvocationTargetException e) {
-                        throw new InstantiationException("Failed to call constructor.");
+                        throw new InstantiationException(
+                                "Failed to call constructor.");
                     }
                 } else {
                     return delegate.create(type);

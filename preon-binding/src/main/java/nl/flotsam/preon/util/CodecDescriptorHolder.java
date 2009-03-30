@@ -47,16 +47,16 @@ public class CodecDescriptorHolder implements CodecDescriptor {
         return descriptor.getLabel();
     }
 
-    public boolean hasFullDescription() {
-        return descriptor.hasFullDescription();
+    public boolean requiresDedicatedSection() {
+        return descriptor.requiresDedicatedSection();
     }
 
-    public <T> Contents<T> putFullDescription(Contents<T> contents) {
-        return descriptor.putFullDescription(contents);
+    public <T> Contents<T> writeSection(Contents<T> contents) {
+        return descriptor.writeSection(contents);
     }
 
-    public <T, V extends ParaContents<T>> V putOneLiner(V para) {
-        return descriptor.putOneLiner(para);
+    public <T, V extends ParaContents<T>> V writePara(V para) {
+        return descriptor.writePara(para);
     }
 
     public <T> void writeReference(ParaContents<T> contents) {
