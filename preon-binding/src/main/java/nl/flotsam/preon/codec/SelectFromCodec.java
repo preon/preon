@@ -169,50 +169,6 @@ public class SelectFromCodec<T> implements Codec<T> {
         }
     }
 
-    public CodecDescriptor getCodecDescriptor() {
-        return new CodecDescriptor() {
-
-            public String getLabel() {
-                StringBuilder builder = new StringBuilder();
-                int nrcodecs = codecs.size();
-                if (nrcodecs > 1) {
-                    builder.append("either ");
-                }
-                for (int i = 0; i < nrcodecs; i++) {
-                    if (i == nrcodecs - 1) {
-                        builder.append(" or ");
-                    } else if (i != 0) {
-                        builder.append(", ");
-                    }
-                    builder.append(codecs.get(i).getCodecDescriptor()
-                            .getLabel());
-                }
-                return builder.toString();
-            }
-
-            public boolean requiresDedicatedSection() {
-                // TODO Auto-generated method stub
-                return false;
-            }
-
-            public <T> Contents<T> writeSection(Contents<T> contents) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            public <T, V extends ParaContents<T>> V writePara(V para) {
-                // TODO Auto-generated method stub
-                return null;
-            }
-
-            public <T> void writeReference(ParaContents<T> contents) {
-                // TODO Auto-generated method stub
-
-            }
-
-        };
-    }
-
     public Expression<Integer, Resolver> getSize() {
         Integer result = null;
         for (Codec<?> codec : codecs) {
@@ -492,7 +448,7 @@ public class SelectFromCodec<T> implements Codec<T> {
                                             .forExpression(conditions.get(i)))
                                     .end().entry().para().document(
                                             codecs.get(i).getCodecDescriptor2()
-                                                    .reference(Adjective.A))
+                                                    .reference(Adjective.A, false))
                                     .end().end();
                         }
                         table2Cols.end();
@@ -505,7 +461,7 @@ public class SelectFromCodec<T> implements Codec<T> {
             }
 
             public <C extends ParaContents<?>> Documenter<C> reference(
-                    final Adjective adjective) {
+                    final Adjective adjective, boolean startWithCapital) {
                 return new Documenter<C>() {
                     public void document(C target) {
                         if (conditions.size() > 3) {
@@ -529,7 +485,7 @@ public class SelectFromCodec<T> implements Codec<T> {
                             for (int i = 0; i < conditions.size(); i++) {
                                 target.document(codecs.get(i)
                                         .getCodecDescriptor2().reference(
-                                                adjective));
+                                                adjective, false));
                                 if (i < conditions.size() - 2) {
                                     target.text(", ");
                                 }
@@ -549,7 +505,7 @@ public class SelectFromCodec<T> implements Codec<T> {
             public <C extends ParaContents<?>> Documenter<C> summary() {
                 return new Documenter<C>() {
                     public void document(C target) {
-                        target.document(reference(Adjective.A)).text(".");
+                        target.document(reference(Adjective.A, false)).text(".");
                     }
                 };
             }

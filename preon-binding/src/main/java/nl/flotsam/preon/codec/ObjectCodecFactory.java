@@ -412,7 +412,7 @@ public class ObjectCodecFactory implements CodecFactory {
                         public void document(C target) {
                             target
                                     .para()
-                                    .document(reference(Adjective.THE))
+                                    .document(reference(Adjective.THE, false))
                                     .text(
                                             " is composed out of several other smaller elements.")
                                     .text(
@@ -460,7 +460,7 @@ public class ObjectCodecFactory implements CodecFactory {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        Adjective adjective) {
+                        Adjective adjective, boolean startWithCapital) {
                     return new Documenter<C>() {
                         public void document(C target) {
                             target.link(getTitle(), getTitle());
@@ -490,7 +490,7 @@ public class ObjectCodecFactory implements CodecFactory {
         private Codec<?> codec;
 
         public void document(ParaContents<?> target) {
-            target.document(codec.getCodecDescriptor2().reference(Adjective.THE));
+            target.document(codec.getCodecDescriptor2().reference(Adjective.THE, false));
         }
         
         public void setCodec(Codec<?> codec) {

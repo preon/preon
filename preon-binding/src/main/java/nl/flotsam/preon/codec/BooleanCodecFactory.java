@@ -115,7 +115,7 @@ public class BooleanCodecFactory implements CodecFactory {
                 }
 
                 public <T extends ParaContents<?>> Documenter<T> reference(
-                        final Adjective adjective) {
+                        final Adjective adjective, boolean startWithCapital) {
                     return new Documenter<T>() {
                         public void document(T target) {
                             target.text(adjective == Adjective.A ? "a " : "the ");

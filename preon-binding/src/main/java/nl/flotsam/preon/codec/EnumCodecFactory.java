@@ -213,10 +213,10 @@ public class EnumCodecFactory implements CodecFactory {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective) {
+                        final Adjective adjective, boolean startWithCapital) {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.text(adjective.asTextPreferAn()).text(
+                            target.text(adjective.asTextPreferAn(false)).text(
                                     "index of an enumeration");
                         }
                     };

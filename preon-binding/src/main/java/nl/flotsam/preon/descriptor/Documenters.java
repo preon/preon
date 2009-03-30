@@ -14,6 +14,8 @@ import nl.flotsam.preon.util.TextUtils;
 
 public class Documenters {
 
+    private static final char[] HEX_SYMBOLS = "0123456789abcdef".toCharArray();
+    
     public static Documenter<ParaContents<?>> forExpression(
             final Expression<?, Resolver> expr) {
         return new Documenter<ParaContents<?>>() {
@@ -106,6 +108,22 @@ public class Documenters {
         return new Documenter<SimpleContents<?>>() {
             public void document(SimpleContents<?> target) {
                 binding.describe(target);
+            }
+        };
+    }
+    
+    public static Documenter<ParaContents<?>> forHexSequence(final byte[] sequence) {
+        return new Documenter<ParaContents<?>>() {
+            public void document(ParaContents<?> target) {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < sequence.length; i++) {
+                    if (i != 0) { 
+                        builder.append(' ');
+                    }
+                    builder.append(HEX_SYMBOLS[((sequence[i] >> 4) & 0xf)]);
+                    builder.append(HEX_SYMBOLS[(sequence[i] & 0x0f)]);
+                }
+                target.text(builder.toString());
             }
         };
     }

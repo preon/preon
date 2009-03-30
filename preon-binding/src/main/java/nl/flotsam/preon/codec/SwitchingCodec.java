@@ -97,66 +97,6 @@ public class SwitchingCodec implements Codec<Object> {
     /*
      * (non-Javadoc)
      * 
-     * @see nl.flotsam.preon.Codec#getCodecDescriptor()
-     */
-    public CodecDescriptor getCodecDescriptor() {
-        return new CodecDescriptor() {
-
-            public String getLabel() {
-                StringBuilder result = new StringBuilder();
-                result.append(" either ");
-                List<Codec<?>> members = new ArrayList<Codec<?>>(selector
-                        .getChoices());
-                for (int i = 0; i < members.size(); i++) {
-                    if (i != 0) {
-                        if (i == members.size() - 1) {
-                            result.append(" or ");
-                        } else {
-                            result.append(", ");
-                        }
-                    }
-                    result.append(members.get(i).getCodecDescriptor()
-                            .getLabel());
-                }
-                return result.toString();
-            }
-
-            public boolean requiresDedicatedSection() {
-                return false;
-            }
-
-            public <T> Contents<T> writeSection(Contents<T> contents) {
-                // TODO Auto-generated method stub
-                return contents;
-            }
-
-            public <T, V extends ParaContents<T>> V writePara(V para) {
-                selector.document(para);
-                return para;
-            }
-
-            public <T> void writeReference(ParaContents<T> contents) {
-                contents.text(" either ");
-                List<Codec<?>> members = new ArrayList<Codec<?>>(selector
-                        .getChoices());
-                for (int i = 0; i < members.size(); i++) {
-                    if (i != 0) {
-                        if (i == members.size() - 1) {
-                            contents.text(" or ");
-                        } else {
-                            contents.text(", ");
-                        }
-                    }
-                    members.get(i).getCodecDescriptor()
-                            .writeReference(contents);
-                }
-            }
-        };
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
      * @see nl.flotsam.preon.Codec#getTypes()
      */
     public Class<?>[] getTypes() {
@@ -233,18 +173,18 @@ public class SwitchingCodec implements Codec<Object> {
             }
 
             public <C extends ParaContents<?>> Documenter<C> reference(
-                    final Adjective adjective) {
+                    final Adjective adjective, boolean startWithCapital) {
                 return new Documenter<C>() {
                     public void document(C target) {
                         if (selector.getChoices().size() <= 3) {
-                            target.text(adjective.asTextPreferA()).text(
+                            target.text(adjective.asTextPreferA(false)).text(
                                     "either ");
                             List<Codec<?>> codecs = Arrays.asList(selector
                                     .getChoices().toArray(new Codec<?>[0]));
                             for (int i = 0; i < codecs.size(); i++) {
                                 target.document(codecs.get(i)
                                         .getCodecDescriptor2().reference(
-                                                Adjective.NONE));
+                                                Adjective.NONE, false));
                                 if (i > codecs.size() - 2) {
                                     // Do nothing
                                 } else if (i == codecs.size() - 2) {
@@ -255,7 +195,7 @@ public class SwitchingCodec implements Codec<Object> {
                             }
                             target.text(" elements");
                         } else {
-                            target.text(adjective.asTextPreferA()).text(
+                            target.text(adjective.asTextPreferA(false)).text(
                                     "list of elements");
                         }
                     }
@@ -274,7 +214,7 @@ public class SwitchingCodec implements Codec<Object> {
                                 .getChoices().toArray(new Codec<?>[0]));
                         for (int i = 0; i < codecs.size(); i++) {
                             target.document(codecs.get(i).getCodecDescriptor2()
-                                    .reference(Adjective.NONE));
+                                    .reference(Adjective.NONE, false));
                             if (i > codecs.size() - 2) {
                                 // Do nothing
                             } else if (i == codecs.size() - 2) {

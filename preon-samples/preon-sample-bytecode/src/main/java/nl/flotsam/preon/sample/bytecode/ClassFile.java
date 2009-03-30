@@ -34,6 +34,7 @@
 package nl.flotsam.preon.sample.bytecode;
 
 import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
+import nl.flotsam.preon.annotation.BoundBuffer;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.annotation.BoundString;
@@ -51,8 +52,8 @@ import nl.flotsam.preon.annotation.Choices.Choice;
  */
 public class ClassFile {
 
-    @BoundNumber(size = "32", byteOrder = BigEndian)
-    private long magic;
+    @BoundBuffer(matches = {(byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte)0xbe})
+    private byte[] magic;
 
     @BoundNumber(size = "16", byteOrder = BigEndian)
     private int minorVersion;

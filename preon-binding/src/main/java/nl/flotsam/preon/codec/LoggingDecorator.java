@@ -154,8 +154,8 @@ public class LoggingDecorator implements CodecDecorator {
         public void logDoneDecoding(Codec<?> codec, long position, long read,
                 Object result) {
             level--;
-            printMessage("Done decoding "
-                    + codec.getCodecDescriptor().getLabel() + " at " + position
+            // TODO: 
+            printMessage("Done decoding at " + position
                     + " (" + read + " bits) : " + format(result));
             System.out.println();
         }
@@ -200,13 +200,7 @@ public class LoggingDecorator implements CodecDecorator {
          * .flotsam.preon.Codec, long, long)
          */
         public void logStartDecoding(Codec<?> codec, long position, long size) {
-            if (codec.getCodecDescriptor() == null) {
-                System.err.println("Descriptor of "
-                        + codec.getClass().toString() + " is null.");
-            }
-            printMessage("Start decoding "
-                    + codec.getCodecDescriptor().getLabel()
-                    + " at "
+            printMessage("Start decoding at "
                     + position
                     + (size >= 0 ? " (maximal up to " + (position + size) + ")"
                             : ""));
@@ -285,15 +279,6 @@ public class LoggingDecorator implements CodecDecorator {
                         - pos, result);
             }
             return result;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nl.flotsam.preon.Codec#getCodecDescriptor()
-         */
-        public CodecDescriptor getCodecDescriptor() {
-            return codec.getCodecDescriptor();
         }
 
         /*

@@ -194,10 +194,6 @@ public class CachingCodecFactory implements CodecFactory {
             return codec.decode(buffer, resolver, builder);
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return codec.getCodecDescriptor();
-        }
-
         public Class<?>[] getTypes() {
             return new Class<?>[] { type };
         }

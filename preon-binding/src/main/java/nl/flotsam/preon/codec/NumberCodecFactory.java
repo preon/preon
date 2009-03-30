@@ -376,17 +376,17 @@ public class NumberCodecFactory implements CodecFactory {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective) {
+                        final Adjective adjective, final boolean startWithCapital) {
                     return new Documenter<C>() {
                         public void document(C target) {
                             if (sizeExpr.isParameterized()) {
-                                target.text(adjective.asTextPreferAn()).text(
+                                target.text(adjective.asTextPreferAn(startWithCapital)).text(
                                         " integer value (").document(
                                         Documenters.forByteOrder(endian)).text(
                                         ")");
                             } else {
                                 target
-                                        .text(adjective.asTextPreferA())
+                                        .text(adjective.asTextPreferA(startWithCapital))
                                         .text(" ")
                                         .document(
                                                 Documenters
@@ -407,7 +407,7 @@ public class NumberCodecFactory implements CodecFactory {
                 public <C extends ParaContents<?>> Documenter<C> summary() {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.document(reference(Adjective.A)).text(".");
+                            target.document(reference(Adjective.A, true)).text(".");
                         }
                     };
                 }

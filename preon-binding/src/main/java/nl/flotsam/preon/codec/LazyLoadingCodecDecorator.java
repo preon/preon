@@ -147,15 +147,6 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.preon.Codec#getCodecDescriptor()
-         */
-        public CodecDescriptor getCodecDescriptor() {
-            return wrapped.getCodecDescriptor();
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
          * @see nl.flotsam.preon.Codec#getTypes()
          */
         public Class<?>[] getTypes() {

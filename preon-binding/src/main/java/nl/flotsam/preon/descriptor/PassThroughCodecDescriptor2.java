@@ -24,8 +24,8 @@ public class PassThroughCodecDescriptor2 implements CodecDescriptor2 {
     }
 
     public <C extends ParaContents<?>> Documenter<C> reference(
-            Adjective adjective) {
-        return delegate.reference(adjective);
+            Adjective adjective, boolean startWithCapital) {
+        return delegate.reference(adjective, false);
     }
 
     public boolean requiresDedicatedSection() {

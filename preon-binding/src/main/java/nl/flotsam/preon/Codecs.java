@@ -83,12 +83,6 @@ public class Codecs {
             public DefaultDocumentBuilder createDocumentBuilder(XmlWriter writer) {
                 return new HtmlDocumentBuilder(writer, this.getClass()
                         .getResource("/default.css")) {
-
-//                            @Override
-//                            public <T> ParaBuilder<T> createPara(T parent,
-//                                    DocumentBuilder builder) {
-//                                return new CaseCorrectingParaBuilder(builder, parent, getLifecycleListener(), getWriter());
-//                            }
                     
                 };
             }

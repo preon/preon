@@ -56,6 +56,7 @@ import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.CodecDescriptor2.Adjective;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundObject;
@@ -214,44 +215,6 @@ public class ArrayCodecFactory implements CodecFactory {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.preon.Codec#getCodecDescriptor()
-         */
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    return "a list of " + codec.getCodecDescriptor().getLabel()
-                            + " elements";
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <T> Contents<T> writeSection(Contents<T> contents) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public <T, V extends ParaContents<T>> V writePara(V para) {
-                    writeReference(para);
-                    return para;
-                }
-
-                public <T> void writeReference(ParaContents<T> contents) {
-                    contents.text("a list of");
-                    // size.document(new DocumentParaContents(contents));
-                    // contents.text(" ");
-                    codec.getCodecDescriptor().writeReference(contents);
-                    contents.text(" elements");
-                }
-
-            };
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
          * @see nl.flotsam.preon.Codec#getTypes()
          */
         public Class<?>[] getTypes() {
@@ -285,11 +248,14 @@ public class ArrayCodecFactory implements CodecFactory {
                                                 "The number of elements in the list ")
                                         .text("is ")
                                         .document(
-                                                Documenters.forExpression(ArrayCodec.this.size))
+                                                Documenters
+                                                        .forExpression(ArrayCodec.this.size))
                                         .text(".").end();
                             }
-                            if (!codec.getCodecDescriptor2().requiresDedicatedSection()) {
-                                target.document(codec.getCodecDescriptor2().details(bufferReference));
+                            if (!codec.getCodecDescriptor2()
+                                    .requiresDedicatedSection()) {
+                                target.document(codec.getCodecDescriptor2()
+                                        .details(bufferReference));
                             }
                         }
                     };
@@ -300,13 +266,13 @@ public class ArrayCodecFactory implements CodecFactory {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective) {
+                        final Adjective adjective, final boolean startWithCapital) {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.text(adjective.asTextPreferA()).text(
+                            target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
                                     codec.getCodecDescriptor2().reference(
-                                            Adjective.NONE)).text(" elements.");
+                                            Adjective.NONE, false)).text(" elements");
                         }
                     };
                 }
@@ -318,8 +284,7 @@ public class ArrayCodecFactory implements CodecFactory {
                 public <C extends ParaContents<?>> Documenter<C> summary() {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.document(codec.getCodecDescriptor2()
-                                    .reference(Adjective.A));
+                            target.document(reference(Adjective.A, true));
                             target.text(".");
                         }
                     };

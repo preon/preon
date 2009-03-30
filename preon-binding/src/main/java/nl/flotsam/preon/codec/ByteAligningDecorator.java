@@ -119,7 +119,7 @@ public class ByteAligningDecorator implements CodecDecorator {
                                     .text("If - after reading ")
                                     .document(
                                             decorated.getCodecDescriptor2()
-                                                    .reference(Adjective.THE))
+                                                    .reference(Adjective.THE, false))
                                     .text(" - the pointer is ")
                                     .emphasis("not")
                                     .text(
@@ -134,8 +134,8 @@ public class ByteAligningDecorator implements CodecDecorator {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        Adjective adjective) {
-                    return decorated.getCodecDescriptor2().reference(adjective);
+                        Adjective adjective, boolean startWithCapital) {
+                    return decorated.getCodecDescriptor2().reference(adjective, false);
                 }
 
                 public boolean requiresDedicatedSection() {

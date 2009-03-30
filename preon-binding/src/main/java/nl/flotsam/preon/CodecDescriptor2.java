@@ -10,24 +10,52 @@ public interface CodecDescriptor2 {
      * An enumeration with different adjectives.
      */
     public enum Adjective {
-        A, THE, NONE;   
-        
-        public String asTextPreferA() {
-            switch(this) {
-                case A: return "a " ;
-                case THE: return "the ";
-                default: return "";
+        A, THE, NONE;
+
+        public String asTextPreferA(boolean startWithCapital) {
+            if (startWithCapital) {
+                switch (this) {
+                    case A:
+                        return "A ";
+                    case THE:
+                        return "The ";
+                    default:
+                        return "";
+                }
+            } else {
+                switch (this) {
+                    case A:
+                        return "a ";
+                    case THE:
+                        return "the ";
+                    default:
+                        return "";
+                }
             }
         }
-  
-        public String asTextPreferAn() {
-            switch(this) {
-                case A: return "an ";
-                case THE: return "the ";
-                default: return "";
+
+        public String asTextPreferAn(boolean startWithCapital) {
+            if (startWithCapital) {
+                switch (this) {
+                    case A:
+                        return "An ";
+                    case THE:
+                        return "The ";
+                    default:
+                        return "";
+                }
+            } else {
+                switch (this) {
+                    case A:
+                        return "an ";
+                    case THE:
+                        return "the ";
+                    default:
+                        return "";
+                }
             }
         }
-        
+
     }
 
     /**
@@ -59,8 +87,11 @@ public interface CodecDescriptor2 {
      * @param adjective
      *            The adjective to use; <code>null</code> if no adjective should
      *            be used.
+     * @param startWithCapital
+     *            TODO
      */
-    <C extends ParaContents<?>> Documenter<C> reference(Adjective adjective);
+    <C extends ParaContents<?>> Documenter<C> reference(Adjective adjective,
+            boolean startWithCapital);
 
     /**
      * Returns an object capable of writing detailed information on the format

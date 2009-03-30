@@ -174,37 +174,6 @@ public class SlicingCodecDecorator implements CodecDecorator {
             return wrapped.decode(slice, resolver, builder);
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    return wrapped.getCodecDescriptor().getLabel()
-                            + " of a maximum length";
-                }
-
-                public boolean requiresDedicatedSection() {
-                    // TODO Auto-generated method stub
-                    return false;
-                }
-
-                public <U> Contents<U> writeSection(Contents<U> contents) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public <U, V extends ParaContents<U>> V writePara(V para) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public <U> void writeReference(ParaContents<U> contents) {
-                    // TODO Auto-generated method stub
-
-                }
-
-            };
-        }
-
         public Class<?>[] getTypes() {
             return wrapped.getTypes();
         }
@@ -231,7 +200,7 @@ public class SlicingCodecDecorator implements CodecDecorator {
                                                             .getSize())).text(
                                             " bits for ").document(
                                             wrapped.getCodecDescriptor2()
-                                                    .reference(Adjective.THE))
+                                                    .reference(Adjective.THE, false))
                                     .end();
                             target.document(wrapped.getCodecDescriptor2()
                                     .details(bufferReference));
@@ -244,8 +213,8 @@ public class SlicingCodecDecorator implements CodecDecorator {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        Adjective adjective) {
-                    return wrapped.getCodecDescriptor2().reference(adjective);
+                        Adjective adjective, boolean startWithCapital) {
+                    return wrapped.getCodecDescriptor2().reference(adjective, false);
                 }
 
                 public boolean requiresDedicatedSection() {

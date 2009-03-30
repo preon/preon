@@ -50,6 +50,7 @@ import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.codec.ArrayCodecFactory;
 import nl.flotsam.preon.codec.BooleanCodecFactory;
+import nl.flotsam.preon.codec.BoundBufferCodecFactory;
 import nl.flotsam.preon.codec.ByteAligningDecorator;
 import nl.flotsam.preon.codec.CachingCodecFactory;
 import nl.flotsam.preon.codec.CompoundCodecFactory;
@@ -119,6 +120,7 @@ public class DefaultCodecFactory implements CodecFactory {
 
         // Add other default CodecFactories.
         codecFactory.add(new ExplicitCodecFactory());
+        codecFactory.add(new BoundBufferCodecFactory());
         codecFactory.add(new NumberCodecFactory());
         codecFactory.add(new StringCodecFactory());
         codecFactory.add(new BooleanCodecFactory());
@@ -172,43 +174,6 @@ public class DefaultCodecFactory implements CodecFactory {
             return delegate.decode(buffer, resolver, builder);
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    return delegate.getCodecDescriptor().getLabel();
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return delegate.getCodecDescriptor()
-                            .requiresDedicatedSection();
-                }
-
-                public <U> Contents<U> writeSection(Contents<U> contents) {
-                    created.remove(delegate);
-                    delegate.getCodecDescriptor().writeSection(contents);
-                    for (Codec<?> codec : created) {
-                        assert codec != null;
-                        CodecDescriptor descriptor = codec.getCodecDescriptor();
-                        assert descriptor != null;
-                        if (descriptor.requiresDedicatedSection()) {
-                            descriptor.writeSection(contents);
-                        }
-                    }
-                    return contents;
-                }
-
-                public <U, V extends ParaContents<U>> V writePara(V para) {
-                    return delegate.getCodecDescriptor().writePara(para);
-                }
-
-                public <U> void writeReference(ParaContents<U> contents) {
-                    delegate.getCodecDescriptor().writeReference(contents);
-                }
-
-            };
-        }
-
         public Class<?>[] getTypes() {
             return delegate.getTypes();
         }
@@ -256,8 +221,8 @@ public class DefaultCodecFactory implements CodecFactory {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        Adjective adjective) {
-                    return delegate.getCodecDescriptor2().reference(adjective);
+                        Adjective adjective, boolean startWithCapital) {
+                    return delegate.getCodecDescriptor2().reference(adjective, false);
                 }
 
                 public boolean requiresDedicatedSection() {

@@ -80,6 +80,10 @@ public class NumberCodecFactoryTest extends TestCase {
         boundNumber = EasyMock.createMock(BoundNumber.class);
     }
 
+    public void testDecodingHex() {
+        System.out.println(Long.parseLong("CAFEBABE", 16));
+    }
+    
     public void testDecodingInteger() throws DecodingException {
         Kit<Integer> kit = new IntegerKit();
         kit.test(ByteOrder.BigEndian, "", 32, 256, null, false);

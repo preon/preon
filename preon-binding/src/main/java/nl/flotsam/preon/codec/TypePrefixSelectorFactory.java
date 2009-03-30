@@ -173,7 +173,7 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                 });
                 para
                         .text(", then ").document(
-                                codec.getCodecDescriptor2().reference(Adjective.THE));
+                                codec.getCodecDescriptor2().reference(Adjective.THE, false));
                 para.text(" will be choosen.");
             }
         }

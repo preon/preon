@@ -19,7 +19,7 @@ public class NullCodecDescriptor2 implements CodecDescriptor2 {
     }
 
     public <T extends ParaContents<?>> Documenter<T> reference(
-            Adjective adjective) {
+            Adjective adjective, boolean startWithCapital) {
         return new Documenter<T>() {
             public void document(T target) {
             }

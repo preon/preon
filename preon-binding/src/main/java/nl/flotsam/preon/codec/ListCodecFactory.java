@@ -148,7 +148,8 @@ public class ListCodecFactory implements CodecFactory {
                         context, descriptor), settings.offset());
                 Codec<T> result = (Codec<T>) new OffsetListCodec(offsets, size,
                         codec);
-                descriptor.setCodecDescriptor(result.getCodecDescriptor());
+                // TODO:
+                descriptor.setCodecDescriptor(null);
                 return result;
             } else {
                 // In this case, there may be a size (number of elements) set,
@@ -259,38 +260,6 @@ public class ListCodecFactory implements CodecFactory {
                     buffer, size.eval(resolver), builder, resolver);
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    return "a list of " + codec.getCodecDescriptor().getLabel()
-                            + " elements";
-                }
-
-                public boolean requiresDedicatedSection() {
-                    // TODO Auto-generated method stub
-                    return false;
-                }
-
-                public <U> Contents<U> writeSection(Contents<U> contents) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                public <U, V extends ParaContents<U>> V writePara(V para) {
-                    writeReference(para);
-                    return para;
-                }
-
-                public <U> void writeReference(ParaContents<U> contents) {
-                    contents.text("a list of ");
-                    codec.getCodecDescriptor().writeReference(contents);
-                    contents.text(" elements");
-                }
-
-            };
-        }
-
         public Class<?>[] getTypes() {
             return codec.getTypes();
         }
@@ -311,7 +280,7 @@ public class ListCodecFactory implements CodecFactory {
                     return new Documenter<C>() {
                         public void document(C target) {
                             target.para().text("The number of elements in ")
-                                    .document(reference(Adjective.THE)).text(
+                                    .document(reference(Adjective.THE, false)).text(
                                             " is ").document(
                                             Documenters.forExpression(size))
                                     .text(".")
@@ -328,13 +297,13 @@ public class ListCodecFactory implements CodecFactory {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective) {
+                        final Adjective adjective, final boolean startWithCapital) {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.text(adjective.asTextPreferA()).text(
+                            target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
                                     codec.getCodecDescriptor2().reference(
-                                            Adjective.NONE));
+                                            Adjective.NONE, false));
                         }
                     };
                 }
@@ -346,7 +315,7 @@ public class ListCodecFactory implements CodecFactory {
                 public <C extends ParaContents<?>> Documenter<C> summary() {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.document(reference(Adjective.A)).text(".");
+                            target.document(reference(Adjective.A, true)).text(".");
                         }
                     };
                 }
@@ -401,35 +370,6 @@ public class ListCodecFactory implements CodecFactory {
             return result;
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    return "a list with an undefined number of "
-                            + codec.getCodecDescriptor().getLabel()
-                            + " elements";
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <U> Contents<U> writeSection(Contents<U> contents) {
-                    return contents;
-                }
-
-                public <U, V extends ParaContents<U>> V writePara(V para) {
-                    para.text(getLabel());
-                    return para;
-                }
-
-                public <U> void writeReference(ParaContents<U> contents) {
-
-                }
-
-            };
-        }
-
         public Class<?>[] getTypes() {
             return codec.getTypes();
         }
@@ -467,13 +407,13 @@ public class ListCodecFactory implements CodecFactory {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective) {
+                        final Adjective adjective, final boolean startWithCapital) {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.text(adjective.asTextPreferA()).text(
+                            target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
                                     codec.getCodecDescriptor2().reference(
-                                            Adjective.NONE));
+                                            Adjective.NONE, false));
                         }
                     };
                 }
@@ -485,7 +425,7 @@ public class ListCodecFactory implements CodecFactory {
                 public <C extends ParaContents<?>> Documenter<C> summary() {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.document(reference(Adjective.A)).text(".");
+                            target.document(reference(Adjective.A, true)).text(".");
                         }
                     };
                 }
@@ -522,35 +462,6 @@ public class ListCodecFactory implements CodecFactory {
             } else {
                 return nonSkipListCodec.decode(buffer, resolver, builder);
             }
-        }
-
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    return "either "
-                            + skipListCodec.getCodecDescriptor().getLabel()
-                            + " or "
-                            + nonSkipListCodec.getCodecDescriptor().getLabel();
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <U> Contents<U> writeSection(Contents<U> contents) {
-                    return null;
-                }
-
-                public <U, V extends ParaContents<U>> V writePara(V para) {
-                    para.text(getLabel());
-                    return para;
-                }
-
-                public <U> void writeReference(ParaContents<U> contents) {
-                }
-
-            };
         }
 
         public int getSize(Resolver resolver) {
@@ -778,35 +689,6 @@ public class ListCodecFactory implements CodecFactory {
             return result;
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    return "a list of " + codec.getCodecDescriptor().getLabel()
-                            + " elements";
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <U> Contents<U> writeSection(Contents<U> contents) {
-                    // TODO
-                    return null;
-                }
-
-                public <U, V extends ParaContents<U>> V writePara(V para) {
-                    // TODO
-                    return null;
-                }
-
-                public <U> void writeReference(ParaContents<U> contents) {
-                    // TODO
-                }
-
-            };
-        }
-
         public Class<?>[] getTypes() {
             return codec.getTypes();
         }
@@ -850,13 +732,13 @@ public class ListCodecFactory implements CodecFactory {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective) {
+                        final Adjective adjective, final boolean startWithCapital) {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.text(adjective.asTextPreferA()).text(
+                            target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
                                     codec.getCodecDescriptor2().reference(
-                                            Adjective.NONE));
+                                            Adjective.NONE, false));
                         }
                     };
                 }
@@ -868,7 +750,7 @@ public class ListCodecFactory implements CodecFactory {
                 public <C extends ParaContents<?>> Documenter<C> summary() {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target.document(reference(Adjective.A)).text(".");
+                            target.document(reference(Adjective.A, true)).text(".");
                         }
                     };
                 }
