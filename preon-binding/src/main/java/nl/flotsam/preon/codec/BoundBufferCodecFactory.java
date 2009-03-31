@@ -60,7 +60,7 @@ public class BoundBufferCodecFactory implements CodecFactory {
         if (type.isArray() && BYTE_CLASS.equals(type)
                 && metadata.isAnnotationPresent(BoundBuffer.class)) {
             return (Codec<T>) new BoundBufferCodec(metadata.getAnnotation(
-                    BoundBuffer.class).matches());
+                    BoundBuffer.class).match());
         } else {
             return null;
         }

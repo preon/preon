@@ -52,7 +52,7 @@ import nl.flotsam.preon.annotation.Choices.Choice;
  */
 public class ClassFile {
 
-    @BoundBuffer(matches = {(byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte)0xbe})
+    @BoundBuffer(match = {(byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte)0xbe})
     private byte[] magic;
 
     @BoundNumber(size = "16", byteOrder = BigEndian)

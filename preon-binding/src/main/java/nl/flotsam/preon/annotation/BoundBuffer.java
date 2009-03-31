@@ -50,6 +50,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface BoundBuffer {
 
-    public byte[] matches() default {};
+    /**
+     * The bytes that need to be matched.
+     * 
+     * @return The bytes that need to be matched.
+     */
+    public byte[] match() default {};
 
 }
