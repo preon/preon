@@ -1,0 +1,88 @@
+#masthead-logo { position: absolute; top: 18px; left: 13px; }
+
+div#masthead-logo span
+{ 
+  color: white;
+  font-weight: bold;
+  font-size: 14pt;
+  left: 160px; 
+  position: absolute;
+  top: 23px; 
+  width: 400px;
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+
+table.bodyTable tr td 
+{ 
+  vertical-align:top; 
+  font-size: 8pt; 
+}
+
+table.bodyTable tr th 
+{ 
+  vertical-align:top; 
+  font-size: 8pt;
+}
+
+.source 
+{
+  padding: 12px;
+  margin: 1em 7px 1em 7px;
+}
+
+.source pre 
+{
+  margin: 0px;
+  padding: 0px;
+}
+
+dl {
+  padding: 4px 4px 4px 6px;
+  border: 1px solid #aaa;
+  background-color: #f3f3f3;
+}
+
+dt {
+  color: #5e5e5e;
+  padding-bottom: 5pt;
+}
+
+dd { 
+  margin-bottom: 10pt;
+}
+
+table.bodyTable {
+}
+
+table.bodyTable tr th {
+  background-color: #b0b0b0;
+  color: white;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+table.bodyTable tr.a td {
+  background-color: #ececec;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+table.bodyTable tr.b td {
+  background-color: #fbfbfb;
+  padding-left: 2px;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+pre.programlisting {
+  padding: 4px 4px 4px 6px;
+  border: 1px solid #aaa;
+  background-color: #f3f3f3;
+}
+

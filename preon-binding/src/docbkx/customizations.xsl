@@ -40,8 +40,9 @@
 
   <xsl:import href="urn:docbkx:stylesheet"/>
 
-  <xsl:param name="body.start.indent">30mm</xsl:param>
+  <xsl:param name="body.start.indent">0mm</xsl:param>
   
+  <!--
   <xsl:template name="section.heading">
     <xsl:param name="level" select="1"/>
     <xsl:param name="marker" select="1"/>
@@ -108,6 +109,7 @@
       </xsl:choose>
     </fo:block>
   </xsl:template>
+  -->
 
   <xsl:attribute-set name="section.title.properties">
     <xsl:attribute name="font-family">
@@ -165,5 +167,25 @@
       </xsl:call-template>
     </fo:block>
   </xsl:template>
+<xsl:param name="generate.toc">
+appendix  nop
+article/appendix  nop
+article   nop
+book      toc,title,figure,table,example,equation
+chapter   toc,title
+part      toc,title
+preface   toc,title
+qandadiv  toc
+qandaset  toc
+reference toc,title
+sect1     toc
+sect2     toc
+sect3     toc
+sect4     toc
+sect5     toc
+section   toc
+set       toc,title
+</xsl:param>
+
   
 </xsl:stylesheet>

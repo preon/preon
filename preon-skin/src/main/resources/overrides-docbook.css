@@ -1,0 +1,154 @@
+@import url(http://gangsta/resources/overrides.css);
+@import url(http://www.tomtom.com/lib/css/tomtom.css);
+
+.mediaobject table tr td { background-color: white; }
+
+div.author
+{
+  visibility: hidden;
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
+}
+
+div h2.subtitle {
+  visibility: hidden;
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
+}
+
+div.chapter {
+  margin-top: 60px;
+}
+
+body div.article ,
+body div.book,
+body div.appendix
+{ 
+  margin: 0 auto; 
+  width: 800px; 
+  text-align: left; 
+}
+
+
+h1.title 
+{
+  padding-left: 130px;
+  padding-top: 46px;
+  padding-bottom: 0px;
+  height: 107px;
+  width: 800px;
+  font-size: 12pt;
+  color:white;
+  background-image: url("./masthead.gif");
+  background-repeat: no-repeat;
+  border-bottom: 0px;
+}
+
+h2 
+{ 
+#  padding-top: 20px; 
+}
+
+div.author { visibility: hidden;  }
+
+td , th 
+{ 
+  padding: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  font-size: 11px;
+  vertical-align: top;
+}
+
+th 
+{ 
+  text-align: left; 
+  background-color: #333333;
+  color: white;
+}
+
+table 
+{ 
+  border-color: #333333;
+  background-color: #fbfbfb;
+}
+
+div.section 
+{  
+  margin-top: 20px;
+}
+
+
+div.toc dl 
+{ 
+  border: none; 
+  background-color: inherit;
+  padding: 0px;
+  margin: 0px;
+}
+
+div.toc span
+{ 
+  padding: 0px;
+  margin: 0px;
+}
+
+#toc,
+.toc {
+	border: 1px solid #aaa;
+	background-color: #f9f9f9;
+	padding: 5px;
+	font-size: 100%;
+}
+#toc h2,
+.toc h2 {
+	display: inline;
+	border: none;
+	padding: 0;
+	font-size: 100%;
+	font-weight: bold;
+}
+#toc #toctitle,
+.toc #toctitle,
+#toc .toctitle,
+.toc .toctitle {
+	text-align: center;
+}
+#toc ul,
+.toc ul {
+	list-style-type: none;
+	list-style-image: none;
+	margin-left: 0;
+	padding-left: 0;
+	text-align: left;
+}
+#toc ul ul,
+.toc ul ul {
+	margin: 0 0 0 2em;
+}
+#toc .toctoggle,
+.toc .toctoggle {
+	font-size: 94%;
+}
+
+div.section h2,
+div.section h3,
+div.section h4,
+div.section h5
+{ 
+  border-bottom: none;
+}
+
+div.section h3 {
+padding-top: 16px;
+}
+
+div.section h4 {
+padding-top: 14px;
+}
+
+dl dd dl {
+border: none;
+}

@@ -82,7 +82,7 @@
         <inherited>false</inherited>
         <configuration>
           <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
-          <includes>readme.xml</includes>
+          <includes>paper.xml</includes>
         </configuration>
       </plugin>
       <plugin>
@@ -106,14 +106,13 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-      <!--
       <plugin>
         <groupId>com.google.code.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
-        <version>1.3.3-SNAPSHOT</version>
-        <inherited>false</inherited>
+        <version>1.4.0</version>
+        <inherited>true</inherited>
         <configuration>
-          <header>${basedir}/src/etc/header.txt</header>
+          <header>/Users/wilfred/workspace/preon/src/etc/header.txt</header>
           <includes>
             <include>**/*.java</include>
           </includes>
@@ -126,7 +125,6 @@
           </execution>
         </executions>
       </plugin>
-      -->
     </plugins>
   </build>
   <distributionManagement>

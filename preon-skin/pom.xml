@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>nl.flotsam.preon</groupId>
+  <artifactId>preon-skin</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <name>Preon Skin</name>
+</project>

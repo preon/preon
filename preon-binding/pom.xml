@@ -89,13 +89,14 @@
           </execution>
         </executions>
         <configuration>
+	  <bibliographyStyle>iso690</bibliographyStyle>
+	  <bibliographyNumbered>1</bibliographyNumbered>
           <generateIdAttributes>1</generateIdAttributes>
           <cssDecoration>1</cssDecoration>
           <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
-          <includes>chapter-introduction.xml,chapter-under-the-hood.xml</includes>
+          <includes>paper.xml,chapter-introduction.xml,chapter-under-the-hood.xml</includes>
           <htmlStylesheet>css/docbkx-style.css</htmlStylesheet>
           <alignment>left</alignment>
-          <bodyStartIndent>2cm</bodyStartIndent>
           <bodyFontFamily>Calibri</bodyFontFamily>
           <titleFontFamily>Calibri</titleFontFamily>
           <monospaceFontFamily>Consola</monospaceFontFamily>
