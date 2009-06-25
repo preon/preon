@@ -33,14 +33,11 @@
 package nl.flotsam.preon.codec;
 
 import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
-import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ItemizedList;
 import nl.flotsam.pecia.Para;
@@ -48,7 +45,6 @@ import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;

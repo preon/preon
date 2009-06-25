@@ -37,14 +37,12 @@ import java.lang.reflect.AnnotatedElement;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
-import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
-import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;

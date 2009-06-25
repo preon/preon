@@ -42,20 +42,17 @@ import java.util.Set;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.util.ClassUtils;
-import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.Para;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecSelector;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.descriptor.Documenters;
 
 /**
  * A {@link Codec} that is able to dynamically choose between different types of

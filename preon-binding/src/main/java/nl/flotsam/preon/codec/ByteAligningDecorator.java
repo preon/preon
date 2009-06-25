@@ -41,7 +41,6 @@ import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
-import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;

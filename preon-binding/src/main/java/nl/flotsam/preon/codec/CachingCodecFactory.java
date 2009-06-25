@@ -40,13 +40,9 @@ import java.util.List;
 import java.util.Map;
 
 import nl.flotsam.limbo.Expression;
-import nl.flotsam.pecia.Contents;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionListener;
-import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
