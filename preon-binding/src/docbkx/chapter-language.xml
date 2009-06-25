@@ -1,0 +1,150 @@
+<appendix>
+  <title>Expression Language</title>
+  <section>
+    <title>Introduction</title>
+    <para>
+      The expression language in Preon is Limbo. You can find the
+      details at <ulink
+      url="http://limbo.sourceforge.net/"/>. Nevertheless it might be
+      good to spend a word on it here as well. Why? Well, because Limbo
+      can be bound to any type of context, and the way it's bound to
+      Preon may be different than what you would expect. And while we
+      are at it, we might as well explain the language a little further
+      as well.
+    </para>
+    <para>
+      Limbo is a very simple language. It's a non-compliant subset of
+      JSP EL. Now, the first question you will undoubtedly have is: why
+      a subset? (We will save the other question - "why non-compliant"
+      for some later stage.) To answer that question, you need to know
+      at least a couple of things about Limbo. First of all, Limbo was
+      designed to allow libraries <emphasis>not only</emphasis> to
+      evaluate expressions, but also to capture the expressions in such
+      a way that they could be rendered into a <emphasis>human readable
+      representation</emphasis> afterwards.
+    </para>
+    <para>
+      In a way, Limbo is trying to do exactly the opposite of what some
+      of the DSLs are doing. Instead of allowing you to have expressions
+      in a human readable language, and creating an internal formal
+      representation of that expression, it allows you to have a very
+      formal grammar for expressions, and turn those into human readable
+      expressions.
+    </para>
+    <para>
+      Knowing that, the second question - "why non-compliant" becomes
+      pretty easy to answer. Limbo must be good at one thing only: it
+      needs to be able to formulate expressions that can be rendered
+      into human readable language. Consequently anything for which the
+      meaning is not clearly understood is out of scope. And in many
+      cases, that involves stuff that JSP EL is perfectly able to
+      handle.
+    </para>
+    <para>
+      One of the things Limbo is not able to do is (directly) call
+      methods on objects. It's something that just not exists in Limbo's
+      universe. Limbo deals with something called references only. If
+      you have a reference pointing to something, then that 'something'
+      may have references to other things. That's basically Limbo's
+      model in a nutshell.
+    </para>
+    <para>
+      The main reason for not allowing Limbo to call arbitrary methods
+      on objects is that it would be extremely hard - if not impossible
+      at all - to capture the meaning of an expression including a
+      method call in human readable language,
+      <emphasis>unless</emphasis> you can pull the meaning of calling
+      that method from some other source.
+    </para>
+    <para>
+      Now, you probably did not start reading this document to find
+      out what Limbo <emphasis>cannot</emphasis> do; you are probably
+      way more interested to find out what it <emphasis>can</emphasis>
+      do. Let's start digging a little deeper.
+    </para>
+  </section>
+  <section>
+    <title>Arithmetic</title>
+    <para>
+      Limbo supports multiplication, addition, subtraction, division,
+      and power. You can use the operators you would expect to be able
+      to use. Pretty much similar to Java, with the exception that it
+      distributes correctly, whereas Java doesn't. (Or more precisely,
+      distributes in a different, less common way.) You can use
+      parentheses to prevent confusion.
+    </para>
+    <programlisting><![CDATA[
+3 + 4 + 5     // 12
+3 * (2 + 9)   // 33
+2 / 3 + 1     // 1
+2^3           // 8
+]]></programlisting>
+  </section>
+  <section>
+    <title>Numeric literals</title>
+    <para>
+      You have already seen that Limbo is capable of working with
+      numeric literals. But it's also capable of dealing with various
+      representations of those same numeric literals. Limbo does not
+      support floating point. There simply is no purpose for it in the
+      context in which it is used.
+    </para>
+    <programlisting><![CDATA[
+0xf     // 16
+0b101   // 5
+]]></programlisting>
+  </section>
+  <section>
+    <title>References</title>
+    <para>
+      If Limbo would only allow you to use numbers and apply some
+      arithmetic on it, it would be pretty much useless. But hold on,
+      you <emphasis>can</emphasis> actually refer to values defined
+      'somewhere else'. (That 'somewhere else' is interesting. More on
+      that in a minute.) Here are some of the things that are
+      <emphasis>grammatically</emphasis> ok in Limbo:
+    </para>
+    <programlisting><![CDATA[
+a^2 + b^2
+3*b + 6*c
+foo / bar
+    ]]></programlisting>
+    <para>
+      Now, the questions is: what are those references pointing to?
+      JSP EL and a couple of other expression languages allow you to
+      have expressions over any context, as long as you offer some
+      VariableResolver to resolve those references. Limbo has
+      something else, that is a little bit more powerful, as we will
+      see in a minute.
+    </para>
+    <para>
+      Limbo defines something called a ReferenceContext. In a way, it
+      is similar to the VariableResolver I mentioned a minute ago. But
+      it's different at the same time. If you pass a name to a
+      VariableResolver, you normally get the resolved value. With
+      Limbo, you don't get that: if you pass in the name of a
+      variable, you get a Reference; you can use that reference to
+      produce a value, if you pass in the expected type of context.
+    </para>
+    <para>
+      So, what's the point of this additional level of indirection?
+      Well, it turns out there are actually a couple of
+      benefits.
+    </para>
+    <itemizedlist>
+      <listitem>
+	<para>
+	  Once you have a Reference, all of the reflection related
+	  work<footnote>
+	  <para>
+	    Note that the ReferenceContext and Reference abstractions
+	    do not necessarily enforce the 
+	  </para>
+	  </footnote> has already been done. As a consequence, you may expect
+	  that resolving the reference is faster than if you would
+	  have to gather the metadata over and over again.
+	</para>
+      </listitem>
+    </itemizedlist>
+  </section>
+</appendix>

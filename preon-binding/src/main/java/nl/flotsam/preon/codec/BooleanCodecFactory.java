@@ -94,10 +94,6 @@ public class BooleanCodecFactory implements CodecFactory {
             return buffer.readAsBoolean();
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return null;
-        }
-        
         public CodecDescriptor2 getCodecDescriptor2() {
             return new CodecDescriptor2() {
 

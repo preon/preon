@@ -40,16 +40,12 @@ import java.util.List;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
-import nl.flotsam.pecia.AnnotatedSection;
-import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.Para;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Table3Cols;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.CodecSelector;
@@ -60,7 +56,6 @@ import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.CodecDescriptor2.Adjective;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundObject;
-import nl.flotsam.preon.annotation.Purpose;
 import nl.flotsam.preon.binding.Binding;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
@@ -69,9 +64,7 @@ import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.limbo.ObjectResolverContext;
 import nl.flotsam.preon.rendering.ClassNameRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
-import nl.flotsam.preon.util.DocumentParaContents;
 import nl.flotsam.preon.util.HidingAnnotatedElement;
-import nl.flotsam.preon.util.TextUtils;
 
 /**
  * The {@link CodecFactory} generating {@link Codec Codecs} capable of decoding
@@ -264,97 +257,6 @@ public class ObjectCodecFactory implements CodecFactory {
             } catch (IllegalAccessException iae) {
                 throw new DecodingException(iae);
             }
-        }
-
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    return rewriter.rewrite(type.getName());
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return true;
-                }
-
-                public <V> Contents<V> writeSection(Contents<V> contents) {
-                    AnnotatedSection<?> section = contents.section(getLabel());
-                    section.mark(getLabel());
-                    Purpose purpose = type.getAnnotation(Purpose.class);
-                    if (purpose != null && purpose.value() != null) {
-                        Para<?> para = section.para();
-                        para.text(purpose.value());
-                        para.end();
-                    }
-                    if (context.getBindings().size() > 0) {
-                        Table3Cols<?> table = section.table3Cols();
-                        table = table.header().entry().para().text("Name")
-                                .end().entry().para().text("Description").end()
-                                .entry().para().text("Size (in bits)").end()
-                                .end();
-                        for (int i = 0; i < context.getBindings().size(); i++) {
-                            Binding binding = context.getBindings().get(i);
-                            Expression<Integer, Resolver> size = binding
-                                    .getSize();
-                            if (size != null) {
-                                size = size.simplify();
-                            }
-
-                            if (size == null) {
-//                                binding.describe(
-//                                        table.row().entry().para().term(
-//                                                binding.getId(),
-//                                                rewriter.rewrite(binding
-//                                                        .getName())).end()
-//                                                .entry().para()).end().entry()
-//                                        .para().text("unknown").end().end();
-                            } else {
-                                final Expression<Integer, Resolver> holder = size;
-                                final Documenter<ParaContents<?>> documenter = new Documenter<ParaContents<?>>() {
-                                    public void document(ParaContents<?> context) {
-                                        if (holder.isParameterized()) {
-                                            holder
-                                                    .document(new DocumentParaContents(
-                                                            context));
-                                        } else {
-                                            context.text(TextUtils
-                                                    .bitsToText(holder
-                                                            .eval(null)));
-                                        }
-                                    }
-                                };
-//                                binding.describe(
-//                                        table.row().entry().para().term(
-//                                                binding.getId(),
-//                                                rewriter.rewrite(binding
-//                                                        .getName())).end()
-//                                                .entry().para()).end().entry()
-//                                        .para().document(documenter).end()
-//                                        .end();
-                            }
-                        }
-                        table.end();
-                    }
-                    section.end();
-                    return contents;
-                }
-
-                public <U, V extends ParaContents<U>> V writePara(V para) {
-                    Purpose purpose = type.getAnnotation(Purpose.class);
-                    if (purpose != null && purpose.value() != null) {
-                        para.text(purpose.value());
-                    }
-                    para.text(" (Find details ");
-                    para.link(getLabel(), "here");
-                    para.text(".)");
-                    return para;
-                }
-
-                public <U> void writeReference(ParaContents<U> contents) {
-                    contents.link(getLabel(), getLabel());
-                }
-
-            };
         }
 
         public Class<?>[] getTypes() {

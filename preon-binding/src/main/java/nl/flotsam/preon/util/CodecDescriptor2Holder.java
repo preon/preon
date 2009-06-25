@@ -32,37 +32,36 @@
  */
 package nl.flotsam.preon.util;
 
-import nl.flotsam.pecia.Contents;
+import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.descriptor.DefaultDescriptor;
+import nl.flotsam.pecia.SimpleContents;
+import nl.flotsam.preon.CodecDescriptor2;
 
+public class CodecDescriptor2Holder implements CodecDescriptor2 {
+    
+    private CodecDescriptor2 descriptor;
 
-public class CodecDescriptorHolder implements CodecDescriptor {
+    public <C extends SimpleContents<?>> Documenter<C> details(String bufferReference) {
+        return descriptor.details(bufferReference);
+    }
 
-    private CodecDescriptor descriptor = new DefaultDescriptor();
+    public String getTitle() {
+        return descriptor.getTitle();
+    }
 
-    public String getLabel() {
-        return descriptor.getLabel();
+    public <C extends ParaContents<?>> Documenter<C> reference(Adjective adjective, boolean startWithCapital) {
+        return descriptor.reference(adjective, startWithCapital);
     }
 
     public boolean requiresDedicatedSection() {
         return descriptor.requiresDedicatedSection();
     }
 
-    public <T> Contents<T> writeSection(Contents<T> contents) {
-        return descriptor.writeSection(contents);
+    public <C extends ParaContents<?>> Documenter<C> summary() {
+        return descriptor.summary();
     }
-
-    public <T, V extends ParaContents<T>> V writePara(V para) {
-        return descriptor.writePara(para);
-    }
-
-    public <T> void writeReference(ParaContents<T> contents) {
-        descriptor.writeReference(contents);
-    }
-
-    public void setCodecDescriptor(CodecDescriptor descriptor) {
+    
+    public void setDescriptor(CodecDescriptor2 descriptor) {
         this.descriptor = descriptor;
     }
 

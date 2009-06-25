@@ -44,14 +44,12 @@ import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.Reference;
 import nl.flotsam.limbo.ReferenceContext;
-import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
@@ -68,8 +66,9 @@ import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.descriptor.NullCodecDescriptor2;
 import nl.flotsam.preon.limbo.ContextReplacingReference;
 import nl.flotsam.preon.util.AnnotationWrapper;
-import nl.flotsam.preon.util.CodecDescriptorHolder;
+import nl.flotsam.preon.util.CodecDescriptor2Holder;
 import nl.flotsam.preon.util.EvenlyDistributedLazyList;
+import nl.flotsam.preon.util.ParaContentsDocument;
 
 /**
  * A {@link CodecFactory} capable of supporting Lists.
@@ -142,13 +141,13 @@ public class ListCodecFactory implements CodecFactory {
                 Expression<Integer, Resolver> size = getSizeExpression(
                         settings, context);
                 Expression<Integer, Resolver> offsets = null;
-                CodecDescriptorHolder descriptor = new CodecDescriptorHolder();
+                CodecDescriptor2Holder holder = new CodecDescriptor2Holder();
                 offsets = Expressions.createInteger(new IndexedResolverContext(
-                        context, descriptor), settings.offset());
+                        context, holder), settings.offset());
                 Codec<T> result = (Codec<T>) new OffsetListCodec(offsets, size,
                         codec);
                 // TODO:
-                descriptor.setCodecDescriptor(null);
+                holder.setDescriptor(result.getCodecDescriptor2());
                 return result;
             } else {
                 // In this case, there may be a size (number of elements) set,
@@ -497,10 +496,10 @@ public class ListCodecFactory implements CodecFactory {
 
         final public static String INDEX = "index";
 
-        private CodecDescriptor descriptor;
+        private CodecDescriptor2 descriptor;
 
         public IndexedResolverContext(ResolverContext context,
-                CodecDescriptor descriptor) {
+                CodecDescriptor2 descriptor) {
             this.context = context;
             this.descriptor = descriptor;
         }
@@ -526,17 +525,18 @@ public class ListCodecFactory implements CodecFactory {
         }
 
         public void document(Document target) {
-            target.text(descriptor.getLabel());
+            ParaContentsDocument doc = new ParaContentsDocument(target);
+            doc.document(Documenters.forDescriptor(descriptor));
         }
 
         private static class IndexReference implements Reference<Resolver> {
 
             private ReferenceContext<Resolver> context;
 
-            private CodecDescriptor descriptor;
+            private CodecDescriptor2 descriptor;
 
             public IndexReference(ReferenceContext<Resolver> context,
-                    CodecDescriptor descriptor) {
+                    CodecDescriptor2 descriptor) {
                 this.context = context;
                 this.descriptor = descriptor;
             }
@@ -568,7 +568,8 @@ public class ListCodecFactory implements CodecFactory {
 
             public void document(Document target) {
                 target.text("the position of an element in ");
-                target.text(descriptor.getLabel());
+                ParaContentsDocument doc = new ParaContentsDocument(target);
+                doc.document(Documenters.forDescriptor(descriptor));
             }
 
             public Class<?> getType() {

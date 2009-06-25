@@ -88,11 +88,6 @@ public class ByteAligningDecorator implements CodecDecorator {
             return result;
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
         public Class<?>[] getTypes() {
             // TODO Auto-generated method stub
             return null;

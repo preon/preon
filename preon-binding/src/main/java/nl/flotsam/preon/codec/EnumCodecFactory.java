@@ -109,51 +109,6 @@ public class EnumCodecFactory implements CodecFactory {
             return mapping.get(value);
         }
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(size);
-                    builder.append(" bits, evaluating to either ");
-                    List<Integer> keys = new ArrayList<Integer>(mapping
-                            .keySet());
-                    for (int i = 0; i < keys.size(); i++) {
-                        if (i != 0) {
-                            if (i != keys.size() - 1) {
-                                builder.append(", ");
-                            } else {
-                                builder.append(" or ");
-                            }
-                        }
-                        builder.append(keys.get(i));
-                        builder.append(" (");
-                        builder.append(mapping.get(keys.get(i)).toString());
-                        builder.append(")");
-                    }
-                    return builder.toString();
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <U> Contents<U> writeSection(Contents<U> contents) {
-                    return contents;
-                }
-
-                public <U, V extends ParaContents<U>> V writePara(V para) {
-                    para.text(getLabel());
-                    return para;
-                }
-
-                public <U> void writeReference(ParaContents<U> contents) {
-                    contents.text(getLabel());
-                }
-
-            };
-        }
-
         public Class<?>[] getTypes() {
             return new Class[] { type };
         }

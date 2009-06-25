@@ -46,7 +46,6 @@ import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecDescriptor2;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
@@ -145,48 +144,6 @@ public class StringCodecFactory implements CodecFactory {
             } catch (UnsupportedEncodingException uee) {
                 throw new DecodingException(uee);
             }
-        }
-
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("null-terminated string");
-                    builder.append(" encoded in ");
-                    builder.append(encoding);
-                    if (!"".equals(match)) {
-                        builder.append(" matching \"");
-                        builder.append(match);
-                        builder.append("\"");
-                    }
-                    String conversion = byteConverter.getDescription();
-                    if (conversion != null && !"".equals(conversion)) {
-                        builder.append("(");
-                        builder.append(conversion);
-                        builder.append(")");
-                    }
-                    return builder.toString();
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <T> Contents<T> writeSection(Contents<T> contents) {
-                    return contents;
-                }
-
-                public <T, V extends ParaContents<T>> V writePara(V para) {
-                    para.text(getLabel());
-                    return para;
-                }
-
-                public <T> void writeReference(ParaContents<T> contents) {
-                    contents.text(getLabel());
-                }
-
-            };
         }
 
         public Class<?>[] getTypes() {
@@ -296,57 +253,6 @@ public class StringCodecFactory implements CodecFactory {
                 }
             }
             return result;
-        }
-
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public String getLabel() {
-                    StringBuilder builder = new StringBuilder();
-                    if (!sizeExpr.isParameterized()
-                            && TextUtils.hasNumberAsText(sizeExpr.eval(null))) {
-                        builder.append(TextUtils.startWithUppercase(TextUtils
-                                .getNumberAsText(sizeExpr.eval(null))));
-                        builder.append(" characters");
-                    } else {
-                        builder.append("A number of characters (");
-                        sizeExpr.document(new StringBuilderDocument(builder));
-                        builder.append(")");
-                    }
-                    builder.append(" encoded in ");
-                    builder.append(encoding);
-                    if (!"".equals(match)) {
-                        builder.append(" matching \"");
-                        builder.append(match);
-                        builder.append("\"");
-                    }
-                    String conversion = byteConverter.getDescription();
-                    if (conversion != null && !"".equals(conversion)) {
-                        builder.append("(");
-                        builder.append(conversion);
-                        builder.append(")");
-                    }
-                    return builder.toString();
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <T> Contents<T> writeSection(Contents<T> contents) {
-                    return null;
-                }
-
-                public <T, V extends ParaContents<T>> V writePara(V para) {
-                    para.text(getLabel());
-                    return para;
-                }
-
-                public <T> void writeReference(ParaContents<T> contents) {
-                    contents.text(getLabel());
-                }
-
-            };
         }
 
         public Class<?>[] getTypes() {
