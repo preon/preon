@@ -185,8 +185,8 @@ public class DefaultCodecFactory implements CodecFactory {
             return delegate.getType();
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         final String bufferReference) {
@@ -197,7 +197,7 @@ public class DefaultCodecFactory implements CodecFactory {
                                     .details(bufferReference));
                             for (Codec<?> codec : created) {
                                 assert codec != null;
-                                CodecDescriptor2 descriptor = codec
+                                CodecDescriptor descriptor = codec
                                         .getCodecDescriptor2();
                                 assert descriptor != null;
                                 if (descriptor.requiresDedicatedSection() && target instanceof Contents) {

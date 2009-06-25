@@ -35,14 +35,14 @@ package nl.flotsam.preon.descriptor;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 
-public class PassThroughCodecDescriptor2 implements CodecDescriptor2 {
+public class PassThroughCodecDescriptor2 implements CodecDescriptor {
 
-    private CodecDescriptor2 delegate;
+    private CodecDescriptor delegate;
     private boolean requiresDedicatedSection;
 
-    public PassThroughCodecDescriptor2(CodecDescriptor2 delegate, boolean requiresDedicatedSection) {
+    public PassThroughCodecDescriptor2(CodecDescriptor delegate, boolean requiresDedicatedSection) {
         this.delegate = delegate;
         this.requiresDedicatedSection = requiresDedicatedSection;
     }

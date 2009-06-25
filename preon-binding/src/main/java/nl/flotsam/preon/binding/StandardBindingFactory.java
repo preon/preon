@@ -47,7 +47,7 @@ import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
@@ -144,7 +144,7 @@ public class StandardBindingFactory implements BindingFactory {
         }
 
         public <V extends SimpleContents<?>> V describe(V contents) {
-            CodecDescriptor2 codecDescriptor = codec.getCodecDescriptor2();
+            CodecDescriptor codecDescriptor = codec.getCodecDescriptor2();
             contents.para().document(codecDescriptor.summary()).end();
             contents.document(codecDescriptor.details("buffer"));
             return contents;

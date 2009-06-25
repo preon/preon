@@ -36,7 +36,7 @@ import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 
-public interface CodecDescriptor2 {
+public interface CodecDescriptor {
 
     /**
      * An enumeration with different adjectives.

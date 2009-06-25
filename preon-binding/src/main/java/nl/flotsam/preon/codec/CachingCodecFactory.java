@@ -43,7 +43,7 @@ import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionListener;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
@@ -205,7 +205,7 @@ public class CachingCodecFactory implements CodecFactory {
             return codec.getType();
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
             return new PassThroughCodecDescriptor2(codec.getCodecDescriptor2(),
                     codec.getCodecDescriptor2().requiresDedicatedSection());
         }

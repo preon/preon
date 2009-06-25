@@ -41,7 +41,7 @@ import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
@@ -93,8 +93,8 @@ public class BooleanCodecFactory implements CodecFactory {
             return buffer.readAsBoolean();
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <T extends SimpleContents<?>> Documenter<T> details(
                         String bufferReference) {

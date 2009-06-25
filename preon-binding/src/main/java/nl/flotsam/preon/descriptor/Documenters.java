@@ -37,9 +37,9 @@ import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.CodecDescriptor2.Adjective;
+import nl.flotsam.preon.CodecDescriptor.Adjective;
 import nl.flotsam.preon.binding.Binding;
 import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
@@ -162,7 +162,7 @@ public class Documenters {
         };
     }
 
-    public static Documenter<ParaContents<?>> forDescriptor(final CodecDescriptor2 descriptor) {
+    public static Documenter<ParaContents<?>> forDescriptor(final CodecDescriptor descriptor) {
         return new Documenter<ParaContents<?>>() {
 
             public void document(ParaContents<?> target) {

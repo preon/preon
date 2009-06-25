@@ -35,11 +35,11 @@ package nl.flotsam.preon.util;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 
-public class CodecDescriptor2Holder implements CodecDescriptor2 {
+public class CodecDescriptorHolder implements CodecDescriptor {
     
-    private CodecDescriptor2 descriptor;
+    private CodecDescriptor descriptor;
 
     public <C extends SimpleContents<?>> Documenter<C> details(String bufferReference) {
         return descriptor.details(bufferReference);
@@ -61,7 +61,7 @@ public class CodecDescriptor2Holder implements CodecDescriptor2 {
         return descriptor.summary();
     }
     
-    public void setDescriptor(CodecDescriptor2 descriptor) {
+    public void setDescriptor(CodecDescriptor descriptor) {
         this.descriptor = descriptor;
     }
 

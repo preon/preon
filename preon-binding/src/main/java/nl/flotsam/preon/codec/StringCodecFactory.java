@@ -46,7 +46,7 @@ import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
@@ -158,8 +158,8 @@ public class StringCodecFactory implements CodecFactory {
             return String.class;
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         String bufferReference) {
@@ -268,8 +268,8 @@ public class StringCodecFactory implements CodecFactory {
             return String.class;
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         String bufferReference) {

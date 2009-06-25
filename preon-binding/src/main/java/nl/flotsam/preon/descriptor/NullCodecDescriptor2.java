@@ -35,9 +35,9 @@ package nl.flotsam.preon.descriptor;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 
-public class NullCodecDescriptor2 implements CodecDescriptor2 {
+public class NullCodecDescriptor2 implements CodecDescriptor {
 
     public <T extends SimpleContents<?>> Documenter<T> details(String bufferReference) {
         return new Documenter<T>() {

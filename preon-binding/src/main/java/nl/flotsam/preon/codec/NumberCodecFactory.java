@@ -46,7 +46,7 @@ import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
@@ -278,8 +278,8 @@ public class NumberCodecFactory implements CodecFactory {
             return type.getType();
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         String bufferReference) {

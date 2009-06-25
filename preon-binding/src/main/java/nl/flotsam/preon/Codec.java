@@ -94,7 +94,7 @@ public interface Codec<T> {
      * 
      * @return An object capable of describing the {@link Codec}.
      */
-    CodecDescriptor2 getCodecDescriptor2();
+    CodecDescriptor getCodecDescriptor2();
 
     /**
      * Returns an array of types constructed potentially by this Codec.

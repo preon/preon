@@ -50,7 +50,7 @@ import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
@@ -66,7 +66,7 @@ import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.descriptor.NullCodecDescriptor2;
 import nl.flotsam.preon.limbo.ContextReplacingReference;
 import nl.flotsam.preon.util.AnnotationWrapper;
-import nl.flotsam.preon.util.CodecDescriptor2Holder;
+import nl.flotsam.preon.util.CodecDescriptorHolder;
 import nl.flotsam.preon.util.EvenlyDistributedLazyList;
 import nl.flotsam.preon.util.ParaContentsDocument;
 
@@ -141,7 +141,7 @@ public class ListCodecFactory implements CodecFactory {
                 Expression<Integer, Resolver> size = getSizeExpression(
                         settings, context);
                 Expression<Integer, Resolver> offsets = null;
-                CodecDescriptor2Holder holder = new CodecDescriptor2Holder();
+                CodecDescriptorHolder holder = new CodecDescriptorHolder();
                 offsets = Expressions.createInteger(new IndexedResolverContext(
                         context, holder), settings.offset());
                 Codec<T> result = (Codec<T>) new OffsetListCodec(offsets, size,
@@ -270,8 +270,8 @@ public class ListCodecFactory implements CodecFactory {
             return List.class;
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         final String bufferReference) {
@@ -380,8 +380,8 @@ public class ListCodecFactory implements CodecFactory {
             return List.class;
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         final String bufferReference) {
@@ -483,7 +483,7 @@ public class ListCodecFactory implements CodecFactory {
             return skipListCodec.getType();
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
             // TODO Auto-generated method stub
             return new NullCodecDescriptor2();
         }
@@ -496,10 +496,10 @@ public class ListCodecFactory implements CodecFactory {
 
         final public static String INDEX = "index";
 
-        private CodecDescriptor2 descriptor;
+        private CodecDescriptor descriptor;
 
         public IndexedResolverContext(ResolverContext context,
-                CodecDescriptor2 descriptor) {
+                CodecDescriptor descriptor) {
             this.context = context;
             this.descriptor = descriptor;
         }
@@ -533,10 +533,10 @@ public class ListCodecFactory implements CodecFactory {
 
             private ReferenceContext<Resolver> context;
 
-            private CodecDescriptor2 descriptor;
+            private CodecDescriptor descriptor;
 
             public IndexReference(ReferenceContext<Resolver> context,
-                    CodecDescriptor2 descriptor) {
+                    CodecDescriptor descriptor) {
                 this.context = context;
                 this.descriptor = descriptor;
             }
@@ -701,8 +701,8 @@ public class ListCodecFactory implements CodecFactory {
             return List.class;
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         final String bufferReference) {

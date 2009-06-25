@@ -46,14 +46,14 @@ import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Table3Cols;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.CodecSelector;
 import nl.flotsam.preon.CodecSelectorFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
-import nl.flotsam.preon.CodecDescriptor2.Adjective;
+import nl.flotsam.preon.CodecDescriptor.Adjective;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.binding.Binding;
@@ -304,8 +304,8 @@ public class ObjectCodecFactory implements CodecFactory {
             return type;
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
-            return new CodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
+            return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         String bufferReference) {

@@ -172,7 +172,7 @@ public class Codecs {
      *            be generated.
      */
     public static <T> void document(Codec<T> codec, ArticleDocument document) {
-        CodecDescriptor2 descriptor = codec.getCodecDescriptor2();
+        CodecDescriptor descriptor = codec.getCodecDescriptor2();
         if (descriptor.requiresDedicatedSection()) {
             document.document(descriptor.details("buffer"));
         } else {

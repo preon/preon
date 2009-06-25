@@ -42,7 +42,7 @@ import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
-import nl.flotsam.preon.CodecDescriptor2;
+import nl.flotsam.preon.CodecDescriptor;
 import nl.flotsam.preon.CodecFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
@@ -169,7 +169,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
             return type;
         }
 
-        public CodecDescriptor2 getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor2() {
             return new PassThroughCodecDescriptor2(wrapped
                     .getCodecDescriptor2(), false);
         }

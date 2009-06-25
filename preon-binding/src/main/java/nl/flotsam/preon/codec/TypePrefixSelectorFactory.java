@@ -49,7 +49,7 @@ import nl.flotsam.preon.CodecSelectorFactory;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
-import nl.flotsam.preon.CodecDescriptor2.Adjective;
+import nl.flotsam.preon.CodecDescriptor.Adjective;
 import nl.flotsam.preon.annotation.TypePrefix;
 import nl.flotsam.preon.buffer.BitBuffer;
 
