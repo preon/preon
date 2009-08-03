@@ -421,5 +421,9 @@ public class ClassFile {
     private static class Deprecated extends AttributeInfo {
 
     }
+    
+    public MethodInfo[] getMethods() {
+        return methods;
+    }
 
 }

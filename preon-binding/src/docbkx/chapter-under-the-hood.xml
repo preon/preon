@@ -37,6 +37,7 @@
   <articleinfo>
     <title>Under The Hood</title>
     <subtitle>What's going on behind the scenes?</subtitle>
+    <releaseinfo><?eval $pom.version?></releaseinfo>
     <author>
       <firstname>Wilfred</firstname>
       <surname>Springer</surname>
