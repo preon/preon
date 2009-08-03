@@ -29,23 +29,23 @@
   </scm>
   <repositories>
     <repository>
-      <id>limbo-snapshots</id>
-      <url>http://limbo.sourceforge.net/snapshots</url>
+      <id>limbo-repository</id>
+      <url>http://limbo.sourceforge.net/repository</url>
       <snapshots>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
       </snapshots>
       <releases>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </releases>
     </repository>
     <repository>
-      <id>pecia-snapshots</id>
+      <id>pecia-repository</id>
       <url>http://pecia.sourceforge.net/snapshots</url>
       <snapshots>
-        <enabled>true</enabled>
+        <enabled>false</enabled>
       </snapshots>
       <releases>
-        <enabled>false</enabled>
+        <enabled>true</enabled>
       </releases>
     </repository>
   </repositories>
