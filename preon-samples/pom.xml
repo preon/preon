@@ -3,7 +3,7 @@
   <parent>
     <groupId>nl.flotsam.preon</groupId>
     <artifactId>preon</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
   </parent>
   <artifactId>preon-samples</artifactId>
   <name>Preon Examples</name>

@@ -3,7 +3,7 @@
   <parent>
     <groupId>nl.flotsam.preon</groupId>
     <artifactId>preon</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
   </parent>
   <artifactId>preon-binding</artifactId>
   <name>Preon Binding</name>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>nl.flotsam.preon</groupId>
       <artifactId>preon-bitbuffer</artifactId>
-      <version>1.0</version>
+      <version>1.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

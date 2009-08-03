@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.flotsam.preon</groupId>
   <artifactId>preon</artifactId>
-  <version>1.0</version>
+  <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Preon</name>
   <url>http://preon.flotsam.nl/</url>
@@ -23,9 +23,9 @@
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/tags/preon-1.0</connection>
-    <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/tags/preon-1.0</developerConnection>
-    <url>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/tags/preon-1.0</url>
+    <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</connection>
+    <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</developerConnection>
+    <url>http://fisheye3.atlassian.com/browse/preon</url>
   </scm>
   <repositories>
     <repository>
