@@ -1,8 +1,8 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>nl.flotsam.preon</groupId>
   <artifactId>preon</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>pom</packaging>
   <name>Preon</name>
   <url>http://preon.flotsam.nl/</url>
@@ -23,9 +23,9 @@
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</connection>
-    <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</developerConnection>
-    <url>http://fisheye3.atlassian.com/browse/preon</url>
+    <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/tags/preon-1.0</connection>
+    <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/tags/preon-1.0</developerConnection>
+    <url>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/tags/preon-1.0</url>
   </scm>
   <repositories>
     <repository>

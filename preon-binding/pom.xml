@@ -1,9 +1,9 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nl.flotsam.preon</groupId>
     <artifactId>preon</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
   </parent>
   <artifactId>preon-binding</artifactId>
   <name>Preon Binding</name>
@@ -38,7 +38,7 @@
     <dependency>
       <groupId>nl.flotsam.preon</groupId>
       <artifactId>preon-bitbuffer</artifactId>
-      <version>1.0-SNAPSHOT</version>
+      <version>1.0</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
