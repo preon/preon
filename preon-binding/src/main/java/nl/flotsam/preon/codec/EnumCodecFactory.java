@@ -67,141 +67,140 @@ import nl.flotsam.preon.util.EnumUtils;
  */
 public class EnumCodecFactory implements CodecFactory {
 
-    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
-        if (type.isEnum() && metadata.isAnnotationPresent(BoundNumber.class)) {
-            Map<Long, T> mapping = EnumUtils.getBoundEnumOptionIndex(type);
-            BoundNumber settings = metadata.getAnnotation(BoundNumber.class);
-            Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(
-                    context, settings.size());
-            return new EnumCodec<T>(type, mapping, sizeExpr, settings
-                    .byteOrder());
+	public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
+			ResolverContext context) {
+		if (type.isEnum() && metadata.isAnnotationPresent(BoundNumber.class)) {
+			Map<Long, T> mapping = EnumUtils.getBoundEnumOptionIndex(type);
+			BoundNumber settings = metadata.getAnnotation(BoundNumber.class);
+			Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(
+					context, settings.size());
+			return new EnumCodec<T>(type, mapping, sizeExpr, settings
+					.byteOrder());
 
-        } else {
-            return null;
-        }
-    }
+		}
+		else {
+			return null;
+		}
+	}
 
-    
-    private static class EnumCodec<T> implements Codec<T> {
+	private static class EnumCodec<T> implements Codec<T> {
 
-        private Class<T> type;
-        private Map<Long, T> mapping;
-        private Expression<Integer, Resolver> size;
-        private ByteOrder byteOrder;
+		private Class<T> type;
 
-        public EnumCodec(Class<T> type, Map<Long, T> mapping,
-                Expression<Integer, Resolver> sizeExpr, ByteOrder endian) {
-            this.type = type;
-            this.mapping = mapping;
-            this.size = sizeExpr;
-            this.byteOrder = endian;
-        }
+		private Map<Long, T> mapping;
 
-        public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
-            long value = buffer.readAsLong(size.eval(resolver), byteOrder);
-            T result = mapping.get(value);
-            if (result == null) {
-            	result = mapping.get(null);
-            }
-            return result;
-        }
+		private Expression<Integer, Resolver> size;
 
-        public Class<?>[] getTypes() {
-            return new Class[] { type };
-        }
+		private ByteOrder byteOrder;
 
-        public Expression<Integer, Resolver> getSize() {
-            return size;
-        }
+		public EnumCodec(Class<T> type, Map<Long, T> mapping,
+				Expression<Integer, Resolver> sizeExpr, ByteOrder endian) {
+			this.type = type;
+			this.mapping = mapping;
+			this.size = sizeExpr;
+			this.byteOrder = endian;
+		}
 
-        public Class<?> getType() {
-            return type;
-        }
+		public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
+				throws DecodingException {
+			long value = buffer.readAsLong(size.eval(resolver), byteOrder);
+			T result = mapping.get(value);
+			if (result == null) {
+				result = mapping.get(null);
+			}
+			return result;
+		}
 
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
+		public Class<?>[] getTypes() {
+			return new Class[] { type };
+		}
 
-                public <C extends SimpleContents<?>> Documenter<C> details(
-                        String bufferReference) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
-                            Para<?> para = target.para();
-                            if (!size.isParameterized()) {
-                                para.text("The symbol is represented as a ")
-                                        .document(
-                                                Documenters.forNumericValue(
-                                                        size.eval(null),
-                                                        byteOrder)).text(".");
-                            } else {
-                                para
-                                        .text(
-                                                "The symbol is represented as a numeric value (")
-                                        .document(
-                                                Documenters
-                                                        .forByteOrder(byteOrder))
-                                        .text(". The number of bits is ")
-                                        .document(
-                                                Documenters.forExpression(size))
-                                        .text(".");
-                            }
-                            para
-                                    .text(
-                                            " The numeric value corresponds to the following symbols:")
-                                    .end();
-                            ItemizedList<?> itemizedList = target
-                                    .itemizedList();
-                            for (Entry<Long, T> entry : mapping.entrySet()) {
-                            	if (entry.getKey() != null) {
-                            	itemizedList
-                            		.item()
-                            			.para()
-                            				.text(Long.toString(entry.getKey()))
-                            				.text(": ")
-                            				.text(entry.getValue().toString())
-                            			.end()
-                            		.end();
-                            	}
-                            }
-                            itemizedList.end();
-                            T defaultValue = mapping.get(null);
-                            if (defaultValue != null) {
-                            	target.para("The default value is " + defaultValue.toString() + ".");
-                            }
-                        }
-                    };
-                }
+		public Expression<Integer, Resolver> getSize() {
+			return size;
+		}
 
-                public String getTitle() {
-                    return null;
-                }
+		public Class<?> getType() {
+			return type;
+		}
 
-                public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective, boolean startWithCapital) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
-                            target.text(adjective.asTextPreferAn(false)).text(
-                                    "index of an enumeration");
-                        }
-                    };
-                }
+		public CodecDescriptor getCodecDescriptor() {
+			return new CodecDescriptor() {
 
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
+				public <C extends SimpleContents<?>> Documenter<C> details(
+						String bufferReference) {
+					return new Documenter<C>() {
+						public void document(C target) {
+							Para<?> para = target.para();
+							if (!size.isParameterized()) {
+								para.text("The symbol is represented as a ")
+										.document(
+												Documenters.forNumericValue(
+														size.eval(null),
+														byteOrder)).text(".");
+							}
+							else {
+								para
+										.text(
+												"The symbol is represented as a numeric value (")
+										.document(
+												Documenters
+														.forByteOrder(byteOrder))
+										.text(". The number of bits is ")
+										.document(
+												Documenters.forExpression(size))
+										.text(".");
+							}
+							para
+									.text(
+											" The numeric value corresponds to the following symbols:")
+									.end();
+							for (Entry<Long, T> entry : mapping.entrySet()) {
+								if (entry.getKey() != null) {
+									target.para().text(
+											Long.toString(entry.getKey()))
+											.text(": ")
+											.text(entry.getValue().toString())
+											.end();
+								}
+							}
+							T defaultValue = mapping.get(null);
+							if (defaultValue != null) {
+								target.para().text("The default value is "
+										+ defaultValue.toString() + ".").end();
+							}
+						}
+					};
+				}
 
-                public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return new Documenter<C>() {
-                        public void document(C target) {
-                            target
-                                    .text("A value from a set of symbols, represented by a numeric value.");
-                        }
-                    };
-                }
+				public String getTitle() {
+					return null;
+				}
 
-            };
-        }
-    }
+				public <C extends ParaContents<?>> Documenter<C> reference(
+						final Adjective adjective, boolean startWithCapital) {
+					return new Documenter<C>() {
+						public void document(C target) {
+							target.text(adjective.asTextPreferAn(false)).text(
+									"index of an enumeration");
+						}
+					};
+				}
+
+				public boolean requiresDedicatedSection() {
+					return false;
+				}
+
+				public <C extends ParaContents<?>> Documenter<C> summary() {
+					return new Documenter<C>() {
+						public void document(C target) {
+							target
+									.text("A value from a set of symbols, represented by a numeric value.");
+						}
+					};
+				}
+
+			};
+		}
+	}
 
 }

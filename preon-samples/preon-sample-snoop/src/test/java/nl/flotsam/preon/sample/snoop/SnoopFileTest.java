@@ -43,6 +43,7 @@ import java.io.IOException;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.Codecs.DocumentType;
 import nl.flotsam.preon.sample.snoop.SnoopFile.DatalinkType;
 import nl.flotsam.preon.sample.snoop.SnoopFile.PacketRecord;
 
