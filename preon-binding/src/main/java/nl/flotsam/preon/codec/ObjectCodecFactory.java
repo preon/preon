@@ -304,7 +304,7 @@ public class ObjectCodecFactory implements CodecFactory {
             return type;
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
@@ -391,7 +391,7 @@ public class ObjectCodecFactory implements CodecFactory {
         private Codec<?> codec;
 
         public void document(ParaContents<?> target) {
-            target.document(codec.getCodecDescriptor2().reference(Adjective.THE, false));
+            target.document(codec.getCodecDescriptor().reference(Adjective.THE, false));
         }
         
         public void setCodec(Codec<?> codec) {

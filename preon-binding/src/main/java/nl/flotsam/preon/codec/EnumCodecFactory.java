@@ -35,6 +35,7 @@ package nl.flotsam.preon.codec;
 import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
@@ -54,6 +55,7 @@ import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.descriptor.Documenters;
+import nl.flotsam.preon.util.EnumUtils;
 
 /**
  * A {@link CodecFactory} creating {@link Codec Codecs} capable of decoding enum
@@ -67,12 +69,8 @@ public class EnumCodecFactory implements CodecFactory {
 
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
             ResolverContext context) {
-        Map<Integer, T> mapping = new HashMap<Integer, T>();
         if (type.isEnum() && metadata.isAnnotationPresent(BoundNumber.class)) {
-            T[] values = type.getEnumConstants();
-            for (int i = 0; i < values.length; i++) {
-                mapping.put(i, values[i]);
-            }
+            Map<Long, T> mapping = EnumUtils.getBoundEnumOptionIndex(type);
             BoundNumber settings = metadata.getAnnotation(BoundNumber.class);
             Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(
                     context, settings.size());
@@ -84,14 +82,15 @@ public class EnumCodecFactory implements CodecFactory {
         }
     }
 
+    
     private static class EnumCodec<T> implements Codec<T> {
 
         private Class<T> type;
-        private Map<Integer, T> mapping;
+        private Map<Long, T> mapping;
         private Expression<Integer, Resolver> size;
         private ByteOrder byteOrder;
 
-        public EnumCodec(Class<T> type, Map<Integer, T> mapping,
+        public EnumCodec(Class<T> type, Map<Long, T> mapping,
                 Expression<Integer, Resolver> sizeExpr, ByteOrder endian) {
             this.type = type;
             this.mapping = mapping;
@@ -101,8 +100,12 @@ public class EnumCodecFactory implements CodecFactory {
 
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
-            int value = buffer.readAsInt(size.eval(resolver), byteOrder);
-            return mapping.get(value);
+            long value = buffer.readAsLong(size.eval(resolver), byteOrder);
+            T result = mapping.get(value);
+            if (result == null) {
+            	result = mapping.get(null);
+            }
+            return result;
         }
 
         public Class<?>[] getTypes() {
@@ -117,7 +120,7 @@ public class EnumCodecFactory implements CodecFactory {
             return type;
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
@@ -149,11 +152,23 @@ public class EnumCodecFactory implements CodecFactory {
                                     .end();
                             ItemizedList<?> itemizedList = target
                                     .itemizedList();
-                            for (int i = 0; i < mapping.size(); i++) {
-                                itemizedList.item(Integer.valueOf(i) + ": "
-                                        + ((Enum<?>) mapping.get(i)).name());
+                            for (Entry<Long, T> entry : mapping.entrySet()) {
+                            	if (entry.getKey() != null) {
+                            	itemizedList
+                            		.item()
+                            			.para()
+                            				.text(Long.toString(entry.getKey()))
+                            				.text(": ")
+                            				.text(entry.getValue().toString())
+                            			.end()
+                            		.end();
+                            	}
                             }
                             itemizedList.end();
+                            T defaultValue = mapping.get(null);
+                            if (defaultValue != null) {
+                            	target.para("The default value is " + defaultValue.toString() + ".");
+                            }
                         }
                     };
                 }

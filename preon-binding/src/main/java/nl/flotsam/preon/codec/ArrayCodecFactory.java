@@ -230,7 +230,7 @@ public class ArrayCodecFactory implements CodecFactory {
             return type;
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
@@ -248,9 +248,9 @@ public class ArrayCodecFactory implements CodecFactory {
                                                         .forExpression(ArrayCodec.this.size))
                                         .text(".").end();
                             }
-                            if (!codec.getCodecDescriptor2()
+                            if (!codec.getCodecDescriptor()
                                     .requiresDedicatedSection()) {
-                                target.document(codec.getCodecDescriptor2()
+                                target.document(codec.getCodecDescriptor()
                                         .details(bufferReference));
                             }
                         }
@@ -267,7 +267,7 @@ public class ArrayCodecFactory implements CodecFactory {
                         public void document(C target) {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
-                                    codec.getCodecDescriptor2().reference(
+                                    codec.getCodecDescriptor().reference(
                                             Adjective.NONE, false)).text(" elements");
                         }
                     };

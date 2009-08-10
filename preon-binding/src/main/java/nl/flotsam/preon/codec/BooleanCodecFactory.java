@@ -93,7 +93,7 @@ public class BooleanCodecFactory implements CodecFactory {
             return buffer.readAsBoolean();
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <T extends SimpleContents<?>> Documenter<T> details(

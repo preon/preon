@@ -205,9 +205,9 @@ public class CachingCodecFactory implements CodecFactory {
             return codec.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
-            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor2(),
-                    codec.getCodecDescriptor2().requiresDedicatedSection());
+        public CodecDescriptor getCodecDescriptor() {
+            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(),
+                    codec.getCodecDescriptor().requiresDedicatedSection());
         }
 
     }

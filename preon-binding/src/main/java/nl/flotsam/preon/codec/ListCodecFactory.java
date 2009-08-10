@@ -147,7 +147,7 @@ public class ListCodecFactory implements CodecFactory {
                 Codec<T> result = (Codec<T>) new OffsetListCodec(offsets, size,
                         codec);
                 // TODO:
-                holder.setDescriptor(result.getCodecDescriptor2());
+                holder.setDescriptor(result.getCodecDescriptor());
                 return result;
             } else {
                 // In this case, there may be a size (number of elements) set,
@@ -270,7 +270,7 @@ public class ListCodecFactory implements CodecFactory {
             return List.class;
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
@@ -283,8 +283,8 @@ public class ListCodecFactory implements CodecFactory {
                                             Documenters.forExpression(size))
                                     .text(".")
                                     .end();
-                            if (!codec.getCodecDescriptor2().requiresDedicatedSection()) {
-                                target.document(codec.getCodecDescriptor2().details(bufferReference));
+                            if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
+                                target.document(codec.getCodecDescriptor().details(bufferReference));
                             }
                         }
                     };
@@ -300,7 +300,7 @@ public class ListCodecFactory implements CodecFactory {
                         public void document(C target) {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
-                                    codec.getCodecDescriptor2().reference(
+                                    codec.getCodecDescriptor().reference(
                                             Adjective.NONE, false));
                         }
                     };
@@ -380,7 +380,7 @@ public class ListCodecFactory implements CodecFactory {
             return List.class;
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
@@ -392,8 +392,8 @@ public class ListCodecFactory implements CodecFactory {
                                     .text(
                                             "The number of elements in the list is unknown at forehand. The codec will just decode as many elements as the buffer allows to decode.")
                                     .end();
-                            if (!codec.getCodecDescriptor2().requiresDedicatedSection()) {
-                                target.document(codec.getCodecDescriptor2().details(bufferReference));
+                            if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
+                                target.document(codec.getCodecDescriptor().details(bufferReference));
                             }
 
                         }
@@ -410,7 +410,7 @@ public class ListCodecFactory implements CodecFactory {
                         public void document(C target) {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
-                                    codec.getCodecDescriptor2().reference(
+                                    codec.getCodecDescriptor().reference(
                                             Adjective.NONE, false));
                         }
                     };
@@ -483,7 +483,7 @@ public class ListCodecFactory implements CodecFactory {
             return skipListCodec.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             // TODO Auto-generated method stub
             return new NullCodecDescriptor2();
         }
@@ -701,7 +701,7 @@ public class ListCodecFactory implements CodecFactory {
             return List.class;
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
@@ -719,8 +719,8 @@ public class ListCodecFactory implements CodecFactory {
                                     .document(
                                             Documenters.forExpression(offsets))
                                     .text(".").end();
-                            if (!codec.getCodecDescriptor2().requiresDedicatedSection()) {
-                                target.document(codec.getCodecDescriptor2().details(bufferReference));
+                            if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
+                                target.document(codec.getCodecDescriptor().details(bufferReference));
                             }
 
                         }
@@ -737,7 +737,7 @@ public class ListCodecFactory implements CodecFactory {
                         public void document(C target) {
                             target.text(adjective.asTextPreferA(startWithCapital)).text(
                                     "list of ").document(
-                                    codec.getCodecDescriptor2().reference(
+                                    codec.getCodecDescriptor().reference(
                                             Adjective.NONE, false));
                         }
                     };

@@ -169,9 +169,9 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
             return type;
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new PassThroughCodecDescriptor2(wrapped
-                    .getCodecDescriptor2(), false);
+                    .getCodecDescriptor(), false);
         }
 
     }

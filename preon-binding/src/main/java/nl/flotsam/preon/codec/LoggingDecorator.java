@@ -32,6 +32,7 @@
  */
 package nl.flotsam.preon.codec;
 
+
 import java.lang.reflect.AnnotatedElement;
 
 import nl.flotsam.limbo.Expression;
@@ -251,6 +252,8 @@ public class LoggingDecorator implements CodecDecorator {
          *            The {@link Logger} to use.
          */
         public LoggingCodec(Codec<T> codec, Logger logger) {
+        	assert codec != null;
+        	assert logger != null;
             this.codec = codec;
             this.logger = logger;
         }
@@ -306,8 +309,8 @@ public class LoggingDecorator implements CodecDecorator {
             return codec.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
-            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor2(),
+        public CodecDescriptor getCodecDescriptor() {
+            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(),
                     false);
         }
 

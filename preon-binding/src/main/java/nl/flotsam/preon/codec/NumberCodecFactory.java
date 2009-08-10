@@ -278,7 +278,7 @@ public class NumberCodecFactory implements CodecFactory {
             return type.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(

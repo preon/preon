@@ -100,7 +100,7 @@ public class ByteAligningDecorator implements CodecDecorator {
             return decorated.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
@@ -111,7 +111,7 @@ public class ByteAligningDecorator implements CodecDecorator {
                                     .para()
                                     .text("If - after reading ")
                                     .document(
-                                            decorated.getCodecDescriptor2()
+                                            decorated.getCodecDescriptor()
                                                     .reference(Adjective.THE, false))
                                     .text(" - the pointer is ")
                                     .emphasis("not")
@@ -128,7 +128,7 @@ public class ByteAligningDecorator implements CodecDecorator {
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
                         Adjective adjective, boolean startWithCapital) {
-                    return decorated.getCodecDescriptor2().reference(adjective, false);
+                    return decorated.getCodecDescriptor().reference(adjective, false);
                 }
 
                 public boolean requiresDedicatedSection() {
@@ -136,7 +136,7 @@ public class ByteAligningDecorator implements CodecDecorator {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return decorated.getCodecDescriptor2().summary();
+                    return decorated.getCodecDescriptor().summary();
                 }
 
             };

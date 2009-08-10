@@ -36,52 +36,57 @@ import java.lang.reflect.AnnotatedElement;
 import java.nio.ByteBuffer;
 
 import junit.framework.TestCase;
-
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.annotation.BoundEnumOption;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.buffer.DefaultBitBuffer;
-import nl.flotsam.preon.codec.EnumCodecFactory;
 
 import org.easymock.EasyMock;
 
-
 public class EnumCodecFactoryTest extends TestCase {
 
-    private AnnotatedElement metadata;
+	private AnnotatedElement metadata;
 
-    private BoundNumber boundNumber;
+	private BoundNumber boundNumber;
 
-    public void setUp() {
-        metadata = EasyMock.createMock(AnnotatedElement.class);
-        boundNumber = EasyMock.createMock(BoundNumber.class);
-    }
+	public void setUp() {
+		metadata = EasyMock.createMock(AnnotatedElement.class);
+		boundNumber = EasyMock.createMock(BoundNumber.class);
+	}
 
-    public void testHappyPath() throws DecodingException {
-        // Pre-play behaviour
-        EasyMock.expect(metadata.isAnnotationPresent(BoundNumber.class)).andReturn(true);
-        EasyMock.expect(metadata.getAnnotation(BoundNumber.class)).andReturn(
-                boundNumber);
-        EasyMock.expect(boundNumber.size()).andReturn("8");
-        EasyMock.expect(boundNumber.byteOrder()).andReturn(ByteOrder.LittleEndian);
+	public void testHappyPath() throws DecodingException {
+		// Pre-play behaviour
+		EasyMock.expect(metadata.isAnnotationPresent(BoundNumber.class))
+				.andReturn(true);
+		EasyMock.expect(metadata.getAnnotation(BoundNumber.class)).andReturn(
+				boundNumber);
+		EasyMock.expect(boundNumber.size()).andReturn("8");
+		EasyMock.expect(boundNumber.byteOrder()).andReturn(
+				ByteOrder.LittleEndian);
 
-        // Replay
-        EasyMock.replay(metadata, boundNumber);
-        EnumCodecFactory factory = new EnumCodecFactory();
-        BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] { 0,
-                1 }));
-        Codec<Direction> codec = factory.create(metadata, Direction.class, null);
-        assertNotNull(codec);
-        assertEquals(Direction.Left, codec.decode(buffer, null, null));
-        
-        // Verify
-        EasyMock.verify(metadata, boundNumber);
-    }
+		// Replay
+		EasyMock.replay(metadata, boundNumber);
+		EnumCodecFactory factory = new EnumCodecFactory();
+		BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] { 0,
+				1 }));
+		Codec<Direction> codec = factory
+				.create(metadata, Direction.class, null);
+		assertNotNull(codec);
+		assertEquals(Direction.Left, codec.decode(buffer, null, null));
 
-    enum Direction {
-        Left, Right
-    }
+		// Verify
+		EasyMock.verify(metadata, boundNumber);
+	}
+
+	enum Direction {
+		@BoundEnumOption(0)
+		Left,
+
+		@BoundEnumOption(1)
+		Right
+	}
 
 }

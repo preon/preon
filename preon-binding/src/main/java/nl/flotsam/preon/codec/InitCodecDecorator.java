@@ -153,8 +153,8 @@ public class InitCodecDecorator implements CodecDecorator {
             return codec.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
-            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor2(), false);
+        public CodecDescriptor getCodecDescriptor() {
+            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(), false);
         }
 
     }

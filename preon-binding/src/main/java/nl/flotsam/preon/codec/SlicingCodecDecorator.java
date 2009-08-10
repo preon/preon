@@ -183,7 +183,7 @@ public class SlicingCodecDecorator implements CodecDecorator {
             return wrapped.getType();
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
@@ -196,10 +196,10 @@ public class SlicingCodecDecorator implements CodecDecorator {
                                                     .forExpression(calculator
                                                             .getSize())).text(
                                             " bits for ").document(
-                                            wrapped.getCodecDescriptor2()
+                                            wrapped.getCodecDescriptor()
                                                     .reference(Adjective.THE, false))
                                     .end();
-                            target.document(wrapped.getCodecDescriptor2()
+                            target.document(wrapped.getCodecDescriptor()
                                     .details(bufferReference));
                         }
                     };
@@ -211,7 +211,7 @@ public class SlicingCodecDecorator implements CodecDecorator {
 
                 public <C extends ParaContents<?>> Documenter<C> reference(
                         Adjective adjective, boolean startWithCapital) {
-                    return wrapped.getCodecDescriptor2().reference(adjective, false);
+                    return wrapped.getCodecDescriptor().reference(adjective, false);
                 }
 
                 public boolean requiresDedicatedSection() {
@@ -219,7 +219,7 @@ public class SlicingCodecDecorator implements CodecDecorator {
                 }
 
                 public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return wrapped.getCodecDescriptor2().summary();
+                    return wrapped.getCodecDescriptor().summary();
                 }
 
             };

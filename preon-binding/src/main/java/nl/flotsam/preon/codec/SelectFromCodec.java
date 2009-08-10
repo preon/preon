@@ -410,7 +410,7 @@ public class SelectFromCodec<T> implements Codec<T> {
 
     }
 
-    public CodecDescriptor getCodecDescriptor2() {
+    public CodecDescriptor getCodecDescriptor() {
         return new CodecDescriptor() {
 
             public <C extends SimpleContents<?>> Documenter<C> details(
@@ -444,7 +444,7 @@ public class SelectFromCodec<T> implements Codec<T> {
                                     Documenters
                                             .forExpression(conditions.get(i)))
                                     .end().entry().para().document(
-                                            codecs.get(i).getCodecDescriptor2()
+                                            codecs.get(i).getCodecDescriptor()
                                                     .reference(Adjective.A, false))
                                     .end().end();
                         }
@@ -481,7 +481,7 @@ public class SelectFromCodec<T> implements Codec<T> {
                         } else {
                             for (int i = 0; i < conditions.size(); i++) {
                                 target.document(codecs.get(i)
-                                        .getCodecDescriptor2().reference(
+                                        .getCodecDescriptor().reference(
                                                 adjective, false));
                                 if (i < conditions.size() - 2) {
                                     target.text(", ");

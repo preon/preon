@@ -150,7 +150,7 @@ public class SwitchingCodec implements Codec<Object> {
         return ClassUtils.calculateCommonSuperType(result);
     }
 
-    public CodecDescriptor getCodecDescriptor2() {
+    public CodecDescriptor getCodecDescriptor() {
         return new CodecDescriptor() {
 
             public <C extends SimpleContents<?>> Documenter<C> details(
@@ -179,7 +179,7 @@ public class SwitchingCodec implements Codec<Object> {
                                     .getChoices().toArray(new Codec<?>[0]));
                             for (int i = 0; i < codecs.size(); i++) {
                                 target.document(codecs.get(i)
-                                        .getCodecDescriptor2().reference(
+                                        .getCodecDescriptor().reference(
                                                 Adjective.NONE, false));
                                 if (i > codecs.size() - 2) {
                                     // Do nothing
@@ -209,7 +209,7 @@ public class SwitchingCodec implements Codec<Object> {
                         List<Codec<?>> codecs = Arrays.asList(selector
                                 .getChoices().toArray(new Codec<?>[0]));
                         for (int i = 0; i < codecs.size(); i++) {
-                            target.document(codecs.get(i).getCodecDescriptor2()
+                            target.document(codecs.get(i).getCodecDescriptor()
                                     .reference(Adjective.NONE, false));
                             if (i > codecs.size() - 2) {
                                 // Do nothing

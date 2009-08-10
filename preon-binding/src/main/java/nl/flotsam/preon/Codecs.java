@@ -150,7 +150,7 @@ public class Codecs {
                     .createXMLStreamWriter(out));
             DefaultDocumentBuilder builder = type.createDocumentBuilder(writer);
             ArticleDocument document = new DefaultArticleDocument(builder,
-                    codec.getCodecDescriptor2().getTitle());
+                    codec.getCodecDescriptor().getTitle());
             document(codec, document);
             document.end();
         } catch (XMLStreamException e) {
@@ -172,7 +172,7 @@ public class Codecs {
      *            be generated.
      */
     public static <T> void document(Codec<T> codec, ArticleDocument document) {
-        CodecDescriptor descriptor = codec.getCodecDescriptor2();
+        CodecDescriptor descriptor = codec.getCodecDescriptor();
         if (descriptor.requiresDedicatedSection()) {
             document.document(descriptor.details("buffer"));
         } else {

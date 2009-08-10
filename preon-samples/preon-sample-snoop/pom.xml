@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>nl.flotsam.preon</groupId>
+    <artifactId>preon-samples</artifactId>
+    <version>1.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>preon-sample-snoop</artifactId>
+  <name>Preon Example Snoop</name>
+  <description>
+    An example of using Preon to decode Snoop output.
+  </description>
+  <dependencies>
+    <dependency>
+      <groupId>nl.flotsam.preon</groupId>
+      <artifactId>preon-binding</artifactId>
+      <version>${version}</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>

@@ -76,7 +76,6 @@ public class BoundBufferCodecFactory implements CodecFactory {
         public Object decode(BitBuffer buffer, Resolver resolver,
                 Builder builder) throws DecodingException {
             for (int i = 0; i < criterion.length; i++) {
-                System.out.println(criterion[i]);
                 if (criterion[i] != buffer.readAsByte(8)) {
                     throw new DecodingException("First " + criterion.length
                             + " bytes do not match expected value.");
@@ -85,7 +84,7 @@ public class BoundBufferCodecFactory implements CodecFactory {
             return criterion;
         }
 
-        public CodecDescriptor getCodecDescriptor2() {
+        public CodecDescriptor getCodecDescriptor() {
             return new CodecDescriptor() {
 
                 public <C extends SimpleContents<?>> Documenter<C> details(
