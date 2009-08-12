@@ -43,6 +43,7 @@ import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.Codecs.DocumentType;
 import nl.flotsam.preon.annotation.Bound;
+import nl.flotsam.preon.annotation.BoundEnumOption;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.annotation.BoundObject;
@@ -60,6 +61,7 @@ import nl.flotsam.preon.codec.ListCodecFactory;
 import nl.flotsam.preon.codec.NumberCodecFactory;
 import nl.flotsam.preon.codec.ObjectCodecFactory;
 import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
+import nl.flotsam.preon.limbo.ImportStatic;
 
 import junit.framework.TestCase;
 
@@ -429,9 +431,14 @@ public class IntegrationTest extends TestCase {
         Codec<Test45> codec = Codecs.create(Test45.class);
         Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
     }
-//        
-////        Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
-//    }
+    
+    public void testStaticReferences() throws DecodingException {
+    	Codec<Test48> codec = Codecs.create(Test48.class);
+    	Test48 value = Codecs.decode(codec, new byte[] { 1, 4 });
+    	assertEquals(4, value.value);
+    	value = Codecs.decode(codec, new byte[] { 2, 4 });
+    	assertEquals(0, value.value);
+    }
 
     private static class TestResolver implements Resolver {
 
@@ -881,6 +888,28 @@ public class IntegrationTest extends TestCase {
         byte value3;
         @Bound
         byte value4;
+    }
+    
+    @ImportStatic(Direction.class)
+    public static class Test48 {
+    
+    	@BoundNumber(size="8")
+    	public Direction direction;
+    	
+    	@If("direction == Direction.LEFT")
+    	@BoundNumber(size="8")
+    	public int value;
+    	
+    }
+    
+    public static enum Direction {
+    	
+    	@BoundEnumOption(1)
+    	LEFT, 
+    	
+    	@BoundEnumOption(2)
+    	RIGHT
+    	
     }
 
 }
