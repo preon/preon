@@ -43,9 +43,9 @@ import java.io.IOException;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Codecs.DocumentType;
 import nl.flotsam.preon.sample.snoop.SnoopFile.DatalinkType;
 import nl.flotsam.preon.sample.snoop.SnoopFile.PacketRecord;
+import nl.flotsam.preon.sample.snoop.SnoopFile.PacketRecord.EthernetFrame;
 
 import org.junit.Test;
 
@@ -64,6 +64,8 @@ public class SnoopFileTest {
 		assertEquals(DatalinkType.ETHERNET, snoopFile.getHeader().getDatalinkType());
 		for (PacketRecord record: snoopFile.getRecords()) {
 			System.out.println(record.getTimestampSeconds() + " : " + record.getTimestampMicroseconds());
+			assertTrue(record.getPacketData() instanceof EthernetFrame);
+			System.out.println(((EthernetFrame) record.getPacketData()).getSourceAddress());
 		}
 	}
 	

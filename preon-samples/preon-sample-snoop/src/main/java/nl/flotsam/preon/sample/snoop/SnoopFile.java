@@ -39,15 +39,19 @@ import nl.flotsam.preon.annotation.BoundBuffer;
 import nl.flotsam.preon.annotation.BoundEnumOption;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.annotation.BoundObject;
+import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.annotation.Slice;
+import nl.flotsam.preon.annotation.Choices.Choice;
 import nl.flotsam.preon.buffer.ByteOrder;
+import nl.flotsam.preon.limbo.ImportStatic;
 
 public class SnoopFile {
 
 	@Bound
 	private FileHeader header;
 
-	@BoundList(type=PacketRecord.class)
+	@BoundList(type = PacketRecord.class)
 	private List<PacketRecord> records;
 
 	public FileHeader getHeader() {
@@ -57,16 +61,16 @@ public class SnoopFile {
 	public List<PacketRecord> getRecords() {
 		return records;
 	}
-	
+
 	public static class FileHeader {
 
 		@BoundBuffer(match = { 0x73, 0x6e, 0x6f, 0x6f, 0x70, 0x00, 0x00, 0x00 })
 		private byte[] identificationPattern;
-		
-		@BoundNumber(byteOrder=ByteOrder.BigEndian)
+
+		@BoundNumber(byteOrder = ByteOrder.BigEndian)
 		private int versionNumber;
-		
-		@BoundNumber(size="32", byteOrder=ByteOrder.BigEndian)
+
+		@BoundNumber(size = "32", byteOrder = ByteOrder.BigEndian)
 		private DatalinkType datalinkType;
 
 		public int getVersionNumber() {
@@ -76,32 +80,33 @@ public class SnoopFile {
 		public DatalinkType getDatalinkType() {
 			return datalinkType;
 		}
-		
+
 	}
 
+	@ImportStatic(DatalinkType.class)
 	public static class PacketRecord {
 
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size="32")
+		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
 		private long originalLength;
-		
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size="32")
+
+		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
 		private long includedLength;
-		
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size="32")
+
+		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
 		private long packetRecordLength;
-		
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size="32")
+
+		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
 		private long cumulativeDrops;
-		
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size="32")
+
+		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
 		private long timestampSeconds;
-		
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size="32")
+
+		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
 		private long timestampMicroseconds;
-		
-		@Slice(size="(packetRecordLength - 24) * 8")
-		@BoundList(size="includedLength")
-		private byte[] packetData;
+
+		@Slice(size = "(packetRecordLength - 24) * 8")
+		@BoundObject(selectFrom = @Choices(alternatives = @Choice(condition = "outer.header.datalinkType==DatalinkType.ETHERNET", type = EthernetFrame.class)))
+		private Object packetData;
 
 		public long getOriginalLength() {
 			return originalLength;
@@ -126,45 +131,80 @@ public class SnoopFile {
 		public long getTimestampMicroseconds() {
 			return timestampMicroseconds;
 		}
-
-		public byte[] getPacketData() {
+		
+		public Object getPacketData() {
 			return packetData;
 		}
-		
+
+		public static class EthernetFrame {
+
+			@BoundList(size = "6")
+			private byte[] destinationAddress;
+
+			@BoundList(size = "6")
+			private byte[] sourceAddress;
+
+			@BoundNumber(size = "16")
+			private int type;
+
+			@BoundList(size="outer.includedLength - (6 + 6 + 2)")
+			private byte[] data;
+
+			public String getDestinationAddress() {
+				return render(destinationAddress);
+			}
+			
+			public String getSourceAddress() {
+				return render(sourceAddress);
+			}
+			
+			private String render(byte[] address) {
+				StringBuilder builder = new StringBuilder();
+				for (int i = 0; i < address.length; i++) {
+					if (i != 0) {
+						builder.append(':');
+					}
+					builder.append(Integer.toHexString(0xff&address[i]));
+				}
+				return builder.toString();
+			}
+
+		}
+
 	}
-	
+
 	public static enum DatalinkType {
-		
+
 		@BoundEnumOption(0)
 		IEEE_802_3,
-		
+
 		@BoundEnumOption(1)
 		IEEE_802_4_TOKEN_BUS,
-		
+
 		@BoundEnumOption(2)
 		IEEE_802_5_TOKEN_RING,
-		
+
 		@BoundEnumOption(3)
 		IEEE_802_6_METRO_NET,
-		
+
 		@BoundEnumOption(4)
 		ETHERNET,
-		
+
 		@BoundEnumOption(5)
 		HLDC,
-		
+
 		@BoundEnumOption(6)
 		CHARACTER_SYNCHRONOUS,
-		
+
 		@BoundEnumOption(7)
 		IBM_CHANNEL_TO_CHANNEL,
-		
+
 		@BoundEnumOption(8)
 		FDDI,
-		
+
 		@BoundEnumOption(9)
 		OTHER,
-		
+
 		UNASSIGNED
 	}
 
