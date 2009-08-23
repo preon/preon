@@ -111,6 +111,8 @@
     </li>
   </ul>
   #end
+  <h2 style="padding-bottom:4px">News</h2>
+  <script src="http://feeds.feedburner.com/flotsam/JUYL?format=sigpro" type="text/javascript" ></script><noscript><p>Subscribe to RSS headline updates from: <a href="http://feeds.feedburner.com/flotsam/JUYL"></a><br/>Powered by FeedBurner</p> </noscript>
 #end
 
 #macro ( copyright )
