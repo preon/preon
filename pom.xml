@@ -40,7 +40,7 @@
     </repository>
     <repository>
       <id>pecia-repository</id>
-      <url>http://pecia.sourceforge.net/snapshots</url>
+      <url>http://pecia.sourceforge.net/repository</url>
       <snapshots>
         <enabled>false</enabled>
       </snapshots>
@@ -85,15 +85,6 @@
 	  <useReleaseProfile>false</useReleaseProfile>
 	  <arguments>-Prelease</arguments>
 	</configuration>
-      </plugin>
-      <plugin>
-        <groupId>com.agilejava.docbkx</groupId>
-        <artifactId>docbkx-maven-plugin</artifactId>
-        <inherited>false</inherited>
-        <configuration>
-          <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
-          <includes>paper.xml</includes>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -184,4 +175,14 @@
       </build>
     </profile>
   </profiles>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>
