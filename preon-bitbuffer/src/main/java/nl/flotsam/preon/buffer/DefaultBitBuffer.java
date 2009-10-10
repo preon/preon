@@ -94,7 +94,7 @@ public class DefaultBitBuffer implements BitBuffer {
 
 		File file = new File(fileName);
 
-		// Open the file and then get a channel from the stream
+		// Open the file and then get a nl.flotsam.preon.channel.channel from the stream
 		FileInputStream fis;
 
 		try {
@@ -107,7 +107,7 @@ public class DefaultBitBuffer implements BitBuffer {
 			ByteBuffer inputByteBuffer = fc.map(FileChannel.MapMode.READ_ONLY,
 					0, fileSize);
 
-			// Close the channel and the stream
+			// Close the nl.flotsam.preon.channel.channel and the stream
 			fc.close();
 
 			this.byteBuffer = inputByteBuffer;
@@ -358,8 +358,6 @@ public class DefaultBitBuffer implements BitBuffer {
 	 * @param nrReadBytes
 	 *            number of bytes that are necessary to be read in order to read
 	 *            specific bits
-	 * @param byteBuffer
-	 *            byte data source
 	 * @param firstBytePos
 	 *            position of the first byte that is necessary to be read
 	 * @return value of all read bytes, containing specified bits
@@ -391,8 +389,6 @@ public class DefaultBitBuffer implements BitBuffer {
 	 * @param nrReadBytes
 	 *            number of bytes that are necessary to be read in order to read
 	 *            specific bits
-	 * @param byteBuffer
-	 *            byte data source
 	 * @param firstBytePos
 	 *            position of the first byte that is necessary to be read
 	 * @return value of all read bytes, containing specified bits
@@ -426,8 +422,6 @@ public class DefaultBitBuffer implements BitBuffer {
 	 * @param maxNrBitsRead
 	 *            maximum number of bits allowed to read, based on the method
 	 *            return type
-	 * @param bitBufBitSize
-	 *            size in bits of the bit buffer
 	 */
 	private void validateInputParams(long bitPos, int nrBits, int maxNrBitsRead) {
 
@@ -487,8 +481,6 @@ public class DefaultBitBuffer implements BitBuffer {
 	/**
 	 * Calculates the value represented by the given bits.
 	 * 
-	 * @param byteBuffer
-	 *            input byte buffer
 	 * @param bitPos
 	 *            position of the first bit to read in the bit buffer
 	 * @param nrBits
@@ -531,8 +523,6 @@ public class DefaultBitBuffer implements BitBuffer {
 	/**
 	 * Calculates the value represented by the given bits.
 	 * 
-	 * @param byteBuffer
-	 *            input byte buffer
 	 * @param bitPos
 	 *            position of the first bit to read in the bit buffer
 	 * @param nrBits
@@ -629,7 +619,7 @@ public class DefaultBitBuffer implements BitBuffer {
 	 * 
 	 * @param byteBuffer -
 	 *            Original {@link ByteBuffer} to be sliced
-	 * @param position -
+	 * @param slicePosition -
 	 *            Start position of the slice (e.g. sub-view) in the byte buffer
 	 * @param length -
 	 *            Length of the slice (e.g. sub-view) in bytes, measured from
