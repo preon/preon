@@ -37,7 +37,7 @@
     </dependency>
     <dependency>
       <groupId>nl.flotsam.preon</groupId>
-      <artifactId>preon-bitbuffer</artifactId>
+      <artifactId>preon-io</artifactId>
       <version>1.1-SNAPSHOT</version>
     </dependency>
     <dependency>

@@ -63,7 +63,7 @@
     </developer>
   </developers>
   <modules>
-    <module>preon-bitbuffer</module>
+    <module>preon-io</module>
     <module>preon-binding</module>
     <module>preon-samples</module>
   </modules>

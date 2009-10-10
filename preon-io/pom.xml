@@ -5,14 +5,10 @@
     <artifactId>preon</artifactId>
     <version>1.1-SNAPSHOT</version>
   </parent>
-  <artifactId>preon-bitbuffer</artifactId>
-  <name>Preon BitBuffer</name>
+  <artifactId>preon-io</artifactId>
+  <name>Preon IO</name>
   <description>
-    This project aims to provide an abstraction similar to
-    java.nio.ByteBuffer. The main difference is that it does not
-    consider bytes to be the smallest particles it might ever
-    retrieve. Instead, it aims to provide an abstraction that
-    virtualizes access to a stream of bits.
+    Core abstractions for reading and writing bits.
   </description>
   <repositories>
     <repository>
