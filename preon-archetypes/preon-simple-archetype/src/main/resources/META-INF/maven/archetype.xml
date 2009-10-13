@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype>
+  <id>preon-simple</id>
+  <sources>
+    <source>src/main/java/Color.java</source>
+    <source>src/main/java/Image.java</source>
+  </sources>
+  <testSources>
+    <source>src/test/java/ImageTest.java</source>
+  </testSources>
+  <resources>
+    <resource>preon-archetype.iml</resource>
+    <resource>preon-archetype.ipr</resource>
+    <resource>preon-archetype.iws</resource>
+  </resources>
+</archetype>

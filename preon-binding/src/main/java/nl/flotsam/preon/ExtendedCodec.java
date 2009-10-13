@@ -30,15 +30,12 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.channel;
+package nl.flotsam.preon;
 
-/**
- * The exception thrown when encountering an error while writing to a {@link nl.flotsam.preon.channel.BitChannel}.
- */
-public class BitChannelException extends RuntimeException {
+import nl.flotsam.preon.channel.BitChannel;
+
+public interface ExtendedCodec<T> extends Codec<T> {
     
-    public BitChannelException(String message) {
-        super(message);
-    }
+    void encode(T object, BitChannel channel, Resolver resolver);
 
 }

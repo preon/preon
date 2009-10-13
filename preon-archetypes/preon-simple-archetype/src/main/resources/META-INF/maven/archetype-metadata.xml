@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?><archetype-descriptor name="preon-simple">
+  <fileSets>
+    <fileSet filtered="true" packaged="true" encoding="UTF-8">
+      <directory>src/main/java</directory>
+      <includes>
+        <include>**/*.java</include>
+      </includes>
+    </fileSet>
+    <fileSet filtered="true" packaged="true" encoding="UTF-8">
+      <directory>src/test/java</directory>
+      <includes>
+        <include>**/*.java</include>
+      </includes>
+    </fileSet>
+    <fileSet encoding="UTF-8">
+      <directory></directory>
+      <includes>
+        <include>preon-archetype.iml</include>
+        <include>preon-archetype.ipr</include>
+        <include>preon-archetype.iws</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</archetype-descriptor>

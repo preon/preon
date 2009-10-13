@@ -30,15 +30,36 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.channel;
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+package ${packageInPathFormat};
 
-/**
- * The exception thrown when encountering an error while writing to a {@link nl.flotsam.preon.channel.BitChannel}.
- */
-public class BitChannelException extends RuntimeException {
-    
-    public BitChannelException(String message) {
-        super(message);
+import nl.flotsam.preon.annotation.BoundList;
+import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.buffer.ByteOrder;
+
+public class Image {
+
+    @BoundNumber(byteOrder= ByteOrder.BigEndian)
+    private int height;
+
+    @BoundNumber(byteOrder= ByteOrder.BigEndian)
+    private int width;
+
+    @BoundList(size = "height*width")
+    private Color[] pixels;
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
+
+    public Color[] getPixels() {
+        return pixels;
     }
 
 }

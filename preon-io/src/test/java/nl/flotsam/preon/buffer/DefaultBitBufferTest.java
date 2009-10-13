@@ -259,4 +259,10 @@ public class DefaultBitBufferTest extends TestCase {
         assertEquals(bitBuffer.readAsByte(3, 7, ByteOrder.BigEndian), bitBuffer
                 .readAsInt(3, 7, ByteOrder.BigEndian));
     }
+
+    public void testReading1() {
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 0x00, 0x00, 0x00, 0x01 });
+        BitBuffer bitBuffer = new DefaultBitBuffer(buffer);
+        assertEquals(1, bitBuffer.readAsInt(32));
+    }
 }

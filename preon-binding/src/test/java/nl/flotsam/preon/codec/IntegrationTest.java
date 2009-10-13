@@ -56,6 +56,7 @@ import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.ConditionalBindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.ByteOrder;
+import static nl.flotsam.preon.buffer.ByteOrder.*;
 import nl.flotsam.preon.codec.CompoundCodecFactory;
 import nl.flotsam.preon.codec.ListCodecFactory;
 import nl.flotsam.preon.codec.NumberCodecFactory;
@@ -440,6 +441,12 @@ public class IntegrationTest extends TestCase {
     	assertEquals(0, value.value);
     }
 
+    public void testDefaultBigEndian() throws DecodingException {
+        Codec<Test49> codec = Codecs.create(Test49.class);
+        Test49 value = Codecs.decode(codec, new byte[] { 0, 0, 0, 1 });
+        assertEquals(1, value.value);
+    }
+
     private static class TestResolver implements Resolver {
 
         public Object get(String name) {
@@ -471,15 +478,16 @@ public class IntegrationTest extends TestCase {
 
     public static class Test2 {
 
-        @BoundNumber(byteOrder = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = BigEndian)
         public int value1;
 
         public int value2;
 
-        @BoundNumber(byteOrder = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = BigEndian)
         public int value3;
 
     }
+
 
     public static class Test3 {
 
@@ -512,7 +520,7 @@ public class IntegrationTest extends TestCase {
     @TypePrefix(size = 8, value = "2")
     public static class Test5b {
 
-        @BoundNumber(byteOrder = ByteOrder.BigEndian)
+        @BoundNumber(byteOrder = BigEndian)
         public short value1;
 
         @Bound
@@ -900,6 +908,12 @@ public class IntegrationTest extends TestCase {
     	@BoundNumber(size="8")
     	public int value;
     	
+    }
+
+    public static class Test49 {
+
+        @BoundNumber(byteOrder=BigEndian) int value;
+
     }
     
     public static enum Direction {

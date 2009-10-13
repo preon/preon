@@ -47,6 +47,7 @@ import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.codec.NumberCodecFactory;
 
 import org.easymock.EasyMock;
+import static org.easymock.EasyMock.*;
 
 /**
  * A collection of tests for the {@link NumberCodecFactory}.
@@ -71,18 +72,18 @@ public class NumberCodecFactoryTest extends TestCase {
     private NumberCodecFactory factory = new NumberCodecFactory();
 
     public void setUp() {
-        metadata = EasyMock.createMock(AnnotatedElement.class);
-        delegate = EasyMock.createMock(CodecFactory.class);
-        buffer = EasyMock.createMock(BitBuffer.class);
-        resolver = EasyMock.createMock(Resolver.class);
-        bound = EasyMock.createMock(Bound.class);
-        boundNumber = EasyMock.createMock(BoundNumber.class);
+        metadata = createMock(AnnotatedElement.class);
+        delegate = createMock(CodecFactory.class);
+        buffer = createMock(BitBuffer.class);
+        resolver = createMock(Resolver.class);
+        bound = createMock(Bound.class);
+        boundNumber = createMock(BoundNumber.class);
     }
 
     public void testDecodingHex() {
         System.out.println(Long.parseLong("CAFEBABE", 16));
     }
-    
+
     public void testDecodingInteger() throws DecodingException {
         Kit<Integer> kit = new IntegerKit();
         kit.test(ByteOrder.BigEndian, "", 32, 256, null, false);
@@ -139,18 +140,18 @@ public class NumberCodecFactoryTest extends TestCase {
         @SuppressWarnings("unchecked")
         public void test(ByteOrder endian, String size, int readSize, T value,
                 String match, boolean expectException) throws DecodingException {
-            EasyMock.expect(metadata.isAnnotationPresent(Bound.class))
+            expect(metadata.isAnnotationPresent(Bound.class))
                     .andReturn(false);
-            EasyMock.expect(metadata.isAnnotationPresent(BoundNumber.class))
+            expect(metadata.isAnnotationPresent(BoundNumber.class))
                     .andReturn(true);
-            EasyMock.expect(metadata.getAnnotation(BoundNumber.class))
+            expect(metadata.getAnnotation(BoundNumber.class))
                     .andReturn(boundNumber);
-            EasyMock.expect(boundNumber.byteOrder()).andReturn(endian);
-            EasyMock.expect(boundNumber.size()).andReturn(size);
-            EasyMock.expect(boundNumber.match()).andReturn(
+            expect(boundNumber.byteOrder()).andReturn(endian);
+            expect(boundNumber.size()).andReturn(size);
+            expect(boundNumber.match()).andReturn(
                     match == null ? "" : match).anyTimes();
             verifyRead(readSize, endian, value);
-            EasyMock.replay(metadata, delegate, buffer, resolver, bound,
+            replay(metadata, delegate, buffer, resolver, bound,
                     boundNumber);
             Codec<T> codec = (Codec<T>) factory.create(metadata, value
                     .getClass(), null);
@@ -164,9 +165,9 @@ public class NumberCodecFactoryTest extends TestCase {
                 if (!expectException)
                     fail("Unexpected exception: " + de.getMessage());
             }
-            EasyMock.verify(metadata, delegate, buffer, resolver, bound,
+            verify(metadata, delegate, buffer, resolver, bound,
                     boundNumber);
-            EasyMock.reset(metadata, delegate, buffer, resolver, bound,
+            reset(metadata, delegate, buffer, resolver, bound,
                     boundNumber);
         }
 
@@ -178,7 +179,7 @@ public class NumberCodecFactoryTest extends TestCase {
 
         @Override
         public void verifyRead(int readSize, ByteOrder endian, Integer value) {
-            EasyMock.expect(buffer.readAsInt(readSize, endian))
+            expect(buffer.readAsInt(readSize, endian))
                     .andReturn(value);
         }
     }
@@ -187,7 +188,7 @@ public class NumberCodecFactoryTest extends TestCase {
 
         @Override
         public void verifyRead(int readSize, ByteOrder endian, Long value) {
-            EasyMock.expect(buffer.readAsLong(readSize, endian)).andReturn(
+            expect(buffer.readAsLong(readSize, endian)).andReturn(
                     value);
         }
     }
@@ -196,7 +197,7 @@ public class NumberCodecFactoryTest extends TestCase {
 
         @Override
         public void verifyRead(int readSize, ByteOrder endian, Short value) {
-            EasyMock.expect(buffer.readAsShort(readSize, endian)).andReturn(
+            expect(buffer.readAsShort(readSize, endian)).andReturn(
                     value);
         }
 
@@ -206,7 +207,7 @@ public class NumberCodecFactoryTest extends TestCase {
 
         @Override
         public void verifyRead(int readSize, ByteOrder endian, Float value) {
-            EasyMock.expect(buffer.readAsInt(readSize, endian)).andReturn(
+            expect(buffer.readAsInt(readSize, endian)).andReturn(
                     Float.floatToIntBits(value));
         }
 
@@ -216,7 +217,7 @@ public class NumberCodecFactoryTest extends TestCase {
 
         @Override
         public void verifyRead(int readSize, ByteOrder endian, Double value) {
-            EasyMock.expect(buffer.readAsLong(readSize, endian)).andReturn(
+            expect(buffer.readAsLong(readSize, endian)).andReturn(
                     Double.doubleToLongBits(value));
         }
 
@@ -226,7 +227,7 @@ public class NumberCodecFactoryTest extends TestCase {
 
         @Override
         public void verifyRead(int readSize, ByteOrder endian, Byte value) {
-            EasyMock.expect(buffer.readAsByte(readSize, endian)).andReturn(
+            expect(buffer.readAsByte(readSize, endian)).andReturn(
                     value);
         }
 

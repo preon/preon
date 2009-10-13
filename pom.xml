@@ -66,6 +66,7 @@
     <module>preon-io</module>
     <module>preon-binding</module>
     <module>preon-samples</module>
+    <module>preon-archetypes</module>
   </modules>
   <licenses>
     <license>

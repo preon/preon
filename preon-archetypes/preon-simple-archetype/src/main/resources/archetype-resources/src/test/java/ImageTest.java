@@ -30,15 +30,37 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.channel;
+#set( $symbol_pound = '#' )
+#set( $symbol_dollar = '$' )
+#set( $symbol_escape = '\' )
+package ${packageInPathFormat};
 
-/**
- * The exception thrown when encountering an error while writing to a {@link nl.flotsam.preon.channel.BitChannel}.
- */
-public class BitChannelException extends RuntimeException {
-    
-    public BitChannelException(String message) {
-        super(message);
+import org.junit.Test;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import nl.flotsam.preon.Codecs;
+import nl.flotsam.preon.Codec;
+import nl.flotsam.preon.DecodingException;
+import ${packageInPathFormat}.Image;
+
+public class ImageTest {
+
+    @Test
+    public void shouldDecodeCorrectly() throws DecodingException {
+        Codec<Image> codec = Codecs.create(Image.class);
+        byte[] buffer = new byte[]{
+                0, 0, 0, 1,
+                0, 0, 0, 1,
+                1, 2, 3
+        };
+        Image image = Codecs.decode(codec, buffer);
+        assertThat(image.getHeight(), is(1));
+        assertThat(image.getWidth(), is(1));
+        assertThat(image.getPixels().length, is(not(nullValue())));
+        assertThat(image.getPixels().length, is(1));
+        assertThat(image.getPixels()[0].getRed(), is((byte) 1));
+        assertThat(image.getPixels()[0].getGreen(), is((byte) 2));
+        assertThat(image.getPixels()[0].getBlue(), is((byte) 3));
     }
 
 }
