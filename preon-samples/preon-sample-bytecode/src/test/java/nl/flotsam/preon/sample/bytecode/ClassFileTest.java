@@ -41,6 +41,7 @@ import junit.framework.TestCase;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.codec.LoggingDecorator;
 import nl.flotsam.preon.Codecs.DocumentType;
 import org.apache.commons.io.IOUtils;
 import org.junit.Test;
@@ -57,10 +58,10 @@ public class ClassFileTest {
     private static byte[] bytecode;
 
     @BeforeClass
-    public void loadBytecode() throws IOException {
+    public static void loadBytecode() throws IOException {
         InputStream in = null;
         try {
-            in = this.getClass().getResourceAsStream("/Foo.class");
+            in = ClassFileTest.class.getResourceAsStream("/Foo.class");
             bytecode = IOUtils.toByteArray(in);
         } finally {
             IOUtils.closeQuietly(in);

@@ -36,6 +36,7 @@ package nl.flotsam.preon.codec;
 import java.lang.reflect.AnnotatedElement;
 
 import nl.flotsam.limbo.Expression;
+import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
@@ -268,7 +269,7 @@ public class LoggingDecorator implements CodecDecorator {
                 throws DecodingException {
             T result = null;
             long pos = buffer.getActualBitPos();
-            logger.logStartDecoding(codec, pos, codec.getSize().eval(resolver));
+            logger.logStartDecoding(codec, pos, getSizeAsString(codec, resolver));
             try {
                 result = codec.decode(buffer, resolver, builder);
             } catch (DecodingException de) {
@@ -314,6 +315,15 @@ public class LoggingDecorator implements CodecDecorator {
                     false);
         }
 
+    }
+
+    private final static long getSizeAsString(Codec<?> codec, Resolver resolver) {
+        Expression<Integer, Resolver> size = codec.getSize();
+        if (size == null) {
+            return -1;
+        } else {
+            return size.eval(resolver);
+        }
     }
 
 }
