@@ -35,28 +35,54 @@ package nl.flotsam.preon.sample.bytecode;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import junit.framework.TestCase;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Codecs.DocumentType;
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.IsNot.not;
 
-public class ClassFileTest extends TestCase {
+public class ClassFileTest {
 
-    public void testDecoding() throws FileNotFoundException, IOException, DecodingException {
-        Codec<ClassFile> codec = Codecs.create(ClassFile.class);
-        ClassFile classFile = Codecs.decode(codec, new File(getBasedir(),
-                "src/test/resources/Foo.class"));
-        Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
+    private Codec<ClassFile> codec;
+    private static byte[] bytecode;
+
+    @BeforeClass
+    public void loadBytecode() throws IOException {
+        InputStream in = null;
+        try {
+            in = this.getClass().getResourceAsStream("/Foo.class");
+            bytecode = IOUtils.toByteArray(in);
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
     }
 
-    public File getBasedir() {
-        String basedir = System.getProperty("basedir");
-        if (basedir == null) {
-            basedir = System.getProperty("user.dir");
-        }
-        return new File(basedir);
+    @Before
+    public void constructCodec() {
+        codec = Codecs.create(ClassFile.class);
+    }
+
+    @Test
+    public void shouldDecodeClassFile() throws IOException, DecodingException {
+        ClassFile classFile = Codecs.decode(codec, bytecode);
+        assertThat(classFile, is(not(nullValue())));
+    }
+
+    @Test
+    public void shouldCorrectlyDocument() throws IOException {
+        File file = File.createTempFile("preon", ".html");
+        file.deleteOnExit();
+        Codecs.document(codec, DocumentType.Html, file);
     }
 
 }
