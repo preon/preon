@@ -1,0 +1,506 @@
+<article>
+  <articleinfo>
+    <title>Preon</title>
+    <subtitle>Bit Syntax for Java</subtitle>
+    <author>
+      <firstname>Wilfred</firstname>
+      <surname>Springer</surname>
+    </author>
+  </articleinfo>
+  <section>
+    <title>
+      Can you first tell us a little about yourself, your background, and your interests in programming?
+    </title>
+    <para>
+      My name is Wilfred Springer. I like code. I just like the way it
+      allows you to break down complex problems in increasingly simple
+      pieces, and then reassemble that into new 'stuff', purely by the
+      power of the mind.
+    </para>
+    <para>
+      I have been around in the Java world since ages. More than 10
+      years ago, I joined Sun's Java Center Practice, mostly because
+      my employer back then was not able to get me on a Java
+      project. After six years at Sun, I joined TomTom, where we
+      basically grew a marvelous Java team from the ground up. At
+      TomTom, most of our work evolved around creating services
+      facilitating the navigation device, and services around
+      consuming massive amounts of data from the device. This is
+      basically where Preon was born. I currently work as Chief
+      Scientist at Xebia in the Netherlands.
+    </para>
+    <para>
+      More than anything else in the Java world, I like its
+      community. It just huge! And there is so much stuff going on you
+      can't see straight. I like that, and I also try to contribute my
+      own fair share. I am in charge of a couple of open source
+      projects, and I speak quite frequently at several Java
+      conferences, mostly about open source projects I am involved in.
+    </para>
+  </section>
+  <section>
+    <title>What's Preon, in one sentence?</title>
+    <para>
+      Preon is a <emphasis>declarative data binding framework for
+      binary encoded data</emphasis>. Preon is to binary encoded what
+      JAXB is to XML, and Hibernate to relational databases.
+    </para>
+  </section>
+  <section>
+    <title>What's the problem that Preon tries to solve? Who is it supposed to help?</title>
+    <para>
+      Contrary to popular widespread believe, not all data on your
+      disk and traversing the network is encoded in XML or another
+      text-based type of encoding. In fact, I did a quick survey, and
+      found out that most of the files on my hard disk that
+      <emphasis>are</emphasis> encoded in a non-binary file format are
+      the files that I have on my disk because I develop in
+      Java. Think source Java files, HTML-based Javadoc, configuration
+      for Java-based middleware, etc. I did the same survey on my
+      wife's hard disk, and found out that <emphasis>almost
+      all</emphasis> of here files are binary encoded files.Yet,
+      somehow we seem to have a strong preference for text-based
+      encoding formats in the Java world. You wonder why.
+    </para>
+    <para>
+      I can think of at least one reason why: Java is just notoriously
+      bad at dealing with binary encoded data. You disagree? I refer
+      to <ulink
+      url="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504839">bug
+      4504839</ulink> and rest my case. That bug report is about Java
+      not supporting unsigned int. Dealing with unsigned int data in
+      Java is just quite painful. You need to do a lot of masking and
+      shifting in order to be able to deal with it in a sensible
+      way. And that sucks, since almost all binary encoded data
+      formats I know of will constantly read unsigned data all over
+      the place. Just dig up the description of an arbitrary file
+      format on Wikipedia, and you will be able to confirm that.
+    </para>
+    <para>
+      However, support for unsigned int is not the only thing
+      missing from Java. Another feature dearly missing is support
+      for bitstream encoded data. There are plenty file formats that
+      rely on bit streams rather than byte streams. In fact, in
+      these cases, the way the bit stream is often not well-aligned
+      with the byte stream. So a sequence of bits representing a
+      certain attribute may very well cross the boundaries of a
+      single byte. And Java does not have anything to help you
+      there. Consequently, dealing with this puts a tremendous
+      burden on the developer.
+    </para>
+    <para>
+      Having said all of that, the complexity of dealing with binary
+      encoded data is not just a Java problem. It's a general
+      problem. At TomTom, we had two separate code bases for dealing
+      with the binary map file format: one code base for decoding
+      the data, and one for encoding the data. Keeping these two
+      code bases <emphasis>and the documentation</emphasis> in sync,
+      required a tremendous effort. It's not hard to see how that is
+      undesirable.
+    </para>
+    <para>
+      All of this is solved by Preon. Preon allows you to capture the
+      structure of the encoded binary format
+      <emphasis>once</emphasis>, and the mapping to an in-memory data
+      structure once, and <emphasis>get the decoder, the encoder
+      (coming soon), and a description of the file format free of
+      charge</emphasis>.
+    </para>
+  </section>
+  <section>
+    <title>How does it compare to its competitors/alternatives?
+    (Maybe code snippets here.)</title>
+    <para>
+      There really isn't all that much competition in this space,
+      unless you talk about other languages. First of all, there
+      some academic initiatives to capture the bitstream format in a
+      DSL. This includes <ulink
+      url="http://flavor.sourceforge.net/">Flavor</ulink> family of
+      languages (Flavor, BFlavor, gFlavor), and BSDL (Bitstream
+      Syntax Description Language). Most of that work comes from the
+      media format world, MPEG in particular.
+    </para>
+    <para>
+      Flavor is probably the best example of this approach. It
+      defines a text (not XML) based grammar for capturing the
+      structure of a bit stream, and has a couple of tools for
+      turning this into Java and C APIs. Basically, not unlike Lex
+      and YACC or ANTLR. 
+    </para>
+    <para>
+      Although Preon shares the same objective with Flavor, the
+      approach is radically different. Flavor starts with the syntax
+      description. Preon starts with the in-memory data
+      structure. Flavor will generate code, and you just have to
+      deal with that. Preon starts with the source code, and builds
+      the decoder at runtime. Flavor is closed. You cannot extend
+      Flavor without touching the source code of Flavor. Preon is
+      extensible. It has a number of plug points to add support for
+      your own compression techniques.
+    </para>
+    <para>
+      Preon also shares some commonalities with Erlang's bit
+      syntax. (At <ulink
+      url="http://www.oopsla.org/oopsla2009/">OOPSLA 2009</ulink> it
+      will be presented as Bit Syntax for Java.) The difference is:
+      bit syntax support is built into the language in Erlang; Preon
+      offers it as a library built on top of the language. Erlang's
+      bit syntax support is not extensible. Preon's support is
+      extensible.
+    </para>
+  </section>
+  <section>
+    <title>Can you describe the architecture of Preon (diagram would
+    be nice)?</title>
+    <para>
+      There are several layers inside Preon. At the bottom layer, it
+      provides a <interfacename>ByteBuffer</interfacename> type of
+      abstraction for accessing bit stream data, called the
+      <interfacename>BitBuffer</interfacename>. That's the
+      abstraction that allows you to quickly access data as a bit
+      stream, relying on the framework to maintain a pointer to the
+      current location and deal with concurrent access.
+    </para>
+    <figure>
+      <title>Preon Architecture</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="http://preon.flotsam.nl/images/layers.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>
+      The declarative data binding framework is layered on top of
+      that. You declare the mapping from the in-memory data
+      structure to its bit stream representation using
+      annotations. At runtime, you pass a reference to the root
+      class of that data structure to Preon, and it will return you
+      a <interfacename>Codec</interfacename> for the entire data
+      structure. Once you have the
+      <interfacename>Codec</interfacename> instance, using it is
+      simple: you simply use one of the convenience methods on the
+      <classname>Codecs</classname> class, and it will return you an
+      instance of the data structure based on the input source
+      passed in.
+    </para>
+    <example>
+      <title>Preon decoding a Color</title>
+    <programlisting><![CDATA[class Color {
+@Bound byte red;
+@Bound byte green;
+@Bound byte blue;
+}
+
+Codec<Color> codec = Codecs.create(Color.class);
+Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></programlisting></example>
+    <para>
+      There are a couple of important things to know about
+      Preon. First of all, when you ask Preon for a Codec, it will
+      actually return a chain of Codecs. The Codec you get, will
+      delegate to other Codecs with more precise
+      responsibilities. (See <xref linkend="fig-delegation"/>.) So, if
+      you happen to have a Codec of Color, and the color model is
+      based on the RGB model, then that Codec of Color will most
+      likely internally delegate to three Codecs for bytes: one for
+      the value of the red component, one for the green component, and
+      one for the blue component.
+    </para>
+    <para>
+      This is one of the reasons why Preon is extensible. If you
+      need to decode data in a way that is not supported yet, you
+      can just plug in a component that will create instances of your
+      own Codec where you need them. 
+    </para>
+    <figure id="fig-delegation">
+      <title>Codecs delegating to Codecs</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="http://fisheye3.atlassian.com/browse/~raw,r=3/preon/trunk/preon-binding/src/docbkx/img/rsbmp-codecs.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>
+      Another thing important to know about Preon is that it allows
+      you to specify dependencies between the different parts of
+      your encoded representation. For instance, it is quite common
+      in binary encoding formats to first read the number of items
+      in a list, and then the actual items. In Preon you can specify
+      that relation ship in your annotations, using an expression
+      language made specifically for Preon.
+    </para>
+    <para>
+      Third, Preon will produce a Codec that will load data lazily
+      as much as possible. If the format allows you to skip over a
+      list of items, and you are not reading items from that list
+      yet, then Preon will return a List, but then skip over the
+      data in that List. Only if you need an item from that List, it
+      will go back and fetch it from the underlying bit stream. Now,
+      the TomTom map file serves as an excellent example why this is
+      necessary: on disk it already uses 1.5GB of space. Imagine
+      decompressing that compressed file into memory in a single
+      pass. It would surely blow the top of the Java heap on a
+      32-bit VM.
+    </para>
+    <para>
+      So, these are just some of the features Preon has to
+      offer. There's just one more thing I want to mention here:
+      Preon also generates hyperlinked documentation from your
+      'syntax description'. The ambition is to have it generate a
+      description that is comparable with the human-written
+      descriptions you find on Wikipedia, and Preon is already
+      coming pretty close to that.
+    </para>
+      <figure>
+        <title>Documentation generated by Preon</title>
+        <ulink url="http://preon.flotsam.nl/classfile.html"/>
+        <mediaobject>
+        <imageobject>
+          <imagedata fileref="http://fisheye3.atlassian.com/browse/~raw,r=49/preon/trunk/preon-binding/src/docbkx/img/documentation.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+  </section>
+  <section>
+    <title>How can I make a plugin for Preon (steps)? What kind of
+    plugins would be useful to make?</title>
+    <para>
+      Preon has a couple of plugpoints. As I said earlier, it is
+      quite easy to create support for your own specific type of
+      compression. Say you want support for <ulink
+      url="http://en.wikipedia.org/wiki/Huffman_coding">Huffman
+      coded data</ulink>. In that case, you would:
+    </para>
+    <procedure>
+      <step>
+        <para>
+          First of all, define the annotations that would trigger
+          the creation of the Huffman Codec when it encounters a
+          Huffman coded attribute. That's fairly
+          straightforward. You just need to define the attributes
+          that are required to configure the Huffman Codec, such as
+          a reference to the binary tree defining the way the data
+          is encoded. Let's call this annotation
+          <interfacename>@HuffmanCoded</interfacename>.
+        </para>
+      </step>
+      <step>
+        <para>
+          Next, you need to implement a <ulink
+          url="http://preon.flotsam.nl/preon-binding/apidocs/nl/flotsam/preon/CodecFactory.html"><interfacename>CodecFactory</interfacename></ulink>. Remember,
+          we want to make sure that whenever Preon encounters an
+          <interfacename>@HuffmanCoded</interfacename> attribute on a
+          class, it will create an instance of the Huffman Codec. By
+          implementing a <interfacename>CodecFactory</interfacename>,
+          you basically create a component that will get a chance to
+          recognize attributes of this type, and create an instance of
+          that Codec.
+        </para>
+      </step>
+      <step>
+        <para>
+          Third, you need to create the actual Huffman Codec. The
+          <ulink
+          url="http://preon.flotsam.nl/preon-binding/apidocs/nl/flotsam/preon/Codec.html"><interfacename>Codec</interfacename></ulink>
+          interface is not extremely complicated, so most of the work
+          will be in the implementation of the
+          <methodname>decode()</methodname> operation, but it all
+          depends on the complexity of the encoding technique that you
+          are implementing.
+        </para>
+      </step>
+      <step>
+        <para>
+          As part of implementing the Codec, you also need to
+          implement a
+          <ulink url="http://preon.flotsam.nl/preon-binding/apidocs/nl/flotsam/preon/CodecDescriptor.html">
+          <interfacename>CodecDescriptor</interfacename></ulink>. That
+          is, if you want to make sure Preon spits out some useful
+          documentation. If you don't care about that, then you can
+          just return a default CodecDescriptor.
+        </para>
+      </step>
+      <step>
+        <para>
+          Last but not least, you need to pass a reference to the
+          CodecFactory if you create an instance of your Codec for a
+          certain data structure. Preon will take that CodecFactory
+          and add it to the list of CodecFactories it already
+          supports out of the box. It will now recognize the need
+          for creating an instance of your Huffman Codec once it
+          encounters the
+          <interfacename>@HuffmanCoded</interfacename> annotation.
+        </para>
+      </step>
+    </procedure>
+    <para>
+      Now that's it. Is that a lot of work? I don't think so, but
+      what is more important is that you not only added support for
+      Huffman coding for a particular file format, but for
+      <emphasis>all</emphasis> file formats that rely on Huffman
+      coded Strings. How cool is that?
+    </para>
+  </section>
+  <section>
+    <title>How/when did you decide to make Preon?</title>
+    <para>
+      We started work on Preon at TomTom when we had a need to be
+      able to decode the compressed map file format in Java, in a
+      threadsafe manner, and noticed the problems of having to
+      maintain the encoding and decoding algorithms and the
+      documentation by hand.
+    </para>
+    <para>
+      Now, this project was eventually abandoned. However, I felt
+      there was something incredibly attractive to the way of
+      working, and started to work on it on my spare time. That
+      means I basically rebuilt the framework from the ground up,
+      while trying to use it on a couple of different encoding
+      formats. 
+    </para>
+    <para>
+      Making sure that Preon supported Java class files (so, using
+      Preon create a Codec for Java class files) appeared to
+      particularly challenging. The way data needs to be found in
+      the constant pool is awkward, to say the least. However, as a
+      framework for supporting binary encoding in general, you
+      cannot make an exception for awkward constructs.
+    </para>
+  </section>
+  <section>
+    <title>You've presented Preon at several conferences. What's the
+    feedback been like? Has any of it affected the direction of the
+    project?</title>
+    <para>
+      In general, I get a lot of positive feedback. It turns out we
+      were not the only once finding limited support for binary
+      encoded data in Java, and it definitely fits a gap.
+    </para>
+    <para>
+      One of the often-heard comments on Preon is obviously that it
+      currently does not support encoding yet. That is indeed a
+      limitation, but that does not mean it cannot be done. The only
+      problem is time, but I am determined to get it in the next
+      major release.
+    </para>
+    <para>
+      Another question that pops up regularly is if you shouldn't
+      steer clear from defining your own binary encoding standards,
+      and rely on <ulink
+      url="http://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One">ASN.1</ulink>
+      BER encoding instead. Now, I think that would be a
+      mistake. BER encoding, or binary XML encoding standards are
+      great if your model is Infoset, but in many cases it isn't,
+      and there are much faster ways to access the data if you
+      acknowledge that.
+    </para>
+    <para>
+      Let's take a network graph as an example. If you would take
+      that network graph, and encode the outgoing edges to other
+      nodes by the offsets of the location of these nodes relative
+      to the beginning of the file, then you can easily jump ahead
+      and fetch that data without having to decode the entire
+      file. That's a <emphasis>huge</emphasis> benefit over BER
+      encoded that.
+    </para>
+    <para>
+      The same holds for all other known (entropy-based) compression
+      techniques. You can get a lot of mileage from these
+      techniques, and it would be a waste to ignore that. In fact,
+      this is why most of the data on your disk is still binary
+      encoded.
+    </para>
+  </section>
+  <section>
+    <title>Please say a few words about getting started with
+    Preon. What do I need to download and what's the first
+    documentation I should read?
+    </title>
+    <para>
+      If you want to read more on Preon, there are a couple of
+      documents available on the <ulink
+      url="http://preon.flotsam.nl/">web site</ulink>, and on
+      Scribd. I suggest that you first read the <ulink
+      url="http://www.scribd.com/doc/8128172/Preon-Introduction">introduction</ulink>,
+      and then check out the examples.
+    </para>
+    <para>
+      You can check out the examples by checking out the sources,
+      but you also check them out <ulink
+      url="http://fisheye3.atlassian.com/browse/preon/trunk/preon-samples/">online
+      in Fisheye</ulink>. Check out the preon-samples module. I
+      would suggest that you start with the Bitmap example in
+      preon-sample-bmp. Next, you might want to study the
+      preon-sample-bytecode example, that basically contains the
+      sources of a Java bytecode decoder without almost a single
+      line of imperative code.
+    </para>
+    <para>
+      I could imagine that you are all set to go after that. The Preon
+      libraries can be downloaded from the Maven repository found
+      <ulink url="http://preon.flotsam.nl/repository/">here</ulink>,
+      but you will also need to add references to the Limbo and Pecia
+      repositories, since Preon depends on these libraries.
+    </para>
+    <example>
+      <title>Maven POM Configuration</title>
+    <programlisting><![CDATA[<dependencies>
+    <dependency>
+      <groupId>nl.flotsam.preon</groupId>
+      <artifactId>preon-binding</artifactId>
+      <version>1.0</version>
+    </dependency>
+  </dependencies>
+  ...
+  <repositories>
+    <repository>
+      <id>limbo-repository</id>
+      <url>http://limbo.sourceforge.net/repository</url>
+    </repository>
+    <repository>
+      <id>pecia-repository</id>
+      <url>http://pecia.sourceforge.net/repository</url>
+    </repository>
+    <repository>
+      <id>preon-repository</id>
+      <url>http://preon.flotsam.nl/repository</url>
+    </repository>
+  </repositories>]]></programlisting></example>
+    <para>
+      If you feel the need to add your own Codec, check twice, because
+      what you want may already be in there. However, if you still
+      feel there is need to add your own Codec, first study the <ulink
+      url="http://fisheye3.atlassian.com/browse/preon/trunk/preon-binding/src/main/java/nl/flotsam/preon/codec/BooleanCodecFactory.java?r=60">BooleanCodec</ulink>
+      example. That one is extremely easy to grasp, and will give you
+      all you need.
+    </para>
+  </section>
+  <section>
+    <title>What's the future of Preon? Timeline? Features you'd like
+    to have? Contributions received from others?</title>
+    <para>
+      Support for encoding is the first thing on my wish list for
+      the next release. Next comes having the ability to annotate
+      hexdumps to explain what's inside based on the meta data
+      gathered by Preon. That will be just awesome. No more manual
+      inspection of hexdumps, but instead click on a piece of hexdump
+      and have Preon explain what it means.
+    </para>
+    <para>
+      Other than that, I would love to have more examples on the use
+      of Preon. I started looking into Flash files the other day,
+      and I think it makes an interesting case for Preon.
+    </para>
+    <para>
+      I haven't received any contributions from other people yet,
+      apart from some of my former colleagues. However, I would like
+      to invite anyone to give it a try on their particular
+      problem. I would be happy to give you a hand, and explain
+      Preon if the documentation falls short. It's time that we
+      acknowledge that we write programs to be executed by
+      computers, not by humans. Computers are just way better at
+      dealing with binary data then with human-readable data. And I
+      think Preon is an excellent tool for helping you to make the
+      computer do what it's best at.
+    </para>
+  </section>
+</article>

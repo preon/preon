@@ -16,3 +16,4 @@ apart.
 an abstraction to sequence of bits. The Binding module allows you to
 declaratively bind the contents of a file to a Java-based data
 structure. 
+

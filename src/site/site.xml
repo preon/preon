@@ -22,6 +22,8 @@
             href="http://sourceforge.net/donate/index.php?group_id=241871"/>
       <item name="SourceForge" 
             href="http://sourceforge.net/projects/preon"/>
+      <item name="Finding us"
+            href="find-us.html"/>
     </menu>
 
     <menu ref="modules"/>

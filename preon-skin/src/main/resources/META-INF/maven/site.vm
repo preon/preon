@@ -175,6 +175,9 @@
   <head>
     <title>$title</title>
     <link media="screen" type="text/css" href="$relativePath/style.css" rel="stylesheet">
+    <link rel="Alternate" type="application/rss+xml" 
+          title="Preon News" 
+          href="http://feeds.feedburner.com/flotsam/JUYL" />
     <style type="text/css">
       @import url("$relativePath/css/site.css");
 #sidebar ul li {

@@ -5,7 +5,7 @@
             <groupId>nl.flotsam.preon.archetypes</groupId>
             <artifactId>preon-simple-archetype</artifactId>
             <version>${project.version}</version>
-            <repository>http://preon.flotsam.nl/snapshots</repository>
+            <repository>http://preon.flotsam.nl/archetypes</repository>
             <description>Simple Preon project, with dependencies to everything required.</description>
     </archetype>
   </archetypes>

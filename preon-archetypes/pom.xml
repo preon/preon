@@ -16,6 +16,19 @@
     <modules>
         <module>preon-simple-archetype</module>
     </modules>
+    <distributionManagement>
+        <repository>
+            <id>preon-sourceforge</id>
+            <name>Preon Repository</name>
+            <url>sftp://web.sourceforge.net/home/groups/p/pr/preon/htdocs/archetypes</url>
+        </repository>
+        <snapshotRepository>
+            <id>preon-sourceforge</id>
+            <name>Preon Snapshot Repository</name>
+            <url>sftp://web.sourceforge.net/home/groups/p/pr/preon/htdocs/archetypes</url>
+            <uniqueVersion>false</uniqueVersion>
+        </snapshotRepository>
+    </distributionManagement>
     <build>
         <resources>
             <resource>
@@ -24,6 +37,17 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resources</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
