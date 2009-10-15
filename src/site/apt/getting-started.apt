@@ -1,0 +1,30 @@
+Getting Started
+
+  The easy way to get started using Preon is to create a project from
+an archetype. If you are new to Maven archetypes, that may sound quite
+complicated, but it really isn't. All you have to do is go into a
+directory of your preference, and type this on the commandline:
+
++----------------------------------------------------------+
+mvn -DarchetypeCatalog=http://is.gd/4l9Zo archetype:generate
++----------------------------------------------------------+
+
+  The URL passed above is point to the catalog file that has the
+definitions of the archetypes. Once you have typed this, and hit
+enter, Maven will offer you a list of choices of types of project to
+create. Once you have made the selection, the only things that you
+will have to enter are:
+ 
+ * The groupId of the project you are going to create
+
+ * The artifactId
+
+ * The version
+
+ * The package containing the sample files
+
+[]
+  When you confirm, Maven will create a directory named after the
+artifactId, and create a new Maven project inside. Simply go into this
+directory, hit mvn install, and it will build the project. 
+

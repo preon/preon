@@ -23,13 +23,16 @@ Author URI: http://binarybonsai.com/
 	Have fun, and don't be afraid to contact me if you have questions.
 */
 
-pre {
+div.source {
   padding: 10px 10px 10px 14px;
   border: 1px solid #aaa;
   background-color: #f3f3f3;
+  border-style: dashed;
 }
 
-
+pre {
+  font-size: 10pt;
+}
 
 /* Begin Typography & Colors */
 body {
