@@ -50,7 +50,7 @@ public interface CodecDecorator {
      * 
      * @param <T>
      *            The type of {@link Codec} to be decorated.
-     * @param decorated
+     * @param codec
      *            The object that needs to be decorated.
      * @param metadata
      *            Metadata for the type.
@@ -59,7 +59,7 @@ public interface CodecDecorator {
      * @param context TODO
      * @return A decorated {@link Codec} or the original {@link Codec}.
      */
-    <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
+    <T> Codec<T> decorate(Codec<T> codec, AnnotatedElement metadata,
             Class<T> type, ResolverContext context);
 
 }

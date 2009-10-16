@@ -36,7 +36,7 @@ package nl.flotsam.preon.codec;
 import java.lang.reflect.AnnotatedElement;
 
 import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.util.StringBuilderDocument;
+import nl.flotsam.limbo.BindingException;
 import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.CodecDecorator;
@@ -48,32 +48,25 @@ import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
 
 /**
- * A {@link CodecDecorator} that will log a message before and after the
- * invocation of every {@link Codec}.
- * 
+ * A {@link CodecDecorator} that will log a message before and after the invocation of every {@link Codec}.
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class LoggingDecorator implements CodecDecorator {
 
-    /**
-     * The actual logging object.
-     */
+    /** The actual logging object. */
     private Logger logger;
 
     /**
      * Constructs a new instance, accepting the {@link Logger} to use.
-     * 
-     * @param logger
-     *            The {@link Logger} to use.
+     *
+     * @param logger The {@link Logger} to use.
      */
     public LoggingDecorator(Logger logger) {
         this.logger = logger;
     }
 
-    /**
-     * Constructs a new instance that will log to System.out.
-     */
+    /** Constructs a new instance that will log to System.out. */
     public LoggingDecorator() {
         this(new DefaultLogger());
     }
@@ -86,62 +79,46 @@ public class LoggingDecorator implements CodecDecorator {
      * nl.flotsam.preon.ResolverContext)
      */
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
-            Class<T> type, ResolverContext context) {
+                                 Class<T> type, ResolverContext context) {
         return new LoggingCodec<T>(decorated, logger);
     }
 
-    /**
-     * The object that will generate the messages. Receives events for anything
-     * of interest.
-     */
+    /** The object that will generate the messages. Receives events for anything of interest. */
     public interface Logger {
 
         /**
          * The operation called whenever a {@link Codec} kicks in.
-         * 
-         * @param codec
-         *            The {@link Codec} called.
-         * @param position
-         *            The position in the {@link BitBuffer}.
-         * @param size
-         *            The number of bits that will be read.
+         *
+         * @param codec    The {@link Codec} called.
+         * @param position The position in the {@link BitBuffer}.
+         * @param size     The expected number of bits that will be read, or <code>-1</code> if unknown in advance.
          */
         void logStartDecoding(Codec<?> codec, long position, long size);
 
         /**
          * The operation called whenever a {@link Codec} is done.
-         * 
-         * @param codec
-         *            The {@link Codec} called.
-         * @param position
-         *            The position in the {@link BitBuffer}.
-         * @param read
-         *            The number of bits that actually have been read.
-         * @param result
-         *            The value decoded by the {@link Codec}.
+         *
+         * @param codec    The {@link Codec} called.
+         * @param position The position in the {@link BitBuffer}.
+         * @param read     The number of bits that actually have been read.
+         * @param result   The value decoded by the {@link Codec}.
          */
         void logDoneDecoding(Codec<?> codec, long position, long read,
-                Object result);
+                             Object result);
 
-        /**
-         * The operation called when the {@link Codec} failed to decode a value.
-         */
+        /** The operation called when the {@link Codec} failed to decode a value. */
         void logFailedDecoding();
 
     }
 
     /**
-     * A default implementation of the {@link Logger} interface, logging to
-     * System.out.
-     * 
+     * A default implementation of the {@link Logger} interface, logging to System.out.
+     *
      * @author Wilfred Springer (wis)
-     * 
      */
     private static class DefaultLogger implements Logger {
 
-        /**
-         * "Call-stack depth"
-         */
+        /** "Call-stack depth" */
         private int level = 0;
 
         /*
@@ -152,19 +129,18 @@ public class LoggingDecorator implements CodecDecorator {
          * .flotsam.preon.Codec, long, long, java.lang.Object)
          */
         public void logDoneDecoding(Codec<?> codec, long position, long read,
-                Object result) {
+                                    Object result) {
             level--;
             // TODO: 
             printMessage("Done decoding at " + position
-                    + " (" + read + " bits) : " + format(result));
+                    + " (" + read + " bits) : " + format(result) + " Codec: " + codec);
             System.out.println();
         }
 
         /**
          * Formats the result.
-         * 
-         * @param result
-         *            The object.
+         *
+         * @param result The object.
          * @return The result formatted as a String.
          */
         private String format(Object result) {
@@ -200,21 +176,21 @@ public class LoggingDecorator implements CodecDecorator {
          * .flotsam.preon.Codec, long, long)
          */
         public void logStartDecoding(Codec<?> codec, long position, long size) {
-            printMessage("Start decoding at "
-                    + position
-                    + (size >= 0 ? " (maximal up to " + (position + size) + ")"
-                            : ""));
+            StringBuilder builder = new StringBuilder();
+            builder.append("Start decoding at ")
+                    .append(position)
+                    .append(size >= 0 ? " (maximal up to " + (position + size) + ")" : "")
+                    .append(" Codec: ")
+                    .append(codec.toString());
+            printMessage(builder.toString());
             level++;
         }
 
         /**
-         * Prints the message. (Used both by
-         * {@link #logDoneDecoding(Codec, long, long, Object)},
-         * {@link #logStartDecoding(Codec, long, long)}, as well as
-         * {@link #logFailedDecoding()}.
-         * 
-         * @param message
-         *            The message to be printed.
+         * Prints the message. (Used both by {@link #logDoneDecoding(Codec, long, long, Object)}, {@link
+         * #logStartDecoding(Codec, long, long)}, as well as {@link #logFailedDecoding()}.
+         *
+         * @param message The message to be printed.
          */
         private void printMessage(String message) {
             for (int i = 0; i < level; i++) {
@@ -227,34 +203,27 @@ public class LoggingDecorator implements CodecDecorator {
 
     /**
      * The {@link Codec} constructed by the {@link LoggingDecorator}.
-     * 
+     *
      * @author Wilfred Springer (wis)
-     * 
      * @param <T>
      */
     private static class LoggingCodec<T> implements Codec<T> {
 
-        /**
-         * The {@link Codec} wrapped.
-         */
-        private Codec<T> codec;
+        /** The {@link Codec} wrapped. */
+        private final Codec<T> codec;
 
-        /**
-         * The {@link Logger} to use.
-         */
-        private Logger logger;
+        /** The {@link Logger} to use. */
+        private final Logger logger;
 
         /**
          * Constructs a new instance.
-         * 
-         * @param codec
-         *            The {@link Codec} to wrap.
-         * @param logger
-         *            The {@link Logger} to use.
+         *
+         * @param codec  The {@link Codec} to wrap.
+         * @param logger The {@link Logger} to use.
          */
         public LoggingCodec(Codec<T> codec, Logger logger) {
-        	assert codec != null;
-        	assert logger != null;
+            assert codec != null;
+            assert logger != null;
             this.codec = codec;
             this.logger = logger;
         }
@@ -269,7 +238,7 @@ public class LoggingDecorator implements CodecDecorator {
                 throws DecodingException {
             T result = null;
             long pos = buffer.getActualBitPos();
-            logger.logStartDecoding(codec, pos, getSizeAsString(codec, resolver));
+            logger.logStartDecoding(codec, pos, LoggingDecorator.getSize(codec, resolver));
             try {
                 result = codec.decode(buffer, resolver, builder);
             } catch (DecodingException de) {
@@ -317,12 +286,16 @@ public class LoggingDecorator implements CodecDecorator {
 
     }
 
-    private final static long getSizeAsString(Codec<?> codec, Resolver resolver) {
+    private final static long getSize(Codec<?> codec, Resolver resolver) {
         Expression<Integer, Resolver> size = codec.getSize();
         if (size == null) {
             return -1;
         } else {
-            return size.eval(resolver);
+            if (size.isParameterized()) {
+                return -1;
+            } else {
+                return size.eval(resolver);
+            }
         }
     }
 

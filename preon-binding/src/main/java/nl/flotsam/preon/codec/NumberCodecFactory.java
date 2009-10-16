@@ -228,17 +228,17 @@ public class NumberCodecFactory implements CodecFactory {
 
         protected Expression<Integer, Resolver> sizeExpr;
 
-        protected ByteOrder endian;
+        protected ByteOrder byteOrder;
 
         protected NumericType type;
 
         private Expression<Integer, Resolver> matchExpr;
 
         public NumericCodec(Expression<Integer, Resolver> sizeExpr,
-                ByteOrder endian, NumericType type,
+                ByteOrder byteOrder, NumericType type,
                 Expression<Integer, Resolver> matchExpr) {
             this.sizeExpr = sizeExpr;
-            this.endian = endian;
+            this.byteOrder = byteOrder;
             this.type = type;
             this.matchExpr = matchExpr;
         }
@@ -246,7 +246,7 @@ public class NumberCodecFactory implements CodecFactory {
         public Object decode(BitBuffer buffer, Resolver resolver,
                 Builder builder) throws DecodingException {
             int size = ((Number) (this.sizeExpr.eval(resolver))).intValue();
-            Object result = type.decode(buffer, size, endian);
+            Object result = type.decode(buffer, size, byteOrder);
             if (matchExpr != null) {
                 if (!matchExpr.eval(resolver).equals(Converters.toInt(result))) {
                     StringBuilder stringBuilder = new StringBuilder();
@@ -311,7 +311,7 @@ public class NumberCodecFactory implements CodecFactory {
                             if (sizeExpr.isParameterized()) {
                                 target.text(adjective.asTextPreferAn(startWithCapital)).text(
                                         " integer value (").document(
-                                        Documenters.forByteOrder(endian)).text(
+                                        Documenters.forByteOrder(byteOrder)).text(
                                         ")");
                             } else {
                                 target
@@ -322,7 +322,7 @@ public class NumberCodecFactory implements CodecFactory {
                                                         .forExpression(sizeExpr))
                                         .text("-bit integer value (").document(
                                                 Documenters
-                                                        .forByteOrder(endian))
+                                                        .forByteOrder(byteOrder))
                                         .text(")");
                             }
                         }
@@ -342,6 +342,10 @@ public class NumberCodecFactory implements CodecFactory {
                 }
 
             };
+        }
+
+        public String toString() {
+            return "Codec of " + byteOrder +  " " + type; 
         }
 
     }

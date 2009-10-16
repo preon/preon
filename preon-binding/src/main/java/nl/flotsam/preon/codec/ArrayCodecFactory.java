@@ -62,29 +62,26 @@ import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.util.AnnotationWrapper;
 
 /**
- * A {@link CodecFactory} that will be triggered by {@link Bound} or
- * {@link BoundList} annotations on arrays. Note that {@link Codec}s created by
- * this class will always read all data eagerly. (Unlike {@link List}s, you
- * cannot implement arrays yourself.)
- * 
+ * A {@link CodecFactory} that will be triggered by {@link Bound} or {@link BoundList} annotations on arrays. Note that
+ * {@link Codec}s created by this class will always read all data eagerly. (Unlike {@link List}s, you cannot implement
+ * arrays yourself.)
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class ArrayCodecFactory implements CodecFactory {
 
     /**
-     * The {@link CodecFactory} that will be used for constructing the
-     * {@link Codecs} to construct elements in the List.
+     * The {@link CodecFactory} that will be used for constructing the {@link Codecs} to construct elements in the
+     * List.
      */
     private CodecFactory factory;
 
     /**
-     * Constructs a new instance, accepting the {@link CodecFactory} creating
-     * the {@link Codec Codecs} that will reconstruct elements in the List.
-     * 
-     * @param delegate
-     *            The {@link CodecFactory} creating the {@link Codec Codecs}
-     *            that will reconstruct elements in the List.
+     * Constructs a new instance, accepting the {@link CodecFactory} creating the {@link Codec Codecs} that will
+     * reconstruct elements in the List.
+     *
+     * @param delegate The {@link CodecFactory} creating the {@link Codec Codecs} that will reconstruct elements in the
+     *                 List.
      */
     public ArrayCodecFactory(CodecFactory delegate) {
         this.factory = delegate;
@@ -99,7 +96,7 @@ public class ArrayCodecFactory implements CodecFactory {
      */
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         BoundList settings = null;
         if (metadata != null
                 && (settings = metadata.getAnnotation(BoundList.class)) != null
@@ -150,42 +147,30 @@ public class ArrayCodecFactory implements CodecFactory {
     }
 
     /**
-     * The {@link Codec} for reading the {@link List} and its members, on
-     * demand. Instances of this class will <em>not</em> create a standard
-     * {@link List} implementation and populate all of its data immediately.
-     * Instead it will create a {@link EqualySizedLazyList}, constructing its
-     * elements on the fly, only when it is required.
-     * 
+     * The {@link Codec} for reading the {@link List} and its members, on demand. Instances of this class will
+     * <em>not</em> create a standard {@link List} implementation and populate all of its data immediately. Instead it
+     * will create a {@link nl.flotsam.preon.util.EvenlyDistributedLazyList}, constructing its elements on the fly, only
+     * when it is required.
      */
     private static class ArrayCodec implements Codec<Object> {
 
-        /**
-         * The number of elements in the list.
-         */
+        /** The number of elements in the list. */
         private Expression<Integer, Resolver> size;
 
-        /**
-         * The {@link Codec} that will construct elements from the {@link List}.
-         */
+        /** The {@link Codec} that will construct elements from the {@link List}. */
         private Codec<?> codec;
 
-        /**
-         * The type of element to be constructed.
-         */
+        /** The type of element to be constructed. */
         private Class<?> type;
 
         /**
          * Constructs a new instance.
-         * 
-         * @param expr
-         *            An {@link Expression} representing the number of elements
-         *            in the {@link List}.
-         * @param codec
-         *            The {@link Codec} constructing elements in the
-         *            {@link List}.
+         *
+         * @param expr  An {@link Expression} representing the number of elements in the {@link List}.
+         * @param codec The {@link Codec} constructing elements in the {@link List}.
          */
         public ArrayCodec(Expression<Integer, Resolver> expr, Codec<?> codec,
-                Class<?> type) {
+                          Class<?> type) {
             this.size = expr;
             this.codec = codec;
             this.type = type;
@@ -198,7 +183,7 @@ public class ArrayCodecFactory implements CodecFactory {
          * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
          */
         public Object decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                             Builder builder) throws DecodingException {
             int length = size.eval(resolver).intValue();
             Object result = Array.newInstance(type.getComponentType(), length);
             for (int i = 0; i < length; i++) {
@@ -288,14 +273,16 @@ public class ArrayCodecFactory implements CodecFactory {
 
             };
         }
+
+        public String toString() {
+            return "Codec of array, decoding elements using " + codec;
+        }
     }
 
     /**
-     * Returns the {@link Expression} that will be evaluated to the array's
-     * size.
-     * 
-     * @param listSettings
-     *            The annotation, holding the expression.
+     * Returns the {@link Expression} that will be evaluated to the array's size.
+     *
+     * @param listSettings The annotation, holding the expression.
      * @return An {@link Expression} instance, representing the expression.
      */
     private Expression<Integer, Resolver> getSizeExpression(
