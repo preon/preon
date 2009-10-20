@@ -112,9 +112,10 @@
         <groupId>com.google.code.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
         <version>1.4.0</version>
-        <inherited>true</inherited>
+        <inherited>false</inherited>
         <configuration>
-          <header>/Users/wilfred/workspace/preon/src/etc/header.txt</header>
+          <header>src/etc/header.txt</header>
+          <aggregate>true</aggregate>
           <includes>
             <include>**/*.java</include>
           </includes>
