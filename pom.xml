@@ -15,6 +15,10 @@
     don't see with the naked eye, but you probably rely on them
     without knowing.
   </description>
+  <ciManagement>
+    <system>jira</system>
+    <url>http://os.xebia.com/bamboo/browse/PREON-DEF</url>
+  </ciManagement>
   <mailingLists>
     <mailingList>
       <name>Users List</name>
