@@ -29,7 +29,7 @@
   <scm>
     <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</connection>
     <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</developerConnection>
-    <url>http://fisheye3.atlassian.com/browse/preon</url>
+    <url>http://fisheye3.atlassian.com/browse/preon/trunk</url>
   </scm>
   <repositories>
     <repository>

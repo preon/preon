@@ -1,0 +1,12 @@
+  This example demonstrates using Preon to decode Java class files. It
+defines an object model that was almost copied literally from the
+{{{http://java.sun.com/docs/books/jvms/second_edition/html/ClassFile.doc.html}Class
+File Specification}}, and uses Preon annotations to map it to its
+encoded representation. Note that the sample does not contain a single
+line of imperative code. 
+
+  This is a snippet from the ClassFile's definition:
+
+%{snippet|id=sample|file=src/main/java/nl/flotsam/preon/sample/bytecode/ClassFile.java}
+
+  Check out the rest of the example {{{http://fisheye3.atlassian.com/browse/preon/trunk/preon-samples/preon-sample-bytecode/src/main/java/nl/flotsam/preon/sample/bytecode/ClassFile.java?r=HEAD}here}}, or {{{source-repository.html}download the sources}}. 

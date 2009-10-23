@@ -1,0 +1,3 @@
+  This example demonstrates using Preon to decode {{{http://www.faqs.org/rfcs/rfc1761.html}Snoop}} output. 
+
+  Check out the sources online {{{http://fisheye3.atlassian.com/browse/preon/trunk/preon-samples/preon-sample-snoop/src/main/java/nl/flotsam/preon/sample/snoop/SnoopFile.java?r=HEAD}here}}, or {{{source-repository.html}download the sources}}. 

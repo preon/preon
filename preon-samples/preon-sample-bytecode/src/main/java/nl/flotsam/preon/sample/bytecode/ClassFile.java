@@ -49,9 +49,14 @@ import nl.flotsam.preon.annotation.Choices.Choice;
  * @author Wilfred Springer
  * 
  */
+// START SNIPPET: sample
 public class ClassFile {
 
-    @BoundBuffer(match = {(byte) 0xca, (byte) 0xfe, (byte) 0xba, (byte)0xbe})
+    @BoundBuffer(match = {
+            (byte)0xca,
+            (byte)0xfe,
+            (byte)0xba,
+            (byte)0xbe })
     private byte[] magic;
 
     @BoundNumber(size = "16", byteOrder = BigEndian)
@@ -63,9 +68,20 @@ public class ClassFile {
     @BoundNumber(size = "16", byteOrder = BigEndian)
     private int constantPoolCount;
 
-    @BoundList(size = "constantPoolCount-1", types = {ClassCpInfo.class, DoubleCpInfo.class, FieldRefCpInfo.class, FloatCpInfo.class,
-            IntegerCpInfo.class, InterfaceMethodRefCpInfo.class, MethodRefCpInfo.class, NameAndTypeCpInfo.class, StringCpInfo.class, Utf8CpInfo.class})
+    @BoundList(size = "constantPoolCount-1", types = {
+            ClassCpInfo.class,
+            DoubleCpInfo.class,
+            FieldRefCpInfo.class,
+            FloatCpInfo.class,
+            IntegerCpInfo.class,
+            InterfaceMethodRefCpInfo.class,
+            MethodRefCpInfo.class,
+            NameAndTypeCpInfo.class,
+            StringCpInfo.class,
+            Utf8CpInfo.class })
     private CpInfo[] constantPool;
+
+  // END SNIPPET: sample
 
     @BoundNumber(size = "16", byteOrder = BigEndian)
     private int accessFlags;
