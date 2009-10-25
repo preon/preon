@@ -32,36 +32,19 @@
  */
 package nl.flotsam.preon;
 
-import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import nl.flotsam.limbo.Expression;
-import nl.flotsam.pecia.AnnotatedSection;
-import nl.flotsam.pecia.Contents;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.pecia.SimpleContents;
+import nl.flotsam.pecia.*;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.ConditionalBindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.codec.ArrayCodecFactory;
-import nl.flotsam.preon.codec.BooleanCodecFactory;
-import nl.flotsam.preon.codec.BoundBufferCodecFactory;
-import nl.flotsam.preon.codec.ByteAligningDecorator;
-import nl.flotsam.preon.codec.CachingCodecFactory;
-import nl.flotsam.preon.codec.CompoundCodecFactory;
-import nl.flotsam.preon.codec.EnumCodecFactory;
-import nl.flotsam.preon.codec.ExplicitCodecFactory;
-import nl.flotsam.preon.codec.InitCodecDecorator;
-import nl.flotsam.preon.codec.LazyLoadingCodecDecorator;
-import nl.flotsam.preon.codec.ListCodecFactory;
-import nl.flotsam.preon.codec.NumberCodecFactory;
-import nl.flotsam.preon.codec.ObjectCodecFactory;
-import nl.flotsam.preon.codec.SlicingCodecDecorator;
-import nl.flotsam.preon.codec.StringCodecFactory;
+import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.codec.*;
+
+import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * The default {@link CodecFactory} implementation, constructing {@link Codecs}
@@ -123,7 +106,7 @@ public class DefaultCodecFactory implements CodecFactory {
         codecFactory.add(new NumberCodecFactory());
         codecFactory.add(new StringCodecFactory());
         codecFactory.add(new BooleanCodecFactory());
-        codecFactory.add(new EnumCodecFactory());
+        codecFactory.add(new EnumCodec.Factory());
 
         // Create an ObjectCodecFactory that delegates to the
         // CompoundCodecFactory for each of its members.
@@ -171,6 +154,10 @@ public class DefaultCodecFactory implements CodecFactory {
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
             return delegate.decode(buffer, resolver, builder);
+        }
+
+        public void encode(T value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public Class<?>[] getTypes() {

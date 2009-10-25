@@ -32,13 +32,6 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.util.ClassUtils;
@@ -46,13 +39,11 @@ import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.Para;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecSelector;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
+
+import java.util.*;
 
 /**
  * A {@link Codec} that is able to dynamically choose between different types of
@@ -88,6 +79,10 @@ public class SwitchingCodec implements Codec<Object> {
             throws DecodingException {
         Codec<?> codec = selector.select(buffer, resolver);
         return codec.decode(buffer, resolver, builder);
+    }
+
+    public void encode(Object value, BitChannel channel, Resolver resolver) {
+        throw new UnsupportedOperationException();
     }
 
     /*

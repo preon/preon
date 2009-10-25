@@ -32,32 +32,22 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.AnnotatedElement;
-
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.util.StringBuilderDocument;
-import nl.flotsam.pecia.Contents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.BoundString;
 import nl.flotsam.preon.annotation.BoundString.ByteConverter;
 import nl.flotsam.preon.annotation.BoundString.Encoding;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.Documenters;
-import nl.flotsam.preon.util.TextUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.AnnotatedElement;
 
 /**
  * A {@link CodecFactory} generating {@link Codecs} capable of generating String
@@ -144,6 +134,10 @@ public class StringCodecFactory implements CodecFactory {
             } catch (UnsupportedEncodingException uee) {
                 throw new DecodingException(uee);
             }
+        }
+
+        public void encode(String value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public Class<?>[] getTypes() {
@@ -253,6 +247,10 @@ public class StringCodecFactory implements CodecFactory {
                 }
             }
             return result;
+        }
+
+        public void encode(String value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public Class<?>[] getTypes() {

@@ -32,15 +32,14 @@
  */
 package nl.flotsam.preon.channel;
 
-import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.buffer.ByteOrder;
 
-import javax.annotation.concurrent.NotThreadSafe;
-import javax.annotation.Nonnull;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nonnull;
+import javax.annotation.concurrent.NotThreadSafe;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Closeable;
-import java.nio.ByteOrder;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
@@ -122,7 +121,7 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
             throws IOException {
         int steps = nrbits / 8;
         int remainder = nrbits % 8;
-        if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+        if (byteOrder == ByteOrder.LittleEndian) {
             for (int i = 0; i < steps; i++) {
                 write(8, (byte) (0xff & value));
                 value = value >> 8;
@@ -144,7 +143,7 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
             throws IOException {
         int steps = nrbits / 8;
         int remainder = nrbits % 8;
-        if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+        if (byteOrder == ByteOrder.LittleEndian) {
             for (int i = 0; i < steps; i++) {
                 write(8, (byte) (0xff & value));
                 value = value >> 8;
@@ -166,7 +165,7 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
             throws IOException {
         int steps = nrbits / 8;
         int remainder = nrbits % 8;
-        if (byteOrder == ByteOrder.LITTLE_ENDIAN) {
+        if (byteOrder == ByteOrder.LittleEndian) {
             for (int i = 0; i < steps; i++) {
                 write(8, (byte) (0xff & value));
                 value = (short) (value >> 8);

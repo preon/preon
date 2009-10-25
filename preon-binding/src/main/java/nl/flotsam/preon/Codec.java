@@ -34,6 +34,9 @@ package nl.flotsam.preon;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
+
+import java.io.IOException;
 
 /**
  * The interface to be implemented by objects that are able to decode/encode
@@ -68,6 +71,15 @@ public interface Codec<T> {
      */
     T decode(BitBuffer buffer, Resolver resolver, Builder builder)
             throws DecodingException;
+
+    /**
+     * Encodes the object to the {@link nl.flotsam.preon.channel.BitChannel}.
+     *
+     * @param value The object to encode.
+     * @param channel The channel to receive the encoded representation.
+     * @param resolver The object providing access to the context.
+     */
+    void encode(T value, BitChannel channel, Resolver resolver) throws IOException;
 
     /**
      * Returns an expression that is expected to return the number of bits

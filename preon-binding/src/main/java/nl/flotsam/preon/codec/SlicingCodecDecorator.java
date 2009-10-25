@@ -32,27 +32,21 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDecorator;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.LengthPrefix;
 import nl.flotsam.preon.annotation.Slice;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.Documenters;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 
 /**
  * A {@link CodecFactory} creating {@link Codec Codecs} slicing the
@@ -171,6 +165,10 @@ public class SlicingCodecDecorator implements CodecDecorator {
             return wrapped.decode(slice, resolver, builder);
         }
 
+        public void encode(T value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
+        }
+
         public Class<?>[] getTypes() {
             return wrapped.getTypes();
         }
@@ -247,8 +245,8 @@ public class SlicingCodecDecorator implements CodecDecorator {
         /**
          * Returns the size of the slice.
          * 
-         * @param The
-         *            BitBuffer, if some information needs to be read from the
+         * @param buffer
+         *            The BitBuffer, if some information needs to be read from the
          *            buffer in order to calculate the size.
          * @return The size of the slice.
          */

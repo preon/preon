@@ -69,7 +69,7 @@ public class EnumCodecFactoryTest extends TestCase {
 
 		// Replay
 		EasyMock.replay(metadata, boundNumber);
-		EnumCodecFactory factory = new EnumCodecFactory();
+		EnumCodec.Factory factory = new EnumCodec.Factory();
 		BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] { 0,
 				1 }));
 		Codec<Direction> codec = factory

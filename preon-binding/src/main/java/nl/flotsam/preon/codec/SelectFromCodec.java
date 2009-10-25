@@ -32,32 +32,22 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.List;
-
-import nl.flotsam.limbo.BindingException;
-import nl.flotsam.limbo.Document;
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.Reference;
-import nl.flotsam.limbo.ReferenceContext;
+import nl.flotsam.limbo.*;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Table2Cols;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.limbo.ContextReplacingReference;
+
+import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Codec supporting the {@link Choices} annotation.
@@ -164,6 +154,10 @@ public class SelectFromCodec<T> implements Codec<T> {
         } else {
             return null;
         }
+    }
+
+    public void encode(T value, BitChannel channel, Resolver resolver) {
+        throw new UnsupportedOperationException();
     }
 
     public Expression<Integer, Resolver> getSize() {
@@ -440,13 +434,20 @@ public class SelectFromCodec<T> implements Codec<T> {
                                     .end()
                                 .end();
                         for (int i = 0; i < conditions.size(); i++) {
-                            table2Cols.row().entry().para().document(
-                                    Documenters
-                                            .forExpression(conditions.get(i)))
-                                    .end().entry().para().document(
-                                            codecs.get(i).getCodecDescriptor()
+                            table2Cols
+                                    .row()
+                                        .entry()
+                                            .para()
+                                                .document(Documenters
+                                                    .forExpression(conditions.get(i)))
+                                            .end()
+                                        .entry()
+                                            .para()
+                                                .document(
+                                                    codecs.get(i).getCodecDescriptor()
                                                     .reference(Adjective.A, false))
-                                    .end().end();
+                                            .end()
+                                    .end();
                         }
                         table2Cols.end();
                     }

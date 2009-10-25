@@ -33,7 +33,7 @@
 package nl.flotsam.preon.buffer;
 
 /**
- * An enumeration, representing endianess. (Big endian, vs. little endian.)
+ * An enumeration, representing byte order. (Big endian, vs. little endian.)
  * 
  * 
  * @since Feb 25, 2007

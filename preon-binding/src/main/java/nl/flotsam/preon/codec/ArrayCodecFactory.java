@@ -32,11 +32,6 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Array;
-import java.util.List;
-
 import nl.flotsam.limbo.BindingException;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
@@ -44,22 +39,20 @@ import nl.flotsam.limbo.InvalidExpressionException;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.util.AnnotationWrapper;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Array;
+import java.util.List;
 
 /**
  * A {@link CodecFactory} that will be triggered by {@link Bound} or {@link BoundList} annotations on arrays. Note that
@@ -191,6 +184,10 @@ public class ArrayCodecFactory implements CodecFactory {
                 Array.set(result, i, value);
             }
             return result;
+        }
+
+        public void encode(Object object, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         /*

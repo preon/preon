@@ -32,36 +32,18 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
-import nl.flotsam.limbo.BindingException;
-import nl.flotsam.limbo.Document;
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.Reference;
-import nl.flotsam.limbo.ReferenceContext;
+import nl.flotsam.limbo.*;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.BitBufferUnderflowException;
 import nl.flotsam.preon.buffer.SlicedBitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.descriptor.NullCodecDescriptor2;
 import nl.flotsam.preon.limbo.ContextReplacingReference;
@@ -70,31 +52,22 @@ import nl.flotsam.preon.util.CodecDescriptorHolder;
 import nl.flotsam.preon.util.EvenlyDistributedLazyList;
 import nl.flotsam.preon.util.ParaContentsDocument;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
- * A {@link CodecFactory} capable of supporting Lists.
- * 
- * <p>
- * There are a couple of cases that we need to clarify. First of all, the
- * {@link ListCodecFactory} is triggered by the {@link BoundList} annotation.
- * The specific way of decoding the List is determined by a couple of factors.
- * </p>
- * 
- * <ul>
- * <li>The size of the list (in numbers of items)</li>
- * <li>The size of the list (in bytes)</li>
- * <li>The size of the individual items in the list</li>
- * <li>If this is a constant or not</li>
- * </ul>
- * 
- * <p>
- * Things are further complicated by the fact that sometimes these questions can
- * be answered at Codec construction time and in other cases at decoding time.
- * In both cases, we might not be able to determine all of these answers or even
- * any of them at all.
- * </p>
- * 
+ * A {@link CodecFactory} capable of supporting Lists. <p/> <p> There are a couple of cases that we need to clarify.
+ * First of all, the {@link ListCodecFactory} is triggered by the {@link BoundList} annotation. The specific way of
+ * decoding the List is determined by a couple of factors. </p> <p/> <ul> <li>The size of the list (in numbers of
+ * items)</li> <li>The size of the list (in bytes)</li> <li>The size of the individual items in the list</li> <li>If
+ * this is a constant or not</li> </ul> <p/> <p> Things are further complicated by the fact that sometimes these
+ * questions can be answered at Codec construction time and in other cases at decoding time. In both cases, we might not
+ * be able to determine all of these answers or even any of them at all. </p>
+ *
  * @author Wilfred Springer
- * 
  */
 public class ListCodecFactory implements CodecFactory {
 
@@ -107,7 +80,7 @@ public class ListCodecFactory implements CodecFactory {
     /**
      * Constructs a new instance, accepting the {@link CodecFactory} creating
      * the {@link Codec Codecs} that will reconstruct elements in the List.
-     * 
+     *
      * @param delegate
      *            The {@link CodecFactory} creating the {@link Codec Codecs}
      *            that will reconstruct elements in the List.
@@ -119,7 +92,7 @@ public class ListCodecFactory implements CodecFactory {
     // JavaDoc inherited.
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         BoundList settings = null;
         if (metadata != null
                 && (settings = metadata.getAnnotation(BoundList.class)) != null
@@ -178,7 +151,7 @@ public class ListCodecFactory implements CodecFactory {
     /**
      * Returns a {@link BoundObject} annotation containing the properties it
      * shares in common with the {@link BoundList} annotation.
-     * 
+     *
      * @param settings
      *            The {@link BoundList} settings.
      * @return A {@link BoundObject} annotation with settings copied from the
@@ -214,14 +187,14 @@ public class ListCodecFactory implements CodecFactory {
      * The {@link Codec} for reading the {@link List} and its members, on
      * demand. Instances of this class will <em>not</em> create a standard
      * {@link List} implementation and populate all of its data immediately.
-     * Instead it will create a {@link EqualySizedLazyList}, constructing its
+     * Instead it will create a {@link nl.flotsam.preon.util.UnevenlyDistributedLazyList}, constructing its
      * elements on the fly, only when it is required.
-     * 
+     *
      * <p>
      * Note that this class is called <code><em>Static</em>ListCodec</code>
      * since it relies on the fact that the size of the List and the amount of
      * data required for every list member is known in advance. </p
-     * 
+     *
      */
     private static class StaticListCodec<T> implements Codec<List<T>> {
 
@@ -237,7 +210,7 @@ public class ListCodecFactory implements CodecFactory {
 
         /**
          * Constructs a new instance.
-         * 
+         *
          * @param maxSize
          *            An {@link Expression} representing the number of elements
          *            in the {@link List}.
@@ -246,16 +219,20 @@ public class ListCodecFactory implements CodecFactory {
          *            {@link List}.
          */
         public StaticListCodec(Expression<Integer, Resolver> maxSize,
-                Codec<T> codec) {
+                               Codec<T> codec) {
             this.size = maxSize;
             this.codec = codec;
         }
 
         @SuppressWarnings("unchecked")
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException {
             return new EvenlyDistributedLazyList(codec, buffer.getBitPos(),
                     buffer, size.eval(resolver), builder, resolver);
+        }
+
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public Class<?>[] getTypes() {
@@ -279,8 +256,8 @@ public class ListCodecFactory implements CodecFactory {
                         public void document(C target) {
                             target.para().text("The number of elements in ")
                                     .document(reference(Adjective.THE, false)).text(
-                                            " is ").document(
-                                            Documenters.forExpression(size))
+                                    " is ").document(
+                                    Documenters.forExpression(size))
                                     .text(".")
                                     .end();
                             if (!codec.getCodecDescriptor().requiresDedicatedSection()) {
@@ -326,7 +303,7 @@ public class ListCodecFactory implements CodecFactory {
     /**
      * Returns the {@link Expression} that will be evaluated to the {@link List}
      * 's size.
-     * 
+     *
      * @param listSettings
      *            The annotation, holding the expression.
      * @return An {@link Expression} instance, representing the expression.
@@ -346,7 +323,7 @@ public class ListCodecFactory implements CodecFactory {
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException {
             List<T> result = new LinkedList<T>();
             long mark = buffer.getBitPos();
             try {
@@ -366,6 +343,10 @@ public class ListCodecFactory implements CodecFactory {
                 buffer.setBitPos(mark);
             }
             return result;
+        }
+
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public Class<?>[] getTypes() {
@@ -438,7 +419,7 @@ public class ListCodecFactory implements CodecFactory {
      * determined at runtime, right before the actual List is decoded. The
      * {@link #skipListCodec} Codec will be used when the size of the individual
      * list item can be determined before the List is getting constructed.
-     * 
+     *
      */
     private static class SwitchingListCodec<T> implements Codec<List<T>> {
 
@@ -447,19 +428,23 @@ public class ListCodecFactory implements CodecFactory {
         private Codec<List<T>> nonSkipListCodec;
 
         public SwitchingListCodec(Codec<List<T>> skipListCodec,
-                Codec<List<T>> nonSkipListCodec) {
+                                  Codec<List<T>> nonSkipListCodec) {
             this.skipListCodec = skipListCodec;
             this.nonSkipListCodec = nonSkipListCodec;
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException {
             Expression<Integer, Resolver> sizeExpr = skipListCodec.getSize();
             if (sizeExpr != null && sizeExpr.eval(resolver) >= 0) {
                 return skipListCodec.decode(buffer, resolver, builder);
             } else {
                 return nonSkipListCodec.decode(buffer, resolver, builder);
             }
+        }
+
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public int getSize(Resolver resolver) {
@@ -499,7 +484,7 @@ public class ListCodecFactory implements CodecFactory {
         private CodecDescriptor descriptor;
 
         public IndexedResolverContext(ResolverContext context,
-                CodecDescriptor descriptor) {
+                                      CodecDescriptor descriptor) {
             this.context = context;
             this.descriptor = descriptor;
         }
@@ -536,7 +521,7 @@ public class ListCodecFactory implements CodecFactory {
             private CodecDescriptor descriptor;
 
             public IndexReference(ReferenceContext<Resolver> context,
-                    CodecDescriptor descriptor) {
+                                  CodecDescriptor descriptor) {
                 this.context = context;
                 this.descriptor = descriptor;
             }
@@ -623,7 +608,7 @@ public class ListCodecFactory implements CodecFactory {
     /**
      * A {@link Codec} for Lists, expecting the location of the elements to be
      * defined by some Limbo expression based on the index of the element.
-     * 
+     *
      * @param <T>
      */
     private static class OffsetListCodec<T> implements Codec<List<T>> {
@@ -647,7 +632,7 @@ public class ListCodecFactory implements CodecFactory {
 
         /**
          * Constructs a new instance.
-         * 
+         *
          * @param offsets
          *            An expression for calculating the offset of the beginning
          *            of an element, as a function of the elements position in
@@ -659,14 +644,14 @@ public class ListCodecFactory implements CodecFactory {
          *            elements.
          */
         public OffsetListCodec(Expression<Integer, Resolver> offsets,
-                Expression<Integer, Resolver> size, Codec<T> codec) {
+                               Expression<Integer, Resolver> size, Codec<T> codec) {
             this.offsets = offsets;
             this.size = size;
             this.codec = codec;
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException {
             int maxSize = size.eval(resolver);
             List<T> result = new ArrayList<T>(maxSize);
             long curPos = buffer.getBitPos();
@@ -687,6 +672,10 @@ public class ListCodecFactory implements CodecFactory {
                 }
             }
             return result;
+        }
+
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public Class<?>[] getTypes() {

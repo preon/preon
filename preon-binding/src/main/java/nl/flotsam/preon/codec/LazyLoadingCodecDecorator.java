@@ -32,24 +32,18 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Method;
-
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 import nl.flotsam.limbo.Expression;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDecorator;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.LazyLoading;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
+
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Method;
 
 /**
  * An attempt to create a general purpose {@link CodecFactory} whose
@@ -140,6 +134,10 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
             });
             buffer.setBitPos(pos + size);
             return (T) enhancer.create();
+        }
+
+        public void encode(T value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         /*

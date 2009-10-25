@@ -32,23 +32,19 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.BoundBuffer;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.Documenters;
+
+import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
 
 public class BoundBufferCodecFactory implements CodecFactory {
 
@@ -82,6 +78,10 @@ public class BoundBufferCodecFactory implements CodecFactory {
                 }
             }
             return criterion;
+        }
+
+        public void encode(Object object, BitChannel channel, Resolver resolver) throws IOException {
+            channel.write(criterion, 0, criterion.length - 1);            
         }
 
         public CodecDescriptor getCodecDescriptor() {

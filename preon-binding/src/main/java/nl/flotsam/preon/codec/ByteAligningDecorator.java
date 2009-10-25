@@ -32,21 +32,16 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDecorator;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.ByteAlign;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
+
+import java.lang.reflect.AnnotatedElement;
 
 /**
  * A {@link CodecDecorator} that will make sure that reading stops at a
@@ -85,6 +80,10 @@ public class ByteAligningDecorator implements CodecDecorator {
                 buffer.setBitPos(buffer.getBitPos() + 8 - pos);
             }
             return result;
+        }
+
+        public void encode(T object, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public Class<?>[] getTypes() {

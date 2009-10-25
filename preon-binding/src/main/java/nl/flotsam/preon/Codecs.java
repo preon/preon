@@ -194,7 +194,7 @@ public class Codecs {
      *             If the {@link Codec} fails to decode a value from the buffer
      *             passed in.
      */
-    public static <T> T decode(Codec<T> codec, byte[] buffer)
+    public static <T> T decode(Codec<T> codec, byte... buffer)
             throws DecodingException {
         return decode(codec, ByteBuffer.wrap(buffer));
     }

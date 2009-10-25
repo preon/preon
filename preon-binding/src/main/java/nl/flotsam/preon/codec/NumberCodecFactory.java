@@ -32,10 +32,6 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-import java.util.HashMap;
-import java.util.Map;
-
 import nl.flotsam.limbo.Document;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
@@ -44,28 +40,25 @@ import nl.flotsam.limbo.util.StringBuilderDocument;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.descriptor.NullDocumenter;
 
+import java.lang.reflect.AnnotatedElement;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * A {@link CodecFactory} generating {@link Codec Codecs} capable of decoding
- * numbers from the {@link BitBuffer}. Note that the {@link Codec Codecs}
- * created by this class are capable to decode Longs, Integers, Shorts, Bytes,
- * longs, ints, shorts and bytes.
- * 
+ * A {@link CodecFactory} generating {@link Codec Codecs} capable of decoding numbers from the {@link BitBuffer}. Note
+ * that the {@link Codec Codecs} created by this class are capable to decode Longs, Integers, Shorts, Bytes, longs,
+ * ints, shorts and bytes.
+ *
  * @author Wilfred Springer
- * 
  */
 public class NumberCodecFactory implements CodecFactory {
 
@@ -164,7 +157,7 @@ public class NumberCodecFactory implements CodecFactory {
         public abstract int getDefaultSize();
 
         public abstract Object decode(BitBuffer buffer, int size,
-                ByteOrder endian);
+                                      ByteOrder endian);
 
         public abstract Class<?> getType();
 
@@ -188,9 +181,9 @@ public class NumberCodecFactory implements CodecFactory {
         NUMERIC_TYPES.put(Double.class, NumericType.Double);
     }
 
-    @SuppressWarnings( { "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         if (NUMERIC_TYPES.keySet().contains(type)) {
             NumericType numericType = NUMERIC_TYPES.get(type);
             if (overrides == null || overrides.isAnnotationPresent(Bound.class)) {
@@ -235,8 +228,8 @@ public class NumberCodecFactory implements CodecFactory {
         private Expression<Integer, Resolver> matchExpr;
 
         public NumericCodec(Expression<Integer, Resolver> sizeExpr,
-                ByteOrder byteOrder, NumericType type,
-                Expression<Integer, Resolver> matchExpr) {
+                            ByteOrder byteOrder, NumericType type,
+                            Expression<Integer, Resolver> matchExpr) {
             this.sizeExpr = sizeExpr;
             this.byteOrder = byteOrder;
             this.type = type;
@@ -244,7 +237,7 @@ public class NumberCodecFactory implements CodecFactory {
         }
 
         public Object decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                             Builder builder) throws DecodingException {
             int size = ((Number) (this.sizeExpr.eval(resolver))).intValue();
             Object result = type.decode(buffer, size, byteOrder);
             if (matchExpr != null) {
@@ -266,8 +259,12 @@ public class NumberCodecFactory implements CodecFactory {
             return result;
         }
 
+        public void encode(Object value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
+        }
+
         public Class<?>[] getTypes() {
-            return new Class[] { type.getType() };
+            return new Class[]{type.getType()};
         }
 
         public Expression<Integer, Resolver> getSize() {
@@ -321,8 +318,8 @@ public class NumberCodecFactory implements CodecFactory {
                                                 Documenters
                                                         .forExpression(sizeExpr))
                                         .text("-bit integer value (").document(
-                                                Documenters
-                                                        .forByteOrder(byteOrder))
+                                        Documenters
+                                                .forByteOrder(byteOrder))
                                         .text(")");
                             }
                         }
@@ -345,7 +342,7 @@ public class NumberCodecFactory implements CodecFactory {
         }
 
         public String toString() {
-            return "Codec of " + byteOrder +  " " + type; 
+            return "Codec of " + byteOrder + " " + type;
         }
 
     }

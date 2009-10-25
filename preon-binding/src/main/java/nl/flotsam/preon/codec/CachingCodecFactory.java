@@ -32,26 +32,15 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import nl.flotsam.limbo.Expression;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecConstructionListener;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
 import nl.flotsam.preon.util.AnnotationUtils;
+
+import java.lang.reflect.AnnotatedElement;
+import java.util.*;
 
 /**
  * An implementation of the {@link CodecFactory} interface that will prevent the
@@ -187,6 +176,10 @@ public class CachingCodecFactory implements CodecFactory {
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
             return codec.decode(buffer, resolver, builder);
+        }
+
+        public void encode(T value, BitChannel channel, Resolver resolver) {
+            throw new UnsupportedOperationException();
         }
 
         public Class<?>[] getTypes() {

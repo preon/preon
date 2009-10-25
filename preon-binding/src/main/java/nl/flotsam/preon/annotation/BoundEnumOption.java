@@ -37,13 +37,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import nl.flotsam.preon.codec.EnumCodecFactory;
-
 /**
  * An annotation used to annotate enumeration values, in order to make sure they can be
  * mapped to long values read from the {@link BitBuffer}.
  * 
- * @see EnumCodecFactory
+ * @see nl.flotsam.preon.codec.EnumCodec.EnumCodecFactory
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

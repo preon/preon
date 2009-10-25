@@ -32,20 +32,18 @@
  */
 package nl.flotsam.preon.channel;
 
+import nl.flotsam.preon.buffer.ByteOrder;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.ByteOrder;
-
-import org.junit.Test;
-import static org.junit.Assert.assertThat;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-import static org.hamcrest.CoreMatchers.is;
-import nl.flotsam.preon.channel.OutputStreamBitChannel;
 
 @RunWith(MockitoJUnitRunner.class)
 public class OutputStreamBitChannelTest {
@@ -111,8 +109,8 @@ public class OutputStreamBitChannelTest {
     @Test
     public void shouldAcceptInts() throws IOException {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
-        channel.write(12, (int) 0xfff, ByteOrder.BIG_ENDIAN); // 1111 1111 1111
-        channel.write(4, (int) 0x0, ByteOrder.BIG_ENDIAN); // 0000
+        channel.write(12, (int) 0xfff, ByteOrder.BigEndian); // 1111 1111 1111
+        channel.write(4, (int) 0x0, ByteOrder.BigEndian); // 0000
         verify(out).write((byte) Integer.parseInt("11111111", 2));
         verify(out).write((byte) Integer.parseInt("11110000", 2));
         verifyNoMoreInteractions(out);
@@ -121,7 +119,7 @@ public class OutputStreamBitChannelTest {
     @Test
     public void shouldAcceptIntsAndBytes() throws IOException {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
-        channel.write(12, (int) 0xfff, ByteOrder.BIG_ENDIAN); // 1111 1111 1111
+        channel.write(12, (int) 0xfff, ByteOrder.BigEndian); // 1111 1111 1111
         channel.write(5, (byte) 0x0); // 0000 0
         verify(out).write((byte) Integer.parseInt("11111111", 2));
         verify(out).write((byte) Integer.parseInt("11110000", 2));
@@ -131,8 +129,8 @@ public class OutputStreamBitChannelTest {
     @Test
     public void shouldAcceptLittleEndian() throws IOException {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
-        channel.write(12, (int) 0xf00, ByteOrder.LITTLE_ENDIAN); // 1111 0000 0000 
-        channel.write(4, (int) 0x0, ByteOrder.LITTLE_ENDIAN); // 0000
+        channel.write(12, (int) 0xf00, ByteOrder.LittleEndian); // 1111 0000 0000 
+        channel.write(4, (int) 0x0, ByteOrder.LittleEndian); // 0000
         // What I expect:
         // 0000 0000 1111 0000
         verify(out).write((byte) Integer.parseInt("00000000", 2));
@@ -143,7 +141,7 @@ public class OutputStreamBitChannelTest {
     @Test
     public void shouldAcceptLongs() throws IOException {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
-        channel.write(12, Long.MAX_VALUE / 2, ByteOrder.BIG_ENDIAN); // 1111 1111 1111
+        channel.write(12, Long.MAX_VALUE / 2, ByteOrder.BigEndian); // 1111 1111 1111
         channel.write(5, (byte) 0x0); // 0000 0
         verify(out).write((byte) Integer.parseInt("11111111", 2));
         verify(out).write((byte) Integer.parseInt("11110000", 2));
