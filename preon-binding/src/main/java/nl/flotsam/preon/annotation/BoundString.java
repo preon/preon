@@ -32,11 +32,11 @@
  */
 package nl.flotsam.preon.annotation;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.nio.charset.Charset;
 
 /**
  * An annotation for adding metadata to String fields, informing the framework how to decode and encode the data.
@@ -52,18 +52,26 @@ public @interface BoundString {
         ASCII("US-ASCII"),
         ISO_8859_1("ISO-8859-1");
 
-        private Charset charset;
+        private String charset;
 
-        Encoding(String name) {
-            this.charset = Charset.forName(name);
+        Encoding(String charset) {
+            this.charset = charset;
         }
 
         public String decode(byte[] bytes) {
-            return new String(bytes, charset);
+            try {
+                return new String(bytes, charset);
+            } catch (UnsupportedEncodingException e) {
+                throw new IllegalStateException("Character set " + charset + " not supported.");
+            }
         }
 
         public byte[] encode(String text) {
-            return text.getBytes(charset);
+            try {
+                return text.getBytes(charset);
+            } catch (UnsupportedEncodingException e) {
+                throw new IllegalStateException("Character set " + charset + " not supported.");
+            }
         }
 
     }
