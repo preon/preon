@@ -32,18 +32,16 @@
  */
 package nl.flotsam.preon.annotation;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.charset.Charset;
 
 /**
- * An annotation for adding metadata to String fields, informing the framework
- * how to decode and encode the data.
- * 
+ * An annotation for adding metadata to String fields, informing the framework how to decode and encode the data.
+ *
  * @author Wilfred Springer
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
@@ -51,49 +49,43 @@ public @interface BoundString {
 
     public enum Encoding {
 
-        ASCII {
+        ASCII("US-ASCII"),
+        ISO_8859_1("ISO-8859-1");
 
-            public String decode(byte[] buffer)
-                    throws UnsupportedEncodingException {
-                return new String(buffer, "US-ASCII");
-            }
+        private Charset charset;
 
-        },
+        Encoding(String name) {
+            this.charset = Charset.forName(name);
+        }
 
-        ISO_8859_1 {
+        public String decode(byte[] bytes) {
+            return new String(bytes, charset);
+        }
 
-            public String decode(byte[] buffer)
-                    throws UnsupportedEncodingException {
-                return new String(buffer, "ISO-8859-1");
-            }
-
-        };
-        
-        public abstract String decode(byte[] buffer)
-                throws UnsupportedEncodingException;
+        public byte[] encode(String text) {
+            return text.getBytes(charset);
+        }
 
     }
 
     /**
      * Returns the number of bytes to be interpreted as a String.
-     * 
-     * @return The number of bytes to be interpreted as a String. (Can be a
-     *         Limbo expression.)
+     *
+     * @return The number of bytes to be interpreted as a String. (Can be a Limbo expression.)
      */
     String size() default "";
 
     /**
      * Returns the type of encoding used for the String.
-     * 
+     *
      * @return The type of encoding used for the String.
      */
     Encoding encoding() default Encoding.ASCII;
 
     /**
      * The String that needs to be matched.
-     * 
-     * @return The String that needs to be matched. Or the empty String if
-     *         matching is not important.
+     *
+     * @return The String that needs to be matched. Or the empty String if matching is not important.
      */
     String match() default "";
 
@@ -103,6 +95,8 @@ public @interface BoundString {
 
         byte convert(byte in);
 
+        byte revert(byte in);
+
         String getDescription();
 
     }
@@ -110,6 +104,10 @@ public @interface BoundString {
     public class NullConverter implements ByteConverter {
 
         public byte convert(byte in) {
+            return in;
+        }
+
+        public byte revert(byte in) {
             return in;
         }
 

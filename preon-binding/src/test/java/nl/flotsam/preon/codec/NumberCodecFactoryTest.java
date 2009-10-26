@@ -44,13 +44,11 @@ import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
-import nl.flotsam.preon.codec.NumberCodecFactory;
 
-import org.easymock.EasyMock;
 import static org.easymock.EasyMock.*;
 
 /**
- * A collection of tests for the {@link NumberCodecFactory}.
+ * A collection of tests for the {@link nl.flotsam.preon.codec.NumericCodec.Factory}.
  * 
  * @author Wilfred Springer
  * 
@@ -69,7 +67,7 @@ public class NumberCodecFactoryTest extends TestCase {
 
     private BoundNumber boundNumber;
 
-    private NumberCodecFactory factory = new NumberCodecFactory();
+    private NumericCodec.Factory factory = new NumericCodec.Factory();
 
     public void setUp() {
         metadata = createMock(AnnotatedElement.class);

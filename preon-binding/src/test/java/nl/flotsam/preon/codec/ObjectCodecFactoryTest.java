@@ -51,7 +51,6 @@ import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.annotation.TypePrefix;
 import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.codec.ObjectCodecFactory;
 
 import org.easymock.EasyMock;
 
@@ -89,7 +88,7 @@ public class ObjectCodecFactoryTest extends TestCase {
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(true).anyTimes();
         expect(builder.create(TestObject1.class)).andReturn(value);
         replay(metadata, delegate, buffer, resolver, builder);
-        ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
+        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
         Codec<TestObject1> codec = factory.create(metadata, TestObject1.class, null);
         assertNotNull(codec);
         TestObject1 result = codec.decode(buffer, resolver, builder);
@@ -103,7 +102,7 @@ public class ObjectCodecFactoryTest extends TestCase {
         TestObject1 value = new TestObject1();
         expect(builder.create(TestObject1.class)).andReturn(value);
         replay(metadata, delegate, buffer, resolver, builder);
-        ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
+        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
         Codec<TestObject1> codec = factory.create(null, TestObject1.class, null);
         assertNotNull(codec);
         TestObject1 result = codec.decode(buffer, resolver, builder);
@@ -124,7 +123,7 @@ public class ObjectCodecFactoryTest extends TestCase {
         TestObject1 value = new TestObject1();
         expect(builder.create(TestObject1.class)).andReturn(value);
         replay(metadata, delegate, buffer, resolver, settings, builder, choices);
-        ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
+        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
         Codec<TestObject1> codec = factory.create(metadata, TestObject1.class, null);
         assertNotNull(codec);
         TestObject1 result = codec.decode(buffer, resolver, builder);
@@ -141,7 +140,7 @@ public class ObjectCodecFactoryTest extends TestCase {
         TestObject1 value = new TestObject1();
         expect(builder.create(TestObject1.class)).andReturn(value);
         replay(metadata, delegate, buffer, resolver, settings, builder);
-        ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
+        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
         Codec<TestObject1> codec = factory.create(metadata, TestObject1.class, null);
         assertNotNull(codec);
         TestObject1 result = codec.decode(buffer, resolver, builder);
@@ -171,7 +170,7 @@ public class ObjectCodecFactoryTest extends TestCase {
                 delegate.create((AnnotatedElement) EasyMock.isNull(), EasyMock.isA(Class.class),
                         (ResolverContext) EasyMock.isNull())).andReturn(codec2);
         replay(metadata, delegate, buffer, resolver, settings, codec1, codec2, choices);
-        ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
+        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
         try {
             Codec<TestObject1> created = factory.create(metadata, TestObject1.class, null);
             fail("Expecting failure due to missing prefixes.");
@@ -203,7 +202,7 @@ public class ObjectCodecFactoryTest extends TestCase {
         expect(codecTest3.decode(buffer, resolver, builder)).andReturn(new TestObject3());
         replay(metadata, delegate, buffer, resolver, settings, codecTest3, codecTest4, builder,
                 choices);
-        ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
+        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
         Codec<TestObject1> codec = factory.create(metadata, TestObject1.class, null);
         assertNotNull(codec);
         TestObject1 result = codec.decode(buffer, resolver, builder);

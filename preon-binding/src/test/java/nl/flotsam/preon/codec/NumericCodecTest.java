@@ -30,23 +30,41 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.limbo;
+package nl.flotsam.preon.codec;
 
+import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
-import nl.flotsam.preon.binding.Binding;
+import nl.flotsam.preon.buffer.ByteOrder;
+import nl.flotsam.preon.channel.BitChannel;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.List;
+import java.io.IOException;
 
-/**
- * A {@link ResolverContext} that also provides access to all bindings defined for a certain type.
- */
-public interface ObjectResolverContext extends ResolverContext {
+@RunWith(MockitoJUnitRunner.class)
+public class NumericCodecTest {
 
-	Resolver getResolver(Object context, Resolver resolver);
-	
-	List<Binding> getBindings();
-	
-    void add(String name, Binding binding);
-    
+    @Mock
+    private Resolver resolver;
+
+    @Mock
+    private Expression<Integer, Resolver> size;
+
+    @Mock
+    private Expression<Integer, Resolver> matchExpression;
+
+    @Mock
+    private BitChannel channel;
+
+    @Test
+    public void shouldEncodeCorrectly() throws IOException {
+        NumericCodec codec = new NumericCodec(size, ByteOrder.BigEndian, NumericCodec.NumericType.Long, matchExpression);
+        when(size.eval(resolver)).thenReturn(3);
+        codec.encode(new Long(12L), channel, resolver);
+        Mockito.verify(channel).write(3, 12L, ByteOrder.BigEndian);
+    }
 }

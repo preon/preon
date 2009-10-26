@@ -30,23 +30,45 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.limbo;
+package nl.flotsam.preon.codec;
 
+import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
-import nl.flotsam.preon.binding.Binding;
+import nl.flotsam.preon.annotation.BoundString;
+import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.channel.OutputStreamBitChannel;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Matchers;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
 
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
-/**
- * A {@link ResolverContext} that also provides access to all bindings defined for a certain type.
- */
-public interface ObjectResolverContext extends ResolverContext {
+@RunWith(org.mockito.runners.MockitoJUnitRunner.class)
+public class FixedLengthStringCodecTest {
 
-	Resolver getResolver(Object context, Resolver resolver);
-	
-	List<Binding> getBindings();
-	
-    void add(String name, Binding binding);
-    
+    @Mock
+    private Resolver resolver;
+
+    @Mock
+    private Expression<Integer, Resolver> sizeExpr;
+
+    @Test
+    public void shouldEncodeCorrectly() throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        BitChannel channel = new OutputStreamBitChannel(out);
+        when(sizeExpr.eval(Matchers.any(Resolver.class))).thenReturn(4);
+        FixedLengthStringCodec codec =
+                new FixedLengthStringCodec(BoundString.Encoding.ASCII, sizeExpr, null, new BoundString.NullConverter());
+        codec.encode("Whatever", channel, resolver);
+        out.flush();
+        byte[] result = out.toByteArray();
+        assertThat(result.length, is(4));
+        assertThat(new String(result, "US-ASCII"), is("What"));
+    }
+
 }

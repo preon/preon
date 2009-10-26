@@ -39,8 +39,10 @@ import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.codec.ObjectCodecFactory;
+
+import java.io.IOException;
 
 /**
  * The interface of objects that are able to load object state from a
@@ -51,7 +53,7 @@ import nl.flotsam.preon.codec.ObjectCodecFactory;
  * 
  * <p>
  * The {@link Binding} abstraction is key to the inner workings of the
- * {@link ObjectCodecFactory}. The reason why it is a public interface instead
+ * {@link nl.flotsam.preon.codec.ObjectCodec.Factory}. The reason why it is a public interface instead
  * of an internal one is to allow you to plugin in other kinds of Binding. The
  * typical example here is the {@link ConditionalBindingFactory}. This
  * {@link BindingFactory} creates {@link Binding Binding} instances that respect
@@ -157,4 +159,12 @@ public interface Binding {
      */
     Class<?> getType();
 
+    /**
+     * Saves the state of the bound value to the {@link nl.flotsam.preon.channel.BitChannel} passed in.
+     *
+     * @param value The value to be stored.
+     * @param channel The channel receiving the encoded representation.
+     * @param resolver The resolver, used to resolve variable references.
+     */
+    void save(Object value, BitChannel channel, Resolver resolver) throws IOException;
 }

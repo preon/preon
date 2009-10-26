@@ -32,31 +32,21 @@
  */
 package nl.flotsam.preon.binding;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.util.Set;
-
+import edu.emory.mathcs.backport.java.util.Collections;
+import nl.flotsam.limbo.*;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.If;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.Documenters;
 
-import nl.flotsam.limbo.BindingException;
-import nl.flotsam.limbo.Document;
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.InvalidExpressionException;
-import nl.flotsam.limbo.Reference;
-
-
-import edu.emory.mathcs.backport.java.util.Collections;
+import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
+import java.lang.reflect.Field;
+import java.util.Set;
 
 /**
  * A {@link BindingFactory} that wraps another {@link BindingFactory}, creating
@@ -69,7 +59,7 @@ import edu.emory.mathcs.backport.java.util.Collections;
 public class ConditionalBindingFactory implements BindingFactory {
 
     /**
-     * The {@link BindingFactory} creating the {@link Bindings} that will be
+     * The {@link BindingFactory} creating the {@link Binding}s that will be
      * wrapped with {@link ConditionalBinding} instances.
      */
     private BindingFactory decorated;
@@ -206,6 +196,12 @@ public class ConditionalBindingFactory implements BindingFactory {
 
         public Class<?> getType() {
             return binding.getType();
+        }
+
+        public void save(Object value, BitChannel channel, Resolver resolver) throws IOException {
+            if (expr.eval(resolver)) {
+                binding.save(value, channel, resolver);
+            }
         }
 
         public <V extends SimpleContents<?>> V describe(V contents) {

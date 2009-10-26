@@ -30,23 +30,66 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.limbo;
+package nl.flotsam.preon.codec;
 
 import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.binding.Binding;
+import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.limbo.ObjectResolverContext;
+import nl.flotsam.preon.rendering.IdentifierRewriter;
+import org.junit.Before;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
+import java.util.Arrays;
 import java.util.List;
+import java.io.IOException;
 
-/**
- * A {@link ResolverContext} that also provides access to all bindings defined for a certain type.
- */
-public interface ObjectResolverContext extends ResolverContext {
+@RunWith(org.mockito.runners.MockitoJUnitRunner.class)
+public class ObjectCodecTest {
 
-	Resolver getResolver(Object context, Resolver resolver);
-	
-	List<Binding> getBindings();
-	
-    void add(String name, Binding binding);
+    @Mock
+    private ObjectResolverContext context;
+
+    @Mock
+    private IdentifierRewriter rewriter;
+
+    @Mock
+    private Binding binding1;
+
+    @Mock
+    private Binding binding2;
+
+    @Mock
+    private BitChannel channel;
+
+    @Mock
+    private Resolver resolver;
+
+    private List<Binding> listOfBindings;
+
+    @Before
+    public void prepareListOfBindings() {
+        listOfBindings = Arrays.asList(binding1, binding2);
+    }
+
+    @org.junit.Test
+    public void shouldEncodeAllFields() throws IOException {
+        ObjectCodec<Test> codec = new ObjectCodec<Test>(Test.class, rewriter, context);
+        Test value = new Test();
+        when(context.getBindings()).thenReturn(listOfBindings);
+        codec.encode(value, channel, resolver);
+        verify(binding1).save(value, channel, resolver);
+        verify(binding2).save(value, channel, resolver);
+        verifyNoMoreInteractions(binding1, binding2);
+    }
+
+    private static class Test {
+
+
+    }
     
 }

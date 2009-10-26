@@ -32,52 +32,38 @@
  */
 package nl.flotsam.preon.codec;
 
+import junit.framework.TestCase;
+import nl.flotsam.preon.Codec;
+import nl.flotsam.preon.Codecs;
+import nl.flotsam.preon.Codecs.DocumentType;
+import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.annotation.*;
+import nl.flotsam.preon.annotation.Choices.Choice;
+import nl.flotsam.preon.binding.BindingFactory;
+import nl.flotsam.preon.binding.ConditionalBindingFactory;
+import nl.flotsam.preon.binding.StandardBindingFactory;
+import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
+import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
+import nl.flotsam.preon.limbo.ImportStatic;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.Codecs.DocumentType;
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundEnumOption;
-import nl.flotsam.preon.annotation.BoundList;
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.annotation.BoundObject;
-import nl.flotsam.preon.annotation.BoundString;
-import nl.flotsam.preon.annotation.Choices;
-import nl.flotsam.preon.annotation.If;
-import nl.flotsam.preon.annotation.TypePrefix;
-import nl.flotsam.preon.annotation.Choices.Choice;
-import nl.flotsam.preon.binding.BindingFactory;
-import nl.flotsam.preon.binding.ConditionalBindingFactory;
-import nl.flotsam.preon.binding.StandardBindingFactory;
-import nl.flotsam.preon.buffer.ByteOrder;
-import static nl.flotsam.preon.buffer.ByteOrder.*;
-import nl.flotsam.preon.codec.CompoundCodecFactory;
-import nl.flotsam.preon.codec.ListCodecFactory;
-import nl.flotsam.preon.codec.NumberCodecFactory;
-import nl.flotsam.preon.codec.ObjectCodecFactory;
-import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
-import nl.flotsam.preon.limbo.ImportStatic;
-
-import junit.framework.TestCase;
-
 public class IntegrationTest extends TestCase {
 
     private CompoundCodecFactory factory;
 
-    private ObjectCodecFactory objectCodecFactory;
+    private ObjectCodec.Factory objectCodecFactory;
 
     public void setUp() {
         factory = new CompoundCodecFactory();
         BindingFactory bindingFactory = new StandardBindingFactory();
         bindingFactory = new ConditionalBindingFactory(bindingFactory);
-        objectCodecFactory = new ObjectCodecFactory(factory, bindingFactory);
-        factory.add(new NumberCodecFactory());
+        objectCodecFactory = new ObjectCodec.Factory(factory, bindingFactory);
+        factory.add(new NumericCodec.Factory());
         factory.add(new ListCodecFactory(factory));
         factory.add(objectCodecFactory);
     }

@@ -32,13 +32,13 @@
  */
 package nl.flotsam.preon.buffer;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * An implementation of {@link BitBuffer} wrapping a {@link ByteBuffer}.
@@ -87,8 +87,6 @@ public class DefaultBitBuffer implements BitBuffer {
 	 * Read byte buffer containing binary stream and set the bit pointer
 	 * position to 0.
 	 * 
-	 * @param inputByteBuffer
-	 *            input buffered byte stream
 	 */
 	public DefaultBitBuffer(String fileName) {
 

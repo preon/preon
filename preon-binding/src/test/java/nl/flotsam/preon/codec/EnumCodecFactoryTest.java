@@ -32,10 +32,6 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-import java.nio.ByteBuffer;
-
-import junit.framework.TestCase;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.annotation.BoundEnumOption;
@@ -43,20 +39,28 @@ import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.buffer.DefaultBitBuffer;
-
 import org.easymock.EasyMock;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import org.junit.Before;
+import org.junit.Test;
 
-public class EnumCodecFactoryTest extends TestCase {
+import java.lang.reflect.AnnotatedElement;
+import java.nio.ByteBuffer;
+
+public class EnumCodecFactoryTest {
 
 	private AnnotatedElement metadata;
 
 	private BoundNumber boundNumber;
 
+    @Before
 	public void setUp() {
 		metadata = EasyMock.createMock(AnnotatedElement.class);
 		boundNumber = EasyMock.createMock(BoundNumber.class);
 	}
 
+    @Test
 	public void testHappyPath() throws DecodingException {
 		// Pre-play behaviour
 		EasyMock.expect(metadata.isAnnotationPresent(BoundNumber.class))

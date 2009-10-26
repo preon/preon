@@ -30,23 +30,57 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.limbo;
+package nl.flotsam.preon.codec;
 
+import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
-import nl.flotsam.preon.binding.Binding;
+import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
+import nl.flotsam.preon.channel.BitChannel;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-import java.util.List;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * A {@link ResolverContext} that also provides access to all bindings defined for a certain type.
- */
-public interface ObjectResolverContext extends ResolverContext {
+@RunWith(org.mockito.runners.MockitoJUnitRunner.class)
+public class EnumCodecTest {
 
-	Resolver getResolver(Object context, Resolver resolver);
-	
-	List<Binding> getBindings();
-	
-    void add(String name, Binding binding);
-    
+    @Mock
+    private Expression<Integer, Resolver> size;
+
+    private final Map<Long, Direction> map;
+
+    @Mock
+    private BitChannel channel;
+
+    @Mock
+    private Resolver resolver;
+
+    public EnumCodecTest() {
+        this.map = new HashMap<Long, Direction>();
+        map.put(1L, Direction.Forward);
+        map.put(2L, Direction.Backward);
+    }
+
+    @Test
+    public void shouldEncodeCorrectly() throws IOException {
+        int nrbits = 2;
+        EnumCodec<Direction> codec = new EnumCodec<Direction>(Direction.class, map, size, BigEndian);
+        when(size.eval(org.mockito.Matchers.any(Resolver.class))).thenReturn(nrbits);
+        codec.encode(Direction.Backward, channel, resolver);
+        verify(channel).write(nrbits, 2L, BigEndian);
+        verifyNoMoreInteractions(channel);
+        verifyNoMoreInteractions(resolver);
+    }
+
+    public enum Direction {
+        Forward,
+        Backward
+    }
+
 }

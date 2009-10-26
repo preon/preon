@@ -61,7 +61,7 @@ public interface Codec<T> {
      * @param builder
      *            The object responsible for creating default instances of
      *            objects, when needed. (In reality, this is most likely going
-     *            to be important to {@link nl.flotsam.preon.codec.ObjectCodecFactory
+     *            to be important to {@link nl.flotsam.preon.codec.ObjectCodec.Factory
      *            ObjectCodecFactories} only, but in order to make sure the
      *            {@link Builder} arrives there, we need to have the ability to
      *            pass it in.

@@ -32,30 +32,23 @@
  */
 package nl.flotsam.preon.binding;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
-
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.ctx.VariableResolver;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecDescriptor;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.BitBufferException;
+import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.reflect.ReflectionUtils;
 import nl.flotsam.preon.rendering.CamelCaseRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
+
+import java.lang.reflect.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.io.IOException;
 
 /**
  * The {@link BindingFactory} that will simply create a simple {@link Binding}
@@ -179,6 +172,10 @@ public class StandardBindingFactory implements BindingFactory {
 
         public Class<?> getType() {
             return codec.getType();
+        }
+
+        public void save(Object value, BitChannel channel, Resolver resolver) throws IOException {
+            codec.encode(value, channel, resolver);
         }
 
     }
