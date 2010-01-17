@@ -49,18 +49,16 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * A {@link CodecFactory} creating {@link Codec Codecs} slicing the
- * {@link BitBuffer} to limit the visibility of the remainder of the buffer (and
- * easily skip forward, if the data itself is not required). Triggered by the
- * {@link LengthPrefix} annotation.
- * 
+ * A {@link CodecFactory} creating {@link Codec Codecs} slicing the {@link BitBuffer} to limit the visibility of the
+ * remainder of the buffer (and easily skip forward, if the data itself is not required). Triggered by the {@link
+ * LengthPrefix} annotation.
+ *
  * @author Wilfred Springer
- * 
  */
 public class SlicingCodecDecorator implements CodecDecorator {
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
-            Class<T> type, ResolverContext context) {
+                                 Class<T> type, ResolverContext context) {
         LengthPrefix prefix = getAnnotation(metadata, type, LengthPrefix.class);
         if (prefix != null) {
             return createCodecFromLengthPrefix(decorated, prefix, context);
@@ -84,7 +82,7 @@ public class SlicingCodecDecorator implements CodecDecorator {
     }
 
     private <T> Codec<T> createCodecFromLengthPrefix(Codec<T> decorated,
-            LengthPrefix prefix, ResolverContext context) {
+                                                     LengthPrefix prefix, ResolverContext context) {
         Expression<Integer, Resolver> sizeExpr;
         sizeExpr = Expressions.createInteger(context, prefix.size());
         return new SlicingCodec<T>(decorated, new PrefixSizeCalculator(
@@ -92,7 +90,7 @@ public class SlicingCodecDecorator implements CodecDecorator {
     }
 
     private <T> Codec<T> createCodecFromSlice(Codec<T> decorated, Slice slice,
-            ResolverContext context) {
+                                              ResolverContext context) {
         Expression<Integer, Resolver> sizeExpr;
         sizeExpr = Expressions.createInteger(context, slice.size());
         return new SlicingCodec<T>(decorated, new FixedSizeCalculator(sizeExpr));
@@ -127,7 +125,7 @@ public class SlicingCodecDecorator implements CodecDecorator {
         private ByteOrder endian;
 
         public PrefixSizeCalculator(Expression<Integer, Resolver> sizeExpr,
-                ByteOrder endian) {
+                                    ByteOrder endian) {
             this.sizeExpr = sizeExpr;
             this.endian = endian;
         }
@@ -165,6 +163,22 @@ public class SlicingCodecDecorator implements CodecDecorator {
             return wrapped.decode(slice, resolver, builder);
         }
 
+        /**
+         * {@inheritDoc}
+         * <p/>
+         * In case nothing changes in the data read from the slice, then there also isn't any reason to take the slice
+         * boundaries into account when writing data. However, if something does change (like more elements getting
+         * added to a list), then the boundaries of the slice might need to be adjusted. A simple way of finding out if
+         * the size of the slice should be adjusted is to just encode the data, buffer it, determine the size of the
+         * buffer required, then write an artifacts allowing us to redetermine the slice's size, and only then empty the
+         * buffer. Creating the buffer is expensive though. In any case, we would need to do some algebra to restore the
+         * input that causes the right size of the slice to be calculated.
+         * <p/>
+         * Also note that the above will <em>only</em> work in case of a {@link nl.flotsam.preon.codec.SlicingCodecDecorator.PrefixSizeCalculator}.
+         * In any other case, the size of the slice cannot be adjusted without the caller getting responsible for the
+         * consequences. For the {@link nl.flotsam.preon.codec.SlicingCodecDecorator.PrefixSizeCalculator} we
+         * <em>do</em> however need to 'solve' the value of the prefix.
+         */
         public void encode(T value, BitChannel channel, Resolver resolver) {
             throw new UnsupportedOperationException();
         }
@@ -192,10 +206,10 @@ public class SlicingCodecDecorator implements CodecDecorator {
                                     .document(
                                             Documenters
                                                     .forExpression(calculator
-                                                            .getSize())).text(
-                                            " bits for ").document(
-                                            wrapped.getCodecDescriptor()
-                                                    .reference(Adjective.THE, false))
+                                                    .getSize())).text(
+                                    " bits for ").document(
+                                    wrapped.getCodecDescriptor()
+                                            .reference(Adjective.THE, false))
                                     .end();
                             target.document(wrapped.getCodecDescriptor()
                                     .details(bufferReference));
@@ -225,39 +239,34 @@ public class SlicingCodecDecorator implements CodecDecorator {
     }
 
     /**
-     * The interface implemented by objects that configure the
-     * {@link SlicingCodec} with a policy to determine the size of the slice.
-     * 
+     * The interface implemented by objects that configure the {@link SlicingCodec} with a policy to determine the size
+     * of the slice.
      */
     private interface SizeCalculator {
 
         /**
-         * Returns the size of the slice, without information in the BitBuffer
-         * itself.
-         * 
-         * @param resolver
-         *            The {@link Resolver}, used to evaluate size expressions.
-         * @return The size of the slice in bits, or <code>-1</code> if we can't
-         *         calculate that value.
+         * Returns the size of the slice, without information in the BitBuffer itself.
+         *
+         * @param resolver The {@link Resolver}, used to evaluate size expressions.
+         * @return The size of the slice in bits, or <code>-1</code> if we can't calculate that value.
          */
         long getSize(Resolver resolver);
 
         /**
          * Returns the size of the slice.
-         * 
-         * @param buffer
-         *            The BitBuffer, if some information needs to be read from the
-         *            buffer in order to calculate the size.
+         *
+         * @param buffer The BitBuffer, if some information needs to be read from the buffer in order to calculate the
+         *               size.
          * @return The size of the slice.
          */
         long getSize(BitBuffer buffer, Resolver resolver);
 
         /**
-         * Returns an {@link Expression} reflecting the size, as a function of
-         * parameters passed in through the resolver.
-         * 
-         * @return The {@link Expression} reflecting the size, as a function of
-         *         parameters passed in through the resolver.
+         * Returns an {@link Expression} reflecting the size, as a function of parameters passed in through the
+         * resolver.
+         *
+         * @return The {@link Expression} reflecting the size, as a function of parameters passed in through the
+         *         resolver.
          */
         Expression<Integer, Resolver> getSize();
 

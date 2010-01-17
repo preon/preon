@@ -49,6 +49,7 @@ import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.util.AnnotationWrapper;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Array;
@@ -151,7 +152,7 @@ public class ArrayCodecFactory implements CodecFactory {
         private Expression<Integer, Resolver> size;
 
         /** The {@link Codec} that will construct elements from the {@link List}. */
-        private Codec<?> codec;
+        private Codec<Object> codec;
 
         /** The type of element to be constructed. */
         private Class<?> type;
@@ -162,7 +163,7 @@ public class ArrayCodecFactory implements CodecFactory {
          * @param expr  An {@link Expression} representing the number of elements in the {@link List}.
          * @param codec The {@link Codec} constructing elements in the {@link List}.
          */
-        public ArrayCodec(Expression<Integer, Resolver> expr, Codec<?> codec,
+        public ArrayCodec(Expression<Integer, Resolver> expr, Codec<Object> codec,
                           Class<?> type) {
             this.size = expr;
             this.codec = codec;
@@ -186,8 +187,11 @@ public class ArrayCodecFactory implements CodecFactory {
             return result;
         }
 
-        public void encode(Object object, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(Object object, BitChannel channel, Resolver resolver) throws IOException {
+            int numberOfElements = size.eval(resolver);
+            for (int i = 0; i < numberOfElements; i++) {
+                codec.encode((Object) Array.get(object, i), channel, resolver);
+            }
         }
 
         /*

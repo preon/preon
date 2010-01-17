@@ -15,6 +15,10 @@
     don't see with the naked eye, but you probably rely on them
     without knowing.
   </description>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>http://kenai.com/jira/browse/PREON</url>
+  </issueManagement>
   <ciManagement>
     <system>jira</system>
     <url>http://os.xebia.com/bamboo/browse/PREON-DEF</url>
@@ -93,11 +97,6 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.5</version>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptor>src/assembly/descriptor.xml</descriptor>
@@ -156,6 +155,10 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <reportOutputDirectory>${project.reporting.outputDirectory}/apidocs/${version}</reportOutputDirectory>
+          <destDir>apidocs/${version}</destDir>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>

@@ -39,6 +39,7 @@ import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
 
+import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -128,8 +129,8 @@ public class InitCodecDecorator implements CodecDecorator {
             return result;
         }
 
-        public void encode(T value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+            codec.encode(value, channel, resolver);
         }
 
         /*

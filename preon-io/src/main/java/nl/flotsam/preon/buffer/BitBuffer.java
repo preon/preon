@@ -468,7 +468,7 @@ public interface BitBuffer {
      * BitBuffer, representing the data as bytes. It will move the current
      * position in this {@link BitBuffer} to <code>length * 8</code>.
      * 
-     * @param int
+     * @param length
      *            The number of <em>bytes</em> to be exposed throught the
      *            {@link ByteBuffer}.
      * @return A ByteBuffer providing a byte view on a slice of the data

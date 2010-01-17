@@ -78,7 +78,7 @@ public interface BitChannel {
     void write(byte[] src, int offset, int length) throws IOException;
 
     /** Writes the contents of the {@link java.nio.ByteBuffer} to the channel. */
-    void write(ByteBuffer buffer) throws IOException;
+    long write(ByteBuffer buffer) throws IOException;
 
     /** Returns the position of the bit pointer in the current byte. */
     int getRelativeBitPos();

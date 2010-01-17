@@ -32,25 +32,23 @@
  */
 package nl.flotsam.preon.sample.bytecode;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import junit.framework.TestCase;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.codec.LoggingDecorator;
 import nl.flotsam.preon.Codecs.DocumentType;
+import nl.flotsam.preon.DecodingException;
 import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileNotFoundException;
 
 public class ClassFileTest {
 
@@ -71,6 +69,12 @@ public class ClassFileTest {
     @Before
     public void constructCodec() {
         codec = Codecs.create(ClassFile.class);
+    }
+
+    @Test
+    public void printDocumentation() throws FileNotFoundException {
+        File file = new File("/tmp/documentation.html");
+        Codecs.document(codec, DocumentType.Html, file);
     }
 
     @Test

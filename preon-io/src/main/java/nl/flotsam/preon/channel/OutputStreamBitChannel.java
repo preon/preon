@@ -189,11 +189,11 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         }
     }
 
-    public void write(@Nonnull ByteBuffer buffer) throws IOException {
+    public long write(@Nonnull ByteBuffer buffer) throws IOException {
         WritableByteChannel channel = null;
         try {
             channel = Channels.newChannel(out);
-            channel.write(buffer);
+            return channel.write(buffer) * 8;
         } finally {
             channel.close();
         }

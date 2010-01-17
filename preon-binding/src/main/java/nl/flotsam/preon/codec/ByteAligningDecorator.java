@@ -41,6 +41,7 @@ import nl.flotsam.preon.annotation.ByteAlign;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.channel.BitChannel;
 
+import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 
 /**
@@ -82,13 +83,16 @@ public class ByteAligningDecorator implements CodecDecorator {
             return result;
         }
 
-        public void encode(T object, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(T object, BitChannel channel, Resolver resolver) throws IOException {
+            int bits = 8 - channel.getRelativeBitPos();
+            if (bits != 8) {
+                channel.write(bits, (byte) 0);
+            }
+            decorated.encode(object, channel, resolver);
         }
 
         public Class<?>[] getTypes() {
-            // TODO Auto-generated method stub
-            return null;
+            return decorated.getTypes();
         }
 
         public Expression<Integer, Resolver> getSize() {

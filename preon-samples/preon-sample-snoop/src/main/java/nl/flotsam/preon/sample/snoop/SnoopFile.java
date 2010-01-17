@@ -32,19 +32,12 @@
  */
 package nl.flotsam.preon.sample.snoop;
 
-import java.util.List;
-
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundBuffer;
-import nl.flotsam.preon.annotation.BoundEnumOption;
-import nl.flotsam.preon.annotation.BoundList;
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.annotation.BoundObject;
-import nl.flotsam.preon.annotation.Choices;
-import nl.flotsam.preon.annotation.Slice;
+import nl.flotsam.preon.annotation.*;
 import nl.flotsam.preon.annotation.Choices.Choice;
 import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.limbo.ImportStatic;
+
+import java.util.List;
 
 public class SnoopFile {
 
@@ -105,7 +98,11 @@ public class SnoopFile {
 		private long timestampMicroseconds;
 
 		@Slice(size = "(packetRecordLength - 24) * 8")
-		@BoundObject(selectFrom = @Choices(alternatives = @Choice(condition = "outer.header.datalinkType==DatalinkType.ETHERNET", type = EthernetFrame.class)))
+		@BoundObject(selectFrom =
+            @Choices(alternatives =
+                @Choice(condition = "outer.header.datalinkType==DatalinkType.ETHERNET", type = EthernetFrame.class)
+            )
+        )
 		private Object packetData;
 
 		public long getOriginalLength() {
