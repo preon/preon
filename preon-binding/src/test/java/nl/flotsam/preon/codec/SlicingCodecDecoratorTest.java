@@ -74,28 +74,8 @@ public class SlicingCodecDecoratorTest extends TestCase {
         context = createMock(ResolverContext.class);
     }
 
-    public void testSlicingWithLengthPrefix() throws DecodingException {
-        Test1 value = new Test1();
-
-        // Stuff happening when we are decoding
-        expect(buffer.readAsLong(8, ByteOrder.LittleEndian)).andReturn(16L);
-        expect(buffer.slice(16L)).andReturn(slice);
-        expect(decorated.decode(slice, resolver, null)).andReturn(value);
-
-        replay(metadata, prefix, decorated, resolver, buffer, slice, context);
-        SlicingCodecDecorator factory = new SlicingCodecDecorator();
-        Codec<Test1> codec = factory.decorate(decorated, metadata, Test1.class,
-                context);
-        codec.decode(buffer, resolver, null);
-
-        verify(metadata, prefix, decorated, resolver, buffer, slice, context);
-    }
-
     public void testSlicingWithSliceAnnotation() throws DecodingException {
         Test2 value = new Test2();
-
-        expect(metadata.isAnnotationPresent(LengthPrefix.class)).andReturn(
-                false);
 
         // Stuff happening when we are decoding
         expect(buffer.slice(8L)).andReturn(slice);
@@ -111,8 +91,6 @@ public class SlicingCodecDecoratorTest extends TestCase {
     }
 
     public void testNoAnnotationsNoNothing() throws DecodingException {
-        expect(metadata.isAnnotationPresent(LengthPrefix.class)).andReturn(
-                false);
         expect(metadata.isAnnotationPresent(Slice.class)).andReturn(false);
 
         replay(metadata, prefix, decorated, resolver, buffer, slice, context);
@@ -122,11 +100,6 @@ public class SlicingCodecDecoratorTest extends TestCase {
         assertEquals(codec, decorated);
 
         verify(metadata, prefix, decorated, resolver, buffer, slice, context);
-    }
-
-    @LengthPrefix(size = "8")
-    public static class Test1 {
-
     }
 
     @Slice(size = "8")
