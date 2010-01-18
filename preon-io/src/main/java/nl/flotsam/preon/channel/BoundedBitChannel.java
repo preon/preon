@@ -41,13 +41,14 @@ import java.nio.ByteBuffer;
 
 /**
  * A {@link BitChannel} wrapping around another {@link BitChannel}, preventing writing more than a certain maximum
- * number of bits.
+ * number of bits. In case anything like that happens, it will throw a {@link java.io.IOException}.
  */
 public class BoundedBitChannel implements BitChannel {
 
     private final BitChannel channel;
     private final long maxBits;
     private long written;
+    private static final String OVERRUN_MESSAGE = "Attempt to write beyond maximum number of bits allowed.";
 
     /**
      * Constructs a new instance.
@@ -67,7 +68,7 @@ public class BoundedBitChannel implements BitChannel {
             channel.write(value);
             written += 1;
         } else {
-            // TODO: Handle else case
+            throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
@@ -76,7 +77,7 @@ public class BoundedBitChannel implements BitChannel {
             channel.write(nrbits, value);
             written += nrbits;
         } else {
-            // TODO: Handle else case
+            throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
@@ -85,7 +86,7 @@ public class BoundedBitChannel implements BitChannel {
             channel.write(nrbits, value, byteOrder);
             written += nrbits;
         } else {
-            // TODO: Handle else case
+            throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
@@ -94,7 +95,7 @@ public class BoundedBitChannel implements BitChannel {
             channel.write(nrbits, value, byteOrder);
             written += nrbits;
         } else {
-            // TODO: Handle else case
+            throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
@@ -103,7 +104,7 @@ public class BoundedBitChannel implements BitChannel {
             channel.write(nrbits, value, byteOrder);
             written += nrbits;
         } else {
-            // TODO: Handle else case
+            throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
@@ -112,14 +113,14 @@ public class BoundedBitChannel implements BitChannel {
             channel.write(src, offset, length);
             written += length;
         } else {
-            // TODO: Handle else case
+            throw new IOException(OVERRUN_MESSAGE);
         }
     }
 
     public long write(ByteBuffer buffer) throws IOException {
         long written = channel.write(buffer);
         if (written > maxBits - this.written) {
-            // TODO: Handle error case
+            throw new IOException(OVERRUN_MESSAGE);
         } else {
             this.written += written;
         }
