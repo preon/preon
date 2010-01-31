@@ -38,18 +38,23 @@ import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.channel.BoundedBitChannel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.IOException;
+
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class SlicingCodecTest {
@@ -72,6 +77,9 @@ public class SlicingCodecTest {
     @Mock
     private Resolver resolver;
 
+    @Mock
+    private BitChannel channel;
+
     @Test
     public void testDecoding() throws DecodingException {
         SlicingCodec<String> codec = new SlicingCodec(wrapped, sizeExpr);
@@ -83,6 +91,18 @@ public class SlicingCodecTest {
         verify(buffer).slice(13);
         verify(wrapped).decode(slice, resolver, builder);
         verifyNoMoreInteractions(wrapped, sizeExpr, builder, buffer, slice, resolver);
+    }
+
+    @Test
+    public void testEncoding() throws IOException {
+        SlicingCodec<String> codec = new SlicingCodec(wrapped, sizeExpr);
+        when(sizeExpr.eval(resolver)).thenReturn(3);
+        codec.encode("DONE", channel, resolver);
+        ArgumentCaptor<BitChannel> bitChannelCaptor = ArgumentCaptor.forClass(BitChannel.class);
+        verify(wrapped).encode(eq("DONE"), bitChannelCaptor.capture(), eq(resolver));
+        verify(sizeExpr).eval(resolver);
+        assertThat(bitChannelCaptor.getValue(), instanceOf(BoundedBitChannel.class));
+        verifyNoMoreInteractions(wrapped, sizeExpr, resolver);
     }
 
 }
