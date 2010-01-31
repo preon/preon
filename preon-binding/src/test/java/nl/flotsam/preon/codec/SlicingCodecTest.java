@@ -32,48 +32,57 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.lang.reflect.AnnotatedElement;
-
+import nl.flotsam.limbo.Expression;
+import nl.flotsam.preon.Builder;
 import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.ResolverContext;
-import nl.flotsam.preon.annotation.BoundExplicitly;
+import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.buffer.BitBuffer;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
-/**
- * A {@link CodecFactory} allowing you to explicitly set the {@link Codec} to
- * use. (Triggered by the {@link BoundExplicitly} annotation.
- * 
- * @author Wilfred Springer (wis)
- * 
- */
-public class ExplicitCodecFactory implements CodecFactory {
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
-    /*
-     * (non-Javadoc)
-     * @see nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement, java.lang.Class, nl.flotsam.preon.ResolverContext)
-     */
-    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
-        if (metadata != null
-                && metadata.isAnnotationPresent(BoundExplicitly.class)) {
-            BoundExplicitly settings = metadata
-                    .getAnnotation(BoundExplicitly.class);
-            try {
-                CodecFactory factory = settings.factory().newInstance();
-                return factory.create(metadata, type, null);
-            } catch (InstantiationException e) {
-                throw new CodecConstructionException(
-                        "Failed to construct Codec using "
-                                + settings.factory().getName());
-            } catch (IllegalAccessException e) {
-                throw new CodecConstructionException(
-                        "No permission to construct an instance of "
-                                + settings.factory().getName());
-            }
-        } else {
-            return null;
-        }
+@RunWith(MockitoJUnitRunner.class)
+public class SlicingCodecTest {
+
+    @Mock
+    private Codec<String> wrapped;
+
+    @Mock
+    private Expression<Integer, Resolver> sizeExpr;
+
+    @Mock
+    private Builder builder;
+
+    @Mock
+    private BitBuffer buffer;
+
+    @Mock
+    private BitBuffer slice;
+
+    @Mock
+    private Resolver resolver;
+
+    @Test
+    public void testDecoding() throws DecodingException {
+        SlicingCodec<String> codec = new SlicingCodec(wrapped, sizeExpr);
+        when(sizeExpr.eval(resolver)).thenReturn(13);
+        when(buffer.slice(Mockito.anyInt())).thenReturn(slice);
+        when(wrapped.decode(any(BitBuffer.class), any(Resolver.class), any(Builder.class))).thenReturn("DONE");
+        assertThat(codec.decode(buffer, resolver, builder), is("DONE"));
+        verify(sizeExpr).eval(resolver);
+        verify(buffer).slice(13);
+        verify(wrapped).decode(slice, resolver, builder);
+        verifyNoMoreInteractions(wrapped, sizeExpr, builder, buffer, slice, resolver);
     }
 
 }

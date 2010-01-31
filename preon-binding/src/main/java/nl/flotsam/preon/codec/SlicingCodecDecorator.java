@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009 Wilfred Springer
+ * Copyright (C) 2009-2010 Wilfred Springer
  *
  * This file is part of Preon.
  *
@@ -34,17 +34,10 @@ package nl.flotsam.preon.codec;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.Slice;
 import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.channel.BitChannel;
-import nl.flotsam.preon.channel.BoundedBitChannel;
-import nl.flotsam.preon.descriptor.Documenters;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
@@ -81,86 +74,6 @@ public class SlicingCodecDecorator implements CodecDecorator {
         Expression<Integer, Resolver> sizeExpr;
         sizeExpr = Expressions.createInteger(context, slice.size());
         return new SlicingCodec<T>(decorated, sizeExpr);
-    }
-
-    private static class SlicingCodec<T> implements Codec<T> {
-
-        private final Expression<Integer,Resolver> sizeExpr;
-
-        private final Codec<T> wrapped;
-
-        public SlicingCodec(Codec<T> wrapped, Expression<Integer,Resolver> sizeExpr) {
-            this.sizeExpr = sizeExpr;
-            this.wrapped = wrapped;
-        }
-
-        public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
-            BitBuffer slice = buffer
-                    .slice(sizeExpr.eval(resolver));
-            return wrapped.decode(slice, resolver, builder);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
-            wrapped.encode(value, new BoundedBitChannel(channel, sizeExpr.eval(resolver)), resolver);
-        }
-
-        public Class<?>[] getTypes() {
-            return wrapped.getTypes();
-        }
-
-        public Expression<Integer, Resolver> getSize() {
-            return sizeExpr;
-        }
-
-        public Class<?> getType() {
-            return wrapped.getType();
-        }
-
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public <C extends SimpleContents<?>> Documenter<C> details(
-                        final String bufferReference) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
-                            target.para().text("The format reserves only ")
-                                    .document(
-                                            Documenters
-                                                    .forExpression(sizeExpr))
-                                    .text(" bits for ")
-                                    .document(
-                                    wrapped.getCodecDescriptor()
-                                            .reference(Adjective.THE, false))
-                                    .end();
-                            target.document(wrapped.getCodecDescriptor()
-                                    .details(bufferReference));
-                        }
-                    };
-                }
-
-                public String getTitle() {
-                    return null;
-                }
-
-                public <C extends ParaContents<?>> Documenter<C> reference(
-                        Adjective adjective, boolean startWithCapital) {
-                    return wrapped.getCodecDescriptor().reference(adjective, false);
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return wrapped.getCodecDescriptor().summary();
-                }
-
-            };
-        }
     }
 
 }
