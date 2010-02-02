@@ -36,23 +36,15 @@ import nl.flotsam.limbo.BindingException;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.InvalidExpressionException;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.annotation.Choices;
-import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.channel.BitChannel;
-import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.util.AnnotationWrapper;
 
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Array;
 import java.util.List;
 
 /**
@@ -94,7 +86,8 @@ public class ArrayCodecFactory implements CodecFactory {
         BoundList settings = null;
         if (metadata != null
                 && (settings = metadata.getAnnotation(BoundList.class)) != null
-                && type.isArray()) {
+                && type.isArray()
+                && !settings.size().isEmpty()) {
             Expression<Integer, Resolver> expr = getSizeExpression(settings,
                     context);
             Codec<Object> elementCodec = null;
@@ -138,146 +131,6 @@ public class ArrayCodecFactory implements CodecFactory {
             }
 
         };
-    }
-
-    /**
-     * The {@link Codec} for reading the {@link List} and its members, on demand. Instances of this class will
-     * <em>not</em> create a standard {@link List} implementation and populate all of its data immediately. Instead it
-     * will create a {@link nl.flotsam.preon.util.EvenlyDistributedLazyList}, constructing its elements on the fly, only
-     * when it is required.
-     */
-    private static class ArrayCodec implements Codec<Object> {
-
-        /** The number of elements in the list. */
-        private Expression<Integer, Resolver> size;
-
-        /** The {@link Codec} that will construct elements from the {@link List}. */
-        private Codec<Object> codec;
-
-        /** The type of element to be constructed. */
-        private Class<?> type;
-
-        /**
-         * Constructs a new instance.
-         *
-         * @param expr  An {@link Expression} representing the number of elements in the {@link List}.
-         * @param codec The {@link Codec} constructing elements in the {@link List}.
-         */
-        public ArrayCodec(Expression<Integer, Resolver> expr, Codec<Object> codec,
-                          Class<?> type) {
-            this.size = expr;
-            this.codec = codec;
-            this.type = type;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
-         * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
-         */
-        public Object decode(BitBuffer buffer, Resolver resolver,
-                             Builder builder) throws DecodingException {
-            int length = size.eval(resolver).intValue();
-            Object result = Array.newInstance(type.getComponentType(), length);
-            for (int i = 0; i < length; i++) {
-                Object value = codec.decode(buffer, resolver, builder);
-                Array.set(result, i, value);
-            }
-            return result;
-        }
-
-        public void encode(Object object, BitChannel channel, Resolver resolver) throws IOException {
-            int numberOfElements = size.eval(resolver);
-            for (int i = 0; i < numberOfElements; i++) {
-                codec.encode((Object) Array.get(object, i), channel, resolver);
-            }
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nl.flotsam.preon.Codec#getTypes()
-         */
-        public Class<?>[] getTypes() {
-            return codec.getTypes();
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see nl.flotsam.preon.Codec#getSize()
-         */
-        public Expression<Integer, Resolver> getSize() {
-            return Expressions.multiply(size, codec.getSize());
-        }
-
-        public Class<?> getType() {
-            return type;
-        }
-
-        public CodecDescriptor getCodecDescriptor() {
-            return new CodecDescriptor() {
-
-                public <C extends SimpleContents<?>> Documenter<C> details(
-                        final String bufferReference) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
-                            if (size != null) {
-                                target
-                                        .para()
-                                        .text(
-                                                "The number of elements in the list ")
-                                        .text("is ")
-                                        .document(
-                                                Documenters
-                                                        .forExpression(ArrayCodec.this.size))
-                                        .text(".").end();
-                            }
-                            if (!codec.getCodecDescriptor()
-                                    .requiresDedicatedSection()) {
-                                target.document(codec.getCodecDescriptor()
-                                        .details(bufferReference));
-                            }
-                        }
-                    };
-                }
-
-                public String getTitle() {
-                    return null;
-                }
-
-                public <C extends ParaContents<?>> Documenter<C> reference(
-                        final Adjective adjective, final boolean startWithCapital) {
-                    return new Documenter<C>() {
-                        public void document(C target) {
-                            target.text(adjective.asTextPreferA(startWithCapital)).text(
-                                    "list of ").document(
-                                    codec.getCodecDescriptor().reference(
-                                            Adjective.NONE, false)).text(" elements");
-                        }
-                    };
-                }
-
-                public boolean requiresDedicatedSection() {
-                    return false;
-                }
-
-                public <C extends ParaContents<?>> Documenter<C> summary() {
-                    return new Documenter<C>() {
-                        public void document(C target) {
-                            target.document(reference(Adjective.A, true));
-                            target.text(".");
-                        }
-                    };
-                }
-
-            };
-        }
-
-        public String toString() {
-            return "Codec of array, decoding elements using " + codec;
-        }
     }
 
     /**

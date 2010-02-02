@@ -32,31 +32,24 @@
  */
 package nl.flotsam.preon.codec;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
-
-import java.lang.reflect.AnnotatedElement;
-
-import nl.flotsam.preon.Builder;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecFactory;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.annotation.Bound;
 import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.annotation.Choices;
 import nl.flotsam.preon.annotation.TypePrefix;
 import nl.flotsam.preon.buffer.BitBuffer;
-
 import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+import java.lang.reflect.AnnotatedElement;
 
-public class ObjectCodecFactoryTest extends TestCase {
+import static junit.framework.Assert.fail;
+import static org.easymock.EasyMock.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+public class ObjectCodecFactoryTest {
 
     private AnnotatedElement metadata;
 
@@ -72,6 +65,7 @@ public class ObjectCodecFactoryTest extends TestCase {
 
     private Choices choices;
 
+    @Before
     public void setUp() {
         metadata = createMock(AnnotatedElement.class);
         delegate = createMock(CodecFactory.class);
@@ -82,73 +76,8 @@ public class ObjectCodecFactoryTest extends TestCase {
         choices = createMock(Choices.class);
     }
 
-    public void testBoundNoMembers() throws DecodingException, InstantiationException,
-            IllegalAccessException {
-        TestObject1 value = new TestObject1();
-        expect(metadata.isAnnotationPresent(Bound.class)).andReturn(true).anyTimes();
-        expect(builder.create(TestObject1.class)).andReturn(value);
-        replay(metadata, delegate, buffer, resolver, builder);
-        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
-        Codec<TestObject1> codec = factory.create(metadata, TestObject1.class, null);
-        assertNotNull(codec);
-        TestObject1 result = codec.decode(buffer, resolver, builder);
-        assertNotNull(result);
-        assertEquals(value, result);
-        verify(metadata, delegate, buffer, resolver, builder);
-    }
-
-    public void testNoMetadataNoMembers() throws DecodingException, InstantiationException,
-            IllegalAccessException {
-        TestObject1 value = new TestObject1();
-        expect(builder.create(TestObject1.class)).andReturn(value);
-        replay(metadata, delegate, buffer, resolver, builder);
-        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
-        Codec<TestObject1> codec = factory.create(null, TestObject1.class, null);
-        assertNotNull(codec);
-        TestObject1 result = codec.decode(buffer, resolver, builder);
-        assertNotNull(result);
-        verify(metadata, delegate, buffer, resolver, builder);
-    }
-
-    public void testBoundObjectNoMembersNoType() throws DecodingException, InstantiationException,
-            IllegalAccessException {
-        expect(metadata.isAnnotationPresent(Bound.class)).andReturn(false).anyTimes();
-        expect(metadata.isAnnotationPresent(BoundObject.class)).andReturn(true).anyTimes();
-        expect(metadata.getAnnotation(BoundObject.class)).andReturn(settings);
-        expect(settings.selectFrom()).andReturn(choices).times(2);
-        expect(choices.alternatives()).andReturn(new Choices.Choice[0]);
-        expect(choices.defaultType()).andReturn((Class) Void.class);
-        expect(settings.type()).andReturn((Class) Void.class);
-        expect(settings.types()).andReturn(new Class[0]);
-        TestObject1 value = new TestObject1();
-        expect(builder.create(TestObject1.class)).andReturn(value);
-        replay(metadata, delegate, buffer, resolver, settings, builder, choices);
-        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
-        Codec<TestObject1> codec = factory.create(metadata, TestObject1.class, null);
-        assertNotNull(codec);
-        TestObject1 result = codec.decode(buffer, resolver, builder);
-        assertNotNull(value);
-        verify(metadata, delegate, buffer, resolver, settings, builder, choices);
-    }
-
-    public void testBoundObjectNoMembersOneType() throws DecodingException, InstantiationException,
-            IllegalAccessException {
-        expect(metadata.isAnnotationPresent(Bound.class)).andReturn(false).anyTimes();
-        expect(metadata.isAnnotationPresent(BoundObject.class)).andReturn(true).anyTimes();
-        expect(metadata.getAnnotation(BoundObject.class)).andReturn(settings);
-        expect(settings.type()).andReturn((Class) TestObject1.class).times(2);
-        TestObject1 value = new TestObject1();
-        expect(builder.create(TestObject1.class)).andReturn(value);
-        replay(metadata, delegate, buffer, resolver, settings, builder);
-        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
-        Codec<TestObject1> codec = factory.create(metadata, TestObject1.class, null);
-        assertNotNull(codec);
-        TestObject1 result = codec.decode(buffer, resolver, builder);
-        assertNotNull(value);
-        verify(metadata, delegate, buffer, resolver, settings, builder);
-    }
-
     @SuppressWarnings("unchecked")
+    @Test
     public void testBoundObjectNoMembersTwoTypesNoPrefix() throws DecodingException {
         Codec codec1 = createMock(Codec.class);
         Codec codec2 = createMock(Codec.class);
@@ -170,7 +99,7 @@ public class ObjectCodecFactoryTest extends TestCase {
                 delegate.create((AnnotatedElement) EasyMock.isNull(), EasyMock.isA(Class.class),
                         (ResolverContext) EasyMock.isNull())).andReturn(codec2);
         replay(metadata, delegate, buffer, resolver, settings, codec1, codec2, choices);
-        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
+        ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
         try {
             Codec<TestObject1> created = factory.create(metadata, TestObject1.class, null);
             fail("Expecting failure due to missing prefixes.");
@@ -180,6 +109,7 @@ public class ObjectCodecFactoryTest extends TestCase {
         verify(metadata, delegate, buffer, resolver, settings, choices);
     }
 
+    @Test
     public void testBoundObjectNoMembersTwoTypesWithPrefix() throws DecodingException {
         Codec codecTest3 = createMock(Codec.class);
         Codec codecTest4 = createMock(Codec.class);
@@ -202,7 +132,7 @@ public class ObjectCodecFactoryTest extends TestCase {
         expect(codecTest3.decode(buffer, resolver, builder)).andReturn(new TestObject3());
         replay(metadata, delegate, buffer, resolver, settings, codecTest3, codecTest4, builder,
                 choices);
-        ObjectCodec.Factory factory = new ObjectCodec.Factory(delegate);
+        ObjectCodecFactory factory = new ObjectCodecFactory(delegate);
         Codec<TestObject1> codec = factory.create(metadata, TestObject1.class, null);
         assertNotNull(codec);
         TestObject1 result = codec.decode(buffer, resolver, builder);

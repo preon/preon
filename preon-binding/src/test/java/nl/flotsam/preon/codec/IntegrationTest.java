@@ -56,13 +56,13 @@ public class IntegrationTest extends TestCase {
 
     private CompoundCodecFactory factory;
 
-    private ObjectCodec.Factory objectCodecFactory;
+    private ObjectCodecFactory objectCodecFactory;
 
     public void setUp() {
         factory = new CompoundCodecFactory();
         BindingFactory bindingFactory = new StandardBindingFactory();
         bindingFactory = new ConditionalBindingFactory(bindingFactory);
-        objectCodecFactory = new ObjectCodec.Factory(factory, bindingFactory);
+        objectCodecFactory = new ObjectCodecFactory(factory, bindingFactory);
         factory.add(new NumericCodec.Factory());
         factory.add(new ListCodecFactory(factory));
         factory.add(objectCodecFactory);

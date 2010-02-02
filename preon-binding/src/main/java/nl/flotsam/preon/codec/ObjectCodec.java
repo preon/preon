@@ -33,19 +33,12 @@
 package nl.flotsam.preon.codec;
 
 import nl.flotsam.preon.*;
-import nl.flotsam.preon.util.HidingAnnotatedElement;
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.descriptor.Documenters;
 import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.binding.Binding;
-import nl.flotsam.preon.binding.BindingFactory;
-import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.limbo.ObjectResolverContext;
-import nl.flotsam.preon.limbo.ImportSupportingObjectResolverContext;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
-import nl.flotsam.preon.rendering.ClassNameRewriter;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.pecia.SimpleContents;
@@ -54,15 +47,11 @@ import nl.flotsam.pecia.Table3Cols;
 import nl.flotsam.pecia.ParaContents;
 
 import java.util.List;
-import java.util.ArrayList;
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.io.IOException;
 
 /**
  * <p>The {@link Codec} capable of decoding instances of arbitrary classes. Typicaly, this {@link Codec} will be
- * constructed using the {@link nl.flotsam.preon.codec.ObjectCodec.Factory} companion class that's embedded in the
+ * constructed using the {@link ObjectCodecFactory} companion class that's embedded in the
  * definition of this class. If you do so, then the bindings will be based on the presence of annotations on the fields
  * of the class for which you need a {@link Codec}.</p>
  */
@@ -229,155 +218,4 @@ public class ObjectCodec<T> implements Codec<T> {
         };
     }
 
-    public static class Factory implements CodecFactory {
-
-        /** The object that will be used to construct {@link nl.flotsam.preon.binding.Binding} instances. */
-        private BindingFactory bindingFactory;
-
-        /**
-         * The object that will be used to construct the appropriate {@link nl.flotsam.preon.Codec} instance. (In order
-         * to have coverage for all fields defined.)
-         */
-        private CodecFactory codecFactory;
-
-        /** The object used to turn Java identifiers into something that is potentially readable by humans. */
-        private IdentifierRewriter rewriter = new ClassNameRewriter();
-
-        /**
-         * Constructs a new instance, using a default mechanism for constructing {@link
-         * nl.flotsam.preon.binding.Binding} instances.
-         */
-        public Factory() {
-            bindingFactory = new StandardBindingFactory();
-        }
-
-        /**
-         * Constructs a new instance, using a default mechanism for constructing {@link
-         * nl.flotsam.preon.binding.Binding} instances.
-         *
-         * @param codecFactory The {@link nl.flotsam.preon.CodecFactory} used to create <code>Codecs</code>.
-         */
-        public Factory(CodecFactory codecFactory) {
-            bindingFactory = new StandardBindingFactory();
-            this.codecFactory = codecFactory;
-        }
-
-        /**
-         * Constructs a new instance.
-         *
-         * @param codecFactory   The object used to create <code>Codecs</code>.
-         * @param bindingFactory The object used to create <code>Bindings</code>.
-         */
-        public Factory(CodecFactory codecFactory,
-                       BindingFactory bindingFactory) {
-            this.codecFactory = codecFactory;
-            this.bindingFactory = bindingFactory;
-        }
-
-        /*
-        * (non-Javadoc)
-        *
-        * @see
-        * nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement,
-        * java.lang.Class, nl.flotsam.preon.ResolverContext)
-        */
-        public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-                                   ResolverContext context) {
-            if (metadata == null) {
-                return createCodec(type, context);
-            } else if (metadata.isAnnotationPresent(Bound.class)) {
-                return createCodec(type, context);
-            } else if (metadata.isAnnotationPresent(BoundObject.class)) {
-                return createCodec(type, context, metadata);
-            } else {
-                return null;
-            }
-        }
-
-        private <T> ObjectCodec<T> createCodec(Class<T> type,
-                                               ResolverContext context) {
-            ObjectResolverContext passThroughContext = new BindingsContext(type,
-                    context);
-            passThroughContext = ImportSupportingObjectResolverContext.decorate(
-                    passThroughContext, type);
-            CodecReference reference = new CodecReference();
-            harvestBindings(type, passThroughContext, reference);
-            ObjectCodec<T> result = new ObjectCodec<T>(type, rewriter,
-                    passThroughContext);
-            reference.setCodec(result);
-            return result;
-        }
-
-        @SuppressWarnings("unchecked")
-        private <T> Codec<T> createCodec(Class<T> type, ResolverContext context,
-                                         AnnotatedElement metadata) {
-            BoundObject settings = metadata.getAnnotation(BoundObject.class);
-            // TODO: Handle type incompatibility
-            if (Void.class.equals(settings.type())) {
-                if (settings.selectFrom().alternatives().length > 0
-                        || settings.selectFrom().defaultType() != Void.class) {
-                    return (Codec<T>) new SelectFromCodec(type, settings
-                            .selectFrom(), context, codecFactory,
-                            hideChoices(metadata));
-                }
-                if (settings.types().length == 0) {
-                    return createCodec(type, context);
-                }
-                List<Codec<?>> codecs = new ArrayList<Codec<?>>();
-                for (Class valueType : settings.types()) {
-                    codecs.add(codecFactory.create(null, valueType, context));
-                }
-                CodecSelectorFactory selectorFactory = null;
-                selectorFactory = new TypePrefixSelectorFactory();
-                CodecSelector selector = selectorFactory.create(context, codecs);
-                return (Codec<T>) new SwitchingCodec(selector);
-            } else {
-                return (Codec<T>) createCodec(settings.type(), context);
-            }
-        }
-
-        private AnnotatedElement hideChoices(AnnotatedElement metadata) {
-            return new HidingAnnotatedElement(BoundObject.class, metadata);
-        }
-
-        private <T> void harvestBindings(Class<T> type,
-                                         ObjectResolverContext context, CodecReference reference) {
-            if (Object.class.equals(type)) {
-                return;
-            }
-            harvestBindings(type.getSuperclass(), context, reference);
-            Field[] fields = type.getDeclaredFields();
-            // For creating the Codecs, we already need a modified
-            // ReferenceContext, allowing us to incrementally bind to references
-            // of fields declared before.
-            for (Field field : fields) {
-                if (!Modifier.isStatic(field.getModifiers())
-                        && !field.isSynthetic()) {
-                    Codec<?> codec = codecFactory.create(field, field.getType(),
-                            context);
-                    if (codec != null) {
-                        Binding binding = bindingFactory.create(field, field,
-                                codec, context, reference);
-                        context.add(field.getName(), binding);
-                    }
-                }
-            }
-        }
-
-        private static class CodecReference implements Documenter<ParaContents<?>> {
-
-            private Codec<?> codec;
-
-            public void document(ParaContents<?> target) {
-                target.document(codec.getCodecDescriptor().reference(CodecDescriptor.Adjective.THE,
-                        false));
-            }
-
-            public void setCodec(Codec<?> codec) {
-                this.codec = codec;
-            }
-
-        }
-
-    }
 }

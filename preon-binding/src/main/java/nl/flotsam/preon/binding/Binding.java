@@ -53,7 +53,7 @@ import java.io.IOException;
  * 
  * <p>
  * The {@link Binding} abstraction is key to the inner workings of the
- * {@link nl.flotsam.preon.codec.ObjectCodec.Factory}. The reason why it is a public interface instead
+ * {@link nl.flotsam.preon.codec.ObjectCodecFactory}. The reason why it is a public interface instead
  * of an internal one is to allow you to plugin in other kinds of Binding. The
  * typical example here is the {@link ConditionalBindingFactory}. This
  * {@link BindingFactory} creates {@link Binding Binding} instances that respect

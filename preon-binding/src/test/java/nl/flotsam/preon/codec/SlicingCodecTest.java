@@ -105,4 +105,20 @@ public class SlicingCodecTest {
         verifyNoMoreInteractions(wrapped, sizeExpr, resolver);
     }
 
+//    @Test
+//    public void testIntegration() throws DecodingException {
+//        byte[] values = { 1, 2, 3, 4 };
+//        Codec<Test1> codec = Codecs.create(Test1.class);
+//        Test1 value = Codecs.decode(codec, values);
+//        assertThat(value.value.length, is(4));
+//    }
+//
+//    public static class Test1 {
+//
+//        @BoundList
+//        @Slice(size = "4")
+//        public byte[] value;
+//
+//    }
+
 }

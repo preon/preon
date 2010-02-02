@@ -50,7 +50,7 @@ import java.util.List;
  * The default {@link CodecFactory} implementation, constructing {@link Codecs}
  * based on all {@link CodecFactory CodecFactories} available by default. The
  * {@link Codec Codecs} constructed by this factory will most likely wrap an
- * {@link nl.flotsam.preon.codec.ObjectCodec.Factory}. The main difference between that {@link Codec}
+ * {@link nl.flotsam.preon.codec.ObjectCodecFactory}. The main difference between that {@link Codec}
  * and the one created by this factory is that this one actually remembers all
  * of the {@link Codec Codecs} that were constructed, making it a better
  * candidate for building documentation.
@@ -110,7 +110,7 @@ public class DefaultCodecFactory implements CodecFactory {
 
         // Create an ObjectCodecFactory that delegates to the
         // CompoundCodecFactory for each of its members.
-        ObjectCodec.Factory objectCodecFactory = new ObjectCodec.Factory(top,
+        ObjectCodecFactory objectCodecFactory = new ObjectCodecFactory(top,
                 bindingFactory);
 
         // Make sure that Codecs created by the ObjectCodecFactory can be
