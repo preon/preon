@@ -88,7 +88,7 @@ public class ArrayCodecFactory implements CodecFactory {
                 && (settings = metadata.getAnnotation(BoundList.class)) != null
                 && type.isArray()
                 && settings.size() != null
-                && !settings.size().isEmpty()) 
+                && settings.size().length() != 0) 
         {
             Expression<Integer, Resolver> expr = getSizeExpression(settings,
                     context);
