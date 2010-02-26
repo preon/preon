@@ -32,25 +32,20 @@
  */
 package nl.flotsam.preon.descriptors;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.List;
-
-import javax.xml.stream.XMLStreamException;
-
+import junit.framework.TestCase;
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.Codecs.DocumentType;
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundList;
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.annotation.BoundString;
-import nl.flotsam.preon.annotation.If;
-import nl.flotsam.preon.annotation.Purpose;
-import nl.flotsam.preon.annotation.TypePrefix;
+import nl.flotsam.preon.annotation.*;
+import nl.flotsam.preon.binding.StandardBindingFactory;
 import nl.flotsam.preon.buffer.ByteOrder;
 
-import junit.framework.TestCase;
+import javax.xml.stream.XMLStreamException;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.lang.reflect.Field;
+import java.util.List;
 
 
 public class DescriptionTest extends TestCase {
@@ -67,6 +62,27 @@ public class DescriptionTest extends TestCase {
         file = new File(file, "test.html");
         System.out.println("Writing " + file.getAbsolutePath() + "...");
         Codecs.document(codec, DocumentType.Html, file);
+    }
+    
+    public void testDescriptionWithInitCodec() throws Exception {
+    	resetBindingId();
+    	Codec<SimpleData> codec1 = Codecs.create(SimpleData.class);
+    	resetBindingId();
+    	Codec<Wrapper.SimpleData> codec2 = Codecs.create(Wrapper.SimpleData.class);
+    	ByteArrayOutputStream out1 = new ByteArrayOutputStream();
+    	ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+    	
+    	Codecs.document(codec1, DocumentType.Html, out1);
+    	Codecs.document(codec2, DocumentType.Html, out2);
+    	
+    	assertEquals(out1.toString(), out2.toString());
+    	
+    }
+    
+    public void resetBindingId() throws Exception {
+    	Field field = StandardBindingFactory.class.getDeclaredField("id");
+    	field.setAccessible(true);
+    	field.set(null, 0);
     }
 
     @Purpose("Captures point of interest data.")
@@ -118,5 +134,23 @@ public class DescriptionTest extends TestCase {
     public static class HotelPoi extends Poi {
 
     }
+    
+   
+    public static class SimpleData {
+    	
+    	@Bound
+    	byte b;
+    }
+    
+   public static class Wrapper {
+	    public static class SimpleData {
+	    	
+	    	@Bound
+	    	byte b;
+	    	
+	    	@Init
+	    	public void init() {};
+	    }
+   }
 
 }

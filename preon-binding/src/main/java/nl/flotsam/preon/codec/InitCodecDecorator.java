@@ -32,18 +32,24 @@
  */
 package nl.flotsam.preon.codec;
 
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.preon.*;
-import nl.flotsam.preon.annotation.Init;
-import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.preon.channel.BitChannel;
-import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
-
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+
+import nl.flotsam.limbo.Expression;
+import nl.flotsam.preon.Builder;
+import nl.flotsam.preon.Codec;
+import nl.flotsam.preon.CodecDecorator;
+import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.annotation.Init;
+import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.descriptor.PassThroughCodecDescriptor2;
 
 /**
  * A decorator that will inspect all methods on the object constructed by the
@@ -154,8 +160,16 @@ public class InitCodecDecorator implements CodecDecorator {
         }
 
         public CodecDescriptor getCodecDescriptor() {
-            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(), false);
+            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(), true);
         }
+
+		
+		@Override
+		public boolean equals(Object obj) {
+			if(codec != null) return codec.equals(obj);
+			if (this == obj) return true;
+			return false;
+		}
 
     }
 
