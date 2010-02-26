@@ -149,7 +149,13 @@ public class CachingCodecFactory implements CodecFactory {
                 return result;
             }
         } else {
-            return result;
+            if (result instanceof CodecHolder) {
+				CodecHolder<T> holder = (CodecHolder<T>) result;
+				if(holder.get() == null) {
+					return null;
+				}
+			}
+        	return result;
         }
     }
 
@@ -188,6 +194,10 @@ public class CachingCodecFactory implements CodecFactory {
 
         public void set(Codec<T> codec) {
             this.codec = codec;
+        }
+        
+        public Codec<T> get() {
+            return codec;
         }
 
         public Expression<Integer, Resolver> getSize() {

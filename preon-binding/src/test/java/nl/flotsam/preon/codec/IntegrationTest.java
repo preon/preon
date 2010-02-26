@@ -33,17 +33,13 @@
 package nl.flotsam.preon.codec;
 
 import junit.framework.TestCase;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.Codecs;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.Codecs.DocumentType;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.annotation.*;
 import nl.flotsam.preon.annotation.Choices.Choice;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.ConditionalBindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
-import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
 import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
 import nl.flotsam.preon.limbo.ImportStatic;
 
@@ -51,6 +47,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.List;
+
+import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
 
 public class IntegrationTest extends TestCase {
 
@@ -432,6 +430,28 @@ public class IntegrationTest extends TestCase {
         Test49 value = Codecs.decode(codec, new byte[] { 0, 0, 0, 1 });
         assertEquals(1, value.value);
     }
+    
+    public void testNoBoundFields1() {
+    	try {
+    		Codec<Test50> codec = Codecs.create(Test50.class);
+    		fail("Codec class without annotated fields passed");
+    	} catch(CodecConstructionException expected) {}
+    }
+    
+    public void testNoBoundFields2() {
+    	try {
+    		Codec<Test51> codec = Codecs.create(Test51.class);
+    		fail("Codec class without annotated fields passed");
+    	} catch(CodecConstructionException expected) {}
+    }
+    
+    public void testListWithUnboundField() throws DecodingException {
+    	Codec<Test52> codec = Codecs.create(Test52.class);
+    	byte[] data = new byte[9];
+    	data[0] = 2;
+    	Test52 out = Codecs.decode(codec, data);
+    }
+    
 
     private static class TestResolver implements Resolver {
 
@@ -911,5 +931,26 @@ public class IntegrationTest extends TestCase {
     	RIGHT
     	
     }
-
+    
+    public static class Test50 {
+    	int a;
+    }
+    
+    public static class Test51 {
+    	int a;
+    	int b;
+    }
+    
+    public static class Test52 {
+    	int a;
+    	   	
+    	@BoundList(size="1", type=Test53.class)
+    	List<Test53> l;
+    }
+    
+    public static class Test53 {
+    	private int a;
+    	@Bound
+    	private int b;
+    }
 }
