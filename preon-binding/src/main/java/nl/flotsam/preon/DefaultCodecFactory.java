@@ -41,6 +41,7 @@ import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.codec.*;
 
+import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -156,8 +157,8 @@ public class DefaultCodecFactory implements CodecFactory {
             return delegate.decode(buffer, resolver, builder);
         }
 
-        public void encode(T value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+            delegate.encode(value, channel, resolver);
         }
 
         public Class<?>[] getTypes() {

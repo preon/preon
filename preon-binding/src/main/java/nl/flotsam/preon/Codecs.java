@@ -32,47 +32,35 @@
  */
 package nl.flotsam.preon;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.commons.io.IOUtils;
-
 import com.ctc.wstx.stax.WstxOutputFactory;
 import nl.flotsam.pecia.builder.ArticleDocument;
-import nl.flotsam.pecia.builder.DocumentBuilder;
-import nl.flotsam.pecia.builder.ParaBuilder;
 import nl.flotsam.pecia.builder.base.DefaultArticleDocument;
 import nl.flotsam.pecia.builder.base.DefaultDocumentBuilder;
 import nl.flotsam.pecia.builder.html.HtmlDocumentBuilder;
 import nl.flotsam.pecia.builder.xml.StreamingXmlWriter;
 import nl.flotsam.pecia.builder.xml.XmlWriter;
 import nl.flotsam.preon.buffer.DefaultBitBuffer;
-import nl.flotsam.preon.util.CaseCorrectingParaBuilder;
+import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.channel.OutputStreamBitChannel;
+import org.apache.commons.io.IOUtils;
+
+import javax.xml.stream.XMLStreamException;
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 
 /**
- * A utility class, providing some convenience mechanisms for using and
- * documenting {@link Codec Codecs}.
- * 
+ * A utility class, providing some convenience mechanisms for using and documenting {@link Codec Codecs}.
+ *
  * @author Wilfred Springer
- * 
  */
 public class Codecs {
 
     /**
      * An enumeration of potential documentation types.
-     * 
+     *
      * @see Codecs#document(Codec, nl.flotsam.preon.Codecs.DocumentType, File)
-     * @see Codecs#document(Codec, nl.flotsam.preon.Codecs.DocumentType,
-     *      OutputStream)
-     * 
+     * @see Codecs#document(Codec, nl.flotsam.preon.Codecs.DocumentType, OutputStream)
      */
     public enum DocumentType {
 
@@ -82,20 +70,16 @@ public class Codecs {
             public DefaultDocumentBuilder createDocumentBuilder(XmlWriter writer) {
                 return new HtmlDocumentBuilder(writer, this.getClass()
                         .getResource("/default.css")) {
-                    
+
                 };
             }
         };
 
         /**
-         * Returns a {@link DefaultDocumentBuilder} instance for the given type
-         * of document.
-         * 
-         * @param writer
-         *            The {@link XmlWriter} to which the document will be
-         *            written.
-         * @return A {@link DefaultDocumentBuilder} capable of rendering the
-         *         desired document format.
+         * Returns a {@link DefaultDocumentBuilder} instance for the given type of document.
+         *
+         * @param writer The {@link XmlWriter} to which the document will be written.
+         * @return A {@link DefaultDocumentBuilder} capable of rendering the desired document format.
          */
         public abstract DefaultDocumentBuilder createDocumentBuilder(
                 XmlWriter writer);
@@ -103,19 +87,13 @@ public class Codecs {
     }
 
     /**
-     * Documents the codec, writing a document of the given type to the given
-     * file.
-     * 
-     * @param <T>
-     *            The type of objects decoded by the {@link Codec}.
-     * @param codec
-     *            The actual codec.
-     * @param type
-     *            The type of document type of the document generated.
-     * @param file
-     *            The file to which all output needs to be written.
-     * @throws FileNotFoundException
-     *             If the file cannot be written.
+     * Documents the codec, writing a document of the given type to the given file.
+     *
+     * @param <T>   The type of objects decoded by the {@link Codec}.
+     * @param codec The actual codec.
+     * @param type  The type of document type of the document generated.
+     * @param file  The file to which all output needs to be written.
+     * @throws FileNotFoundException If the file cannot be written.
      */
     public static <T> void document(Codec<T> codec, DocumentType type, File file)
             throws FileNotFoundException {
@@ -129,20 +107,15 @@ public class Codecs {
     }
 
     /**
-     * Documents the codec, writing a document of the given type to the given
-     * {@link OutputStream}.
-     * 
-     * @param <T>
-     *            The type of objects decoded by the {@link Codec}.
-     * @param codec
-     *            The actual codec.
-     * @param type
-     *            The type of document type of the document generated.
-     * @param out
-     *            The {@link OutputStream} receiving the document.
+     * Documents the codec, writing a document of the given type to the given {@link OutputStream}.
+     *
+     * @param <T>   The type of objects decoded by the {@link Codec}.
+     * @param codec The actual codec.
+     * @param type  The type of document type of the document generated.
+     * @param out   The {@link OutputStream} receiving the document.
      */
     public static <T> void document(Codec<T> codec, DocumentType type,
-            OutputStream out) {
+                                    OutputStream out) {
         WstxOutputFactory documentFactory = new WstxOutputFactory();
         XmlWriter writer;
         try {
@@ -160,16 +133,11 @@ public class Codecs {
     }
 
     /**
-     * Documents the codec, writing contents to the {@link ArticleDocument}
-     * passed in.
-     * 
-     * @param <T>
-     *            The type of objects decoded by the {@link Codec}.
-     * @param codec
-     *            The actual codec.
-     * @param document
-     *            The document in which the documentation of the Codec needs to
-     *            be generated.
+     * Documents the codec, writing contents to the {@link ArticleDocument} passed in.
+     *
+     * @param <T>      The type of objects decoded by the {@link Codec}.
+     * @param codec    The actual codec.
+     * @param document The document in which the documentation of the Codec needs to be generated.
      */
     public static <T> void document(Codec<T> codec, ArticleDocument document) {
         CodecDescriptor descriptor = codec.getCodecDescriptor();
@@ -182,17 +150,12 @@ public class Codecs {
 
     /**
      * Decodes an object from the buffer passed in.
-     * 
-     * @param <T>
-     *            The of object to be decoded.
-     * @param codec
-     *            The {@link Codec} that will take care of the actual work.
-     * @param buffer
-     *            An array of bytes holding the encoded data.
+     *
+     * @param <T>    The of object to be decoded.
+     * @param codec  The {@link Codec} that will take care of the actual work.
+     * @param buffer An array of bytes holding the encoded data.
      * @return The decoded object.
-     * @throws DecodingException
-     *             If the {@link Codec} fails to decode a value from the buffer
-     *             passed in.
+     * @throws DecodingException If the {@link Codec} fails to decode a value from the buffer passed in.
      */
     public static <T> T decode(Codec<T> codec, byte... buffer)
             throws DecodingException {
@@ -201,17 +164,12 @@ public class Codecs {
 
     /**
      * Decodes an object from the buffer passed in.
-     * 
-     * @param <T>
-     *            The of object to be decoded.
-     * @param codec
-     *            The {@link Codec} that will take care of the actual work.
-     * @param buffer
-     *            An array of bytes holding the encoded data.
+     *
+     * @param <T>    The of object to be decoded.
+     * @param codec  The {@link Codec} that will take care of the actual work.
+     * @param buffer An array of bytes holding the encoded data.
      * @return The decoded object.
-     * @throws DecodingException
-     *             If the {@link Codec} fails to decode a value from the buffer
-     *             passed in.
+     * @throws DecodingException If the {@link Codec} fails to decode a value from the buffer passed in.
      */
     public static <T> T decode(Codec<T> codec, ByteBuffer buffer)
             throws DecodingException {
@@ -221,21 +179,14 @@ public class Codecs {
 
     /**
      * Decodes an object from the buffer passed in.
-     * 
-     * @param <T>
-     *            The of object to be decoded.
-     * @param codec
-     *            The {@link Codec} that will take care of the actual work.
-     * @param file
-     *            The {@link File} providing the data to be decoded.
+     *
+     * @param <T>   The of object to be decoded.
+     * @param codec The {@link Codec} that will take care of the actual work.
+     * @param file  The {@link File} providing the data to be decoded.
      * @return The decoded object.
-     * @throws FileNotFoundException
-     *             If the {@link File} does not exist.
-     * @throws IOException
-     *             If the system fails to read data from the file.
-     * @throws DecodingException
-     *             If the {@link Codec} fails to decode a value from the buffer
-     *             passed in.
+     * @throws FileNotFoundException If the {@link File} does not exist.
+     * @throws IOException           If the system fails to read data from the file.
+     * @throws DecodingException     If the {@link Codec} fails to decode a value from the buffer passed in.
      */
     public static <T> T decode(Codec<T> codec, File file)
             throws FileNotFoundException, IOException, DecodingException {
@@ -256,33 +207,50 @@ public class Codecs {
     }
 
     /**
+     * Encodes the value to the channel passed in, using the given Codec. So why not have this operation on codec
+     * instead? Well, it <em>is</em> actually there. However, there will be quite a few overloaded versions of this
+     * operation, and Java would force you to implement these operations on <em>every Codec</em>. That's not a very
+     * attractive objection. So instead of inheritance, it's all delegation now.
+     *
+     * @param value   The object that needs to be encoded.
+     * @param codec   The codec to be used.
+     * @param channel The target {@link nl.flotsam.preon.channel.BitChannel}.
+     * @param <T>     The type of object to be encoded.
+     * @throws IOException If the {@link nl.flotsam.preon.channel.BitChannel} no longer receives the data.
+     */
+    public static <T> void encode(T value, Codec<T> codec, BitChannel channel) throws IOException {
+        codec.encode(value, channel, new NullResolver());
+    }
+
+    public static <T> byte[] encode(T value, Codec<T> codec) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        encode(value, codec, out);
+        return out.toByteArray();
+    }
+
+    public static <T> void encode(T value, Codec<T> codec, OutputStream out) throws IOException {
+        encode(value, codec, new OutputStreamBitChannel(out));
+    }
+
+    /**
      * Creates a {@link Codec} for the given type.
-     * 
-     * @param <T>
-     *            The of object constructed using the {@link Codec}.
-     * @param type
-     *            The type of object constructed using the {@link Codec}.
-     * @return A {@link Codec} capable of decoding/encoding instances of the
-     *         type passed in.
+     *
+     * @param <T>  The of object constructed using the {@link Codec}.
+     * @param type The type of object constructed using the {@link Codec}.
+     * @return A {@link Codec} capable of decoding/encoding instances of the type passed in.
      */
     public static <T> Codec<T> create(Class<T> type) {
         return new DefaultCodecFactory().create(type);
     }
 
     /**
-     * Creates a {@link Codec} for the given type, accepting an number of
-     * {@link CodecFactory CodecFactories} to be taken into account while
-     * constructing the {@link Codec}.
-     * 
-     * @param <T>
-     *            The of object constructed using the {@link Codec}.
-     * @param type
-     *            The type of object constructed using the {@link Codec}.
-     * @param factories
-     *            Additional {@link CodecFactory CodecFactories} to be used
-     *            while constructing the {@link Codec}.
-     * @return A {@link Codec} capable of decoding instances of the type passed
-     *         in.
+     * Creates a {@link Codec} for the given type, accepting an number of {@link CodecFactory CodecFactories} to be
+     * taken into account while constructing the {@link Codec}.
+     *
+     * @param <T>       The of object constructed using the {@link Codec}.
+     * @param type      The type of object constructed using the {@link Codec}.
+     * @param factories Additional {@link CodecFactory CodecFactories} to be used while constructing the {@link Codec}.
+     * @return A {@link Codec} capable of decoding instances of the type passed in.
      */
     public static <T> Codec<T> create(Class<T> type, CodecFactory... factories) {
         return new DefaultCodecFactory().create(null, type, factories,
@@ -290,21 +258,17 @@ public class Codecs {
     }
 
     /**
-     * Creates a {@link Codec} for the given type, accepting an number of
-     * {@link CodecDecorator CodecDecorators} to be taken into account while
-     * constructing the {@link Codec}.
-     * 
-     * @param <T>
-     *            The type of object constructed using the {@link Codec}.
-     * @param decorators
-     *            Additional {@link CodecDecorator CodecDecorators} to be used
-     *            while constructing the {@link Codec}.
-     * @return A {@link Codec} capable of decoding instances of the type passed
-     *         in, taking the {@link CodecDecorator CodecDecorators} into
-     *         account.
+     * Creates a {@link Codec} for the given type, accepting an number of {@link CodecDecorator CodecDecorators} to be
+     * taken into account while constructing the {@link Codec}.
+     *
+     * @param <T>        The type of object constructed using the {@link Codec}.
+     * @param decorators Additional {@link CodecDecorator CodecDecorators} to be used while constructing the {@link
+     *                   Codec}.
+     * @return A {@link Codec} capable of decoding instances of the type passed in, taking the {@link CodecDecorator
+     *         CodecDecorators} into account.
      */
     public static <T> Codec<T> create(Class<T> type,
-            CodecDecorator... decorators) {
+                                      CodecDecorator... decorators) {
         return new DefaultCodecFactory().create(null, type,
                 new CodecFactory[0], decorators);
     }

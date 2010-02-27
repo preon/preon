@@ -40,11 +40,15 @@ import nl.flotsam.preon.annotation.Choices.Choice;
 import nl.flotsam.preon.binding.BindingFactory;
 import nl.flotsam.preon.binding.ConditionalBindingFactory;
 import nl.flotsam.preon.binding.StandardBindingFactory;
+import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.channel.OutputStreamBitChannel;
 import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
 import nl.flotsam.preon.limbo.ImportStatic;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
@@ -75,6 +79,20 @@ public class IntegrationTest extends TestCase {
         assertEquals(3, result.value3);
         assertFalse(codec.getSize().isParameterized());
         assertEquals(24, codec.getSize().eval(null).intValue());
+    }
+
+    public void testEncodingBytes() throws IOException {
+        Codec<Test1> codec = Codecs.create(Test1.class);
+        Test1 object = new Test1();
+        object.value1 = 12;
+        object.value2 = 13;
+        object.value3 = 14;
+        byte[] encoded = Codecs.encode(object, codec);
+        assertNotNull(encoded);
+        assertEquals(3, encoded.length);
+        assertEquals(12, encoded[0]);
+        assertEquals(13, encoded[1]);
+        assertEquals(14, encoded[2]);
     }
 
     public void testSomeFieldsTransient() throws DecodingException, FileNotFoundException {
