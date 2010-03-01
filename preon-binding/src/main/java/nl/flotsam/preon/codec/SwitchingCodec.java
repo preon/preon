@@ -43,6 +43,7 @@ import nl.flotsam.preon.*;
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.channel.BitChannel;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -81,8 +82,9 @@ public class SwitchingCodec implements Codec<Object> {
         return codec.decode(buffer, resolver, builder);
     }
 
-    public void encode(Object value, BitChannel channel, Resolver resolver) {
-        throw new UnsupportedOperationException();
+    public void encode(Object value, BitChannel channel, Resolver resolver) throws IOException {
+        Codec codec = selector.select(value.getClass(), channel, resolver);
+        codec.encode(value, channel, resolver);
     }
 
     /*

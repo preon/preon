@@ -32,26 +32,19 @@
  */
 package nl.flotsam.preon.codec;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import nl.flotsam.limbo.Document;
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.CodecSelector;
-import nl.flotsam.preon.CodecSelectorFactory;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.*;
 import nl.flotsam.preon.CodecDescriptor.Adjective;
 import nl.flotsam.preon.annotation.TypePrefix;
 import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.buffer.ByteOrder;
+import nl.flotsam.preon.channel.BitChannel;
+
+import java.io.IOException;
+import java.util.*;
 
 /**
  * A {@link CodecSelectorFactory} that will create a {@link CodecSelector} that
@@ -124,11 +117,11 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
         public TypePrefixSelector(
                 List<Expression<Integer, Resolver>> expressions,
                 List<Codec<?>> codecs, int size) {
-            uniqueCodecs = new HashSet<Codec<?>>();
+            this.uniqueCodecs = new HashSet<Codec<?>>();
             this.codecs = codecs;
             this.expressions = expressions;
             this.size = size;
-            uniqueCodecs.addAll(codecs);
+            this.uniqueCodecs.addAll(codecs);
         }
 
         public Collection<Codec<?>> getChoices() {
@@ -145,6 +138,18 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
             }
             throw new DecodingException("No matching Codec found for value "
                     + index);
+        }
+
+        public <T> Codec<?> select(Class<T> type, BitChannel channel, Resolver resolver) throws IOException {
+            for (int i = 0; i < codecs.size(); i++) {
+                Codec<?> codec = codecs.get(i);
+                if (type.isAssignableFrom(codec.getType())) {
+                    // So we found the Codec. Now to make sure that same Codec is picked up again while decoding:
+                    channel.write(size, expressions.get(i).eval(resolver), ByteOrder.BigEndian);
+                    return codec;
+                }
+            }
+            return null;
         }
 
         public void document(final ParaContents<?> para) {

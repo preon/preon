@@ -133,6 +133,22 @@ public class IntegrationTest extends TestCase {
         assertEquals(32, codec.getSize().eval(null).intValue());
     }
 
+    public void testEncodingChoice() throws DecodingException, IOException {
+        Codec<Test28> codec = Codecs.create(Test28.class);
+        Test5a embedded = new Test5a();
+        embedded.value1 = 2;
+        embedded.value2 = 3;
+        embedded.value3 = 4;
+        Test28 object = new Test28();
+        object.value = embedded;
+        byte[] buffer = Codecs.encode(object, codec);
+        assertEquals(4, buffer.length);
+        assertEquals(1, buffer[0]);
+        assertEquals(2, buffer[1]);
+        assertEquals(3, buffer[2]);
+        assertEquals(4, buffer[3]);
+    }
+
     public void testListSingleElement() throws DecodingException, FileNotFoundException {
         Codec<Test3> codec = Codecs.create(Test3.class);
         ByteBuffer byteBuffer = ByteBuffer
