@@ -126,8 +126,8 @@ public class DefaultCodecFactory implements CodecFactory {
                 });
 
         // Not when you are constructing Lists or arrays of objects.
-        codecFactory.add(new ListCodecFactory(codecFactory));
-        codecFactory.add(new ArrayCodecFactory(codecFactory));
+        codecFactory.add(new ListCodecFactory(top));
+        codecFactory.add(new ArrayCodecFactory(top));
 
         // Add the (cached) ObjectCodecFactory as a last resort.
         codecFactory.add(cache);

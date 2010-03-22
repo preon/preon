@@ -97,7 +97,7 @@ public class ListCodecFactoryTest extends TestCase {
         expect(listSettings.type()).andReturn((Class) TestElement.class).anyTimes();
         expect(listSettings.size()).andReturn("3").times(2);
         expect(listSettings.offset()).andReturn("");
-        expect(delegate.create(isA(AnnotatedElement.class), eq(Object.class), eq(context)))
+        expect(delegate.create(isA(AnnotatedElement.class), eq(TestElement.class), eq(context)))
                 .andReturn(elementCodec);
         expect(buffer.getBitPos()).andReturn(Long.valueOf(10));
         expect(elementCodec.getSize()).andReturn(Expressions.createInteger(10, Resolver.class)).times(2);
@@ -121,13 +121,13 @@ public class ListCodecFactoryTest extends TestCase {
         verify(delegate, metadata, listSettings, elementCodec, buffer, resolver, builder, context);
     }
 
-    public void testDyamicListWithBitBufferUnderFlowException() throws DecodingException {
+    public void testDynamicListWithBitBufferUnderFlowException() throws DecodingException {
 
         // Set expectations for creating the Codec
         expect(metadata.getAnnotation(BoundList.class)).andReturn(listSettings);
         expect(listSettings.type()).andReturn((Class) TestElement.class).anyTimes();
         expect(listSettings.size()).andReturn("");
-        expect(delegate.create(isA(AnnotatedElement.class), eq(Object.class), eq(context)))
+        expect(delegate.create(isA(AnnotatedElement.class), eq(TestElement.class), eq(context)))
                 .andReturn(elementCodec);
 
         expect(buffer.getBitPos()).andReturn(1L);
@@ -147,13 +147,13 @@ public class ListCodecFactoryTest extends TestCase {
         verify(delegate, metadata, listSettings, elementCodec, buffer, resolver);
     }
 
-    public void testDyamicListWithDecodingException() throws DecodingException {
+    public void testDynamicListWithDecodingException() throws DecodingException {
 
         // Set expectations for creating the Codec
         expect(metadata.getAnnotation(BoundList.class)).andReturn(listSettings);
         expect(listSettings.type()).andReturn((Class) TestElement.class).anyTimes();
         expect(listSettings.size()).andReturn("");
-        expect(delegate.create(isA(AnnotatedElement.class), eq(Object.class), eq(context)))
+        expect(delegate.create(isA(AnnotatedElement.class), eq(TestElement.class), eq(context)))
                 .andReturn(elementCodec);
 
         expect(buffer.getBitPos()).andReturn(1L);

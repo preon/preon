@@ -32,11 +32,30 @@
  */
 package nl.flotsam.preon.codec;
 
-import nl.flotsam.limbo.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import nl.flotsam.limbo.BindingException;
+import nl.flotsam.limbo.Document;
+import nl.flotsam.limbo.Expression;
+import nl.flotsam.limbo.Expressions;
+import nl.flotsam.limbo.Reference;
+import nl.flotsam.limbo.ReferenceContext;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.preon.*;
+import nl.flotsam.preon.Builder;
+import nl.flotsam.preon.Codec;
+import nl.flotsam.preon.CodecConstructionException;
+import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecFactory;
+import nl.flotsam.preon.Codecs;
+import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundObject;
 import nl.flotsam.preon.annotation.Choices;
@@ -51,12 +70,6 @@ import nl.flotsam.preon.util.AnnotationWrapper;
 import nl.flotsam.preon.util.CodecDescriptorHolder;
 import nl.flotsam.preon.util.EvenlyDistributedLazyList;
 import nl.flotsam.preon.util.ParaContentsDocument;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A {@link CodecFactory} capable of supporting Lists. <p/> <p> There are a couple of cases that we need to clarify.
@@ -98,8 +111,8 @@ public class ListCodecFactory implements CodecFactory {
                 && (settings = metadata.getAnnotation(BoundList.class)) != null
                 && java.util.List.class.equals(type)) {
             BoundObject objectSettings = getObjectSettings(settings);
-            Codec<Object> codec = delegate.create(new AnnotationWrapper(
-                    objectSettings), Object.class, context);
+            Codec<?> codec = delegate.create(new AnnotationWrapper(
+                    objectSettings), objectSettings.type() == Void.class ? Object.class : objectSettings.type(), context);
             if (settings.size().length() == 0) {
                 // So, we don't know the number of elements in this list.
                 // This means we need to keep on reading elements until we get
@@ -661,7 +674,7 @@ public class ListCodecFactory implements CodecFactory {
                 int offset = offsets.eval(indexResolver);
                 if (i < maxSize - 1) {
                     indexResolver.setIndex(i + 1);
-                    int nextOffset = offsets.eval(indexResolver) - 1;
+                    int nextOffset = offsets.eval(indexResolver); //- 1;
                     buffer.setBitPos(curPos + offset);
                     T value = codec.decode(new SlicedBitBuffer(buffer,
                             nextOffset - offset), resolver, builder);
