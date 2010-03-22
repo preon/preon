@@ -32,6 +32,7 @@
  */
 package nl.flotsam.preon.limbo;
 
+import nl.flotsam.limbo.BindingException;
 import nl.flotsam.limbo.Reference;
 import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
@@ -77,5 +78,25 @@ public class OuterReferenceTest extends TestCase {
         // Verify
         verify(outerContext, originalContext, sampleReference, outerResolver,
                 originalResolver);
+    }
+    
+    @SuppressWarnings("unchecked")
+	public void testResolveOuterResolverNull() {
+        expect(outerContext.selectAttribute("foobar")).andReturn(
+                sampleReference);
+        expect(originalResolver.get(OuterReference.DEFAULT_OUTER_NAME))
+                .andReturn(null);
+        
+        // Replay
+        replay(outerContext, originalContext, sampleReference, outerResolver,
+                originalResolver);
+
+        OuterReference reference = new OuterReference(outerContext,
+                originalContext);
+        Reference<Resolver> result = reference.selectAttribute("foobar");
+        try {
+        	result.resolve(originalResolver);
+        	fail("BindingException expected");
+        } catch (BindingException expected) {}
     }
 }

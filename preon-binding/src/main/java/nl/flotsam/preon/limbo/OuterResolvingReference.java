@@ -136,7 +136,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
         } else {
             throw new BindingException("Failed to resolve " + outerName
                     + " to a value of the proper type; got "
-                    + outerResolver.getClass().getSimpleName());
+                    + (outerResolver == null ? outerResolver : outerResolver.getClass().getSimpleName()));
         }
     }
 
