@@ -32,16 +32,7 @@
  */
 package nl.flotsam.preon.codec;
 
-import junit.framework.TestCase;
-import nl.flotsam.preon.*;
-import nl.flotsam.preon.Codecs.DocumentType;
-import nl.flotsam.preon.annotation.*;
-import nl.flotsam.preon.annotation.Choices.Choice;
-import nl.flotsam.preon.binding.BindingFactory;
-import nl.flotsam.preon.binding.ConditionalBindingFactory;
-import nl.flotsam.preon.binding.StandardBindingFactory;
-import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
-import nl.flotsam.preon.limbo.ImportStatic;
+import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -49,7 +40,29 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
+import junit.framework.TestCase;
+import nl.flotsam.preon.Codec;
+import nl.flotsam.preon.CodecConstructionException;
+import nl.flotsam.preon.Codecs;
+import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.Codecs.DocumentType;
+import nl.flotsam.preon.annotation.Bound;
+import nl.flotsam.preon.annotation.BoundEnumOption;
+import nl.flotsam.preon.annotation.BoundList;
+import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.annotation.BoundObject;
+import nl.flotsam.preon.annotation.BoundString;
+import nl.flotsam.preon.annotation.Choices;
+import nl.flotsam.preon.annotation.If;
+import nl.flotsam.preon.annotation.Init;
+import nl.flotsam.preon.annotation.TypePrefix;
+import nl.flotsam.preon.annotation.Choices.Choice;
+import nl.flotsam.preon.binding.BindingFactory;
+import nl.flotsam.preon.binding.ConditionalBindingFactory;
+import nl.flotsam.preon.binding.StandardBindingFactory;
+import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
+import nl.flotsam.preon.limbo.ImportStatic;
 
 public class IntegrationTest extends TestCase {
 
@@ -496,7 +509,35 @@ public class IntegrationTest extends TestCase {
     	Test52 out = Codecs.decode(codec, data);
     }
     
-
+    public void testInitMethod() throws Exception {
+    	Codec<Test54> codec = Codecs.create(Test54.class);
+    	byte[] data = new byte[] {1,1,1};
+    	Test54 out = Codecs.decode(codec, data);
+    	assertEquals(0, out.b);
+    }
+    
+    public void testInitMethodInChildInstance() throws Exception {
+    	Codec<Test54> codec = Codecs.create(Test54.class);
+    	byte[] data = new byte[] {1,1,1};
+    	Test54 out = Codecs.decode(codec, data);
+    	assertEquals(0, out.instance.b);
+    }
+    
+    public void testInitMethodInChildArray() throws Exception {
+    	Codec<Test54> codec = Codecs.create(Test54.class);
+    	byte[] data = new byte[] {1,1,1};
+    	Test54 out = Codecs.decode(codec, data);
+    	assertEquals(0, out.array[0].b);
+    }
+    
+    public void testInitMethodInChildList() throws Exception {
+    	Codec<Test54> codec = Codecs.create(Test54.class);
+    	byte[] data = new byte[] {1,1,1,1};
+    	Test54 out = Codecs.decode(codec, data);
+    	assertEquals(0, out.list.get(0).b);
+    }
+    
+    
     private static class TestResolver implements Resolver {
 
         public Object get(String name) {
@@ -997,4 +1038,38 @@ public class IntegrationTest extends TestCase {
     	@Bound
     	private int b;
     }
+    
+   public static class Test54 {
+	   
+	   @Bound
+	   byte b;
+	   
+	   @BoundObject
+	   Test54_1 instance;
+	   
+	   @BoundList(size="1")
+	   Test54_1[] array;
+	   
+	   @BoundList(size="1", type=Test54_1.class)
+	   List<Test54_1> list;
+	   
+	  
+	   
+	   @Init
+	   public void init() {
+		   b = 0;
+	   }
+	   
+	   public static class Test54_1 {
+		   @Bound byte b;
+		   
+		   @Init
+		   public void init() {
+			   b = 0;
+		   }
+	   }
+   }
+    
+    
+   
 }
