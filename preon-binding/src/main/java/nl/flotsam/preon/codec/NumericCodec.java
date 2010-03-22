@@ -32,27 +32,33 @@
  */
 package nl.flotsam.preon.codec;
 
-import nl.flotsam.preon.*;
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.descriptor.Documenters;
-import nl.flotsam.preon.descriptor.NullDocumenter;
-import nl.flotsam.preon.channel.BitChannel;
-import nl.flotsam.preon.buffer.ByteOrder;
-import nl.flotsam.preon.buffer.BitBuffer;
-import nl.flotsam.limbo.Expression;
+import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
+import java.util.HashMap;
+import java.util.Map;
+
 import nl.flotsam.limbo.Document;
+import nl.flotsam.limbo.Expression;
 import nl.flotsam.limbo.Expressions;
 import nl.flotsam.limbo.util.Converters;
 import nl.flotsam.limbo.util.StringBuilderDocument;
-import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-import java.lang.reflect.AnnotatedElement;
+import nl.flotsam.pecia.SimpleContents;
+import nl.flotsam.preon.Builder;
+import nl.flotsam.preon.Codec;
+import nl.flotsam.preon.CodecDescriptor;
+import nl.flotsam.preon.CodecFactory;
+import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.Resolver;
+import nl.flotsam.preon.ResolverContext;
+import nl.flotsam.preon.annotation.Bound;
+import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.buffer.BitBuffer;
+import nl.flotsam.preon.buffer.ByteOrder;
+import nl.flotsam.preon.channel.BitChannel;
+import nl.flotsam.preon.descriptor.Documenters;
+import nl.flotsam.preon.descriptor.NullDocumenter;
 
 /** The {@link nl.flotsam.preon.Codec} capable of decoding numeric types in a sensible way. */
 public class NumericCodec implements Codec<Object> {
@@ -340,8 +346,10 @@ public class NumericCodec implements Codec<Object> {
         @SuppressWarnings({"unchecked"})
         public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type,
                                    ResolverContext context) {
-            if (NUMERIC_TYPES.keySet().contains(type)) {
-                NumericType numericType = NUMERIC_TYPES.get(type);
+            
+        	Class<?> actualType = resolveActualType(overrides, type);
+        	if (NUMERIC_TYPES.keySet().contains(actualType)) {
+                NumericType numericType = NUMERIC_TYPES.get(actualType);
                 if (overrides == null || overrides.isAnnotationPresent(Bound.class)) {
                     ByteOrder endian = ByteOrder.LittleEndian;
                     int size = numericType.getDefaultSize();
@@ -356,6 +364,10 @@ public class NumericCodec implements Codec<Object> {
                             .getAnnotation(BoundNumber.class);
                     ByteOrder endian = numericMetadata.byteOrder();
                     String size = numericMetadata.size();
+//                    if(NUMERIC_TYPES.containsKey(numericMetadata.type())) {
+//                    	numericType = NUMERIC_TYPES.get(numericMetadata.type());
+//                    }
+                    
                     if (size.length() == 0) {
                         size = Integer.toString(numericType.getDefaultSize());
                     }
@@ -371,6 +383,17 @@ public class NumericCodec implements Codec<Object> {
                 }
             }
             return null;
+        }
+        
+        public Class<?> resolveActualType(AnnotatedElement overrides, Class<?> type) {
+        	if(overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
+        		 BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
+        		 Class<?> typeOverride = numericMetadata.type();
+        		 if(typeOverride != Number.class) {
+        			 return typeOverride;
+        		 }
+        	}
+        	return type;
         }
 
     }

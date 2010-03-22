@@ -88,5 +88,13 @@ public @interface BoundNumber {
      * The value to match.
      */
     String match() default "";
+    
+    /**
+     * Type that is used in deciding the way to do the decoding/encoding.
+     * In default case the type of the field is used.
+     * 
+     * @return the type used in decoding/encoding
+     */
+    Class<? extends Number> type() default Number.class;
 
 }
