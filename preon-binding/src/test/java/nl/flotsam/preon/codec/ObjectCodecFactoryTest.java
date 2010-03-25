@@ -88,13 +88,13 @@ public class ObjectCodecFactoryTest {
         expect(choices.alternatives()).andReturn(new Choices.Choice[0]);
         expect(choices.defaultType()).andReturn((Class) Void.class);
         expect(settings.type()).andReturn((Class) Void.class);
-        expect(settings.types()).andReturn(new Class[] { TestObject1.class, TestObject2.class })
+        expect(settings.types()).andReturn(new Class[]{TestObject1.class, TestObject2.class})
                 .times(2);
         expect(
                 delegate.create((AnnotatedElement) EasyMock.isNull(), EasyMock.isA(Class.class),
                         (ResolverContext) EasyMock.isNull())).andReturn(codec1);
-        expect(codec1.getTypes()).andReturn(new Class[] { TestObject1.class });
-        expect(codec2.getTypes()).andReturn(new Class[] { TestObject2.class });
+        expect(codec1.getTypes()).andReturn(new Class[]{TestObject1.class});
+        expect(codec2.getTypes()).andReturn(new Class[]{TestObject2.class});
         expect(
                 delegate.create((AnnotatedElement) EasyMock.isNull(), EasyMock.isA(Class.class),
                         (ResolverContext) EasyMock.isNull())).andReturn(codec2);
@@ -120,11 +120,11 @@ public class ObjectCodecFactoryTest {
         expect(choices.defaultType()).andReturn((Class) Void.class);
         expect(metadata.getAnnotation(BoundObject.class)).andReturn(settings);
         expect(settings.type()).andReturn((Class) Void.class);
-        expect(settings.types()).andReturn(new Class[] { TestObject3.class, TestObject4.class })
+        expect(settings.types()).andReturn(new Class[]{TestObject3.class, TestObject4.class})
                 .times(2);
         expect(delegate.create(null, TestObject3.class, null)).andReturn(codecTest3);
-        expect(codecTest3.getTypes()).andReturn(new Class<?>[] { TestObject3.class });
-        expect(codecTest4.getTypes()).andReturn(new Class<?>[] { TestObject4.class });
+        expect(codecTest3.getTypes()).andReturn(new Class<?>[]{TestObject3.class});
+        expect(codecTest4.getTypes()).andReturn(new Class<?>[]{TestObject4.class});
         expect(delegate.create(null, TestObject4.class, null)).andReturn(codecTest4);
         // expect(codecTest3.getSize(resolver)).andReturn(6);
         // expect(codecTest4.getSize(resolver)).andReturn(6);

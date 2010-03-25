@@ -39,18 +39,17 @@ import nl.flotsam.preon.CodecFactory;
 
 
 /**
- * An annotation marking a certain field to use a *specific* type of Codec to
- * bind it to the BitBuffer. This annotation takes highest precedence.
- * 
+ * An annotation marking a certain field to use a *specific* type of Codec to bind it to the BitBuffer. This annotation
+ * takes highest precedence.
+ *
  * @author Wilfred Springer
- * 
  */
 @Target(ElementType.FIELD)
 public @interface BoundExplicitly {
 
     /**
      * The {@link CodecFactory} to use to construct the {@link Codec}.
-     * 
+     *
      * @return The {@link CodecFactory} to use to construct the {@link Codec}.
      */
     Class<? extends CodecFactory> factory();

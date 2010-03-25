@@ -52,9 +52,8 @@ import nl.flotsam.preon.buffer.ByteOrder;
 
 /**
  * A collection of tests for the {@link nl.flotsam.preon.codec.NumericCodec.Factory}.
- * 
+ *
  * @author Wilfred Springer
- * 
  */
 public class NumberCodecFactoryTest extends TestCase {
 
@@ -135,40 +134,40 @@ public class NumberCodecFactoryTest extends TestCase {
         kit.test(ByteOrder.BigEndian, "", 64, Double.NaN, null, false);
         kit.test(ByteOrder.BigEndian, "32", 32, 5.0d, null, false);
     }
-    
+
     public void testDecodingWithTypeOverrideDoubleInteger() throws DecodingException {
-    	Kit<Integer> kit = new DoubleAsIntegerKit();
-    	kit.test(ByteOrder.BigEndian, "", 64, 5, Double.class, null, false);
-    	kit.test(ByteOrder.BigEndian, "32", 32, 5, Double.class, null, false);
+        Kit<Integer> kit = new DoubleAsIntegerKit();
+        kit.test(ByteOrder.BigEndian, "", 64, 5, Double.class, null, false);
+        kit.test(ByteOrder.BigEndian, "32", 32, 5, Double.class, null, false);
     }
-    
+
     public void testDecodingWithTypeOverrideIntegerDouble() throws DecodingException {
-    	Kit<Double> kit = new IntegerAsDoubleKit();
-    	kit.test(ByteOrder.BigEndian, "", 32, 5.0, Integer.class, null, false);
-    	kit.test(ByteOrder.BigEndian, "64", 64, 5.0, Integer.class, null, false);
+        Kit<Double> kit = new IntegerAsDoubleKit();
+        kit.test(ByteOrder.BigEndian, "", 32, 5.0, Integer.class, null, false);
+        kit.test(ByteOrder.BigEndian, "64", 64, 5.0, Integer.class, null, false);
     }
 
     public abstract class Kit<T> {
-    	
-    	public void test(ByteOrder endian, String size, int readSize, T value,
-                String match, boolean expectException) throws DecodingException {
-        	test(endian, size, readSize, value, Number.class, match, expectException);
+
+        public void test(ByteOrder endian, String size, int readSize, T value,
+                         String match, boolean expectException) throws DecodingException {
+            test(endian, size, readSize, value, Number.class, match, expectException);
         }
-    	
+
         @SuppressWarnings("unchecked")
         public void test(ByteOrder endian, String size, int readSize, T value, Class<? extends Number> typeOverride,
-                String match, boolean expectException) throws DecodingException {
-        	expect(metadata.isAnnotationPresent(BoundNumber.class))
+                         String match, boolean expectException) throws DecodingException {
+            expect(metadata.isAnnotationPresent(BoundNumber.class))
                     .andReturn(true);
             expect(metadata.getAnnotation(BoundNumber.class))
                     .andReturn(boundNumber);
             expect(boundNumber.type()).andStubReturn(typeOverride);
             expect(metadata.isAnnotationPresent(Bound.class))
-            		.andReturn(false);
+                    .andReturn(false);
             expect(metadata.isAnnotationPresent(BoundNumber.class))
-            		.andReturn(true);
+                    .andReturn(true);
             expect(metadata.getAnnotation(BoundNumber.class))
-            		.andReturn(boundNumber);
+                    .andReturn(boundNumber);
             expect(boundNumber.byteOrder()).andReturn(endian);
             expect(boundNumber.size()).andReturn(size);
             expect(boundNumber.match()).andReturn(
@@ -195,9 +194,9 @@ public class NumberCodecFactoryTest extends TestCase {
         }
 
         public abstract void verifyRead(int readSize, ByteOrder endian, T value);
-        
+
         public void verifyResult(Object expected, Object actual) {
-        	assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
 
     }
@@ -259,31 +258,31 @@ public class NumberCodecFactoryTest extends TestCase {
         }
 
     }
-    
+
     public class DoubleAsIntegerKit extends Kit<Integer> {
-    	
-    	@Override
-    	public void verifyRead(int readSize, ByteOrder endian, Integer value) {
-    		new DoubleKit().verifyRead(readSize, endian, value.doubleValue());
-    	}
-    	
-    	@Override
-    	public void verifyResult(Object expected, Object actual) {
-    		assertEquals(((Number)expected).doubleValue(), actual);
-    	}
+
+        @Override
+        public void verifyRead(int readSize, ByteOrder endian, Integer value) {
+            new DoubleKit().verifyRead(readSize, endian, value.doubleValue());
+        }
+
+        @Override
+        public void verifyResult(Object expected, Object actual) {
+            assertEquals(((Number) expected).doubleValue(), actual);
+        }
     }
-    
+
     public class IntegerAsDoubleKit extends Kit<Double> {
-    	
-    	@Override
-    	public void verifyRead(int readSize, ByteOrder endian, Double value) {
-    		new IntegerKit().verifyRead(readSize, endian, value.intValue());
-    	}
-    	
-    	@Override
-    	public void verifyResult(Object expected, Object actual) {
-    		assertEquals(((Number)expected).intValue(), actual);
-    	}
+
+        @Override
+        public void verifyRead(int readSize, ByteOrder endian, Double value) {
+            new IntegerKit().verifyRead(readSize, endian, value.intValue());
+        }
+
+        @Override
+        public void verifyResult(Object expected, Object actual) {
+            assertEquals(((Number) expected).intValue(), actual);
+        }
     }
 
 }

@@ -52,17 +52,15 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The {@link CodecFactory} for {@link ObjectCodec}s.
- */
+/** The {@link CodecFactory} for {@link ObjectCodec}s. */
 public class ObjectCodecFactory implements CodecFactory {
 
     /** The object that will be used to construct {@link nl.flotsam.preon.binding.Binding} instances. */
     private BindingFactory bindingFactory;
 
     /**
-     * The object that will be used to construct the appropriate {@link nl.flotsam.preon.Codec} instance. (In order
-     * to have coverage for all fields defined.)
+     * The object that will be used to construct the appropriate {@link nl.flotsam.preon.Codec} instance. (In order to
+     * have coverage for all fields defined.)
      */
     private CodecFactory codecFactory;
 
@@ -70,16 +68,16 @@ public class ObjectCodecFactory implements CodecFactory {
     private IdentifierRewriter rewriter = new ClassNameRewriter();
 
     /**
-     * Constructs a new instance, using a default mechanism for constructing {@link
-     * nl.flotsam.preon.binding.Binding} instances.
+     * Constructs a new instance, using a default mechanism for constructing {@link nl.flotsam.preon.binding.Binding}
+     * instances.
      */
     public ObjectCodecFactory() {
         bindingFactory = new StandardBindingFactory();
     }
 
     /**
-     * Constructs a new instance, using a default mechanism for constructing {@link
-     * nl.flotsam.preon.binding.Binding} instances.
+     * Constructs a new instance, using a default mechanism for constructing {@link nl.flotsam.preon.binding.Binding}
+     * instances.
      *
      * @param codecFactory The {@link nl.flotsam.preon.CodecFactory} used to create <code>Codecs</code>.
      */
@@ -95,7 +93,7 @@ public class ObjectCodecFactory implements CodecFactory {
      * @param bindingFactory The object used to create <code>Bindings</code>.
      */
     public ObjectCodecFactory(CodecFactory codecFactory,
-                   BindingFactory bindingFactory) {
+                              BindingFactory bindingFactory) {
         this.codecFactory = codecFactory;
         this.bindingFactory = bindingFactory;
     }
@@ -107,6 +105,7 @@ public class ObjectCodecFactory implements CodecFactory {
     * nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement,
     * java.lang.Class, nl.flotsam.preon.ResolverContext)
     */
+
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
                                ResolverContext context) {
         if (metadata == null) {

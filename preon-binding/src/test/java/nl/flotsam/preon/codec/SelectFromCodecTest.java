@@ -48,13 +48,13 @@ import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.ByteOrder;
 import nl.flotsam.preon.buffer.DefaultBitBuffer;
 import junit.framework.TestCase;
+
 import static org.easymock.EasyMock.*;
 
 /**
  * A collection of tests for the {@link SelectFromCodec}.
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class SelectFromCodecTest extends TestCase {
 
@@ -88,7 +88,7 @@ public class SelectFromCodecTest extends TestCase {
         choices = new Choices() {
 
             public Choice[] alternatives() {
-                return new Choice[] { new Choice() {
+                return new Choice[]{new Choice() {
 
                     public String condition() {
                         return "prefix==0";
@@ -116,7 +116,7 @@ public class SelectFromCodecTest extends TestCase {
                         return Choice.class;
                     }
 
-                } };
+                }};
             }
 
             public ByteOrder byteOrder() {
@@ -139,8 +139,8 @@ public class SelectFromCodecTest extends TestCase {
     }
 
     public void testSelectFrom() throws DecodingException {
-        BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] { 0, 1, (byte) 255,
-                (byte) 255, (byte) 255, (byte) 255 }));
+        BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{0, 1, (byte) 255,
+                (byte) 255, (byte) 255, (byte) 255}));
 
         // We expect all Codecs to be constructed
         expect(codecFactory.create(null, Float.class, context)).andReturn(floatCodec);

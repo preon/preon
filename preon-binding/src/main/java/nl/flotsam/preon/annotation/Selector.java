@@ -38,22 +38,19 @@ import java.lang.annotation.RetentionPolicy;
 import nl.flotsam.preon.CodecSelector;
 
 /**
- * The annotation used to set a specific Selector when having to choose between
- * multiple {@link Codec Codecs}.
- * 
+ * The annotation used to set a specific Selector when having to choose between multiple {@link Codec Codecs}.
+ *
  * @author Wilfred Springer
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Selector {
 
     /**
-     * The type of {@link CodecSelector} to be used when instantiating a policy
-     * for deciding between different types of {@link Codec Codecs}.
-     * 
-     * @return The type of {@link CodecSelector} to be used when instantiating a
-     *         policy for deciding between different types of {@link Codec
-     *         Codecs}.
+     * The type of {@link CodecSelector} to be used when instantiating a policy for deciding between different types of
+     * {@link Codec Codecs}.
+     *
+     * @return The type of {@link CodecSelector} to be used when instantiating a policy for deciding between different
+     *         types of {@link Codec Codecs}.
      */
     Class<? extends CodecSelector> value();
 

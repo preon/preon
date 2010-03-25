@@ -54,11 +54,11 @@ public class AnnotationWrapper implements
     }
 
     public Annotation[] getAnnotations() {
-        return new Annotation[] { annotation };
+        return new Annotation[]{annotation};
     }
 
     public Annotation[] getDeclaredAnnotations() {
-        return new Annotation[] { annotation };
+        return new Annotation[]{annotation};
     }
 
     public boolean isAnnotationPresent(

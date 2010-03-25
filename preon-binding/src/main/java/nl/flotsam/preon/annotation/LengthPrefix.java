@@ -40,28 +40,23 @@ import nl.flotsam.preon.buffer.ByteOrder;
 
 
 /**
- * The annotation used to indicate the discriminator used to recognize an
- * instance of this class.
- * 
+ * The annotation used to indicate the discriminator used to recognize an instance of this class.
+ *
  * @author Wilfred Springer
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LengthPrefix {
 
     /**
-     * The type of endianness: either {@link ByteOrder#LittleEndian} or
-     * {@link ByteOrder#BigEndian}.
-     * 
+     * The type of endianness: either {@link ByteOrder#LittleEndian} or {@link ByteOrder#BigEndian}.
+     *
      * @return The type of endianness. Defaults to {@link ByteOrder#LittleEndian}.
      */
     ByteOrder endian() default ByteOrder.LittleEndian;
 
     /**
-     * The number of bits used to represent the numeric value. Defaults to 0,
-     * allowing the {@link Codec} to make its own decision on the number of bits
-     * to be used; however, they are expected to respect the following defaults:
-
+     * The number of bits used to represent the numeric value. Defaults to 0, allowing the {@link Codec} to make its own
+     * decision on the number of bits to be used; however, they are expected to respect the following defaults:
      */
     String size() default "";
 

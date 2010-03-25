@@ -36,9 +36,8 @@ import nl.flotsam.limbo.BindingException;
 
 /**
  * A <code>null</code> implementation of the {@link Resolver} interface.
- * 
+ *
  * @author Wilfred Springer
- * 
  */
 public class NullResolver implements Resolver {
 
@@ -46,6 +45,7 @@ public class NullResolver implements Resolver {
      * (non-Javadoc)
      * @see nl.flotsam.preon.Resolver#get(java.lang.String)
      */
+
     public Object get(String name) throws BindingException {
         throw new BindingException("Failed to resolve reference called " + name);
     }
@@ -54,6 +54,7 @@ public class NullResolver implements Resolver {
      * (non-Javadoc)
      * @see nl.flotsam.preon.Resolver#getOriginalResolver()
      */
+
     public Resolver getOriginalResolver() {
         return this;
     }

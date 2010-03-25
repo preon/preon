@@ -35,7 +35,7 @@ package nl.flotsam.preon;
 import nl.flotsam.preon.channel.BitChannel;
 
 public interface ExtendedCodec<T> extends Codec<T> {
-    
+
     void encode(T object, BitChannel channel, Resolver resolver);
 
 }

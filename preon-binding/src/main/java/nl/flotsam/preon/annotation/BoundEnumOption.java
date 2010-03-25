@@ -38,18 +38,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation used to annotate enumeration values, in order to make sure they can be
- * mapped to long values read from the {@link BitBuffer}.
- * 
+ * An annotation used to annotate enumeration values, in order to make sure they can be mapped to long values read from
+ * the {@link BitBuffer}.
+ *
  * @see nl.flotsam.preon.codec.EnumCodec.EnumCodecFactory
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface BoundEnumOption {
 
-	/**
-	 * The long value read from the {@link BitBuffer}.
-	 */
-	long value();
+    /** The long value read from the {@link BitBuffer}. */
+    long value();
 
 }

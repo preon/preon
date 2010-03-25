@@ -46,7 +46,7 @@ public class PassThroughCodecDescriptor2 implements CodecDescriptor {
         this.delegate = delegate;
         this.requiresDedicatedSection = requiresDedicatedSection;
     }
-    
+
     public <C extends SimpleContents<?>> Documenter<C> details(String bufferReference) {
         return delegate.details(bufferReference);
     }
@@ -67,5 +67,5 @@ public class PassThroughCodecDescriptor2 implements CodecDescriptor {
     public <C extends ParaContents<?>> Documenter<C> summary() {
         return delegate.summary();
     }
-    
+
 }

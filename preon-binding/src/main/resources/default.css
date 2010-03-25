@@ -31,19 +31,19 @@
  * exception statement from your version.
  */
 
-td, th { 
-font-size: 10t;
-border: 1px #ccc solid; 
-padding: 3px; 
-vertical-align: top;
+td, th {
+    font-size: 10 t;
+    border: 1px #ccc solid;
+    padding: 3px;
+    vertical-align: top;
 }
 
 th {
-text-align: left;
-font-size: 10pt;
-font-weight: bold;
+    text-align: left;
+    font-size: 10pt;
+    font-weight: bold;
 }
 
-table { 
-border-collapse: collapse; 
+table {
+    border-collapse: collapse;
 }

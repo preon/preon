@@ -38,6 +38,7 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.limbo.OuterReference;
 import junit.framework.TestCase;
+
 import static org.easymock.EasyMock.*;
 
 public class OuterReferenceTest extends TestCase {
@@ -79,14 +80,14 @@ public class OuterReferenceTest extends TestCase {
         verify(outerContext, originalContext, sampleReference, outerResolver,
                 originalResolver);
     }
-    
+
     @SuppressWarnings("unchecked")
-	public void testResolveOuterResolverNull() {
+    public void testResolveOuterResolverNull() {
         expect(outerContext.selectAttribute("foobar")).andReturn(
                 sampleReference);
         expect(originalResolver.get(OuterReference.DEFAULT_OUTER_NAME))
                 .andReturn(null);
-        
+
         // Replay
         replay(outerContext, originalContext, sampleReference, outerResolver,
                 originalResolver);
@@ -95,8 +96,9 @@ public class OuterReferenceTest extends TestCase {
                 originalContext);
         Reference<Resolver> result = reference.selectAttribute("foobar");
         try {
-        	result.resolve(originalResolver);
-        	fail("BindingException expected");
-        } catch (BindingException expected) {}
+            result.resolve(originalResolver);
+            fail("BindingException expected");
+        } catch (BindingException expected) {
+        }
     }
 }

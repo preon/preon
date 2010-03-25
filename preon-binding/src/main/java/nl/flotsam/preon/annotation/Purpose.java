@@ -38,14 +38,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * A (probably) temporary solution for adding documentation to the fields to be
- * used while generating documentation on the file format.
+ * A (probably) temporary solution for adding documentation to the fields to be used while generating documentation on
+ * the file format.
  *
  * @author Wilfred Springer
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.FIELD, ElementType.TYPE })
+@Target({ElementType.FIELD, ElementType.TYPE})
 public @interface Purpose {
 
     String value();

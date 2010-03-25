@@ -58,8 +58,8 @@ public class AgregatedListsTestObsolete extends TestCase {
         // 255 - the content of the first item's test3.value
         // 8 - the bits size of the test3.value filed in the second test3 item
         // 254 - the content of the second item's test3.value
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 2, 8, (byte) 255,
-                8, (byte) 254 });
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{2, 8, (byte) 255,
+                8, (byte) 254});
 
         Test2 result = Codecs.decode(codec, byteBuffer);
 
@@ -83,8 +83,8 @@ public class AgregatedListsTestObsolete extends TestCase {
         // 8 - the bits size of the test3.value filed in the second test3 item
         // 254 - the content of the second item's test3.value
 
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 5, 2, 8,
-                (byte) 255, 8, (byte) 254 });
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{5, 2, 8,
+                (byte) 255, 8, (byte) 254});
         Test1 result = Codecs.decode(codec, byteBuffer);
 
         assertEquals(5, result.sliceByteSize);

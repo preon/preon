@@ -46,49 +46,35 @@ import nl.flotsam.preon.util.TextUtils;
 
 /**
  * A reference to an array element.
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
- * @param <T>
- *            The type of object referenced.
+ * @param <T> The type of object referenced.
  */
 public class ArrayElementReference implements Reference<Resolver> {
 
-    /**
-     * The type of element.
-     */
+    /** The type of element. */
     private Class<?> elementType;
 
-    /**
-     * The expression indicating the specific element of the array.
-     */
+    /** The expression indicating the specific element of the array. */
     private Expression<Integer, Resolver> index;
 
-    /**
-     * A reference to the object representing the actual array.
-     */
+    /** A reference to the object representing the actual array. */
     private Reference<Resolver> arrayReference;
 
-    /**
-     * The {@link ReferenceContext}.
-     */
+    /** The {@link ReferenceContext}. */
     private ReferenceContext<Resolver> context;
 
     /**
      * Constructs a new {@link ArrayElementReference}.
-     * 
-     * @param arrayReference
-     *            A reference to an array.
-     * @param elementType
-     *            The type of element.
-     * @param index
-     *            The position in the array. (A Limbo expression.)
-     * @param context
-     *            The root context of the reference.
+     *
+     * @param arrayReference A reference to an array.
+     * @param elementType    The type of element.
+     * @param index          The position in the array. (A Limbo expression.)
+     * @param context        The root context of the reference.
      */
     public ArrayElementReference(Reference<Resolver> arrayReference,
-            Class<?> elementType, Expression<Integer, Resolver> index,
-            ReferenceContext<Resolver> context) {
+                                 Class<?> elementType, Expression<Integer, Resolver> index,
+                                 ReferenceContext<Resolver> context) {
         this.arrayReference = arrayReference;
         this.elementType = elementType;
         this.index = index;
@@ -100,6 +86,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Reference#resolve(java.lang.Object)
      */
+
     public Object resolve(Resolver context) {
         Object array = arrayReference.resolve(context);
         int i = index.eval(context.getOriginalResolver());
@@ -111,6 +98,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
      */
+
     public Reference<Resolver> selectAttribute(String name) {
         return new PropertyReference<Resolver>(this, elementType, name, context);
     }
@@ -120,6 +108,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
      */
+
     public Reference<Resolver> selectItem(String index) {
         Expression<Integer, Resolver> expr;
         expr = Expressions.createInteger(context, index);
@@ -132,6 +121,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * @see
      * nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression)
      */
+
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index) {
         return new ArrayElementReference(this, elementType
                 .getComponentType(), index, context);
@@ -142,6 +132,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * 
      * @see java.lang.Object#equals(java.lang.Object)
      */
+
     @SuppressWarnings("unchecked")
     public boolean equals(Object other) {
         if (other == null) {
@@ -163,6 +154,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
      */
+
     public void document(Document target) {
         if (!index.isParameterized()) {
             target.text("the ");
@@ -183,6 +175,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Reference#getReferenceContext()
      */
+
     public ReferenceContext<Resolver> getReferenceContext() {
         return context;
     }
@@ -192,6 +185,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Reference#isAssignableTo(java.lang.Class)
      */
+
     public boolean isAssignableTo(Class<?> type) {
         return elementType.isAssignableFrom(type);
     }
@@ -201,6 +195,7 @@ public class ArrayElementReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Reference#getType()
      */
+
     public Class<?> getType() {
         return elementType;
     }

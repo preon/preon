@@ -82,7 +82,7 @@ public class BooleanCodecFactoryTest extends TestCase {
     }
 
     public void testDecoding() throws DecodingException {
-        BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] { (byte) 0xF0 } ));
+        BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{(byte) 0xF0}));
         expect(metadata.isAnnotationPresent(Bound.class)).andReturn(true);
         replay(metadata);
         Codec<Boolean> codec = factory.create(metadata, Boolean.class, null);

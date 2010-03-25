@@ -37,10 +37,12 @@ import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.Codecs.DocumentType;
 import nl.flotsam.preon.DecodingException;
 import org.apache.commons.io.IOUtils;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertThat;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

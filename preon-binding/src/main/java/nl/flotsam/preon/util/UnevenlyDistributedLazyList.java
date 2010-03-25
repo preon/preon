@@ -43,27 +43,21 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.buffer.BitBuffer;
 
 /**
- * A {@link List} implementation that will lazy load its elements. Big
- * difference with {@link EvenlyDistributedLazyList} is that this implementation
- * does not assume all elements to have the same size.
- * 
+ * A {@link List} implementation that will lazy load its elements. Big difference with {@link EvenlyDistributedLazyList}
+ * is that this implementation does not assume all elements to have the same size.
+ *
  * @author Wilfred Springer
- * 
  */
 public class UnevenlyDistributedLazyList<E> implements List<E> {
 
-    /**
-     * The {@link Codec} decoding elements of the list.
-     */
+    /** The {@link Codec} decoding elements of the list. */
     private Codec<E> codec;
 
-    /**
-     * The {@link BitBuffer} to read from.
-     */
+    /** The {@link BitBuffer} to read from. */
     private BitBuffer buffer;
 
     /**
-     * 
+     *
      */
     private Resolver resolver;
 

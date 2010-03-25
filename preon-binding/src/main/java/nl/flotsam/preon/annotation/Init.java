@@ -40,12 +40,10 @@ import java.lang.annotation.Target;
 import nl.flotsam.preon.codec.InitCodecDecorator;
 
 /**
- * An annotation for marking an operation to be invoked when an object has been
- * decoded entirely. (Allows for post-processing.) Only when
- * {@link InitCodecDecorator} is used.
- * 
+ * An annotation for marking an operation to be invoked when an object has been decoded entirely. (Allows for
+ * post-processing.) Only when {@link InitCodecDecorator} is used.
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = ElementType.METHOD)

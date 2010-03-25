@@ -37,24 +37,21 @@ import nl.flotsam.limbo.util.StringBuilderDocument;
 
 /**
  * A collection of text utilities.
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class TextUtils {
 
-    private static String[] NUMBER_TRANSLATIONS = new String[] { "zero", "one",
+    private static String[] NUMBER_TRANSLATIONS = new String[]{"zero", "one",
             "two", "three", "four", "five", "six", "seven", "eight", "nine",
             "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen",
-            "sixteen", "seventeen", "eighteen", "nineteen", "twenty" };
+            "sixteen", "seventeen", "eighteen", "nineteen", "twenty"};
 
     /**
-     * Describes a {@link Descriptive} element by calling its
-     * {@link Descriptive#document(nl.flotsam.limbo.Document)} operation, and
-     * turning the results back into a String.
-     * 
-     * @param descriptive
-     *            The object to be described.
+     * Describes a {@link Descriptive} element by calling its {@link Descriptive#document(nl.flotsam.limbo.Document)}
+     * operation, and turning the results back into a String.
+     *
+     * @param descriptive The object to be described.
      * @return A String.
      */
     public static String toString(Descriptive descriptive) {
@@ -65,9 +62,8 @@ public class TextUtils {
 
     /**
      * Returns a position as text.
-     * 
-     * @param position
-     *            The position.
+     *
+     * @param position The position.
      * @return A text representation of that position.
      */
     public static String getPositionAsText(int value) {
@@ -99,9 +95,8 @@ public class TextUtils {
 
     /**
      * Returns a text representation of the number passed in.
-     * 
-     * @param value
-     *            The number to be represented as text.
+     *
+     * @param value The number to be represented as text.
      * @return A text representation of the number passed in.
      */
     public static String getNumberAsText(int value) {
@@ -113,11 +108,10 @@ public class TextUtils {
     }
 
     /**
-     * Returns a boolean indicating whether or not the class is capable of
-     * turning the value passed in into a textual representation.
-     * 
-     * @param value
-     *            The value to be turned into a text representation.
+     * Returns a boolean indicating whether or not the class is capable of turning the value passed in into a textual
+     * representation.
+     *
+     * @param value The value to be turned into a text representation.
      * @return The text representation of the value.
      */
     public static boolean hasNumberAsText(int value) {

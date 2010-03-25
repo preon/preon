@@ -11,18 +11,18 @@
     <menu name="Documentation">
       <item name="Introduction"
             href="http://www.scribd.com/doc/8128172/Preon-Introduction"/>
-      <item name="Under the Hood" 
+      <item name="Under the Hood"
             href="http://www.scribd.com/doc/7988375/Preon-Under-the-Hood"/>
       <item name="J-Fall Slides"
             href="http://www.slideshare.net/springerw/preon-jfall-2008-presentation-746831?type=powerpoint"/>
       <item name="Getting Started"
             href="getting-started.html"/>
     </menu>
- 
+
     <menu name="Other">
       <item name="Donations"
             href="http://sourceforge.net/donate/index.php?group_id=241871"/>
-      <item name="SourceForge" 
+      <item name="SourceForge"
             href="http://sourceforge.net/projects/preon"/>
       <item name="Finding us"
             href="find-us.html"/>
@@ -30,7 +30,7 @@
 
     <menu ref="modules"/>
     <menu ref="reports"/>
-    
+
   </body>
 
 </project>

@@ -75,37 +75,50 @@
     </para>
     <para>
       However, if you want to extend the framework yourself, then this
-      is the <emphasis>first</emphasis> interface you really need to
+      is the
+      <emphasis>first</emphasis>
+      interface you really need to
       understand, since this is probably the interface you need to
       implement.
     </para>
     <figure id="fig-codec-interface">
       <?dbfo keep-together="auto"?>
       <title>Codec Interface</title>
-      <programlisting language="java"><xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="Codec.java"
-      parse="text"/></programlisting>
+      <programlisting language="java">
+        <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                    href="Codec.java"
+                    parse="text"/>
+      </programlisting>
     </figure>
     <para>
-      The <methodname>decode(BitBuffer, Resolver,
-      Builder)</methodname> is obviously the operation that will
-      decode data from the <interfacename>BitBuffer</interfacename>
-      into an instance of <classname>T</classname>.
+      The
+      <methodname>decode(BitBuffer, Resolver,
+        Builder)
+      </methodname>
+      is obviously the operation that will
+      decode data from the
+      <interfacename>BitBuffer</interfacename>
+      into an instance of<classname>T</classname>.
     </para>
     <para>
-      The <interfacename>Resolver</interfacename> allows the
-      <interfacename>Codec</interfacename> to resolve references used
+      The
+      <interfacename>Resolver</interfacename>
+      allows the
+      <interfacename>Codec</interfacename>
+      to resolve references used
       in Preon annotations.
     </para>
     <para>
       The Codec interface is the interface
       implemented by objects that are able to decode data from a
-      BitBuffer and to encode data into a BitBuffer<footnote>
-      <para>
-        The latter is currently not supported yet, but it's not
-        unlikely that it's going to be implemented in the future.
-      </para>
-      </footnote>. In addition to that, the Codec needs to be able to
+      BitBuffer and to encode data into a BitBuffer
+      <footnote>
+        <para>
+          The latter is currently not supported yet, but it's not
+          unlikely that it's going to be implemented in the future.
+        </para>
+      </footnote>
+      . In addition to that, the Codec needs to be able to
       make some sort of prediction on the number of bits occupied by
       the encoded data. And last but not least, the Codec needs to be
       able to return a CodecDescriptor, used for rendering documents
@@ -134,15 +147,22 @@
       Codecs, one for every type of attribute it encounters.
     </para>
     <para>
-      If you are decoding an object, you <emphasis>could</emphasis>
+      If you are decoding an object, you
+      <emphasis>could</emphasis>
       actually use the Codec interface directly. If you create an
-      instance using the <classname>Codecs</classname> class, they
+      instance using the
+      <classname>Codecs</classname>
+      class, they
       just magically know what to do. We just learned that Codecs
       constructed like this, will most likely delegate their work to
       other Codecs, which in turn will most likely delegate their work
       to other Codecs, and so on and so forth. This way, the Codec
-      both <emphasis>hides</emphasis> a chain of responsibility, but
-      is also able to act as a <emphasis>link</emphasis> inside a
+      both
+      <emphasis>hides</emphasis>
+      a chain of responsibility, but
+      is also able to act as a
+      <emphasis>link</emphasis>
+      inside a
       chain of responsibility.
     </para>
   </section>
@@ -161,13 +181,15 @@
       As you might have already have guessed by its name, it is of
       course the CodecFactory. The CodecFactory a single operation,
       that is expected to be able to return Codec from the context
-      passed in, or return <literal>null</literal>.
+      passed in, or return<literal>null</literal>.
     </para>
     <figure id="fig-codecfactory-interface">
       <title>CodecFactory Interface</title>
-      <programlisting language="java"><?dbfo keep-together="auto"?><xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
-      href="CodecFactory.java"
-      parse="text"/></programlisting>
+      <programlisting language="java"><?dbfo keep-together="auto"?>
+        <xi:include xmlns:xi="http://www.w3.org/2001/XInclude"
+                    href="CodecFactory.java"
+                    parse="text"/>
+      </programlisting>
     </figure>
     <para>
       Almost every type of Codec you will ever use, will be created by
@@ -183,14 +205,16 @@
       parameters passed in. The type of object expected, a socalled
       ResolverContext and metadata. If the Codec is used to decode
       data to be injected in a field, then the metadata provides
-      access to the annotations defined on that field<footnote>
-      <para>
-        In general, the CodecFactory should not rely on the assumption
-        that the metadata passed in is based on a field. It should
-        just treat it as a number of hints suggesting how to decode
-        data.
-      </para>
-      </footnote>.
+      access to the annotations defined on that field
+      <footnote>
+        <para>
+          In general, the CodecFactory should not rely on the assumption
+          that the metadata passed in is based on a field. It should
+          just treat it as a number of hints suggesting how to decode
+          data.
+        </para>
+      </footnote>
+      .
     </para>
     <para>
       The third parameter (ResolverContext) is a Limbo
@@ -200,7 +224,7 @@
     </para>
     <example id="example-things">
       <title>Expression sample</title>
-    <programlisting><![CDATA[class Stuff {
+      <programlisting><![CDATA[class Stuff {
   @Bound int nrOfThings;
   @BoundList(size="nrThings") Thing[] things;
 }]]></programlisting>
@@ -210,7 +234,8 @@
       CodecFactory needs to see if it is able to construct a Codec for
       the "things" field. The annotation contains an expression
       defining the number of "things" in the array. However, the
-      <envar>size</envar> annotation attribute is just a String.
+      <envar>size</envar>
+      annotation attribute is just a String.
     </para>
     <para>
       In order to be able to turn the expresion "nrOfThings" into
@@ -232,7 +257,7 @@
       expression: either the expression cannot be interpreted, or the
       expression contains references to variables not available in the
       context in which the expression will be evaluated. The
-      ResolverContext supports detecting the latter case. 
+      ResolverContext supports detecting the latter case.
     </para>
     <para>
       This is the way it works: whenever your CodecFactory gets a
@@ -244,30 +269,36 @@
       but a special ReferenceContext. (One specific to Preon.)
       Normally, you would pass the ResolverContext directly, but there
       are cases in which you could consider replacing or wrapping the
-      ResolverContext<footnote>
-      <para>
-        There are actually cases in which you might want to replace
-        that ResolverContext with another one. Typically when you want
-        to <emphasis>introduce</emphasis> new variables, or if you are
-        basically 'popping' or 'pushing' the stack. (If your current
-        context changes into the context of the attributes type.)
-      </para>
-      </footnote>.
+      ResolverContext
+      <footnote>
+        <para>
+          There are actually cases in which you might want to replace
+          that ResolverContext with another one. Typically when you want
+          to
+          <emphasis>introduce</emphasis>
+          new variables, or if you are
+          basically 'popping' or 'pushing' the stack. (If your current
+          context changes into the context of the attributes type.)
+        </para>
+      </footnote>
+      .
     </para>
     <para>
       So, the first and most important purpose of the ResolverContext
       is early validation of your expression. The second and also
       important purpose of the ResolverContext is to facilitate
-      <emphasis>documentation</emphasis> getting generated from your
+      <emphasis>documentation</emphasis>
+      getting generated from your
       Codec.
     </para>
     <para>
-      <emphasis>If</emphasis> your CodecFactory constructs a Codec
+      <emphasis>If</emphasis>
+      your CodecFactory constructs a Codec
       based on an expression, then the documentation generated by that
       Codec probably needs to take that into account.
     </para>
     <para>
-      In case of the example of <xref linkend="fig-expr-relevance"/>,
+      In case of the example of<xref linkend="fig-expr-relevance"/>,
       you would expect a description similar to this: "First you read
       a 32-bit integer. Then you read a list of items with the size
       corresponding to the 32-bit integer you just read before."
@@ -280,13 +311,14 @@
       before" is encapsulated in a Reference. And the ResolverContext
       allows the Expressions class to obtain these references without
       having to analyze the entire class again.
-    </para> 
+    </para>
     <para>
       So, the Expression "nrOfElements" will be parsed into a
       Reference to the nrOfElements attribute defined before. It's the
       responsibility of the Reference to render itself in a useful
       way. The Codec or CodecFactory does not even
-      <emphasis>try</emphasis> to make sense out of it. It just relies
+      <emphasis>try</emphasis>
+      to make sense out of it. It just relies
       on the ResolverContext to return a proper reference.
     </para>
     <programlisting><![CDATA[
@@ -300,7 +332,8 @@ expr.document(....);
       getting a litle in the way of understanding what's going on
       here. However, just to comfort you a little, it's just object
       orientation. That's all it is. The Reference
-      <emphasis>itself</emphasis> decides how it needs to be
+      <emphasis>itself</emphasis>
+      decides how it needs to be
       represented. And the type of ResolverContext passed to the Codec
       decides how these References are getting constructed. With that,
       sky is the limit.
@@ -316,7 +349,7 @@ expr.document(....);
         of other CodecFactories. When asked for construction of a Codec,
         it will simply ask all of the factories it references and try
         each of them to construct a Codec. If all fails, it will simply
-        return <literal>null</literal>, just what you would expect for a
+        return<literal>null</literal>, just what you would expect for a
         CodecFactory.
       </para>
     </section>
@@ -348,7 +381,8 @@ expr.document(....);
       <itemizedlist spacing="compact">
         <listitem>
           <para>
-            <literal>null</literal> is passed in as metadata;
+            <literal>null</literal>
+            is passed in as metadata;
           </para>
         </listitem>
         <listitem>
@@ -363,12 +397,15 @@ expr.document(....);
         </listitem>
       </itemizedlist>
       <para>
-        The <literal>null</literal> case is not important for now. The
+        The
+        <literal>null</literal>
+        case is not important for now. The
         @Bound annotation supports the default case. The CodecFactory
         will take this annotation as a signal that it actually needs to
         create a Codec, using the defaults for the type passed in. The
         @BoundNumber annotation supports the case in which you
-        <emphasis>do</emphasis> want a Codec to be created, but you
+        <emphasis>do</emphasis>
+        want a Codec to be created, but you
         don't like the defaults.
       </para>
       <para>
@@ -402,7 +439,8 @@ expr.document(....);
         <listitem>
           <para>
             Attempt to return a default Codec whenever
-            <literal>null</literal> or @Bound is passed in.
+            <literal>null</literal>
+            or @Bound is passed in.
           </para>
         </listitem>
         <listitem>
@@ -443,7 +481,7 @@ expr.document(....);
       </para>
       <para>
         The good news is: you don't have to do all of that
-        yourself. The ObjectCodecFactory basically does it all for you. 
+        yourself. The ObjectCodecFactory basically does it all for you.
       </para>
       <para>
         The ObjectCodecFactory works on basically all existing
@@ -486,8 +524,8 @@ expr.document(....);
       </procedure>
       <para>
         You may have wondered how the ObjectCodecFactory creates a Codec
-        corresponding to the field's type, in <xref
-        linkend="step-create-codec"/>. The answer is simple: it uses a
+        corresponding to the field's type, in<xref
+              linkend="step-create-codec"/>. The answer is simple: it uses a
         CodecFactory. It may be different CodecFactory than the
         ObjectCodecFactory itself, but it's highly likely that it
         references the ObjectCodecFactory itself somewhere under its
@@ -500,8 +538,10 @@ expr.document(....);
         override the way they work, by pluging in your own
         BindingFactory. We are not going to discuss the typical use
         case yet, but for now it's important at least to know they
-        exist. (Check out <xref
-        linkend="section-conditional-binding"/> for a typical example
+        exist. (Check out
+        <xref
+                linkend="section-conditional-binding"/>
+        for a typical example
         on how to leverage this plugpoint.)
       </para>
     </section>
@@ -549,8 +589,10 @@ expr.document(....);
         that returns the List instance, and the Codec used to decode
         elements of the List. These are two completely different
         Codecs. The Codec decoding the List is seeded with a Codec
-        capable of reading the elements of the List. <xref
-        linkend="fig-list-decodig"/> shows how these elements collorate
+        capable of reading the elements of the List.
+        <xref
+                linkend="fig-list-decodig"/>
+        shows how these elements collorate
         in a real world scenario.
       </para>
       <figure id="fig-list-decoding">
@@ -608,7 +650,9 @@ expr.document(....);
     </para>
     <para>
       The reason Preon is capable of dealing with these expression is
-      because it will create a <firstterm>Binding</firstterm> that is
+      because it will create a
+      <firstterm>Binding</firstterm>
+      that is
       capable of loading data from the BitBuffer if the condition
       holds. Which is why it is sometimes convenient to have the
       ability to create your own custom Binding implementation instead
@@ -621,7 +665,8 @@ expr.document(....);
     <para>
       Up til now, we have only seen examples of CodecFactories
       creating Codecs. Codecs are however not
-      <emphasis>always</emphasis> constructed by CodecFactories. If
+      <emphasis>always</emphasis>
+      constructed by CodecFactories. If
       you want the framework to deal with your own Codec, then there
       is another way to make it create your own Codec, which is by
       implementing the CodecDecorator interface.
@@ -632,19 +677,24 @@ expr.document(....);
       allows you to transparenly add additional behaviour to a Codec,
       by applying some 'decoration'. So, where the CodecFactory
       accepts the type and metadata indicating the specific Codec you
-      want to construct, the CodecDecorator <emphasis>also</emphasis>
+      want to construct, the CodecDecorator
+      <emphasis>also</emphasis>
       accepts the Codec that should be wrapped.
     </para>
-    
+
     <section>
       <title>LazyLoadingCodecDecorator</title>
       <para>
         When you ask the LazyLoadingCodecDecorator to decorate an
         existing Codec, you get a new Codec that - on receiving a call
-        to decode - will <emphasis>not</emphasis> pass the call on to
+        to decode - will
+        <emphasis>not</emphasis>
+        pass the call on to
         the Codec it decorates; instead, it will return a proxy that
         acts as the object that needs to be created by the decororated
-        Codec. The <emphasis>actual</emphasis> object will only be
+        Codec. The
+        <emphasis>actual</emphasis>
+        object will only be
         loaded from the BitBuffer right after you call an operation on
         that proxy for the first time.
       </para>
@@ -654,20 +704,21 @@ expr.document(....);
         lazily.
       </para>
     </section>
-    
+
     <section>
       <title>SlicingCodecDecorator</title>
       <para>
         The SlicingCodecDecorator decorates existing Codecs by returning
         a new Codec that - on receiving a decode call - passes the
         request on to the decorated Codec, but replacing the BitBuffer
-        passed by taking a slice of the original. 
+        passed by taking a slice of the original.
       </para>
       <para>
         The main reason of having a SlicingCodecDecorator is to
         support type length value records. The main idea here is that
         Codecs reading the records data should
-        <emphasis>not</emphasis> be required to know the amount of
+        <emphasis>not</emphasis>
+        be required to know the amount of
         data to be expected. As you might have seen before, the Codec
         constructed doesn't support passing in the maximum number of
         bytes to be read, or anything. And having to implement that

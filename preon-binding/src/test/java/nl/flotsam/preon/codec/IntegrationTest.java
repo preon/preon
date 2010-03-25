@@ -82,7 +82,7 @@ public class IntegrationTest extends TestCase {
 
     public void testAllFieldsBound() throws DecodingException, FileNotFoundException {
         Codec<Test1> codec = Codecs.create(Test1.class);
-        Test1 result = Codecs.decode(codec, new byte[] { 1, 2, 3 });
+        Test1 result = Codecs.decode(codec, new byte[]{1, 2, 3});
         assertNotNull(result);
         assertEquals(1, result.value1);
         assertEquals(2, result.value2);
@@ -135,7 +135,7 @@ public class IntegrationTest extends TestCase {
 
     public void testChoice() throws DecodingException, FileNotFoundException {
         Codec<Test28> codec = Codecs.create(Test28.class);
-        Test28 result = Codecs.decode(codec, new byte[] { 1, 2, 3, 4 });
+        Test28 result = Codecs.decode(codec, new byte[]{1, 2, 3, 4});
         assertNotNull(result);
         assertTrue(result.value instanceof Test5a);
         assertEquals(2, ((Test5a) result.value).value1);
@@ -165,7 +165,7 @@ public class IntegrationTest extends TestCase {
     public void testListSingleElement() throws DecodingException, FileNotFoundException {
         Codec<Test3> codec = Codecs.create(Test3.class);
         ByteBuffer byteBuffer = ByteBuffer
-                .wrap(new byte[] { 1, 2, 3, 4, 5, 6 });
+                .wrap(new byte[]{1, 2, 3, 4, 5, 6});
         Test3 result = Codecs.decode(codec, byteBuffer);
         assertNotNull(result);
         assertEquals(2, result.elements.size());
@@ -183,8 +183,8 @@ public class IntegrationTest extends TestCase {
     public void testListMultipleElements() throws DecodingException,
             FileNotFoundException {
         Codec<Test4> codec = Codecs.create(Test4.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 1, 1, 2, 3 , 2, 0,
-                16, 2 });
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{1, 1, 2, 3, 2, 0,
+                16, 2});
         Test4 result = Codecs.decode(codec, byteBuffer);
         assertNotNull(result);
         assertEquals(2, result.elements.size());
@@ -201,11 +201,11 @@ public class IntegrationTest extends TestCase {
         Codec<Test6> codec = Codecs.create(Test6.class);
         ByteBuffer buffer = null;
         Test6 result = null;
-        buffer = ByteBuffer.wrap(new byte[] { 4, 1 });
+        buffer = ByteBuffer.wrap(new byte[]{4, 1});
         result = Codecs.decode(codec, buffer);
         assertEquals(4, result.value1);
         assertEquals(1, result.value2);
-        buffer = ByteBuffer.wrap(new byte[] { 1, 4 });
+        buffer = ByteBuffer.wrap(new byte[]{1, 4});
         result = Codecs.decode(codec, buffer);
         assertEquals(1, result.value1);
         assertEquals(0, result.value2);
@@ -214,7 +214,7 @@ public class IntegrationTest extends TestCase {
 
     public void testCompoundObject() throws DecodingException, FileNotFoundException {
         Codec<Test7> codec = Codecs.create(Test7.class);
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 1, 2, 3 });
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[]{1, 2, 3});
         Test7 result = Codecs.decode(codec, buffer);
         assertNotNull(result.value1);
         assertEquals(1, result.value1.value1);
@@ -224,7 +224,7 @@ public class IntegrationTest extends TestCase {
 
     public void testInheritance() throws DecodingException {
         Codec<Test9> codec = Codecs.create(Test9.class);
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 7, 8 });
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[]{7, 8});
         Test9 result = Codecs.decode(codec, buffer);
         assertNotNull(result);
         assertEquals(7, result.value1);
@@ -235,7 +235,7 @@ public class IntegrationTest extends TestCase {
 
     public void testArrayOfObjects() throws DecodingException, FileNotFoundException {
         Codec<Test10> codec = Codecs.create(Test10.class);
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 1, 2, 3, 4, 5, 6 });
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6});
         Test10 value = Codecs.decode(codec, buffer);
         assertEquals(2, value.elements.length);
         assertEquals(1, value.elements[0].value1);
@@ -251,7 +251,7 @@ public class IntegrationTest extends TestCase {
 
     public void testArrayOfBytes() throws DecodingException, FileNotFoundException {
         Codec<Test11> codec = Codecs.create(Test11.class);
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 1, 2 });
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[]{1, 2});
         Test11 value = Codecs.decode(codec, buffer);
         assertEquals(2, value.elements.length);
         assertEquals(1, value.elements[0]);
@@ -261,7 +261,7 @@ public class IntegrationTest extends TestCase {
     public void testDynamicListSingleElement() throws DecodingException, FileNotFoundException {
         Codec<Test3> codec = Codecs.create(Test3.class);
         ByteBuffer byteBuffer = ByteBuffer
-                .wrap(new byte[] { 1, 2, 3, 4, 5, 6 });
+                .wrap(new byte[]{1, 2, 3, 4, 5, 6});
         Test3 result = Codecs.decode(codec, byteBuffer);
         assertNotNull(result);
         assertEquals(2, result.elements.size());
@@ -275,7 +275,7 @@ public class IntegrationTest extends TestCase {
 
     public void testEnclosingConstruction() throws DecodingException, FileNotFoundException {
         Codec<Test13> codec = Codecs.create(Test13.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 3, 8 });
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{3, 8});
         Test13 result = Codecs.decode(codec, byteBuffer);
         assertEquals(3, result.size);
         assertEquals(8, result.value.value);
@@ -286,7 +286,7 @@ public class IntegrationTest extends TestCase {
 
     public void testEnclosingReferences() throws DecodingException {
         Codec<Test15> codec = Codecs.create(Test15.class);
-        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[] { 3, (byte) 0xff });
+        ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{3, (byte) 0xff});
         Test15 result = Codecs.decode(codec, byteBuffer);
         assertEquals(3, result.size);
         assertEquals(7, result.value.fooBar);
@@ -297,7 +297,7 @@ public class IntegrationTest extends TestCase {
     public void testEnclosingReferencesWithList() throws DecodingException, FileNotFoundException {
         Codec<Test17> codec = Codecs.create(Test17.class);
         ByteBuffer byteBuffer = ByteBuffer
-                .wrap(new byte[] { 8, 0, (byte) 0xff });
+                .wrap(new byte[]{8, 0, (byte) 0xff});
         Test17 result = Codecs.decode(codec, byteBuffer);
         assertEquals(8, result.size);
         assertEquals(1, result.values.size());
@@ -309,7 +309,7 @@ public class IntegrationTest extends TestCase {
             throws DecodingException, FileNotFoundException {
         Codec<Test21> codec = Codecs.create(Test21.class);
         ByteBuffer byteBuffer = ByteBuffer
-                .wrap(new byte[] { 8, 0, (byte) 0xff });
+                .wrap(new byte[]{8, 0, (byte) 0xff});
         Test21 result = Codecs.decode(codec, byteBuffer);
         assertEquals(8, result.size);
         assertEquals(1, result.values.size());
@@ -324,7 +324,7 @@ public class IntegrationTest extends TestCase {
 
     public void testUnboundedList() throws DecodingException, FileNotFoundException {
         Codec<Test12> codec = Codecs.create(Test12.class);
-        Test12 result = Codecs.decode(codec, new byte[] { 1, 2, 3, 4, 5, 6 });
+        Test12 result = Codecs.decode(codec, new byte[]{1, 2, 3, 4, 5, 6});
         assertEquals(2, result.elements.size());
         assertEquals(1, result.elements.get(0).value1);
         assertEquals(2, result.elements.get(0).value2);
@@ -338,8 +338,8 @@ public class IntegrationTest extends TestCase {
     public void testUnboundedListMultipleElementTypes()
             throws DecodingException, FileNotFoundException {
         Codec<Test22> codec = Codecs.create(Test22.class);
-        Test22 result = Codecs.decode(codec, new byte[] { 1, 2, 3, 4, 2,
-                (byte) 0xff, (byte) 0xff, 7 });
+        Test22 result = Codecs.decode(codec, new byte[]{1, 2, 3, 4, 2,
+                (byte) 0xff, (byte) 0xff, 7});
         assertEquals(2, result.elements.size());
         assertEquals(2, ((Test5a) result.elements.get(0)).value1);
         assertEquals(3, ((Test5a) result.elements.get(0)).value2);
@@ -350,15 +350,15 @@ public class IntegrationTest extends TestCase {
     }
 
     /**
-     * Tests the situation in which the data contain an array and an item that
-     * depends on the value of an element in that array.
-     * 
+     * Tests the situation in which the data contain an array and an item that depends on the value of an element in
+     * that array.
+     *
      * @throws DecodingException
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public void testSimpleLookup() throws DecodingException, FileNotFoundException {
         Codec<Test26> codec = Codecs.create(Test26.class);
-        Test26 result = Codecs.decode(codec, new byte[] { 1, 2, (byte) 255 });
+        Test26 result = Codecs.decode(codec, new byte[]{1, 2, (byte) 255});
         assertEquals(2, result.elements.length);
         assertEquals(1, result.elements[0]);
         assertEquals(2, result.elements[1]);
@@ -368,17 +368,16 @@ public class IntegrationTest extends TestCase {
     }
 
     /**
-     * Tests the situation in which the data contains an array <em>as well</em>
-     * as an index <em>and</em> the data that depends on the indexed array
-     * element.
-     * 
+     * Tests the situation in which the data contains an array <em>as well</em> as an index <em>and</em> the data that
+     * depends on the indexed array element.
+     *
      * @throws DecodingException
-     * @throws FileNotFoundException 
+     * @throws FileNotFoundException
      */
     public void testComplexLookup() throws DecodingException, FileNotFoundException {
         Codec<Test27> codec = Codecs.create(Test27.class);
         Test27 result = Codecs
-                .decode(codec, new byte[] { 1, 2, 0, (byte) 255 });
+                .decode(codec, new byte[]{1, 2, 0, (byte) 255});
         assertEquals(2, result.elements.length);
         assertEquals(1, result.elements[0]);
         assertEquals(2, result.elements[1]);
@@ -391,7 +390,7 @@ public class IntegrationTest extends TestCase {
 
     public void testSelectFrom() throws DecodingException, FileNotFoundException {
         Codec<Test30> codec = Codecs.create(Test30.class);
-        Test30 value = Codecs.decode(codec, new byte[] { 2, 3, 4, 5, 6, 7, 8 });
+        Test30 value = Codecs.decode(codec, new byte[]{2, 3, 4, 5, 6, 7, 8});
         assertNotNull(value.value);
         assertEquals(Test5b.class, value.value.getClass());
         assertEquals(0x304, ((Test5b) value.value).value1);
@@ -399,24 +398,24 @@ public class IntegrationTest extends TestCase {
 
     public void testSelectFromUsingLookup() throws DecodingException, FileNotFoundException {
         Codec<Test31> codec = Codecs.create(Test31.class);
-        Test31 value = Codecs.decode(codec, new byte[] { 5, 6, 1, 3, 4, 5, 6,
-                7, 8 });
+        Test31 value = Codecs.decode(codec, new byte[]{5, 6, 1, 3, 4, 5, 6,
+                7, 8});
         assertNotNull(value.value);
         assertEquals(Test5b.class, value.value.getClass());
     }
 
     public void testSelectFromCompareString() throws DecodingException, FileNotFoundException {
         Codec<Test32> codec = Codecs.create(Test32.class);
-        Test32 value = Codecs.decode(codec, new byte[] { (byte) 'a',
-                (byte) 'a', 1, 3, 4, 5, 6, 7, 8 });
+        Test32 value = Codecs.decode(codec, new byte[]{(byte) 'a',
+                (byte) 'a', 1, 3, 4, 5, 6, 7, 8});
         assertNotNull(value.value);
         assertEquals(Test5a.class, value.value.getClass());
     }
 
     public void testSelectFromCompareStringFromArray() throws DecodingException, FileNotFoundException {
         Codec<Test33> codec = Codecs.create(Test33.class);
-        Test33 value = Codecs.decode(codec, new byte[] { (byte) 'a',
-                (byte) 'b', 1, 3, 4, 5, 6, 7, 8 });
+        Test33 value = Codecs.decode(codec, new byte[]{(byte) 'a',
+                (byte) 'b', 1, 3, 4, 5, 6, 7, 8});
         assertNotNull(value.value);
         assertEquals(Test5b.class, value.value.getClass());
     }
@@ -424,14 +423,14 @@ public class IntegrationTest extends TestCase {
     public void testSelectFromCompareStringFromArrayAndOuter()
             throws DecodingException, FileNotFoundException {
         Codec<Test35> codec = Codecs.create(Test35.class);
-        Test35 value = Codecs.decode(codec, new byte[] { (byte) 'a',
-                (byte) 'b', 1, 3, 4, 5, 6, 7, 8 });
+        Test35 value = Codecs.decode(codec, new byte[]{(byte) 'a',
+                (byte) 'b', 1, 3, 4, 5, 6, 7, 8});
         assertNotNull(value.values[0].value);
     }
 
     public void testOuterReferencesFromArray() throws DecodingException, FileNotFoundException {
         Codec<Test37> codec = Codecs.create(Test37.class);
-        Test37 value = Codecs.decode(codec, new byte[] { 1, (byte) 'a' });
+        Test37 value = Codecs.decode(codec, new byte[]{1, (byte) 'a'});
         assertNotNull(value.values);
         assertEquals(1, value.values.length);
     }
@@ -439,8 +438,8 @@ public class IntegrationTest extends TestCase {
     public void testOuterReferencesFromArrayIncludingLocal()
             throws DecodingException, FileNotFoundException {
         Codec<Test39> codec = Codecs.create(Test39.class);
-        Test39 value = Codecs.decode(codec, new byte[] { 2, 1, (byte) 'a', 'b',
-                'c', 'd' });
+        Test39 value = Codecs.decode(codec, new byte[]{2, 1, (byte) 'a', 'b',
+                'c', 'd'});
         assertNotNull(value.values);
         assertEquals(1, value.values.length);
         assertEquals(1, value.values[0].secondSize);
@@ -450,8 +449,8 @@ public class IntegrationTest extends TestCase {
 
     public void testOuterIndexReferences() throws DecodingException {
         Codec<Test41> codec = Codecs.create(Test41.class);
-        Test41 value = Codecs.decode(codec, new byte[] { 1, 2, 'a', 'b', 'c',
-                'd' });
+        Test41 value = Codecs.decode(codec, new byte[]{1, 2, 'a', 'b', 'c',
+                'd'});
         assertNotNull(value.values);
         assertEquals(1, value.values.length);
         assertNotNull(value.values[0].value);
@@ -461,8 +460,8 @@ public class IntegrationTest extends TestCase {
     public void testOuterIndexReferencesIndexedByLocal()
             throws DecodingException, FileNotFoundException {
         Codec<Test43> codec = Codecs.create(Test43.class);
-        Test43 value = Codecs.decode(codec, new byte[] { 1, 2, 1, 'a', 'b',
-                'c', 'd' });
+        Test43 value = Codecs.decode(codec, new byte[]{1, 2, 1, 'a', 'b',
+                'c', 'd'});
         assertNotNull(value.values);
         assertEquals(1, value.values.length);
         assertNotNull(value.values[0].value);
@@ -473,71 +472,73 @@ public class IntegrationTest extends TestCase {
         Codec<Test45> codec = Codecs.create(Test45.class);
         Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
     }
-    
+
     public void testStaticReferences() throws DecodingException {
-    	Codec<Test48> codec = Codecs.create(Test48.class);
-    	Test48 value = Codecs.decode(codec, new byte[] { 1, 4 });
-    	assertEquals(4, value.value);
-    	value = Codecs.decode(codec, new byte[] { 2, 4 });
-    	assertEquals(0, value.value);
+        Codec<Test48> codec = Codecs.create(Test48.class);
+        Test48 value = Codecs.decode(codec, new byte[]{1, 4});
+        assertEquals(4, value.value);
+        value = Codecs.decode(codec, new byte[]{2, 4});
+        assertEquals(0, value.value);
     }
 
     public void testDefaultBigEndian() throws DecodingException {
         Codec<Test49> codec = Codecs.create(Test49.class);
-        Test49 value = Codecs.decode(codec, new byte[] { 0, 0, 0, 1 });
+        Test49 value = Codecs.decode(codec, new byte[]{0, 0, 0, 1});
         assertEquals(1, value.value);
     }
-    
+
     public void testNoBoundFields1() {
-    	try {
-    		Codec<Test50> codec = Codecs.create(Test50.class);
-    		fail("Codec class without annotated fields passed");
-    	} catch(CodecConstructionException expected) {}
+        try {
+            Codec<Test50> codec = Codecs.create(Test50.class);
+            fail("Codec class without annotated fields passed");
+        } catch (CodecConstructionException expected) {
+        }
     }
-    
+
     public void testNoBoundFields2() {
-    	try {
-    		Codec<Test51> codec = Codecs.create(Test51.class);
-    		fail("Codec class without annotated fields passed");
-    	} catch(CodecConstructionException expected) {}
+        try {
+            Codec<Test51> codec = Codecs.create(Test51.class);
+            fail("Codec class without annotated fields passed");
+        } catch (CodecConstructionException expected) {
+        }
     }
-    
+
     public void testListWithUnboundField() throws DecodingException {
-    	Codec<Test52> codec = Codecs.create(Test52.class);
-    	byte[] data = new byte[9];
-    	data[0] = 2;
-    	Test52 out = Codecs.decode(codec, data);
+        Codec<Test52> codec = Codecs.create(Test52.class);
+        byte[] data = new byte[9];
+        data[0] = 2;
+        Test52 out = Codecs.decode(codec, data);
     }
-    
+
     public void testInitMethod() throws Exception {
-    	Codec<Test54> codec = Codecs.create(Test54.class);
-    	byte[] data = new byte[] {1,1,1};
-    	Test54 out = Codecs.decode(codec, data);
-    	assertEquals(0, out.b);
+        Codec<Test54> codec = Codecs.create(Test54.class);
+        byte[] data = new byte[]{1, 1, 1};
+        Test54 out = Codecs.decode(codec, data);
+        assertEquals(0, out.b);
     }
-    
+
     public void testInitMethodInChildInstance() throws Exception {
-    	Codec<Test54> codec = Codecs.create(Test54.class);
-    	byte[] data = new byte[] {1,1,1};
-    	Test54 out = Codecs.decode(codec, data);
-    	assertEquals(0, out.instance.b);
+        Codec<Test54> codec = Codecs.create(Test54.class);
+        byte[] data = new byte[]{1, 1, 1};
+        Test54 out = Codecs.decode(codec, data);
+        assertEquals(0, out.instance.b);
     }
-    
+
     public void testInitMethodInChildArray() throws Exception {
-    	Codec<Test54> codec = Codecs.create(Test54.class);
-    	byte[] data = new byte[] {1,1,1};
-    	Test54 out = Codecs.decode(codec, data);
-    	assertEquals(0, out.array[0].b);
+        Codec<Test54> codec = Codecs.create(Test54.class);
+        byte[] data = new byte[]{1, 1, 1};
+        Test54 out = Codecs.decode(codec, data);
+        assertEquals(0, out.array[0].b);
     }
-    
+
     public void testInitMethodInChildList() throws Exception {
-    	Codec<Test54> codec = Codecs.create(Test54.class);
-    	byte[] data = new byte[] {1,1,1,1};
-    	Test54 out = Codecs.decode(codec, data);
-    	assertEquals(0, out.list.get(0).b);
+        Codec<Test54> codec = Codecs.create(Test54.class);
+        byte[] data = new byte[]{1, 1, 1, 1};
+        Test54 out = Codecs.decode(codec, data);
+        assertEquals(0, out.list.get(0).b);
     }
-    
-    
+
+
     private static class TestResolver implements Resolver {
 
         public Object get(String name) {
@@ -589,7 +590,7 @@ public class IntegrationTest extends TestCase {
 
     public static class Test4 {
 
-        @BoundList(size = "2", types = { Test5a.class, Test5b.class })
+        @BoundList(size = "2", types = {Test5a.class, Test5b.class})
         public List<Object> elements;
 
     }
@@ -708,7 +709,7 @@ public class IntegrationTest extends TestCase {
         @Bound
         public byte size;
 
-        @BoundList(size = "1", types = { Test19.class, Test20.class })
+        @BoundList(size = "1", types = {Test19.class, Test20.class})
         public List<Test18> values;
 
         public static class Test18 {
@@ -738,7 +739,7 @@ public class IntegrationTest extends TestCase {
         @Bound
         public byte size;
 
-        @BoundList(size = "1", types = { Test23.class, Test24.class })
+        @BoundList(size = "1", types = {Test23.class, Test24.class})
         public List<Test22> values;
 
         public static class Test22 {
@@ -772,7 +773,7 @@ public class IntegrationTest extends TestCase {
 
     public static class Test22 {
 
-        @BoundList(types = { Test5a.class, Test5b.class })
+        @BoundList(types = {Test5a.class, Test5b.class})
         public List<Object> elements;
 
     }
@@ -802,7 +803,7 @@ public class IntegrationTest extends TestCase {
 
     public static class Test28 {
 
-        @BoundObject(types = { Test5a.class, Test5b.class })
+        @BoundObject(types = {Test5a.class, Test5b.class})
         public Object value;
 
     }
@@ -822,7 +823,7 @@ public class IntegrationTest extends TestCase {
 
         @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                 @Choice(condition = "prefix==1", type = Test5a.class),
-                @Choice(condition = "prefix==2", type = Test5b.class) }))
+                @Choice(condition = "prefix==2", type = Test5b.class)}))
         public Object value;
 
     }
@@ -834,7 +835,7 @@ public class IntegrationTest extends TestCase {
 
         @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                 @Choice(condition = "index[prefix]==5", type = Test5a.class),
-                @Choice(condition = "index[prefix]==6", type = Test5b.class) }))
+                @Choice(condition = "index[prefix]==6", type = Test5b.class)}))
         public Object value;
 
     }
@@ -846,7 +847,7 @@ public class IntegrationTest extends TestCase {
 
         @BoundObject(selectFrom = @Choices(prefixSize = 0, alternatives = {
                 @Choice(condition = "key=='aa'", type = Test5a.class),
-                @Choice(condition = "key=='bb'", type = Test5b.class) }))
+                @Choice(condition = "key=='bb'", type = Test5b.class)}))
         public Object value;
 
     }
@@ -858,7 +859,7 @@ public class IntegrationTest extends TestCase {
 
         @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                 @Choice(condition = "index[prefix].value=='a'", type = Test5a.class),
-                @Choice(condition = "index[prefix].value=='b'", type = Test5b.class) }))
+                @Choice(condition = "index[prefix].value=='b'", type = Test5b.class)}))
         public Object value;
 
     }
@@ -882,7 +883,7 @@ public class IntegrationTest extends TestCase {
 
             @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                     @Choice(condition = "outer.index[prefix].value=='a'", type = Test5a.class),
-                    @Choice(condition = "outer.index[prefix].value=='b'", type = Test5b.class) }))
+                    @Choice(condition = "outer.index[prefix].value=='b'", type = Test5b.class)}))
             public Object value;
 
         }
@@ -966,11 +967,12 @@ public class IntegrationTest extends TestCase {
     public static class Test45 {
         @BoundObject(selectFrom = @Choices(prefixSize = 8, alternatives = {
                 @Choice(condition = "prefix==0", type = Test46.class),
-                @Choice(condition = "prefix==1", type = Test47.class) }))
+                @Choice(condition = "prefix==1", type = Test47.class)}))
         Object object;
-        
+
         @If("object.value >= 0")
-        @Bound boolean booleanValue;
+        @Bound
+        boolean booleanValue;
     }
 
     public static class Test46 {
@@ -988,88 +990,88 @@ public class IntegrationTest extends TestCase {
         @Bound
         byte value4;
     }
-    
+
     @ImportStatic(Direction.class)
     public static class Test48 {
-    
-    	@BoundNumber(size="8")
-    	public Direction direction;
-    	
-    	@If("direction == Direction.LEFT")
-    	@BoundNumber(size="8")
-    	public int value;
-    	
+
+        @BoundNumber(size = "8")
+        public Direction direction;
+
+        @If("direction == Direction.LEFT")
+        @BoundNumber(size = "8")
+        public int value;
+
     }
 
     public static class Test49 {
 
-        @BoundNumber(byteOrder=BigEndian) int value;
+        @BoundNumber(byteOrder = BigEndian)
+        int value;
 
     }
-    
+
     public static enum Direction {
-    	
-    	@BoundEnumOption(1)
-    	LEFT, 
-    	
-    	@BoundEnumOption(2)
-    	RIGHT
-    	
+
+        @BoundEnumOption(1)
+        LEFT,
+
+        @BoundEnumOption(2)
+        RIGHT
+
     }
-    
+
     public static class Test50 {
-    	int a;
+        int a;
     }
-    
+
     public static class Test51 {
-    	int a;
-    	int b;
+        int a;
+        int b;
     }
-    
+
     public static class Test52 {
-    	int a;
-    	   	
-    	@BoundList(size="1", type=Test53.class)
-    	List<Test53> l;
+        int a;
+
+        @BoundList(size = "1", type = Test53.class)
+        List<Test53> l;
     }
-    
+
     public static class Test53 {
-    	private int a;
-    	@Bound
-    	private int b;
+        private int a;
+        @Bound
+        private int b;
     }
-    
-   public static class Test54 {
-	   
-	   @Bound
-	   byte b;
-	   
-	   @BoundObject
-	   Test54_1 instance;
-	   
-	   @BoundList(size="1")
-	   Test54_1[] array;
-	   
-	   @BoundList(size="1", type=Test54_1.class)
-	   List<Test54_1> list;
-	   
-	  
-	   
-	   @Init
-	   public void init() {
-		   b = 0;
-	   }
-	   
-	   public static class Test54_1 {
-		   @Bound byte b;
-		   
-		   @Init
-		   public void init() {
-			   b = 0;
-		   }
-	   }
-   }
-    
-    
-   
+
+    public static class Test54 {
+
+        @Bound
+        byte b;
+
+        @BoundObject
+        Test54_1 instance;
+
+        @BoundList(size = "1")
+        Test54_1[] array;
+
+        @BoundList(size = "1", type = Test54_1.class)
+        List<Test54_1> list;
+
+
+        @Init
+        public void init() {
+            b = 0;
+        }
+
+        public static class Test54_1 {
+            @Bound
+            byte b;
+
+            @Init
+            public void init() {
+                b = 0;
+            }
+        }
+    }
+
+
 }

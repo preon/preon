@@ -61,9 +61,9 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
     private AnnotatedElement metadata;
 
     private LazyLoading annotation;
-    
+
     private Resolver resolver;
-    
+
     private Expression<Integer, Resolver> sizeExpr;
 
     public void setUp() {
@@ -78,15 +78,15 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
 
     @SuppressWarnings("unchecked")
     public void testHappyPath() throws DecodingException {
-        
+
         Test test = new Test();
-        
+
         // Stuff expected when Codec is getting constructed
         expect(metadata.isAnnotationPresent(LazyLoading.class))
                 .andReturn(true);
         expect(wrapped.getSize()).andReturn(sizeExpr);
         expect(sizeExpr.eval(resolver)).andReturn(32);
-        
+
         // Stuff expected when Test instance is constructed using Codec
         expect(buffer.getBitPos()).andReturn(64L);
         buffer.setBitPos(64L + 32);
@@ -94,7 +94,7 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
         // Stuff expected after when Test instance is accessed
         buffer.setBitPos(64L);
         expect(wrapped.decode(buffer, resolver, null)).andReturn(test);
-        
+
         // Replay
         replay(wrapped, buffer, metadata, annotation, resolver, sizeExpr);
         Codec<Test> codec = factory.decorate(wrapped, metadata, Test.class, null);
@@ -108,11 +108,11 @@ public class LazyLoadingCodecDecoratorTest extends TestCase {
     }
 
     public static class Test {
-        
+
         public String getFoo() {
             return "bar";
         }
 
     }
-    
+
 }

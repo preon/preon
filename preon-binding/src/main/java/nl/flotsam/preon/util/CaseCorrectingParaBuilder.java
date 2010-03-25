@@ -47,7 +47,7 @@ public class CaseCorrectingParaBuilder<T> implements ParaBuilder<T> {
     public CaseCorrectingParaBuilder(ParaBuilder<T> wrapped) {
         this.wrapped = wrapped;
     }
-    
+
     public T end() {
         return wrapped.end();
     }

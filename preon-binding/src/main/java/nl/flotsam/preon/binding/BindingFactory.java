@@ -44,29 +44,23 @@ import nl.flotsam.preon.buffer.BitBuffer;
 
 /**
  * A factory for {@link Binding} instances.
- * 
+ *
  * @author Wilfred Springer
- * 
  */
 public interface BindingFactory {
 
     /**
      * Constructs a new {@link Binding}.
-     * 
-     * @param metadata
-     *            The annotations of the field.
-     * @param field
-     *            The field to bound to.
-     * @param codec
-     *            The {@link Codec} to be used to decode instances of the type
-     *            of object to be injected in the {@link Field field}.
-     * @param context
-     *            The {@link ReferenceContext context} for creating references.
+     *
+     * @param metadata           The annotations of the field.
+     * @param field              The field to bound to.
+     * @param codec              The {@link Codec} to be used to decode instances of the type of object to be injected
+     *                           in the {@link Field field}.
+     * @param context            The {@link ReferenceContext context} for creating references.
      * @param containerReference TODO
-     * @return A new {@link Binding} instance, capable of loading data from a
-     *         {@link BitBuffer} into an object's field.
+     * @return A new {@link Binding} instance, capable of loading data from a {@link BitBuffer} into an object's field.
      */
     Binding create(AnnotatedElement metadata, Field field, Codec<?> codec,
-            ResolverContext context, Documenter<ParaContents<?>> containerReference);
+                   ResolverContext context, Documenter<ParaContents<?>> containerReference);
 
 }

@@ -45,20 +45,17 @@ import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * A {@link CodecDecorator} that will make sure that reading stops at a
- * byte-aligned position.
- * 
- * 
+ * A {@link CodecDecorator} that will make sure that reading stops at a byte-aligned position.
+ *
  * @author Wilfred Springer
- * 
  */
 public class ByteAligningDecorator implements CodecDecorator {
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
-            Class<T> type, ResolverContext context) {
+                                 Class<T> type, ResolverContext context) {
         if (type.isAnnotationPresent(ByteAlign.class)
                 || (metadata != null && metadata
-                        .isAnnotationPresent(ByteAlign.class))) {
+                .isAnnotationPresent(ByteAlign.class))) {
             return new ByteAligningCodec<T>(decorated);
         } else {
             return decorated;

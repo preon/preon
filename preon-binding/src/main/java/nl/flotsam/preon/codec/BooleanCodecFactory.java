@@ -47,12 +47,9 @@ import java.lang.reflect.AnnotatedElement;
 
 
 /**
- * A {@link CodecFactory} capable of creating {@link Codec Codecs} that deal
- * with booleans.
- * 
- * 
+ * A {@link CodecFactory} capable of creating {@link Codec Codecs} that deal with booleans.
+ *
  * @author Wilfred Springer
- * 
  */
 public class BooleanCodecFactory implements CodecFactory {
 
@@ -60,9 +57,10 @@ public class BooleanCodecFactory implements CodecFactory {
      * (non-Javadoc)
      * @see nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement, java.lang.Class, nl.flotsam.preon.ResolverContext)
      */
+
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         if (metadata != null && metadata.isAnnotationPresent(Bound.class)) {
             if (boolean.class.equals(type)) {
                 return (Codec<T>) new BooleanCodec(true);
@@ -85,7 +83,7 @@ public class BooleanCodecFactory implements CodecFactory {
         }
 
         public Boolean decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                              Builder builder) throws DecodingException {
             return buffer.readAsBoolean();
         }
 
@@ -130,15 +128,15 @@ public class BooleanCodecFactory implements CodecFactory {
                         }
                     };
                 }
-                
+
             };
         }
 
         public Class<?>[] getTypes() {
             if (primitive) {
-                return new Class[] { boolean.class };
+                return new Class[]{boolean.class};
             } else {
-                return new Class[] { Boolean.class };
+                return new Class[]{Boolean.class};
             }
         }
 

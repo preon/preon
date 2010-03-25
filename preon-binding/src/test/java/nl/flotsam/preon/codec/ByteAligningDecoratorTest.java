@@ -91,14 +91,14 @@ public class ByteAligningDecoratorTest extends junit.framework.TestCase {
         verify(codec, metadata, buffer, resolver, context);
     }
 
-    
+
     @ByteAlign
     private class Test1 {
 
     }
-    
+
     private class Test2 {
-        
+
     }
-    
+
 }

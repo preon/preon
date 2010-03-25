@@ -33,13 +33,17 @@
 package nl.flotsam.preon.channel;
 
 import nl.flotsam.preon.buffer.ByteOrder;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.IOException;
@@ -115,7 +119,7 @@ public class OutputStreamBitChannelTest {
         verify(out).write((byte) Integer.parseInt("11110000", 2));
         verifyNoMoreInteractions(out);
     }
-    
+
     @Test
     public void shouldAcceptIntsAndBytes() throws IOException {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
@@ -125,7 +129,7 @@ public class OutputStreamBitChannelTest {
         verify(out).write((byte) Integer.parseInt("11110000", 2));
         verifyNoMoreInteractions(out);
     }
-    
+
     @Test
     public void shouldAcceptLittleEndian() throws IOException {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
@@ -137,7 +141,7 @@ public class OutputStreamBitChannelTest {
         verify(out).write((byte) Integer.parseInt("11110000", 2));
         verifyNoMoreInteractions(out);
     }
-    
+
     @Test
     public void shouldAcceptLongs() throws IOException {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);

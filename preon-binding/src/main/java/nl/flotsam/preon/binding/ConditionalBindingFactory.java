@@ -49,28 +49,23 @@ import java.lang.reflect.Field;
 import java.util.Set;
 
 /**
- * A {@link BindingFactory} that wraps another {@link BindingFactory}, creating
- * {@link Binding Bindings} that are bound conditionally, depending on the
- * conditions of the {@link If} metadata defined for the Fields that are bound.
- * 
+ * A {@link BindingFactory} that wraps another {@link BindingFactory}, creating {@link Binding Bindings} that are bound
+ * conditionally, depending on the conditions of the {@link If} metadata defined for the Fields that are bound.
+ *
  * @author Wilfred Springer
- * 
  */
 public class ConditionalBindingFactory implements BindingFactory {
 
     /**
-     * The {@link BindingFactory} creating the {@link Binding}s that will be
-     * wrapped with {@link ConditionalBinding} instances.
+     * The {@link BindingFactory} creating the {@link Binding}s that will be wrapped with {@link ConditionalBinding}
+     * instances.
      */
     private BindingFactory decorated;
 
     /**
-     * Constructs a new instance, accepting the {@link BindingFactory} of the
-     * {@link Binding Bindings} to decorate.
-     * 
-     * @param decorated
-     *            The {@link BindingFactory} of the {@link Binding Bindings} to
-     *            decorate.
+     * Constructs a new instance, accepting the {@link BindingFactory} of the {@link Binding Bindings} to decorate.
+     *
+     * @param decorated The {@link BindingFactory} of the {@link Binding Bindings} to decorate.
      */
     public ConditionalBindingFactory(BindingFactory decorated) {
         this.decorated = decorated;
@@ -83,8 +78,9 @@ public class ConditionalBindingFactory implements BindingFactory {
      * AnnotatedElement, java.lang.reflect.Field, nl.flotsam.preon.Codec,
      * nl.flotsam.preon.ResolverContext)
      */
+
     public Binding create(AnnotatedElement metadata, Field field, Codec<?> codec,
-            ResolverContext context, Documenter<ParaContents<?>> containerReference) {
+                          ResolverContext context, Documenter<ParaContents<?>> containerReference) {
         If condition = metadata.getAnnotation(If.class);
         if (condition != null) {
             Expression<Boolean, Resolver> expr = null;
@@ -211,13 +207,13 @@ public class ConditionalBindingFactory implements BindingFactory {
         }
 
     }
-    
-    private static class ConditionalValue implements Expression<Integer,Resolver> {
+
+    private static class ConditionalValue implements Expression<Integer, Resolver> {
 
         private Expression<Boolean, Resolver> condition;
-        
+
         private Expression<Integer, Resolver> expr;
-        
+
         public ConditionalValue(Expression<Boolean, Resolver> condition, Expression<Integer, Resolver> expr) {
             this.condition = condition;
             this.expr = expr;
@@ -225,7 +221,7 @@ public class ConditionalBindingFactory implements BindingFactory {
 
         public Integer eval(Resolver resolver) throws BindingException {
             if (condition.eval(resolver)) {
-                return expr.eval(resolver); 
+                return expr.eval(resolver);
             } else {
                 return 0;
             }
@@ -253,8 +249,8 @@ public class ConditionalBindingFactory implements BindingFactory {
             condition.document(document);
             document.text(" or else 0");
         }
-        
-        
+
+
     }
 
 }

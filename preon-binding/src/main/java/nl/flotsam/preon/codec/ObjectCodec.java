@@ -51,9 +51,9 @@ import java.io.IOException;
 
 /**
  * <p>The {@link Codec} capable of decoding instances of arbitrary classes. Typicaly, this {@link Codec} will be
- * constructed using the {@link ObjectCodecFactory} companion class that's embedded in the
- * definition of this class. If you do so, then the bindings will be based on the presence of annotations on the fields
- * of the class for which you need a {@link Codec}.</p>
+ * constructed using the {@link ObjectCodecFactory} companion class that's embedded in the definition of this class. If
+ * you do so, then the bindings will be based on the presence of annotations on the fields of the class for which you
+ * need a {@link Codec}.</p>
  */
 public class ObjectCodec<T> implements Codec<T> {
 
@@ -116,6 +116,7 @@ public class ObjectCodec<T> implements Codec<T> {
        *
        * @see nl.flotsam.preon.Codec#getSize()
        */
+
     public Expression<Integer, Resolver> getSize() {
         List<Binding> bindings = context.getBindings();
         if (bindings.size() > 0) {
@@ -138,6 +139,7 @@ public class ObjectCodec<T> implements Codec<T> {
        *
        * @see java.lang.Object#toString()
        */
+
     public String toString() {
         return "Codec of " + type.getSimpleName();
     }

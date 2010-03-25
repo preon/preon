@@ -62,10 +62,7 @@ public class CachingCodecFactoryTest extends TestCase {
         metadata = EasyMock.createMock(AnnotatedElement.class);
     }
 
-    /**
-     * Tests if the {@link CachingCodecFactory} correctly returns the same codec
-     * for identical requests.
-     */
+    /** Tests if the {@link CachingCodecFactory} correctly returns the same codec for identical requests. */
     public void testCachingStrategy() {
         EasyMock.expect(delegate.create(metadata, String.class, null))
                 .andReturn(codec1);

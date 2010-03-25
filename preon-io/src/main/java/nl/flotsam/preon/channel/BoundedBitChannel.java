@@ -52,7 +52,7 @@ public class BoundedBitChannel implements BitChannel {
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param channel The {@link BitChannel} to wrap.
      * @param maxBits The maximum number of bits accepted.
      */

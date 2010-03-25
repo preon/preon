@@ -83,7 +83,7 @@ public class ConditionalBindingFactoryTest extends TestCase {
     private Builder builder;
 
     private ResolverContext context;
-    
+
     private Expression<Integer, Resolver> sizeExpr;
 
     public void setUp() {
@@ -118,7 +118,7 @@ public class ConditionalBindingFactoryTest extends TestCase {
     }
 
     public void testConditionalLoad(String expr, int a, int b, boolean bindingAction,
-            boolean compilationFailure) throws DecodingException {
+                                    boolean compilationFailure) throws DecodingException {
         Test test = new Test();
         test.value = "whatever";
         expect(metadata.getAnnotation(If.class)).andReturn(condition);

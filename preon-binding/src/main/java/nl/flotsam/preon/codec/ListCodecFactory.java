@@ -85,24 +85,24 @@ import nl.flotsam.preon.util.ParaContentsDocument;
 public class ListCodecFactory implements CodecFactory {
 
     /**
-     * The {@link CodecFactory} that will be used for constructing the
-     * {@link Codecs} to construct elements in the List.
+     * The {@link CodecFactory} that will be used for constructing the {@link Codecs} to construct elements in the
+     * List.
      */
     private CodecFactory delegate;
 
     /**
-     * Constructs a new instance, accepting the {@link CodecFactory} creating
-     * the {@link Codec Codecs} that will reconstruct elements in the List.
+     * Constructs a new instance, accepting the {@link CodecFactory} creating the {@link Codec Codecs} that will
+     * reconstruct elements in the List.
      *
-     * @param delegate
-     *            The {@link CodecFactory} creating the {@link Codec Codecs}
-     *            that will reconstruct elements in the List.
+     * @param delegate The {@link CodecFactory} creating the {@link Codec Codecs} that will reconstruct elements in the
+     *                 List.
      */
     public ListCodecFactory(CodecFactory delegate) {
         this.delegate = delegate;
     }
 
     // JavaDoc inherited.
+
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
                                ResolverContext context) {
@@ -162,13 +162,11 @@ public class ListCodecFactory implements CodecFactory {
     }
 
     /**
-     * Returns a {@link BoundObject} annotation containing the properties it
-     * shares in common with the {@link BoundList} annotation.
+     * Returns a {@link BoundObject} annotation containing the properties it shares in common with the {@link BoundList}
+     * annotation.
      *
-     * @param settings
-     *            The {@link BoundList} settings.
-     * @return A {@link BoundObject} annotation with settings copied from the
-     *         {@link BoundList} annotation passed in.
+     * @param settings The {@link BoundList} settings.
+     * @return A {@link BoundObject} annotation with settings copied from the {@link BoundList} annotation passed in.
      */
     private BoundObject getObjectSettings(final BoundList settings) {
         return new BoundObject() {
@@ -197,39 +195,28 @@ public class ListCodecFactory implements CodecFactory {
     }
 
     /**
-     * The {@link Codec} for reading the {@link List} and its members, on
-     * demand. Instances of this class will <em>not</em> create a standard
-     * {@link List} implementation and populate all of its data immediately.
-     * Instead it will create a {@link nl.flotsam.preon.util.UnevenlyDistributedLazyList}, constructing its
-     * elements on the fly, only when it is required.
-     *
-     * <p>
-     * Note that this class is called <code><em>Static</em>ListCodec</code>
-     * since it relies on the fact that the size of the List and the amount of
-     * data required for every list member is known in advance. </p
-     *
+     * The {@link Codec} for reading the {@link List} and its members, on demand. Instances of this class will
+     * <em>not</em> create a standard {@link List} implementation and populate all of its data immediately. Instead it
+     * will create a {@link nl.flotsam.preon.util.UnevenlyDistributedLazyList}, constructing its elements on the fly,
+     * only when it is required.
+     * <p/>
+     * <p/>
+     * Note that this class is called <code><em>Static</em>ListCodec</code> since it relies on the fact that the size of
+     * the List and the amount of data required for every list member is known in advance. </p
      */
     private static class StaticListCodec<T> implements Codec<List<T>> {
 
-        /**
-         * The number of elements in the list.
-         */
+        /** The number of elements in the list. */
         private Expression<Integer, Resolver> size;
 
-        /**
-         * The {@link Codec} that will construct elements from the {@link List}.
-         */
+        /** The {@link Codec} that will construct elements from the {@link List}. */
         private Codec<T> codec;
 
         /**
          * Constructs a new instance.
          *
-         * @param maxSize
-         *            An {@link Expression} representing the number of elements
-         *            in the {@link List}.
-         * @param codec
-         *            The {@link Codec} constructing elements in the
-         *            {@link List}.
+         * @param maxSize An {@link Expression} representing the number of elements in the {@link List}.
+         * @param codec   The {@link Codec} constructing elements in the {@link List}.
          */
         public StaticListCodec(Expression<Integer, Resolver> maxSize,
                                Codec<T> codec) {
@@ -314,11 +301,9 @@ public class ListCodecFactory implements CodecFactory {
     }
 
     /**
-     * Returns the {@link Expression} that will be evaluated to the {@link List}
-     * 's size.
+     * Returns the {@link Expression} that will be evaluated to the {@link List} 's size.
      *
-     * @param listSettings
-     *            The annotation, holding the expression.
+     * @param listSettings The annotation, holding the expression.
      * @return An {@link Expression} instance, representing the expression.
      */
     private Expression<Integer, Resolver> getSizeExpression(
@@ -428,11 +413,9 @@ public class ListCodecFactory implements CodecFactory {
     }
 
     /**
-     * A {@link Codec} for Lists. The type of List that will be created is
-     * determined at runtime, right before the actual List is decoded. The
-     * {@link #skipListCodec} Codec will be used when the size of the individual
-     * list item can be determined before the List is getting constructed.
-     *
+     * A {@link Codec} for Lists. The type of List that will be created is determined at runtime, right before the
+     * actual List is decoded. The {@link #skipListCodec} Codec will be used when the size of the individual list item
+     * can be determined before the List is getting constructed.
      */
     private static class SwitchingListCodec<T> implements Codec<List<T>> {
 
@@ -619,42 +602,32 @@ public class ListCodecFactory implements CodecFactory {
     }
 
     /**
-     * A {@link Codec} for Lists, expecting the location of the elements to be
-     * defined by some Limbo expression based on the index of the element.
+     * A {@link Codec} for Lists, expecting the location of the elements to be defined by some Limbo expression based on
+     * the index of the element.
      *
      * @param <T>
      */
     private static class OffsetListCodec<T> implements Codec<List<T>> {
 
         /**
-         * The expression to calculate the offset. (Note that you can use the
-         * 'index' variable to point to the position of this element in the
-         * list.
+         * The expression to calculate the offset. (Note that you can use the 'index' variable to point to the position
+         * of this element in the list.
          */
         private Expression<Integer, Resolver> offsets;
 
-        /**
-         * The size of the list.
-         */
+        /** The size of the list. */
         private Expression<Integer, Resolver> size;
 
-        /**
-         * The Codec for decoding elements from the list.
-         */
+        /** The Codec for decoding elements from the list. */
         private Codec<T> codec;
 
         /**
          * Constructs a new instance.
          *
-         * @param offsets
-         *            An expression for calculating the offset of the beginning
-         *            of an element, as a function of the elements position in
-         *            the list.
-         * @param size
-         *            An expression resolving into the size of the list.
-         * @param codec
-         *            The {@link Codec} to use for decoding individual list
-         *            elements.
+         * @param offsets An expression for calculating the offset of the beginning of an element, as a function of the
+         *                elements position in the list.
+         * @param size    An expression resolving into the size of the list.
+         * @param codec   The {@link Codec} to use for decoding individual list elements.
          */
         public OffsetListCodec(Expression<Integer, Resolver> offsets,
                                Expression<Integer, Resolver> size, Codec<T> codec) {

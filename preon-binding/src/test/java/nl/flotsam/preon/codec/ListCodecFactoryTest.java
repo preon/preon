@@ -75,8 +75,8 @@ public class ListCodecFactoryTest extends TestCase {
     private Builder builder;
 
     private ResolverContext context;
-    
-    private Expression<Integer,Resolver> sizeExpr;
+
+    private Expression<Integer, Resolver> sizeExpr;
 
     public void setUp() {
         delegate = createMock(CodecFactory.class);

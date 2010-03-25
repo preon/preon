@@ -48,16 +48,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * The default {@link CodecFactory} implementation, constructing {@link Codecs}
- * based on all {@link CodecFactory CodecFactories} available by default. The
- * {@link Codec Codecs} constructed by this factory will most likely wrap an
- * {@link nl.flotsam.preon.codec.ObjectCodecFactory}. The main difference between that {@link Codec}
- * and the one created by this factory is that this one actually remembers all
- * of the {@link Codec Codecs} that were constructed, making it a better
- * candidate for building documentation.
- * 
+ * The default {@link CodecFactory} implementation, constructing {@link Codecs} based on all {@link CodecFactory
+ * CodecFactories} available by default. The {@link Codec Codecs} constructed by this factory will most likely wrap an
+ * {@link nl.flotsam.preon.codec.ObjectCodecFactory}. The main difference between that {@link Codec} and the one created
+ * by this factory is that this one actually remembers all of the {@link Codec Codecs} that were constructed, making it
+ * a better candidate for building documentation.
+ *
  * @author Wilfred Springer
- * 
  */
 public class DefaultCodecFactory implements CodecFactory {
 
@@ -66,13 +63,13 @@ public class DefaultCodecFactory implements CodecFactory {
     }
 
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         return create(metadata, type, new CodecFactory[0],
                 new CodecDecorator[0]);
     }
 
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            CodecFactory[] addOnFactories, CodecDecorator[] addOnDecorators) {
+                               CodecFactory[] addOnFactories, CodecDecorator[] addOnDecorators) {
 
         // The actual cache of Codecs.
         final List<Codec<?>> created = new ArrayList<Codec<?>>();
@@ -136,9 +133,8 @@ public class DefaultCodecFactory implements CodecFactory {
 
     /**
      * The default {@link Codec}.
-     * 
+     *
      * @author Wilfred Springer
-     * 
      * @param <T>
      */
     private class DefaultCodec<T> implements Codec<T> {
@@ -228,43 +224,33 @@ public class DefaultCodecFactory implements CodecFactory {
 
     /**
      * A {@link CodecFactory}, decorating the {@link Codec}s constructed.
-     * 
+     *
      * @author Wilfred Springer
-     * 
      */
     private static class DecoratingCodecFactory implements CodecFactory {
 
-        /**
-         * The {@link CodecFactory} performing the actual work.
-         */
+        /** The {@link CodecFactory} performing the actual work. */
         private CodecFactory delegate;
 
-        /**
-         * The decorators for decorating the {@link Codec}s constructed.
-         */
+        /** The decorators for decorating the {@link Codec}s constructed. */
         private List<CodecDecorator> decorators;
 
         /**
          * Constructs a new instance.
-         * 
-         * @param delegate
-         *            The {@link CodecFactory} to which we need to delegate.
-         * @param decorators
-         *            The {@link CodecDecorator}s that will get a chance to
-         *            decorate the {@link Codec} constructed.
+         *
+         * @param delegate   The {@link CodecFactory} to which we need to delegate.
+         * @param decorators The {@link CodecDecorator}s that will get a chance to decorate the {@link Codec}
+         *                   constructed.
          */
         public DecoratingCodecFactory(CodecFactory delegate,
-                List<CodecDecorator> decorators) {
+                                      List<CodecDecorator> decorators) {
             this.delegate = delegate;
             this.decorators = decorators;
         }
 
-        /**
-         * {@inheritDoc} Every Codec constructed will be decorated by the
-         * {@link #decorators}.
-         */
+        /** {@inheritDoc} Every Codec constructed will be decorated by the {@link #decorators}. */
         public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-                ResolverContext context) {
+                                   ResolverContext context) {
             Codec<T> codec = delegate.create(metadata, type, context);
             if (codec != null) {
                 for (CodecDecorator decorator : decorators) {

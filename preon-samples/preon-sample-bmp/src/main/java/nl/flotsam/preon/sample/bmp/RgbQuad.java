@@ -36,28 +36,28 @@ import nl.flotsam.preon.annotation.BoundNumber;
 
 public class RgbQuad {
 
-    @BoundNumber(size="8")
+    @BoundNumber(size = "8")
     private short rgbBlue;
-    
-    @BoundNumber(size="8")
+
+    @BoundNumber(size = "8")
     private short rgbGreen;
-    
-    @BoundNumber(size="8")
+
+    @BoundNumber(size = "8")
     private short rgbRed;
-    
-    @BoundNumber(size="8")
+
+    @BoundNumber(size = "8")
     private short rgbReserved;
 
     public short getBlue() {
         return rgbBlue;
     }
-    
+
     public short getGreen() {
         return rgbGreen;
     }
-    
+
     public short getRed() {
         return rgbRed;
     }
-    
+
 }

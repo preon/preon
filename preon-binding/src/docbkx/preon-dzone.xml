@@ -41,7 +41,7 @@
   <section>
     <title>What's Preon, in one sentence?</title>
     <para>
-      Preon is a <emphasis>declarative data binding framework for
+      Preon is a<emphasis>declarative data binding framework for
       binary encoded data</emphasis>. Preon is to binary encoded what
       JAXB is to XML, and Hibernate to relational databases.
     </para>
@@ -53,21 +53,28 @@
       disk and traversing the network is encoded in XML or another
       text-based type of encoding. In fact, I did a quick survey, and
       found out that most of the files on my hard disk that
-      <emphasis>are</emphasis> encoded in a non-binary file format are
+      <emphasis>are</emphasis>
+      encoded in a non-binary file format are
       the files that I have on my disk because I develop in
       Java. Think source Java files, HTML-based Javadoc, configuration
       for Java-based middleware, etc. I did the same survey on my
-      wife's hard disk, and found out that <emphasis>almost
-      all</emphasis> of here files are binary encoded files.Yet,
+      wife's hard disk, and found out that
+      <emphasis>almost
+        all
+      </emphasis>
+      of here files are binary encoded files.Yet,
       somehow we seem to have a strong preference for text-based
       encoding formats in the Java world. You wonder why.
     </para>
     <para>
       I can think of at least one reason why: Java is just notoriously
       bad at dealing with binary encoded data. You disagree? I refer
-      to <ulink
-      url="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504839">bug
-      4504839</ulink> and rest my case. That bug report is about Java
+      to
+      <ulink
+              url="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4504839">bug
+        4504839
+      </ulink>
+      and rest my case. That bug report is about Java
       not supporting unsigned int. Dealing with unsigned int data in
       Java is just quite painful. You need to do a lot of masking and
       shifting in order to be able to deal with it in a sensible
@@ -94,7 +101,9 @@
       problem. At TomTom, we had two separate code bases for dealing
       with the binary map file format: one code base for decoding
       the data, and one for encoding the data. Keeping these two
-      code bases <emphasis>and the documentation</emphasis> in sync,
+      code bases
+      <emphasis>and the documentation</emphasis>
+      in sync,
       required a tremendous effort. It's not hard to see how that is
       undesirable.
     </para>
@@ -102,20 +111,24 @@
       All of this is solved by Preon. Preon allows you to capture the
       structure of the encoded binary format
       <emphasis>once</emphasis>, and the mapping to an in-memory data
-      structure once, and <emphasis>get the decoder, the encoder
+      structure once, and<emphasis>get the decoder, the encoder
       (coming soon), and a description of the file format free of
       charge</emphasis>.
     </para>
   </section>
   <section>
     <title>How does it compare to its competitors/alternatives?
-    (Maybe code snippets here.)</title>
+      (Maybe code snippets here.)
+    </title>
     <para>
       There really isn't all that much competition in this space,
       unless you talk about other languages. First of all, there
       some academic initiatives to capture the bitstream format in a
-      DSL. This includes <ulink
-      url="http://flavor.sourceforge.net/">Flavor</ulink> family of
+      DSL. This includes
+      <ulink
+              url="http://flavor.sourceforge.net/">Flavor
+      </ulink>
+      family of
       languages (Flavor, BFlavor, gFlavor), and BSDL (Bitstream
       Syntax Description Language). Most of that work comes from the
       media format world, MPEG in particular.
@@ -125,7 +138,7 @@
       defines a text (not XML) based grammar for capturing the
       structure of a bit stream, and has a couple of tools for
       turning this into Java and C APIs. Basically, not unlike Lex
-      and YACC or ANTLR. 
+      and YACC or ANTLR.
     </para>
     <para>
       Although Preon shares the same objective with Flavor, the
@@ -140,8 +153,11 @@
     </para>
     <para>
       Preon also shares some commonalities with Erlang's bit
-      syntax. (At <ulink
-      url="http://www.oopsla.org/oopsla2009/">OOPSLA 2009</ulink> it
+      syntax. (At
+      <ulink
+              url="http://www.oopsla.org/oopsla2009/">OOPSLA 2009
+      </ulink>
+      it
       will be presented as Bit Syntax for Java.) The difference is:
       bit syntax support is built into the language in Erlang; Preon
       offers it as a library built on top of the language. Erlang's
@@ -151,10 +167,13 @@
   </section>
   <section>
     <title>Can you describe the architecture of Preon (diagram would
-    be nice)?</title>
+      be nice)?
+    </title>
     <para>
       There are several layers inside Preon. At the bottom layer, it
-      provides a <interfacename>ByteBuffer</interfacename> type of
+      provides a
+      <interfacename>ByteBuffer</interfacename>
+      type of
       abstraction for accessing bit stream data, called the
       <interfacename>BitBuffer</interfacename>. That's the
       abstraction that allows you to quickly access data as a bit
@@ -175,30 +194,35 @@
       structure to its bit stream representation using
       annotations. At runtime, you pass a reference to the root
       class of that data structure to Preon, and it will return you
-      a <interfacename>Codec</interfacename> for the entire data
+      a
+      <interfacename>Codec</interfacename>
+      for the entire data
       structure. Once you have the
-      <interfacename>Codec</interfacename> instance, using it is
+      <interfacename>Codec</interfacename>
+      instance, using it is
       simple: you simply use one of the convenience methods on the
-      <classname>Codecs</classname> class, and it will return you an
+      <classname>Codecs</classname>
+      class, and it will return you an
       instance of the data structure based on the input source
       passed in.
     </para>
     <example>
       <title>Preon decoding a Color</title>
-    <programlisting><![CDATA[class Color {
+      <programlisting><![CDATA[class Color {
 @Bound byte red;
 @Bound byte green;
 @Bound byte blue;
 }
 
 Codec<Color> codec = Codecs.create(Color.class);
-Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></programlisting></example>
+Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></programlisting>
+    </example>
     <para>
       There are a couple of important things to know about
       Preon. First of all, when you ask Preon for a Codec, it will
       actually return a chain of Codecs. The Codec you get, will
       delegate to other Codecs with more precise
-      responsibilities. (See <xref linkend="fig-delegation"/>.) So, if
+      responsibilities. (See<xref linkend="fig-delegation"/>.) So, if
       you happen to have a Codec of Color, and the color model is
       based on the RGB model, then that Codec of Color will most
       likely internally delegate to three Codecs for bytes: one for
@@ -209,13 +233,14 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
       This is one of the reasons why Preon is extensible. If you
       need to decode data in a way that is not supported yet, you
       can just plug in a component that will create instances of your
-      own Codec where you need them. 
+      own Codec where you need them.
     </para>
     <figure id="fig-delegation">
       <title>Codecs delegating to Codecs</title>
       <mediaobject>
         <imageobject>
-          <imagedata fileref="http://fisheye3.atlassian.com/browse/~raw,r=3/preon/trunk/preon-binding/src/docbkx/img/rsbmp-codecs.png"/>
+          <imagedata
+                  fileref="http://fisheye3.atlassian.com/browse/~raw,r=3/preon/trunk/preon-binding/src/docbkx/img/rsbmp-codecs.png"/>
         </imageobject>
       </mediaobject>
     </figure>
@@ -250,24 +275,26 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
       descriptions you find on Wikipedia, and Preon is already
       coming pretty close to that.
     </para>
-      <figure>
-        <title>Documentation generated by Preon</title>
-        <ulink url="http://preon.flotsam.nl/classfile.html"/>
-        <mediaobject>
+    <figure>
+      <title>Documentation generated by Preon</title>
+      <ulink url="http://preon.flotsam.nl/classfile.html"/>
+      <mediaobject>
         <imageobject>
-          <imagedata fileref="http://fisheye3.atlassian.com/browse/~raw,r=49/preon/trunk/preon-binding/src/docbkx/img/documentation.png"/>
+          <imagedata
+                  fileref="http://fisheye3.atlassian.com/browse/~raw,r=49/preon/trunk/preon-binding/src/docbkx/img/documentation.png"/>
         </imageobject>
       </mediaobject>
     </figure>
   </section>
   <section>
     <title>How can I make a plugin for Preon (steps)? What kind of
-    plugins would be useful to make?</title>
+      plugins would be useful to make?
+    </title>
     <para>
       Preon has a couple of plugpoints. As I said earlier, it is
       quite easy to create support for your own specific type of
-      compression. Say you want support for <ulink
-      url="http://en.wikipedia.org/wiki/Huffman_coding">Huffman
+      compression. Say you want support for<ulink
+            url="http://en.wikipedia.org/wiki/Huffman_coding">Huffman
       coded data</ulink>. In that case, you would:
     </para>
     <procedure>
@@ -285,12 +312,17 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
       </step>
       <step>
         <para>
-          Next, you need to implement a <ulink
-          url="http://preon.flotsam.nl/preon-binding/apidocs/nl/flotsam/preon/CodecFactory.html"><interfacename>CodecFactory</interfacename></ulink>. Remember,
+          Next, you need to implement a
+          <ulink
+                  url="http://preon.flotsam.nl/preon-binding/apidocs/nl/flotsam/preon/CodecFactory.html">
+            <interfacename>CodecFactory</interfacename>
+          </ulink>
+          . Remember,
           we want to make sure that whenever Preon encounters an
-          <interfacename>@HuffmanCoded</interfacename> attribute on a
+          <interfacename>@HuffmanCoded</interfacename>
+          attribute on a
           class, it will create an instance of the Huffman Codec. By
-          implementing a <interfacename>CodecFactory</interfacename>,
+          implementing a<interfacename>CodecFactory</interfacename>,
           you basically create a component that will get a chance to
           recognize attributes of this type, and create an instance of
           that Codec.
@@ -300,10 +332,13 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
         <para>
           Third, you need to create the actual Huffman Codec. The
           <ulink
-          url="http://preon.flotsam.nl/preon-binding/apidocs/nl/flotsam/preon/Codec.html"><interfacename>Codec</interfacename></ulink>
+                  url="http://preon.flotsam.nl/preon-binding/apidocs/nl/flotsam/preon/Codec.html">
+            <interfacename>Codec</interfacename>
+          </ulink>
           interface is not extremely complicated, so most of the work
           will be in the implementation of the
-          <methodname>decode()</methodname> operation, but it all
+          <methodname>decode()</methodname>
+          operation, but it all
           depends on the complexity of the encoding technique that you
           are implementing.
         </para>
@@ -313,7 +348,9 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
           As part of implementing the Codec, you also need to
           implement a
           <ulink url="http://preon.flotsam.nl/preon-binding/apidocs/nl/flotsam/preon/CodecDescriptor.html">
-          <interfacename>CodecDescriptor</interfacename></ulink>. That
+            <interfacename>CodecDescriptor</interfacename>
+          </ulink>
+          . That
           is, if you want to make sure Preon spits out some useful
           documentation. If you don't care about that, then you can
           just return a default CodecDescriptor.
@@ -328,7 +365,8 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
           supports out of the box. It will now recognize the need
           for creating an instance of your Huffman Codec once it
           encounters the
-          <interfacename>@HuffmanCoded</interfacename> annotation.
+          <interfacename>@HuffmanCoded</interfacename>
+          annotation.
         </para>
       </step>
     </procedure>
@@ -336,7 +374,8 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
       Now that's it. Is that a lot of work? I don't think so, but
       what is more important is that you not only added support for
       Huffman coding for a particular file format, but for
-      <emphasis>all</emphasis> file formats that rely on Huffman
+      <emphasis>all</emphasis>
+      file formats that rely on Huffman
       coded Strings. How cool is that?
     </para>
   </section>
@@ -355,7 +394,7 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
       working, and started to work on it on my spare time. That
       means I basically rebuilt the framework from the ground up,
       while trying to use it on a couple of different encoding
-      formats. 
+      formats.
     </para>
     <para>
       Making sure that Preon supported Java class files (so, using
@@ -368,8 +407,9 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
   </section>
   <section>
     <title>You've presented Preon at several conferences. What's the
-    feedback been like? Has any of it affected the direction of the
-    project?</title>
+      feedback been like? Has any of it affected the direction of the
+      project?
+    </title>
     <para>
       In general, I get a lot of positive feedback. It turns out we
       were not the only once finding limited support for binary
@@ -385,8 +425,10 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
     <para>
       Another question that pops up regularly is if you shouldn't
       steer clear from defining your own binary encoding standards,
-      and rely on <ulink
-      url="http://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One">ASN.1</ulink>
+      and rely on
+      <ulink
+              url="http://en.wikipedia.org/wiki/Abstract_Syntax_Notation_One">ASN.1
+      </ulink>
       BER encoding instead. Now, I think that would be a
       mistake. BER encoding, or binary XML encoding standards are
       great if your model is Infoset, but in many cases it isn't,
@@ -399,7 +441,9 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
       nodes by the offsets of the location of these nodes relative
       to the beginning of the file, then you can easily jump ahead
       and fetch that data without having to decode the entire
-      file. That's a <emphasis>huge</emphasis> benefit over BER
+      file. That's a
+      <emphasis>huge</emphasis>
+      benefit over BER
       encoded that.
     </para>
     <para>
@@ -412,21 +456,21 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
   </section>
   <section>
     <title>Please say a few words about getting started with
-    Preon. What do I need to download and what's the first
-    documentation I should read?
+      Preon. What do I need to download and what's the first
+      documentation I should read?
     </title>
     <para>
       If you want to read more on Preon, there are a couple of
-      documents available on the <ulink
-      url="http://preon.flotsam.nl/">web site</ulink>, and on
-      Scribd. I suggest that you first read the <ulink
-      url="http://www.scribd.com/doc/8128172/Preon-Introduction">introduction</ulink>,
+      documents available on the<ulink
+            url="http://preon.flotsam.nl/">web site</ulink>, and on
+      Scribd. I suggest that you first read the<ulink
+            url="http://www.scribd.com/doc/8128172/Preon-Introduction">introduction</ulink>,
       and then check out the examples.
     </para>
     <para>
       You can check out the examples by checking out the sources,
-      but you also check them out <ulink
-      url="http://fisheye3.atlassian.com/browse/preon/trunk/preon-samples/">online
+      but you also check them out<ulink
+            url="http://fisheye3.atlassian.com/browse/preon/trunk/preon-samples/">online
       in Fisheye</ulink>. Check out the preon-samples module. I
       would suggest that you start with the Bitmap example in
       preon-sample-bmp. Next, you might want to study the
@@ -443,7 +487,7 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
     </para>
     <example>
       <title>Maven POM Configuration</title>
-    <programlisting><![CDATA[<dependencies>
+      <programlisting><![CDATA[<dependencies>
     <dependency>
       <groupId>nl.flotsam.preon</groupId>
       <artifactId>preon-binding</artifactId>
@@ -464,19 +508,24 @@ Color color = Codecs.decode(codec, new byte[] { 0x12, 0xff, 0x34 });]]></program
       <id>preon-repository</id>
       <url>http://preon.flotsam.nl/repository</url>
     </repository>
-  </repositories>]]></programlisting></example>
+  </repositories>]]></programlisting>
+    </example>
     <para>
       If you feel the need to add your own Codec, check twice, because
       what you want may already be in there. However, if you still
-      feel there is need to add your own Codec, first study the <ulink
-      url="http://fisheye3.atlassian.com/browse/preon/trunk/preon-binding/src/main/java/nl/flotsam/preon/codec/BooleanCodecFactory.java?r=60">BooleanCodec</ulink>
+      feel there is need to add your own Codec, first study the
+      <ulink
+              url="http://fisheye3.atlassian.com/browse/preon/trunk/preon-binding/src/main/java/nl/flotsam/preon/codec/BooleanCodecFactory.java?r=60">
+        BooleanCodec
+      </ulink>
       example. That one is extremely easy to grasp, and will give you
       all you need.
     </para>
   </section>
   <section>
     <title>What's the future of Preon? Timeline? Features you'd like
-    to have? Contributions received from others?</title>
+      to have? Contributions received from others?
+    </title>
     <para>
       Support for encoding is the first thing on my wish list for
       the next release. Next comes having the ability to annotate

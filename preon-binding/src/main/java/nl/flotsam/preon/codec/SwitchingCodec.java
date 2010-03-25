@@ -47,24 +47,21 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * A {@link Codec} that is able to dynamically choose between different types of
- * objects to decode, based on a couple of leading bits.
- * 
+ * A {@link Codec} that is able to dynamically choose between different types of objects to decode, based on a couple of
+ * leading bits.
+ *
  * @author Wilfred Springer
  * @see CodecSelector
  */
 public class SwitchingCodec implements Codec<Object> {
 
-    /**
-     * The object responsible for picking the right {@link Codec}.
-     */
+    /** The object responsible for picking the right {@link Codec}. */
     private CodecSelector selector;
 
     /**
      * Constructs a new instance.
-     * 
-     * @param selector
-     *            The object responsible for picking the right {@link Codec}.
+     *
+     * @param selector The object responsible for picking the right {@link Codec}.
      */
     public SwitchingCodec(CodecSelector selector) {
         this.selector = selector;
@@ -76,6 +73,7 @@ public class SwitchingCodec implements Codec<Object> {
      * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
      * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
      */
+
     public Object decode(BitBuffer buffer, Resolver resolver, Builder builder)
             throws DecodingException {
         Codec<?> codec = selector.select(buffer, resolver);
@@ -92,6 +90,7 @@ public class SwitchingCodec implements Codec<Object> {
      * 
      * @see nl.flotsam.preon.Codec#getTypes()
      */
+
     public Class<?>[] getTypes() {
         Set<Class<?>> types = new HashSet<Class<?>>();
         for (Codec<?> codec : selector.getChoices()) {
@@ -105,6 +104,7 @@ public class SwitchingCodec implements Codec<Object> {
      * 
      * @see nl.flotsam.preon.Codec#getSize()
      */
+
     public Expression<Integer, Resolver> getSize() {
         Collection<Codec<?>> choices = selector.getChoices();
         if (choices.size() == 0) {
@@ -177,7 +177,7 @@ public class SwitchingCodec implements Codec<Object> {
                             for (int i = 0; i < codecs.size(); i++) {
                                 target.document(codecs.get(i)
                                         .getCodecDescriptor().reference(
-                                                Adjective.NONE, false));
+                                        Adjective.NONE, false));
                                 if (i > codecs.size() - 2) {
                                     // Do nothing
                                 } else if (i == codecs.size() - 2) {

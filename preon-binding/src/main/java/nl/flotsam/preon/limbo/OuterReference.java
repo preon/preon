@@ -41,48 +41,37 @@ import nl.flotsam.limbo.Reference;
 import nl.flotsam.limbo.ReferenceContext;
 
 /**
- * A {@link Reference} to the outer context. This {@link Reference} will create
- * new references ({@link #selectAttribute(String)},
- * {@link #selectItem(Expression)}, etc.) that will be based on the
- * {@link #outerContext} passed in. In order to make sure the
- * {@link #originalContext} will be preserved by wrapping these new
- * {@link Reference}s in objects that will handle all incoming calls
- * appropriately.
- * 
+ * A {@link Reference} to the outer context. This {@link Reference} will create new references ({@link
+ * #selectAttribute(String)}, {@link #selectItem(Expression)}, etc.) that will be based on the {@link #outerContext}
+ * passed in. In order to make sure the {@link #originalContext} will be preserved by wrapping these new {@link
+ * Reference}s in objects that will handle all incoming calls appropriately.
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class OuterReference implements Reference<Resolver> {
 
-    /**
-     * The default name of referring to the outer context.
-     */
+    /** The default name of referring to the outer context. */
     public final static String DEFAULT_OUTER_NAME = "outer";
 
-    /**
-     * The "outer" {@link ResolverContext}.
-     */
+    /** The "outer" {@link ResolverContext}. */
     private ResolverContext outerContext;
 
     /**
-     * The "original" context from which this object was created. (Note that
-     * this not necessarily needs to be the sub context of the outer context. It
-     * could be something way more deep down in the chain.
+     * The "original" context from which this object was created. (Note that this not necessarily needs to be the sub
+     * context of the outer context. It could be something way more deep down in the chain.
      */
     private ResolverContext originalContext;
 
     /**
      * Constructs a new instance.
-     * 
-     * @param outerContext
-     *            The "outer" context.
-     * @param originalContext
-     *            The "original" context.
+     *
+     * @param outerContext    The "outer" context.
+     * @param originalContext The "original" context.
      * @see OuterReference#outerContext
      * @see OuterReference#originalContext
      */
     public OuterReference(ResolverContext outerContext,
-            ResolverContext originalContext) {
+                          ResolverContext originalContext) {
         this.outerContext = outerContext;
         this.originalContext = originalContext;
     }
@@ -91,6 +80,7 @@ public class OuterReference implements Reference<Resolver> {
      * (non-Javadoc)
      * @see nl.flotsam.limbo.Reference#getType()
      */
+
     public Class<?> getType() {
         return Resolver.class;
     }
@@ -99,6 +89,7 @@ public class OuterReference implements Reference<Resolver> {
      * (non-Javadoc)
      * @see nl.flotsam.limbo.Reference#isAssignableTo(java.lang.Class)
      */
+
     public boolean isAssignableTo(Class<?> type) {
         return type.isAssignableFrom(getType());
     }
@@ -107,6 +98,7 @@ public class OuterReference implements Reference<Resolver> {
      * (non-Javadoc)
      * @see nl.flotsam.limbo.Reference#resolve(java.lang.Object)
      */
+
     public Object resolve(Resolver resolver) {
         throw new IllegalStateException("Never expected to be called.");
     }
@@ -115,6 +107,7 @@ public class OuterReference implements Reference<Resolver> {
      * (non-Javadoc)
      * @see nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
      */
+
     public Reference<Resolver> selectAttribute(String name)
             throws BindingException {
         Reference<Resolver> actual = outerContext.selectAttribute(name);
@@ -126,6 +119,7 @@ public class OuterReference implements Reference<Resolver> {
      * (non-Javadoc)
      * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
      */
+
     public Reference<Resolver> selectItem(String index) throws BindingException {
         Reference<Resolver> actual = outerContext.selectItem(index);
         return new OuterResolvingReference(DEFAULT_OUTER_NAME, originalContext,
@@ -136,6 +130,7 @@ public class OuterReference implements Reference<Resolver> {
      * (non-Javadoc)
      * @see nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression)
      */
+
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
             throws BindingException {
         Reference<Resolver> actual = outerContext.selectItem(index);
@@ -147,6 +142,7 @@ public class OuterReference implements Reference<Resolver> {
      * (non-Javadoc)
      * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
      */
+
     public void document(Document target) {
         target.text("the ");
         outerContext.document(target);
@@ -158,6 +154,7 @@ public class OuterReference implements Reference<Resolver> {
      * (non-Javadoc)
      * @see nl.flotsam.limbo.Reference#getReferenceContext()
      */
+
     public ReferenceContext<Resolver> getReferenceContext() {
         return outerContext;
     }

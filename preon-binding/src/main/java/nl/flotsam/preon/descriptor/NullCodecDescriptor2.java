@@ -64,7 +64,7 @@ public class NullCodecDescriptor2 implements CodecDescriptor {
 
     public <T extends ParaContents<?>> Documenter<T> summary() {
         return new Documenter<T>() {
-            public void document(T target) {                
+            public void document(T target) {
             }
         };
     }

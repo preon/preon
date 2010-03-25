@@ -33,11 +33,10 @@
 package nl.flotsam.preon;
 
 /**
- * The default implementation of the {@link Builder} interface, simply invoking
- * {@link Class#newInstance()} on the class passed in.
- * 
+ * The default implementation of the {@link Builder} interface, simply invoking {@link Class#newInstance()} on the class
+ * passed in.
+ *
  * @author Wilfred Springer
- * 
  */
 public class DefaultBuilder implements Builder {
 
@@ -46,6 +45,7 @@ public class DefaultBuilder implements Builder {
      * 
      * @see nl.flotsam.preon.Builder#create(java.lang.Class)
      */
+
     public <T> T create(Class<T> type) throws InstantiationException, IllegalAccessException {
         return type.newInstance();
     }

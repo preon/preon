@@ -41,17 +41,15 @@ import nl.flotsam.preon.buffer.BitBuffer;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * A {@link CodecFactory} generating {@link Codecs} capable of generating String
- * from {@link BitBuffer} content.
- * 
+ * A {@link CodecFactory} generating {@link Codecs} capable of generating String from {@link BitBuffer} content.
+ *
  * @author Wilfred Springer
- * 
  */
 public class StringCodecFactory implements CodecFactory {
 
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         if (metadata == null) {
             return null;
         }

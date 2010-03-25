@@ -63,7 +63,7 @@ class SlicingCodec<T> implements Codec<T> {
     /**
      * Constructs a new instance.
      *
-     * @param wrapped The {@link Codec} to be wrapped.
+     * @param wrapped  The {@link Codec} to be wrapped.
      * @param sizeExpr The size of the slice, expressed in bits, as a Limbo expression.
      */
     public SlicingCodec(Codec<T> wrapped, Expression<Integer, Resolver> sizeExpr) {

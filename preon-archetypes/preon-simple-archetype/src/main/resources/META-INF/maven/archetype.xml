@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><archetype>
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype>
   <id>preon-simple</id>
   <sources>
     <source>src/main/java/Color.java</source>

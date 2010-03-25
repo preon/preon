@@ -34,11 +34,14 @@ package nl.flotsam.preon.codec;
 
 import nl.flotsam.limbo.Expression;
 import nl.flotsam.preon.Resolver;
+
 import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
+
 import nl.flotsam.preon.channel.BitChannel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verifyNoMoreInteractions;

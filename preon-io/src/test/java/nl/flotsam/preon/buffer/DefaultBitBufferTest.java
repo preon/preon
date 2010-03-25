@@ -94,8 +94,8 @@ public class DefaultBitBufferTest extends TestCase {
     }
 
     public void testLittleEndianBitOffset() {
-        bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] { 3, 0, 0,
-                0 }));
+        bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{3, 0, 0,
+                0}));
 
         assertEquals(1, bitBuffer.readAsInt(1, ByteOrder.LittleEndian));
         assertEquals(1, bitBuffer.readAsInt(1, ByteOrder.LittleEndian));
@@ -111,8 +111,8 @@ public class DefaultBitBufferTest extends TestCase {
 
         // 11001010
         // 10010110
-        bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] {
-                (byte) 0xCA, (byte) 0x96, 0, 0 }));
+        bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{
+                (byte) 0xCA, (byte) 0x96, 0, 0}));
 
         assertEquals(1, bitBuffer.readAsInt(1, ByteOrder.BigEndian));
         assertEquals(1, bitBuffer.readAsInt(1, ByteOrder.BigEndian));
@@ -150,20 +150,20 @@ public class DefaultBitBufferTest extends TestCase {
 
     public void testCompleteBytes() {
         DefaultBitBuffer bitBuffer;
-        bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] { 0x01,
+        bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{0x01,
                 0x23, 0x45, 0x67, (byte) 0x89, (byte) 0xAB, (byte) 0xCD,
-                (byte) 0xEF }));
+                (byte) 0xEF}));
         assertEquals(0x0123456789ABCDEFL, bitBuffer.readBits(64));
 
-        bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[] {
+        bitBuffer = new DefaultBitBuffer(ByteBuffer.wrap(new byte[]{
                 (byte) 0xEF, (byte) 0xCD, (byte) 0xAB, (byte) 0x89, 0x67, 0x45,
-                0x23, 0x01 }));
+                0x23, 0x01}));
         assertEquals(0x0123456789ABCDEFL, bitBuffer.readBits(64, ByteOrder.LittleEndian));
     }
 
     public void testReadBeyondEnd() {
         DefaultBitBuffer buffer = new DefaultBitBuffer(ByteBuffer
-                .wrap(new byte[] { 1, 2, 3 }));
+                .wrap(new byte[]{1, 2, 3}));
         buffer.readAsByte(8);
         buffer.readAsByte(8);
         buffer.readAsByte(8);
@@ -178,7 +178,7 @@ public class DefaultBitBufferTest extends TestCase {
     public void testReadAsByteBuffer() throws Exception {
 
         DefaultBitBuffer buffer = new DefaultBitBuffer(ByteBuffer
-                .wrap(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }));
+                .wrap(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
 
         assertEquals(1, buffer.readAsByte(8));
         assertEquals(2 * 256 + 3, buffer.readAsShort(16));
@@ -198,7 +198,7 @@ public class DefaultBitBufferTest extends TestCase {
     public void testReadAsByteBufferWithBitAlignments() throws Exception {
 
         DefaultBitBuffer buffer = new DefaultBitBuffer(ByteBuffer
-                .wrap(new byte[] { 1, 2, 3, 4 }));
+                .wrap(new byte[]{1, 2, 3, 4}));
 
         buffer.readAsByte(7);
 
@@ -212,7 +212,7 @@ public class DefaultBitBufferTest extends TestCase {
 
         // Bit alignment compensation
         buffer = new DefaultBitBuffer(ByteBuffer
-                .wrap(new byte[] { 1, 2, 3, 4 }));
+                .wrap(new byte[]{1, 2, 3, 4}));
 
         // 7 + 9 = 16
         buffer.readAsByte(7);
@@ -230,12 +230,12 @@ public class DefaultBitBufferTest extends TestCase {
     }
 
     public void testReadingIntegers() {
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 0x01 // 0000 0001
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[]{0x01 // 0000 0001
                 , 0x02 // 0000 00010
                 , 0x03 // 0000 00011
                 , 0x04 // 0000 00100
                 , 0x05 // 0000 00101
-                });
+        });
         BitBuffer bitBuffer = new DefaultBitBuffer(buffer);
         bitBuffer.setBitPos(0);
         assertEquals(1, bitBuffer.readAsInt(8));
@@ -261,7 +261,7 @@ public class DefaultBitBufferTest extends TestCase {
     }
 
     public void testReading1() {
-        ByteBuffer buffer = ByteBuffer.wrap(new byte[] { 0x00, 0x00, 0x00, 0x01 });
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[]{0x00, 0x00, 0x00, 0x01});
         BitBuffer bitBuffer = new DefaultBitBuffer(buffer);
         assertEquals(1, bitBuffer.readAsInt(32));
     }

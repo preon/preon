@@ -35,38 +35,26 @@ package nl.flotsam.preon.buffer;
 import java.nio.ByteBuffer;
 
 /**
- * A {@link BitBuffer} that acts upon a slice of the underyling
- * {@link BitBuffer}.
- * 
+ * A {@link BitBuffer} that acts upon a slice of the underyling {@link BitBuffer}.
+ *
  * @author Wilfred Springer
- * 
  */
 public class SlicedBitBuffer implements BitBuffer {
 
-    /**
-     * The {@link BitBuffer} from which a slice is 'taken'.
-     */
+    /** The {@link BitBuffer} from which a slice is 'taken'. */
     private BitBuffer delegate;
 
-    /**
-     * The start position of the slice (counted in bits from the start of
-     * delegate BitBuffer).
-     */
+    /** The start position of the slice (counted in bits from the start of delegate BitBuffer). */
     private long startPos;
 
-    /**
-     * The end position of the slice (counted in bits from the start of the
-     * delegate BitBuffer).
-     */
+    /** The end position of the slice (counted in bits from the start of the delegate BitBuffer). */
     private long endPos;
 
     /**
      * Constructs a new slice.
-     * 
-     * @param delegate
-     *            The {@link BitBuffer} to slice.
-     * @param length
-     *            The lengthof the slize, in bits.
+     *
+     * @param delegate The {@link BitBuffer} to slice.
+     * @param length   The lengthof the slize, in bits.
      */
     public SlicedBitBuffer(BitBuffer delegate, long length) {
         this.delegate = delegate;
@@ -79,6 +67,7 @@ public class SlicedBitBuffer implements BitBuffer {
      * 
      * @see nl.flotsam.preon.buffer.BitBuffer#getBitBufBitSize()
      */
+
     public long getBitBufBitSize() {
         return endPos - startPos;
     }
@@ -88,13 +77,14 @@ public class SlicedBitBuffer implements BitBuffer {
      * 
      * @see nl.flotsam.preon.buffer.BitBuffer#getBitPos()
      */
+
     public long getBitPos() {
         return delegate.getBitPos() - startPos;
     }
 
     /**
      * Validates if it is possible to read the <code>nrBits</code> passed in.
-     * 
+     *
      * @param nrBits The number of bits to read.
      */
     private void assureValidRead(int nrBits) {
@@ -103,6 +93,7 @@ public class SlicedBitBuffer implements BitBuffer {
 
     /**
      * Validates if it is possible to read the <code>nrBits</code>
+     *
      * @param bitPos
      * @param nrBits
      */
@@ -242,11 +233,13 @@ public class SlicedBitBuffer implements BitBuffer {
     }
 
     // JavaDoc inherited
+
     public BitBuffer slice(long length) {
         return delegate.slice(length);
     }
 
     // JavaDoc inherited
+
     public BitBuffer duplicate() {
         return new SlicedBitBuffer(delegate.duplicate(), endPos - startPos);
     }

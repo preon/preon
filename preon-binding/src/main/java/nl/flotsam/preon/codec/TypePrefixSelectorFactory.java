@@ -47,12 +47,10 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * A {@link CodecSelectorFactory} that will create a {@link CodecSelector} that
- * will look for leading bits, matching a certain value expressed with an
- * {@link TypePrefix} annotation on the Codecs classes.
- * 
+ * A {@link CodecSelectorFactory} that will create a {@link CodecSelector} that will look for leading bits, matching a
+ * certain value expressed with an {@link TypePrefix} annotation on the Codecs classes.
+ *
  * @author Wilfred Springer
- * 
  */
 public class TypePrefixSelectorFactory implements CodecSelectorFactory {
 
@@ -63,8 +61,9 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
      * nl.flotsam.preon.CodecSelectorFactory#create(nl.flotsam.preon.ResolverContext
      * , java.util.List)
      */
+
     public CodecSelector create(ResolverContext context,
-            List<Codec<?>> allCodecs) {
+                                List<Codec<?>> allCodecs) {
         int size = -1;
         List<Expression<Integer, Resolver>> expressions = new ArrayList<Expression<Integer, Resolver>>();
         List<Codec<?>> codecs = new ArrayList<Codec<?>>();
@@ -99,10 +98,8 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
     }
 
     /**
-     * A {@link CodecSelector} that determines its choice on a couple of leading
-     * bits. The correspondence between {@link Codec} and leading bits is based
-     * on the {@link TypePrefix} annotation.
-     * 
+     * A {@link CodecSelector} that determines its choice on a couple of leading bits. The correspondence between {@link
+     * Codec} and leading bits is based on the {@link TypePrefix} annotation.
      */
     private static class TypePrefixSelector implements CodecSelector {
 
@@ -177,7 +174,7 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                 });
                 para
                         .text(", then ").document(
-                                codec.getCodecDescriptor().reference(Adjective.THE, false));
+                        codec.getCodecDescriptor().reference(Adjective.THE, false));
                 para.text(" will be choosen.");
             }
         }

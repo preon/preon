@@ -41,55 +41,41 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A <i>reference</i> to a an instance of type {@link T}, to be dynamically
- * loaded, on demand, whenever the reference is resolved by calling
- * {@link #get()}; once loaded, the reference will hold on to the instance of
- * {@link T} until the garbage collector collects it. After that, the instance
- * of {@link T} will - again - be recreated, whenever required.
- * 
+ * A <i>reference</i> to a an instance of type {@link T}, to be dynamically loaded, on demand, whenever the reference is
+ * resolved by calling {@link #get()}; once loaded, the reference will hold on to the instance of {@link T} until the
+ * garbage collector collects it. After that, the instance of {@link T} will - again - be recreated, whenever required.
+ *
  * @author Wilfred Springer
- * 
- * @param <T>
- *            The type of object referenced.
+ * @param <T> The type of object referenced.
  */
 public class LazyLoadingReference<T> {
 
     /**
-     * An {@link AtomicReference} to a {@link SoftReference} to a {@link Future}
-     * producing an instance of {@link T}. The {@link AtomicReference} makes
-     * sure the value can be updated atomically. The {@link SoftReference} makes
-     * sure the garbage collector will release the reference if it needs more
-     * memory. The {@link Future} makes sure that - once the value has been set,
-     * all calls to obtain the data will be blocked until it arrives.
+     * An {@link AtomicReference} to a {@link SoftReference} to a {@link Future} producing an instance of {@link T}. The
+     * {@link AtomicReference} makes sure the value can be updated atomically. The {@link SoftReference} makes sure the
+     * garbage collector will release the reference if it needs more memory. The {@link Future} makes sure that - once
+     * the value has been set, all calls to obtain the data will be blocked until it arrives.
      */
     private final AtomicReference<SoftReference<Future<T>>> reference = new AtomicReference<SoftReference<Future<T>>>();
 
-    /**
-     * A {@link Loader} of {@link T}.
-     */
+    /** A {@link Loader} of {@link T}. */
     private final Loader<T> loader;
 
     /**
-     * Constructs a new reference, accepting the {@link Loader} that will lazily
-     * load the data when required.
-     * 
-     * @param loader
-     *            The {@link Loader} loading the data.
+     * Constructs a new reference, accepting the {@link Loader} that will lazily load the data when required.
+     *
+     * @param loader The {@link Loader} loading the data.
      */
     public LazyLoadingReference(Loader<T> loader) {
         this.loader = loader;
     }
 
     /**
-     * Returns an instance of {@link T}, lazily constructed on demand using the
-     * {@link #loader Loader}.
-     * 
+     * Returns an instance of {@link T}, lazily constructed on demand using the {@link #loader Loader}.
+     *
      * @return The referenced instance of {@link T}.
-     * @throws InterruptedException
-     *             When blocking call is interrupted.
-     * @throws ExcecutionException
-     *             When the {@link Loader} threw an exception trying to load the
-     *             data.
+     * @throws InterruptedException When blocking call is interrupted.
+     * @throws ExcecutionException  When the {@link Loader} threw an exception trying to load the data.
      */
     public T get() throws InterruptedException, ExecutionException {
 
@@ -173,18 +159,16 @@ public class LazyLoadingReference<T> {
 
     /**
      * The interface to be implemented when loading instances of {@link T}.
-     * 
-     * @param <T>
-     *            The type of object to be loaded.
+     *
+     * @param <T> The type of object to be loaded.
      */
     public interface Loader<T> {
 
         /**
          * Loads the instance of {@link T}.
-         * 
+         *
          * @return The instance of {@link T} loaded.
-         * @throws Exception
-         *             If the {@link Loader} fails to
+         * @throws Exception If the {@link Loader} fails to
          */
         T load() throws Exception;
 

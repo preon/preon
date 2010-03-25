@@ -49,23 +49,32 @@ public class RectangleSampleTest extends TestCase {
         File file = new File(new File(System.getProperty("java.io.tmpdir")), "rectangle.html");
         Codecs.document(codec, DocumentType.Html, file);
     }
-    
+
     public static class Shape {
-        @Bound RgbColor fillColor;
-        @Bound RgbColor borderColor;
+        @Bound
+        RgbColor fillColor;
+        @Bound
+        RgbColor borderColor;
     }
-    
+
     public static class Rectangle extends Shape {
-        @Bound int x1;
-        @Bound int y1;
-        @Bound int x2;
-        @Bound int y2;
+        @Bound
+        int x1;
+        @Bound
+        int y1;
+        @Bound
+        int x2;
+        @Bound
+        int y2;
     }
-    
+
     public static class RgbColor {
-        @Bound int red;
-        @Bound int green;
-        @Bound int blue;
+        @Bound
+        int red;
+        @Bound
+        int green;
+        @Bound
+        int blue;
     }
-    
+
 }

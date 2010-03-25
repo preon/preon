@@ -46,10 +46,10 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 
 /**
- * The {@link nl.flotsam.preon.Codec} for reading the {@link java.util.List} and its members, on demand. Instances of this class will
- * <em>not</em> create a standard {@link java.util.List} implementation and populate all of its data immediately. Instead it
- * will create a {@link nl.flotsam.preon.util.EvenlyDistributedLazyList}, constructing its elements on the fly, only
- * when it is required.
+ * The {@link nl.flotsam.preon.Codec} for reading the {@link java.util.List} and its members, on demand. Instances of
+ * this class will <em>not</em> create a standard {@link java.util.List} implementation and populate all of its data
+ * immediately. Instead it will create a {@link nl.flotsam.preon.util.EvenlyDistributedLazyList}, constructing its
+ * elements on the fly, only when it is required.
  */
 class ArrayCodec implements Codec<Object> {
 
@@ -65,7 +65,8 @@ class ArrayCodec implements Codec<Object> {
     /**
      * Constructs a new instance.
      *
-     * @param expr  An {@link nl.flotsam.limbo.Expression} representing the number of elements in the {@link java.util.List}.
+     * @param expr  An {@link nl.flotsam.limbo.Expression} representing the number of elements in the {@link
+     *              java.util.List}.
      * @param codec The {@link nl.flotsam.preon.Codec} constructing elements in the {@link java.util.List}.
      */
     public ArrayCodec(Expression<Integer, Resolver> expr, Codec<Object> codec,
@@ -81,6 +82,7 @@ class ArrayCodec implements Codec<Object> {
      * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
      * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
      */
+
     public Object decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
         int length = size.eval(resolver).intValue();
@@ -104,6 +106,7 @@ class ArrayCodec implements Codec<Object> {
      *
      * @see nl.flotsam.preon.Codec#getTypes()
      */
+
     public Class<?>[] getTypes() {
         return codec.getTypes();
     }
@@ -113,6 +116,7 @@ class ArrayCodec implements Codec<Object> {
      *
      * @see nl.flotsam.preon.Codec#getSize()
      */
+
     public Expression<Integer, Resolver> getSize() {
         return Expressions.multiply(size, codec.getSize());
     }

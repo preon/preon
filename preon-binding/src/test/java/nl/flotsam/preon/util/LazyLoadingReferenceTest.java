@@ -60,41 +60,41 @@ public class LazyLoadingReferenceTest extends TestCase {
     public void testConcurrentAccess() throws Throwable {
         TestFramework.runManyTimes(new ConcurrentTest(), 100);
     }
-    
+
     public static class ConcurrentTest extends MultithreadedTest {
-        
+
         private LazyLoadingReference<Integer> reference;
-        
+
         private AtomicInteger counter = new AtomicInteger();
-        
+
         private int i = 0;
-        
+
         public void initialize() {
             reference = new LazyLoadingReference<Integer>(new IntegerLoader());
             counter.set(0);
         }
-        
+
         public void thread1() throws InterruptedException, ExecutionException {
             assertEquals(1, reference.get().intValue());
         }
-        
+
         public void thread2() throws InterruptedException, ExecutionException {
             assertEquals(1, reference.get().intValue());
         }
-        
+
         public void thread3() throws InterruptedException, ExecutionException {
             assertEquals(1, reference.get().intValue());
         }
-        
+
         private class IntegerLoader implements Loader<Integer> {
-            
+
             public Integer load() {
                 return counter.addAndGet(1);
             }
-            
+
         }
-        
-        
+
+
     }
-    
+
 }

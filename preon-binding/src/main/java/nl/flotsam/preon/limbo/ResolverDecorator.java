@@ -36,6 +36,6 @@ import nl.flotsam.preon.Resolver;
 
 public interface ResolverDecorator {
 
-	Resolver decorate(Resolver decorated);
-	
+    Resolver decorate(Resolver decorated);
+
 }

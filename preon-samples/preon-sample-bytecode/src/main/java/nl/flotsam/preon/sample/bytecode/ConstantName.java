@@ -35,5 +35,5 @@ package nl.flotsam.preon.sample.bytecode;
 public @interface ConstantName {
 
     String value();
-    
+
 }

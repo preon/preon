@@ -46,7 +46,7 @@
     is considered to be the least relevant.
   </para>
   <variablelist>
-    
+
     <varlistentry>
       <term>CodecFactory</term>
       <listitem>
@@ -58,7 +58,7 @@
         </para>
       </listitem>
     </varlistentry>
-    
+
     <varlistentry>
       <term>CodecDecorator</term>
       <listitem>
@@ -90,7 +90,9 @@
   <section>
     <title>Adding support for a new datatype</title>
     <para>
-      Preon will <emphasis>always</emphasis> try at least one
+      Preon will
+      <emphasis>always</emphasis>
+      try at least one
       strategy for decoding a field that has been marked with the
       @Bound annotation: if it fails to find decicated support for the
       datatype, then it will try to create a Codec using the

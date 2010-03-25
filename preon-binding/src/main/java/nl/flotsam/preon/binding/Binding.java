@@ -45,30 +45,22 @@ import nl.flotsam.preon.buffer.BitBuffer;
 import java.io.IOException;
 
 /**
- * The interface of objects that are able to load object state from a
- * {@link BitBuffer} and store object state into a {@link BitBuffer}. Note the
- * difference with a {@link Codec}. A {@link Codec} is capable of creating
- * <em>new</em> objects. {@link Binding Bindings} are expected to unload their
- * data into an existing object.
- * 
- * <p>
- * The {@link Binding} abstraction is key to the inner workings of the
- * {@link nl.flotsam.preon.codec.ObjectCodecFactory}. The reason why it is a public interface instead
- * of an internal one is to allow you to plugin in other kinds of Binding. The
- * typical example here is the {@link ConditionalBindingFactory}. This
- * {@link BindingFactory} creates {@link Binding Binding} instances that respect
- * conditions set as annotations on {@link Fields}.
- * </p>
- * 
+ * The interface of objects that are able to load object state from a {@link BitBuffer} and store object state into a
+ * {@link BitBuffer}. Note the difference with a {@link Codec}. A {@link Codec} is capable of creating <em>new</em>
+ * objects. {@link Binding Bindings} are expected to unload their data into an existing object. <p/> <p> The {@link
+ * Binding} abstraction is key to the inner workings of the {@link nl.flotsam.preon.codec.ObjectCodecFactory}. The
+ * reason why it is a public interface instead of an internal one is to allow you to plugin in other kinds of Binding.
+ * The typical example here is the {@link ConditionalBindingFactory}. This {@link BindingFactory} creates {@link Binding
+ * Binding} instances that respect conditions set as annotations on {@link Fields}. </p>
+ *
  * @author Wilfred Springer
- * 
  */
 public interface Binding {
 
     /**
      * Loads a value from the {@link BitBuffer} and uses the value to populate a
      * field on the object.
-     * 
+     *
      * @param object
      *            The Object on which fields need to be populated.
      * @param buffer
@@ -85,11 +77,11 @@ public interface Binding {
      *             {@link BitBuffer}.
      */
     void load(Object object, BitBuffer buffer, Resolver resolver,
-            Builder builder) throws DecodingException;
+              Builder builder) throws DecodingException;
 
     /**
      * Describes this {@link Binding} in the paragraph passed in.
-     * 
+     *
      * @param <T>
      *            The type of the container for this paragraph.
      * @param <V>
@@ -111,7 +103,7 @@ public interface Binding {
     /**
      * Returns an array of types that could potentially be instantiated while
      * decoding the field's value.
-     * 
+     *
      * @return An array of types that could potentially be instantiated while
      *         decoding the field's value.
      */
@@ -119,7 +111,7 @@ public interface Binding {
 
     /**
      * Returns the value by applying the binding to a certain context.
-     * 
+     *
      * @param context
      *            The object to bind to.
      * @return The value.
@@ -129,7 +121,7 @@ public interface Binding {
 
     /**
      * Returns the name of the binding.
-     * 
+     *
      * @return The name of the binding.
      */
     String getName();
@@ -137,7 +129,7 @@ public interface Binding {
     /**
      * Returns an {@link Expression} indicating the amount of bits required for
      * representing the value handled by this binding.
-     * 
+     *
      * @return An {@link Expression} evaluating to the amount of bits required
      *         for representing the value handled by this binding.
      */
@@ -147,14 +139,14 @@ public interface Binding {
      * Returns a unique identifier for this binding. (Guaranteed to be unique
      * for the Codec created.) Note that decorators are expected to leave
      * this id untouched.
-     * 
+     *
      * @return A unique identifier for this binding.
      */
     String getId();
 
     /**
      * Returns the type of object expected to be loaded by this binding.
-     * 
+     *
      * @return The type of object expected to be loaded by this binding.
      */
     Class<?> getType();

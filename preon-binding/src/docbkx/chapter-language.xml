@@ -4,8 +4,8 @@
     <title>Introduction</title>
     <para>
       The expression language in Preon is Limbo. You can find the
-      details at <ulink
-      url="http://limbo.sourceforge.net/"/>. Nevertheless it might be
+      details at<ulink
+            url="http://limbo.sourceforge.net/"/>. Nevertheless it might be
       good to spend a word on it here as well. Why? Well, because Limbo
       can be bound to any type of context, and the way it's bound to
       Preon may be different than what you would expect. And while we
@@ -18,10 +18,15 @@
       a subset? (We will save the other question - "why non-compliant"
       for some later stage.) To answer that question, you need to know
       at least a couple of things about Limbo. First of all, Limbo was
-      designed to allow libraries <emphasis>not only</emphasis> to
+      designed to allow libraries
+      <emphasis>not only</emphasis>
+      to
       evaluate expressions, but also to capture the expressions in such
-      a way that they could be rendered into a <emphasis>human readable
-      representation</emphasis> afterwards.
+      a way that they could be rendered into a
+      <emphasis>human readable
+        representation
+      </emphasis>
+      afterwards.
     </para>
     <para>
       In a way, Limbo is trying to do exactly the opposite of what some
@@ -53,13 +58,17 @@
       on objects is that it would be extremely hard - if not impossible
       at all - to capture the meaning of an expression including a
       method call in human readable language,
-      <emphasis>unless</emphasis> you can pull the meaning of calling
+      <emphasis>unless</emphasis>
+      you can pull the meaning of calling
       that method from some other source.
     </para>
     <para>
       Now, you probably did not start reading this document to find
-      out what Limbo <emphasis>cannot</emphasis> do; you are probably
-      way more interested to find out what it <emphasis>can</emphasis>
+      out what Limbo
+      <emphasis>cannot</emphasis>
+      do; you are probably
+      way more interested to find out what it
+      <emphasis>can</emphasis>
       do. Let's start digging a little deeper.
     </para>
   </section>
@@ -99,10 +108,13 @@
     <para>
       If Limbo would only allow you to use numbers and apply some
       arithmetic on it, it would be pretty much useless. But hold on,
-      you <emphasis>can</emphasis> actually refer to values defined
+      you
+      <emphasis>can</emphasis>
+      actually refer to values defined
       'somewhere else'. (That 'somewhere else' is interesting. More on
       that in a minute.) Here are some of the things that are
-      <emphasis>grammatically</emphasis> ok in Limbo:
+      <emphasis>grammatically</emphasis>
+      ok in Limbo:
     </para>
     <programlisting><![CDATA[
 a^2 + b^2
@@ -133,17 +145,19 @@ foo / bar
     </para>
     <itemizedlist>
       <listitem>
-	<para>
-	  Once you have a Reference, all of the reflection related
-	  work<footnote>
-	  <para>
-	    Note that the ReferenceContext and Reference abstractions
-	    do not necessarily enforce the 
-	  </para>
-	  </footnote> has already been done. As a consequence, you may expect
-	  that resolving the reference is faster than if you would
-	  have to gather the metadata over and over again.
-	</para>
+        <para>
+          Once you have a Reference, all of the reflection related
+          work
+          <footnote>
+            <para>
+              Note that the ReferenceContext and Reference abstractions
+              do not necessarily enforce the
+            </para>
+          </footnote>
+          has already been done. As a consequence, you may expect
+          that resolving the reference is faster than if you would
+          have to gather the metadata over and over again.
+        </para>
       </listitem>
     </itemizedlist>
   </section>

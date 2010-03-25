@@ -38,14 +38,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation to make the framework append padding bits to byte-align the
- * cursor after having read the data.
- * 
+ * An annotation to make the framework append padding bits to byte-align the cursor after having read the data.
+ *
  * @author Wilfred Springer
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.FIELD, ElementType.TYPE })
+@Target({ElementType.FIELD, ElementType.TYPE})
 public @interface ByteAlign {
 
 }

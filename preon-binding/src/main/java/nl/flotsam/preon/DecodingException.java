@@ -38,20 +38,17 @@ import nl.flotsam.limbo.BindingException;
 import nl.flotsam.preon.buffer.BitBuffer;
 
 /**
- * The exception thrown when the {@link Codec} fails to decode a value from the
- * {@link BitBuffer}. See JavaDoc comments of the constructors for more
- * information on the typical circumstances causing this exception to be thrown.
- * 
+ * The exception thrown when the {@link Codec} fails to decode a value from the {@link BitBuffer}. See JavaDoc comments
+ * of the constructors for more information on the typical circumstances causing this exception to be thrown.
+ *
  * @author Wilfred Springer
- * 
  */
 @SuppressWarnings("serial")
 public class DecodingException extends CodecException {
 
     /**
-     * Constructs an exception to be thrown when the {@link Codec} fails to
-     * instantiate the value.
-     * 
+     * Constructs an exception to be thrown when the {@link Codec} fails to instantiate the value.
+     *
      * @param ie
      */
     public DecodingException(InstantiationException ie) {
@@ -77,7 +74,7 @@ public class DecodingException extends CodecException {
     public DecodingException(String message) {
         super(message);
     }
-    
+
     public DecodingException(Class<?> type, InstantiationException ie) {
         super("Failed to create instance of " + type.getSimpleName(), ie);
     }

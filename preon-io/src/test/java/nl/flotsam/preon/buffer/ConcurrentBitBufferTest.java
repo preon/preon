@@ -45,32 +45,24 @@ import junit.framework.TestCase;
 
 /**
  * A test suite testing the threadsafe implementation of the {@link BitBuffer}.
- * 
+ *
  * @author Wilfred Springer
- * 
  */
 public class ConcurrentBitBufferTest extends TestCase {
 
     /**
-     * Tests that we can safely call the methods of the {@link BitBuffer}
-     * concurrently.
-     * 
-     * @throws Throwable
-     *             If the {@link MultithreadedTest} is throwing exceptions.
+     * Tests that we can safely call the methods of the {@link BitBuffer} concurrently.
+     *
+     * @throws Throwable If the {@link MultithreadedTest} is throwing exceptions.
      */
     public void testConcurrentAccess() throws Throwable {
         TestFramework.runManyTimes(new Test(), 10);
     }
 
-    /**
-     * Tests concurrent access of the {@link ConcurrentBitBuffer} using two
-     * threads.
-     */
+    /** Tests concurrent access of the {@link ConcurrentBitBuffer} using two threads. */
     private static class Test extends MultithreadedTest {
 
-        /**
-         * The {@link ConcurrentBitBuffer} that will be tested.
-         */
+        /** The {@link ConcurrentBitBuffer} that will be tested. */
         private ConcurrentBitBuffer bitBuffer;
 
         public void initialize() {

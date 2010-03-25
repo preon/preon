@@ -46,52 +46,36 @@ import nl.flotsam.preon.rendering.CamelCaseRewriter;
 import nl.flotsam.preon.rendering.IdentifierRewriter;
 
 /**
- * A {@link Reference} to a property. (And in this case, property means a
- * private field, not a bean property.)
- * 
+ * A {@link Reference} to a property. (And in this case, property means a private field, not a bean property.)
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class PropertyReference implements Reference<Resolver> {
 
     private static IdentifierRewriter rewriter = new CamelCaseRewriter(false);
 
-    /**
-     * The field representing the property.
-     */
+    /** The field representing the property. */
     private Field field;
 
-    /**
-     * The {@link Reference} to the object this {@link PropertyReference} is
-     * based upon.
-     */
+    /** The {@link Reference} to the object this {@link PropertyReference} is based upon. */
     private Reference<Resolver> reference;
 
-    /**
-     * The context for constructing references.
-     */
+    /** The context for constructing references. */
     private ReferenceContext<Resolver> context;
 
-    /**
-     * Include the type in the description generated.
-     */
+    /** Include the type in the description generated. */
     private boolean includeType = true;
 
     /**
      * Constructs a new {@link Reference}.
-     * 
-     * @param reference
-     *            The source for this property.
-     * @param type
-     *            The type of the source.
-     * @param name
-     *            The name of the property.
-     * @param context
-     *            The original context, to be used when constructing other
-     *            references.
+     *
+     * @param reference The source for this property.
+     * @param type      The type of the source.
+     * @param name      The name of the property.
+     * @param context   The original context, to be used when constructing other references.
      */
     public PropertyReference(Reference<Resolver> reference, Class<?> type,
-            String name, ReferenceContext<Resolver> context) {
+                             String name, ReferenceContext<Resolver> context) {
         this.reference = reference;
         this.context = context;
         try {
@@ -105,7 +89,7 @@ public class PropertyReference implements Reference<Resolver> {
     }
 
     public PropertyReference(Reference<Resolver> reference, Class<?> type,
-            String name, ReferenceContext<Resolver> context, boolean includeType) {
+                             String name, ReferenceContext<Resolver> context, boolean includeType) {
         this(reference, type, name, context);
         this.includeType = includeType;
     }

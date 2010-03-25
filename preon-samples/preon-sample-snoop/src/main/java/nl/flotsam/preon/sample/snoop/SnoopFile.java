@@ -41,168 +41,168 @@ import java.util.List;
 
 public class SnoopFile {
 
-	@Bound
-	private FileHeader header;
+    @Bound
+    private FileHeader header;
 
-	@BoundList(type = PacketRecord.class)
-	private List<PacketRecord> records;
+    @BoundList(type = PacketRecord.class)
+    private List<PacketRecord> records;
 
-	public FileHeader getHeader() {
-		return header;
-	}
+    public FileHeader getHeader() {
+        return header;
+    }
 
-	public List<PacketRecord> getRecords() {
-		return records;
-	}
+    public List<PacketRecord> getRecords() {
+        return records;
+    }
 
-	public static class FileHeader {
+    public static class FileHeader {
 
-		@BoundBuffer(match = { 0x73, 0x6e, 0x6f, 0x6f, 0x70, 0x00, 0x00, 0x00 })
-		private byte[] identificationPattern;
+        @BoundBuffer(match = {0x73, 0x6e, 0x6f, 0x6f, 0x70, 0x00, 0x00, 0x00})
+        private byte[] identificationPattern;
 
-		@BoundNumber(byteOrder = ByteOrder.BigEndian)
-		private int versionNumber;
+        @BoundNumber(byteOrder = ByteOrder.BigEndian)
+        private int versionNumber;
 
-		@BoundNumber(size = "32", byteOrder = ByteOrder.BigEndian)
-		private DatalinkType datalinkType;
+        @BoundNumber(size = "32", byteOrder = ByteOrder.BigEndian)
+        private DatalinkType datalinkType;
 
-		public int getVersionNumber() {
-			return versionNumber;
-		}
+        public int getVersionNumber() {
+            return versionNumber;
+        }
 
-		public DatalinkType getDatalinkType() {
-			return datalinkType;
-		}
+        public DatalinkType getDatalinkType() {
+            return datalinkType;
+        }
 
-	}
+    }
 
-	@ImportStatic(DatalinkType.class)
-	public static class PacketRecord {
+    @ImportStatic(DatalinkType.class)
+    public static class PacketRecord {
 
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
-		private long originalLength;
+        @BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
+        private long originalLength;
 
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
-		private long includedLength;
+        @BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
+        private long includedLength;
 
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
-		private long packetRecordLength;
+        @BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
+        private long packetRecordLength;
 
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
-		private long cumulativeDrops;
+        @BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
+        private long cumulativeDrops;
 
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
-		private long timestampSeconds;
+        @BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
+        private long timestampSeconds;
 
-		@BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
-		private long timestampMicroseconds;
+        @BoundNumber(byteOrder = ByteOrder.BigEndian, size = "32")
+        private long timestampMicroseconds;
 
-		@Slice(size = "(packetRecordLength - 24) * 8")
-		@BoundObject(selectFrom =
-            @Choices(alternatives =
-                @Choice(condition = "outer.header.datalinkType==DatalinkType.ETHERNET", type = EthernetFrame.class)
-            )
+        @Slice(size = "(packetRecordLength - 24) * 8")
+        @BoundObject(selectFrom =
+        @Choices(alternatives =
+        @Choice(condition = "outer.header.datalinkType==DatalinkType.ETHERNET", type = EthernetFrame.class)
         )
-		private Object packetData;
+        )
+        private Object packetData;
 
-		public long getOriginalLength() {
-			return originalLength;
-		}
+        public long getOriginalLength() {
+            return originalLength;
+        }
 
-		public long getIncludedLength() {
-			return includedLength;
-		}
+        public long getIncludedLength() {
+            return includedLength;
+        }
 
-		public long getPacketRecordLength() {
-			return packetRecordLength;
-		}
+        public long getPacketRecordLength() {
+            return packetRecordLength;
+        }
 
-		public long getCumulativeDrops() {
-			return cumulativeDrops;
-		}
+        public long getCumulativeDrops() {
+            return cumulativeDrops;
+        }
 
-		public long getTimestampSeconds() {
-			return timestampSeconds;
-		}
+        public long getTimestampSeconds() {
+            return timestampSeconds;
+        }
 
-		public long getTimestampMicroseconds() {
-			return timestampMicroseconds;
-		}
-		
-		public Object getPacketData() {
-			return packetData;
-		}
+        public long getTimestampMicroseconds() {
+            return timestampMicroseconds;
+        }
 
-		public static class EthernetFrame {
+        public Object getPacketData() {
+            return packetData;
+        }
 
-			@BoundList(size = "6")
-			private byte[] destinationAddress;
+        public static class EthernetFrame {
 
-			@BoundList(size = "6")
-			private byte[] sourceAddress;
+            @BoundList(size = "6")
+            private byte[] destinationAddress;
 
-			@BoundNumber(size = "16")
-			private int type;
+            @BoundList(size = "6")
+            private byte[] sourceAddress;
 
-			@BoundList(size="outer.includedLength - (6 + 6 + 2)")
-			private byte[] data;
+            @BoundNumber(size = "16")
+            private int type;
 
-			public String getDestinationAddress() {
-				return render(destinationAddress);
-			}
-			
-			public String getSourceAddress() {
-				return render(sourceAddress);
-			}
-			
-			private String render(byte[] address) {
-				StringBuilder builder = new StringBuilder();
-				for (int i = 0; i < address.length; i++) {
-					if (i != 0) {
-						builder.append(':');
-					}
-					builder.append(Integer.toHexString(0xff&address[i]));
-				}
-				return builder.toString();
-			}
+            @BoundList(size = "outer.includedLength - (6 + 6 + 2)")
+            private byte[] data;
 
-		}
+            public String getDestinationAddress() {
+                return render(destinationAddress);
+            }
 
-	}
+            public String getSourceAddress() {
+                return render(sourceAddress);
+            }
 
-	public static enum DatalinkType {
+            private String render(byte[] address) {
+                StringBuilder builder = new StringBuilder();
+                for (int i = 0; i < address.length; i++) {
+                    if (i != 0) {
+                        builder.append(':');
+                    }
+                    builder.append(Integer.toHexString(0xff & address[i]));
+                }
+                return builder.toString();
+            }
 
-		@BoundEnumOption(0)
-		IEEE_802_3,
+        }
 
-		@BoundEnumOption(1)
-		IEEE_802_4_TOKEN_BUS,
+    }
 
-		@BoundEnumOption(2)
-		IEEE_802_5_TOKEN_RING,
+    public static enum DatalinkType {
 
-		@BoundEnumOption(3)
-		IEEE_802_6_METRO_NET,
+        @BoundEnumOption(0)
+        IEEE_802_3,
 
-		@BoundEnumOption(4)
-		ETHERNET,
+        @BoundEnumOption(1)
+        IEEE_802_4_TOKEN_BUS,
 
-		@BoundEnumOption(5)
-		HLDC,
+        @BoundEnumOption(2)
+        IEEE_802_5_TOKEN_RING,
 
-		@BoundEnumOption(6)
-		CHARACTER_SYNCHRONOUS,
+        @BoundEnumOption(3)
+        IEEE_802_6_METRO_NET,
 
-		@BoundEnumOption(7)
-		IBM_CHANNEL_TO_CHANNEL,
+        @BoundEnumOption(4)
+        ETHERNET,
 
-		@BoundEnumOption(8)
-		FDDI,
+        @BoundEnumOption(5)
+        HLDC,
 
-		@BoundEnumOption(9)
-		OTHER,
+        @BoundEnumOption(6)
+        CHARACTER_SYNCHRONOUS,
 
-		UNASSIGNED
-	}
+        @BoundEnumOption(7)
+        IBM_CHANNEL_TO_CHANNEL,
+
+        @BoundEnumOption(8)
+        FDDI,
+
+        @BoundEnumOption(9)
+        OTHER,
+
+        UNASSIGNED
+    }
 
 }

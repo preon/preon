@@ -43,45 +43,30 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.*;
 
 /**
- * An implementation of the {@link CodecFactory} interface that will prevent the
- * same {@link Codec} from being constructed twice.
- * 
- * <p>
- * Introduced to prevent problems when creating {@link Codec Codecs} for objects
- * that introduce a circular dependency, like the example below:
- * </p>
- * 
+ * An implementation of the {@link CodecFactory} interface that will prevent the same {@link Codec} from being
+ * constructed twice. <p/> <p> Introduced to prevent problems when creating {@link Codec Codecs} for objects that
+ * introduce a circular dependency, like the example below: </p> <p/>
  * <pre>
  * class Foo {
- * 
+ * <p/>
  *     &#064;Bound
  *     private Bar value;
- * 
+ * <p/>
  * }
- * 
+ * <p/>
  * class Bar {
- * 
+ * <p/>
  *     &#064;Bound
  *     private Foo value;
- * 
+ * <p/>
  * }
  * </pre>
- * 
- * <p>
- * Without using this {@link CodecFactory} decorator, the underlying
- * {@link CodecFactory} might potentially generate a stack overflow, creating
- * {@link Codec Codecs} for Foo and Bar.
- * </p>
- * 
- * <p>
- * Note that this class also provides a convenient way to access the
- * {@link Codec Codecs} created, which comes in handy when generating
- * documentation for all of these {@link Codec Codecs}. (See
- * {@link #getCodecs()}.)
- * </p>
- * 
+ * <p/> <p> Without using this {@link CodecFactory} decorator, the underlying {@link CodecFactory} might potentially
+ * generate a stack overflow, creating {@link Codec Codecs} for Foo and Bar. </p> <p/> <p> Note that this class also
+ * provides a convenient way to access the {@link Codec Codecs} created, which comes in handy when generating
+ * documentation for all of these {@link Codec Codecs}. (See {@link #getCodecs()}.) </p>
+ *
  * @author Wilfred Springer
- * 
  */
 public class CachingCodecFactory implements CodecFactory {
 
@@ -111,7 +96,7 @@ public class CachingCodecFactory implements CodecFactory {
      * Constructs a new instance, accepting the {@link CodecFactory} to which
      * this factory should delegate if it not already constructed the required
      * {@link Codec} before.
-     * 
+     *
      * @param delegate
      *            The {@link CodecFactory} to which this factory should delegate
      *            if it not already constructed the required {@link Codec}
@@ -123,7 +108,7 @@ public class CachingCodecFactory implements CodecFactory {
     }
 
     public CachingCodecFactory(CodecFactory delegate,
-            CodecConstructionListener listener) {
+                               CodecConstructionListener listener) {
         this(delegate);
         if (listener == null) {
             throw new IllegalArgumentException("Null not allowed for listener.");
@@ -132,9 +117,10 @@ public class CachingCodecFactory implements CodecFactory {
     }
 
     // JavaDoc inherited
+
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         Key key = new Key(metadata, type, context);
         Codec<T> result = (Codec<T>) created.get(key);
         if (result == null) {
@@ -150,18 +136,18 @@ public class CachingCodecFactory implements CodecFactory {
             }
         } else {
             if (result instanceof CodecHolder) {
-				CodecHolder<T> holder = (CodecHolder<T>) result;
-				if(holder.get() == null) {
-					return null;
-				}
-			}
-        	return result;
+                CodecHolder<T> holder = (CodecHolder<T>) result;
+                if (holder.get() == null) {
+                    return null;
+                }
+            }
+            return result;
         }
     }
 
     /**
      * Returns the {@link Codec Codecs} created by this factory
-     * 
+     *
      * @return A {@link List} of {@link Codec Codecs} created by this factory.
      */
     public List<Codec<?>> getCodecs() {
@@ -189,13 +175,13 @@ public class CachingCodecFactory implements CodecFactory {
         }
 
         public Class<?>[] getTypes() {
-            return new Class<?>[] { type };
+            return new Class<?>[]{type};
         }
 
         public void set(Codec<T> codec) {
             this.codec = codec;
         }
-        
+
         public Codec<T> get() {
             return codec;
         }
@@ -224,7 +210,7 @@ public class CachingCodecFactory implements CodecFactory {
         private ResolverContext context;
 
         public Key(AnnotatedElement metadata, Class<?> type,
-                ResolverContext context) {
+                   ResolverContext context) {
             this.metadata = metadata;
             this.type = type;
             this.context = context;
@@ -240,7 +226,7 @@ public class CachingCodecFactory implements CodecFactory {
                 return ((metadata == null && key.metadata == null) || AnnotationUtils
                         .equivalent(metadata, key.metadata))
                         && ((type == null && key.type == null) || type
-                                .equals(key.type));
+                        .equals(key.type));
             }
         }
 
@@ -251,7 +237,7 @@ public class CachingCodecFactory implements CodecFactory {
             result = result
                     * 31
                     + (metadata == null ? 0 : AnnotationUtils
-                            .calculateHashCode(metadata));
+                    .calculateHashCode(metadata));
             result = result * 31 + (type == null ? 0 : type.hashCode());
             return result;
         }

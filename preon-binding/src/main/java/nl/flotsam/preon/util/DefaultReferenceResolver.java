@@ -86,22 +86,22 @@ public class DefaultReferenceResolver implements
         RelativeReferenceResolver<Object> {
 
     *//**
-     * The type of context.
-     *//*
+ * The type of context.
+ *//*
     private Class type;
 
     *//**
-     * The object responsible for turning the name of the Field into something
-     * sensible.
-     *//*
+ * The object responsible for turning the name of the Field into something
+ * sensible.
+ *//*
     private IdentifierRewriter rewriter;
 
     *//**
-     * Constructs a new instance.
-     *
-     * @param type
-     *            The type of object passed in as a context.
-     *//*
+ * Constructs a new instance.
+ *
+ * @param type
+ *            The type of object passed in as a context.
+ *//*
     public DefaultReferenceResolver(Class type) {
         this.type = type;
         rewriter = new CamelCaseRewriter();

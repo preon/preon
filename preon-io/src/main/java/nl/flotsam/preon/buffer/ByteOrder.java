@@ -34,13 +34,11 @@ package nl.flotsam.preon.buffer;
 
 /**
  * An enumeration, representing byte order. (Big endian, vs. little endian.)
- * 
- * 
+ *
  * @since Feb 25, 2007
- * 
  */
 public enum ByteOrder {
-    
+
     LittleEndian, BigEndian
-    
+
 }

@@ -54,7 +54,7 @@ public class BitmapFile {
             + "* bitmapInformation.colorDepth / 8")
     private byte[] bitmapData;
 
-    
+
     public long getHeight() {
         return bitmapInformation.getHeight();
     }
@@ -71,5 +71,5 @@ public class BitmapFile {
         return bitmapData;
     }
 
-    
+
 }

@@ -43,56 +43,43 @@ import nl.flotsam.preon.buffer.ByteOrder;
 
 
 /**
- * The annotation to add metadata on the way an integer field is represented in
- * the {@link BitBuffer}.
- *
+ * The annotation to add metadata on the way an integer field is represented in the {@link BitBuffer}.
  *
  * @author Wilfred Springer
- *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface BoundNumber {
 
     /**
-     * The type of endianness: either {@link ByteOrder#LittleEndian} or
-     * {@link ByteOrder#BigEndian}.
+     * The type of endianness: either {@link ByteOrder#LittleEndian} or {@link ByteOrder#BigEndian}.
      *
      * @return The type of endianness. Defaults to {@link ByteOrder#LittleEndian}.
      */
     ByteOrder byteOrder() default ByteOrder.LittleEndian;
 
     /**
-     * The number of bits used to represent the numeric value. Defaults to 0,
-     * allowing the {@link Codec} to make its own decision on the number of bits
-     * to be used; however, they are expected to respect the following defaults:
-     *
-     * <table>
-     * <tr><th>Type</th><th>Number of bits</th></tr>
-     * <tr><td>Long, long</td><td>64</td></tr>
-     * <tr><td>Integer, int</td><td>32</td></tr>
-     * <tr><td>Short, short</td><td>16</td></tr>
-     * <tr><td>Byte, byte</td><td>8</td></tr>
+     * The number of bits used to represent the numeric value. Defaults to 0, allowing the {@link Codec} to make its own
+     * decision on the number of bits to be used; however, they are expected to respect the following defaults:
+     * <p/>
+     * <table> <tr><th>Type</th><th>Number of bits</th></tr> <tr><td>Long, long</td><td>64</td></tr> <tr><td>Integer,
+     * int</td><td>32</td></tr> <tr><td>Short, short</td><td>16</td></tr> <tr><td>Byte, byte</td><td>8</td></tr>
      * </table>
-     *
-     * <p>
-     * The type of this annotation might be turned into a String in the future, to
-     * allow the size to be based on an expression instead of a fixed value.
-     * </p>
+     * <p/>
+     * <p> The type of this annotation might be turned into a String in the future, to allow the size to be based on an
+     * expression instead of a fixed value. </p>
      *
      * @return The number of bits used to represent the numeric value.
      */
     String size() default "";
-    
-    /**
-     * The value to match.
-     */
+
+    /** The value to match. */
     String match() default "";
-    
+
     /**
-     * Type that is used in deciding the way to do the decoding/encoding.
-     * In default case the type of the field is used.
-     * 
+     * Type that is used in deciding the way to do the decoding/encoding. In default case the type of the field is
+     * used.
+     *
      * @return the type used in decoding/encoding
      */
     Class<? extends Number> type() default Number.class;

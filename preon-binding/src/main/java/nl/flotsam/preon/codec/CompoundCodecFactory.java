@@ -42,22 +42,18 @@ import nl.flotsam.preon.ResolverContext;
 
 
 /**
- * A {@link CodecFactory} capable of generating {@link Codec Codecs} by
- * delegating to a sorted list of other {@link CodecFactory CodecFactories}.
- * 
+ * A {@link CodecFactory} capable of generating {@link Codec Codecs} by delegating to a sorted list of other {@link
+ * CodecFactory CodecFactories}.
+ *
  * @author Wilfred Springer
- * 
  */
 public class CompoundCodecFactory implements CodecFactory {
 
-    /**
-     * The sorted list of {@link CodecFactory CodecFactories} to which this
-     * {@link CodecFactory} will delegate.
-     */
+    /** The sorted list of {@link CodecFactory CodecFactories} to which this {@link CodecFactory} will delegate. */
     private final List<CodecFactory> factories = new ArrayList<CodecFactory>();
 
     public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         Codec<T> result = null;
         for (CodecFactory delegate : factories) {
             result = delegate.create(overrides, type, context);

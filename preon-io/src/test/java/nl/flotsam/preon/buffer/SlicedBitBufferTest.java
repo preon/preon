@@ -36,6 +36,7 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+
 import nl.flotsam.preon.buffer.BitBuffer;
 import nl.flotsam.preon.buffer.BitBufferUnderflowException;
 import nl.flotsam.preon.buffer.SlicedBitBuffer;
@@ -73,8 +74,8 @@ public class SlicedBitBufferTest extends TestCase {
         try {
             slice.readAsBoolean();
             fail();
-        } catch(BitBufferUnderflowException bbue) {
-            
+        } catch (BitBufferUnderflowException bbue) {
+
         }
         verify(delegate);
     }

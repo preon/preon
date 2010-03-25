@@ -39,7 +39,7 @@ public class AnyAttributeInfo extends AttributeInfo {
 
     @BoundList(size = "attributeLength")
     private byte[] data;
-    
+
     @Init
     public void init() {
         System.out.println("Got here");

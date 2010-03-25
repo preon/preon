@@ -35,11 +35,10 @@ package nl.flotsam.preon;
 import nl.flotsam.limbo.ReferenceContext;
 
 /**
- * A convenience interface, defining a {@link ReferenceContext} of
- * {@link Resolver}. {@link Resolver} is the only context used at runtime.
- * 
+ * A convenience interface, defining a {@link ReferenceContext} of {@link Resolver}. {@link Resolver} is the only
+ * context used at runtime.
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public interface ResolverContext extends ReferenceContext<Resolver> {
 

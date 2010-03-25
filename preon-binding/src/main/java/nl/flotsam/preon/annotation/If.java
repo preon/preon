@@ -41,30 +41,17 @@ import nl.flotsam.preon.buffer.BitBuffer;
 
 
 /**
- * A simple annotation for marking particular fields to be optional, depending
- * on the condition. The condition is based on the Limbo notation. Variables are
- * expected to be resolved relatively to the object holding the annotated field.
- *
- * <p>
- * Here is an example snippet:
- * </p>
- *
+ * A simple annotation for marking particular fields to be optional, depending on the condition. The condition is based
+ * on the Limbo notation. Variables are expected to be resolved relatively to the object holding the annotated field.
+ * <p/> <p> Here is an example snippet: </p>
+ * <p/>
  * <pre>
  * private int databaseVersion;
  *
- * @If(&quot;databaseVersion &gt; 700&quot;)
- * @Bound
- * private int foobar;
- * </pre>
- *
- * <p>
- * In the above case, <code>foobar</code> is only expected to be read from the
- * {@link BitBuffer} if the condition holds. If <code>databaseVersion</code>
- * is 300, it will be skipped.
- * </p>
- *
  * @author Wilfred Springer
- *
+ * @If(&quot;databaseVersion &gt; 700&quot;)
+ * @Bound private int foobar; </pre> <p/> <p> In the above case, <code>foobar</code> is only expected to be read from
+ * the {@link BitBuffer} if the condition holds. If <code>databaseVersion</code> is 300, it will be skipped. </p>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

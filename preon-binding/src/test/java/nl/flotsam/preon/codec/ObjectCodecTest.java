@@ -40,6 +40,7 @@ import nl.flotsam.preon.rendering.IdentifierRewriter;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -91,5 +92,5 @@ public class ObjectCodecTest {
 
 
     }
-    
+
 }

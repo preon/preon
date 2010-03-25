@@ -346,9 +346,9 @@ public class NumericCodec implements Codec<Object> {
         @SuppressWarnings({"unchecked"})
         public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type,
                                    ResolverContext context) {
-            
-        	Class<?> actualType = resolveActualType(overrides, type);
-        	if (NUMERIC_TYPES.keySet().contains(actualType)) {
+
+            Class<?> actualType = resolveActualType(overrides, type);
+            if (NUMERIC_TYPES.keySet().contains(actualType)) {
                 NumericType numericType = NUMERIC_TYPES.get(actualType);
                 if (overrides == null || overrides.isAnnotationPresent(Bound.class)) {
                     ByteOrder endian = ByteOrder.LittleEndian;
@@ -367,7 +367,7 @@ public class NumericCodec implements Codec<Object> {
 //                    if(NUMERIC_TYPES.containsKey(numericMetadata.type())) {
 //                    	numericType = NUMERIC_TYPES.get(numericMetadata.type());
 //                    }
-                    
+
                     if (size.length() == 0) {
                         size = Integer.toString(numericType.getDefaultSize());
                     }
@@ -384,16 +384,16 @@ public class NumericCodec implements Codec<Object> {
             }
             return null;
         }
-        
+
         public Class<?> resolveActualType(AnnotatedElement overrides, Class<?> type) {
-        	if(overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
-        		 BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
-        		 Class<?> typeOverride = numericMetadata.type();
-        		 if(typeOverride != Number.class) {
-        			 return typeOverride;
-        		 }
-        	}
-        	return type;
+            if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
+                BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
+                Class<?> typeOverride = numericMetadata.type();
+                if (typeOverride != Number.class) {
+                    return typeOverride;
+                }
+            }
+            return type;
         }
 
     }

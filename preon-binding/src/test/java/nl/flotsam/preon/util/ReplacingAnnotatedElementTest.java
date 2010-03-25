@@ -53,15 +53,15 @@ public class ReplacingAnnotatedElementTest extends TestCase {
             public Class<? extends Annotation> annotationType() {
                 return Foo.class;
             }
-            
+
         });
         assertEquals("foobar", element.getAnnotation(Foo.class).value());
     }
-    
+
     @Foo("bar")
     private static class Test {
     }
-    
+
     @Retention(RetentionPolicy.RUNTIME)
     private static @interface Foo {
         String value();

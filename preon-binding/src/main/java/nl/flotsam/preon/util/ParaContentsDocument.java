@@ -45,7 +45,7 @@ public class ParaContentsDocument implements Para {
     public ParaContentsDocument(Document document) {
         this.document = document;
     }
-    
+
     public Object end() {
         return null; // No relevant implementation
     }
@@ -100,5 +100,5 @@ public class ParaContentsDocument implements Para {
         documenter.document(this);
         return this;
     }
-    
+
 }

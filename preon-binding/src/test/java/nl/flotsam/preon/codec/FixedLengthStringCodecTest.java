@@ -37,12 +37,15 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.annotation.BoundString;
 import nl.flotsam.preon.channel.BitChannel;
 import nl.flotsam.preon.channel.OutputStreamBitChannel;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mock;
+
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;

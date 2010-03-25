@@ -37,22 +37,22 @@ import nl.flotsam.preon.reflect.ReflectionUtils;
 import junit.framework.TestCase;
 
 public class ReflectionUtilsTest extends TestCase {
-    
+
     public void testGetField() {
         assertNotNull(ReflectionUtils.getField(Test2.class, "value2"));
         assertNotNull(ReflectionUtils.getField(Test2.class, "value1"));
     }
-    
+
     public static class Test1 {
-        
+
         private int value1;
-        
+
     }
-    
+
     public static class Test2 extends Test1 {
-        
-        private int value2; 
-        
+
+        private int value2;
+
     }
 
 }

@@ -43,5 +43,5 @@ public class AtomicBooleanTest extends TestCase {
         System.out.println(b.compareAndSet(false, true));
         System.out.println(b.compareAndSet(false, true));
     }
-    
+
 }

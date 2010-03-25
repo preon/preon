@@ -51,59 +51,40 @@ import java.util.List;
 
 /**
  * A Codec supporting the {@link Choices} annotation.
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
- * @param <T>
- *            The type of object to be returned.
+ * @param <T> The type of object to be returned.
  */
 public class SelectFromCodec<T> implements Codec<T> {
 
-    /**
-     * The name of the variable that holds the prefix's value.
-     */
+    /** The name of the variable that holds the prefix's value. */
     private final static String PREFIX_NAME = "prefix";
 
-    /**
-     * The size of the prefix, in number of bits.
-     */
+    /** The size of the prefix, in number of bits. */
     private int prefixSize;
 
-    /**
-     * The byte order of the prefix.
-     */
+    /** The byte order of the prefix. */
     private ByteOrder byteOrder;
 
-    /**
-     * A list of all conditions.
-     */
+    /** A list of all conditions. */
     private List<Expression<Boolean, Resolver>> conditions;
 
-    /**
-     * A list of all {@link Codec}s.
-     */
+    /** A list of all {@link Codec}s. */
     private List<Codec<?>> codecs;
 
-    /**
-     * The types potentially returned by this {@link Codec}.
-     */
+    /** The types potentially returned by this {@link Codec}. */
     private Class<?>[] types;
 
-    /**
-     * The common type.
-     */
+    /** The common type. */
     private Class<?> type;
 
-    /**
-     * The {@link Codec} to apply when none of the conditions are met.
-     */
+    /** The {@link Codec} to apply when none of the conditions are met. */
     private Codec<?> defaultCodec;
 
     /**
-     * Constructs a new instance, accepting the type, choices, a
-     * {@link ResolverContext} to wrap for introducing the <code>prefix</code>
-     * variable, the {@link CodecFactory} to delegate to, and the metadata.
-     * 
+     * Constructs a new instance, accepting the type, choices, a {@link ResolverContext} to wrap for introducing the
+     * <code>prefix</code> variable, the {@link CodecFactory} to delegate to, and the metadata.
+     *
      * @param type
      * @param choices
      * @param context
@@ -111,8 +92,8 @@ public class SelectFromCodec<T> implements Codec<T> {
      * @param metadata
      */
     public SelectFromCodec(Class<?> type, Choices choices,
-            ResolverContext context, CodecFactory factory,
-            AnnotatedElement metadata) {
+                           ResolverContext context, CodecFactory factory,
+                           AnnotatedElement metadata) {
         this.prefixSize = choices.prefixSize();
         this.types = new Class<?>[choices.alternatives().length];
         this.byteOrder = choices.byteOrder();
@@ -327,7 +308,7 @@ public class SelectFromCodec<T> implements Codec<T> {
             private int prefixSize;
 
             public PrefixReference(ReferenceContext<Resolver> context,
-                    int prefixSize) {
+                                   int prefixSize) {
                 this.context = context;
                 this.prefixSize = prefixSize;
             }
@@ -423,30 +404,30 @@ public class SelectFromCodec<T> implements Codec<T> {
                                 .end();
                         Table2Cols<?> table2Cols = target.table2Cols();
                         table2Cols
-                            .header()
+                                .header()
                                 .entry()
-                                    .para()
-                                        .text("Condition")
-                                    .end()
+                                .para()
+                                .text("Condition")
+                                .end()
                                 .entry()
-                                    .para()
-                                        .text("Data structure")
-                                    .end()
+                                .para()
+                                .text("Data structure")
+                                .end()
                                 .end();
                         for (int i = 0; i < conditions.size(); i++) {
                             table2Cols
                                     .row()
-                                        .entry()
-                                            .para()
-                                                .document(Documenters
-                                                    .forExpression(conditions.get(i)))
-                                            .end()
-                                        .entry()
-                                            .para()
-                                                .document(
-                                                    codecs.get(i).getCodecDescriptor()
+                                    .entry()
+                                    .para()
+                                    .document(Documenters
+                                            .forExpression(conditions.get(i)))
+                                    .end()
+                                    .entry()
+                                    .para()
+                                    .document(
+                                            codecs.get(i).getCodecDescriptor()
                                                     .reference(Adjective.A, false))
-                                            .end()
+                                    .end()
                                     .end();
                         }
                         table2Cols.end();
@@ -483,7 +464,7 @@ public class SelectFromCodec<T> implements Codec<T> {
                             for (int i = 0; i < conditions.size(); i++) {
                                 target.document(codecs.get(i)
                                         .getCodecDescriptor().reference(
-                                                adjective, false));
+                                        adjective, false));
                                 if (i < conditions.size() - 2) {
                                     target.text(", ");
                                 }

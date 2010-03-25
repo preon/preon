@@ -38,18 +38,15 @@ import java.lang.reflect.AnnotatedElement;
 public class AnnotationUtils {
 
     /**
-     * Compares two AnnotatedElement instances to see if they basically define
-     * the same data. Currently ignores array type of elements.
-     * 
-     * @param first
-     *            The first {@link AnnotatedElement}.
-     * @param second
-     *            The second {@link AnnotatedElement}
-     * @return A boolean indicating whether or not these are considered to be
-     *         equivalent.
+     * Compares two AnnotatedElement instances to see if they basically define the same data. Currently ignores array
+     * type of elements.
+     *
+     * @param first  The first {@link AnnotatedElement}.
+     * @param second The second {@link AnnotatedElement}
+     * @return A boolean indicating whether or not these are considered to be equivalent.
      */
     public static boolean equivalent(AnnotatedElement first,
-            AnnotatedElement second) {
+                                     AnnotatedElement second) {
         if (first == null || second == null || first.getAnnotations() == null
                 || second.getAnnotations() == null) {
             return false;

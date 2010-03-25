@@ -41,11 +41,10 @@ import nl.flotsam.preon.ResolverContext;
 import nl.flotsam.preon.annotation.BoundExplicitly;
 
 /**
- * A {@link CodecFactory} allowing you to explicitly set the {@link Codec} to
- * use. (Triggered by the {@link BoundExplicitly} annotation.
- * 
+ * A {@link CodecFactory} allowing you to explicitly set the {@link Codec} to use. (Triggered by the {@link
+ * BoundExplicitly} annotation.
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class ExplicitCodecFactory implements CodecFactory {
 
@@ -53,8 +52,9 @@ public class ExplicitCodecFactory implements CodecFactory {
      * (non-Javadoc)
      * @see nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement, java.lang.Class, nl.flotsam.preon.ResolverContext)
      */
+
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         if (metadata != null
                 && metadata.isAnnotationPresent(BoundExplicitly.class)) {
             BoundExplicitly settings = metadata

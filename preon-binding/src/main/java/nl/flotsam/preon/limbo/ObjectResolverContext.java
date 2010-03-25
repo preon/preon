@@ -38,15 +38,13 @@ import nl.flotsam.preon.binding.Binding;
 
 import java.util.List;
 
-/**
- * A {@link ResolverContext} that also provides access to all bindings defined for a certain type.
- */
+/** A {@link ResolverContext} that also provides access to all bindings defined for a certain type. */
 public interface ObjectResolverContext extends ResolverContext {
 
-	Resolver getResolver(Object context, Resolver resolver);
-	
-	List<Binding> getBindings();
-	
+    Resolver getResolver(Object context, Resolver resolver);
+
+    List<Binding> getBindings();
+
     void add(String name, Binding binding);
-    
+
 }

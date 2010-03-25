@@ -43,20 +43,13 @@ import nl.flotsam.preon.Resolver;
 
 
 /**
- * A general purpose 'marker' annotation, indicating that a certain field is
- * considered is expected to be retrieved from a {@link BitBuffer} when invoking
- * {@link Codec#decode(nl.flotsam.preon.buffer.BitBuffer, Resolver, Builder)}.
- * 
- * <p>
- * This annotation is the easy way to mark fields as 'serializable'. When this
- * annotation is used, the processing expectations are that the {@link Codec}
- * will use the default settings for decoding values of the type of field
- * involved. If the defaults don't suffice, then the other annotations come into
- * play.
- * </p>
- * 
+ * A general purpose 'marker' annotation, indicating that a certain field is considered is expected to be retrieved from
+ * a {@link BitBuffer} when invoking {@link Codec#decode(nl.flotsam.preon.buffer.BitBuffer, Resolver, Builder)}. <p/>
+ * <p> This annotation is the easy way to mark fields as 'serializable'. When this annotation is used, the processing
+ * expectations are that the {@link Codec} will use the default settings for decoding values of the type of field
+ * involved. If the defaults don't suffice, then the other annotations come into play. </p>
+ *
  * @author Wilfred Springer
- * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

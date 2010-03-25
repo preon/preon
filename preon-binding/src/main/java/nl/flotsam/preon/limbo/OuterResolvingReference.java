@@ -41,55 +41,42 @@ import nl.flotsam.preon.Resolver;
 import nl.flotsam.preon.ResolverContext;
 
 /**
- * A {@link Reference} to support references to objects referenced from outer
- * references. Whenever a new reference is constructed from a
- * {@link OuterReference}, then that new reference needs to preserve some
- * properties:
- * 
- * <ul>
- * <li>{@link #getReferenceContext()} will need to return a reference to the
- * original {@link ResolverContext};</li>
- * <li>{@link #resolve(Resolver)} will first need to Resolve the "outer"
- * resolver, using the {@link #outerName};</li>
- * <li>... and these properties need to be preserved for all next references
- * constructed from this reference.</li>
+ * A {@link Reference} to support references to objects referenced from outer references. Whenever a new reference is
+ * constructed from a {@link OuterReference}, then that new reference needs to preserve some properties:
+ * <p/>
+ * <ul> <li>{@link #getReferenceContext()} will need to return a reference to the original {@link ResolverContext};</li>
+ * <li>{@link #resolve(Resolver)} will first need to Resolve the "outer" resolver, using the {@link #outerName};</li>
+ * <li>... and these properties need to be preserved for all next references constructed from this reference.</li>
  * </ul>
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class OuterResolvingReference implements Reference<Resolver> {
 
     /**
-     * The name to use when resolving the <em>actual</em> {@link Resolver} we
-     * need to use, from the {@link Resolver} passed to
-     * {@link #resolve(Resolver)}.
+     * The name to use when resolving the <em>actual</em> {@link Resolver} we need to use, from the {@link Resolver}
+     * passed to {@link #resolve(Resolver)}.
      */
     private String outerName;
 
     /**
-     * The original {@link ResolverContext} to return by this reference. (To
-     * make sure that any other references are always contructed from this
-     * context.
+     * The original {@link ResolverContext} to return by this reference. (To make sure that any other references are
+     * always contructed from this context.
      */
     private ResolverContext originalContext;
 
-    /**
-     * The {@link Reference} wrapped.
-     */
+    /** The {@link Reference} wrapped. */
     private Reference<Resolver> wrapped;
 
     /**
      * Constructs a new instance.
-     * 
-     * @param outerName
-     *            The name to use when resolving the outer {@link Resolver} from
-     *            the {@link Resolver} passed to {@link #resolve(Resolver)}.
-     * @param originalContext
-     *            The context to be returned.
+     *
+     * @param outerName       The name to use when resolving the outer {@link Resolver} from the {@link Resolver} passed
+     *                        to {@link #resolve(Resolver)}.
+     * @param originalContext The context to be returned.
      */
     public OuterResolvingReference(String outerName,
-            ResolverContext originalContext, Reference<Resolver> wrapped) {
+                                   ResolverContext originalContext, Reference<Resolver> wrapped) {
         this.outerName = outerName;
         this.originalContext = originalContext;
         this.wrapped = wrapped;
@@ -100,6 +87,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Reference#getReferenceContext()
      */
+
     public ReferenceContext<Resolver> getReferenceContext() {
         return originalContext;
     }
@@ -109,6 +97,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Reference#getType()
      */
+
     public Class<?> getType() {
         return wrapped.getType();
     }
@@ -118,6 +107,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Reference#isAssignableTo(java.lang.Class)
      */
+
     public boolean isAssignableTo(Class<?> type) {
         return wrapped.isAssignableTo(type);
     }
@@ -127,6 +117,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Reference#resolve(java.lang.Object)
      */
+
     public Object resolve(Resolver resolver) {
         Object outerResolver = resolver.get(outerName);
         if (outerResolver != null && outerResolver instanceof Resolver) {
@@ -145,6 +136,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
      */
+
     public Reference<Resolver> selectAttribute(String name)
             throws BindingException {
         Reference<Resolver> actual = wrapped.selectAttribute(name);
@@ -156,6 +148,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
      */
+
     public Reference<Resolver> selectItem(String index) throws BindingException {
         Reference<Resolver> actual = wrapped.selectItem(index);
         return new OuterResolvingReference(outerName, originalContext, actual);
@@ -167,6 +160,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * @see
      * nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression)
      */
+
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
             throws BindingException {
         Reference<Resolver> actual = wrapped.selectItem(index);
@@ -178,6 +172,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
      * 
      * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
      */
+
     public void document(Document target) {
         wrapped.document(target);
     }
@@ -188,7 +183,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
         private Resolver currentResolver;
 
         public OriginalReplacingResolver(Resolver originalResolver,
-                Resolver currentResolver) {
+                                         Resolver currentResolver) {
             this.currentResolver = currentResolver;
             this.originalResolver = originalResolver;
         }

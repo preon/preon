@@ -51,7 +51,7 @@ public class BoundBufferCodecFactory implements CodecFactory {
     private Class<?> BYTE_CLASS = (new byte[0]).getClass();
 
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                               ResolverContext context) {
         if (type.isArray() && BYTE_CLASS.equals(type)
                 && metadata.isAnnotationPresent(BoundBuffer.class)) {
             return (Codec<T>) new BoundBufferCodec(metadata.getAnnotation(
@@ -70,7 +70,7 @@ public class BoundBufferCodecFactory implements CodecFactory {
         }
 
         public Object decode(BitBuffer buffer, Resolver resolver,
-                Builder builder) throws DecodingException {
+                             Builder builder) throws DecodingException {
             for (int i = 0; i < criterion.length; i++) {
                 if (criterion[i] != buffer.readAsByte(8)) {
                     throw new DecodingException("First " + criterion.length
@@ -81,7 +81,7 @@ public class BoundBufferCodecFactory implements CodecFactory {
         }
 
         public void encode(Object object, BitChannel channel, Resolver resolver) throws IOException {
-            channel.write(criterion, 0, criterion.length - 1);            
+            channel.write(criterion, 0, criterion.length - 1);
         }
 
         public CodecDescriptor getCodecDescriptor() {
@@ -144,7 +144,7 @@ public class BoundBufferCodecFactory implements CodecFactory {
         }
 
         public Class<?>[] getTypes() {
-            return new Class<?>[] { byte.class };
+            return new Class<?>[]{byte.class};
         }
     }
 

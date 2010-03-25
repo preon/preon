@@ -42,11 +42,11 @@ public class TextUtilsTest extends TestCase {
         assertEquals("-1", TextUtils.getNumberAsText(-1));
         assertEquals("22", TextUtils.getNumberAsText(22));
     }
-    
+
     public void testPositionToText() {
         assertEquals("first", TextUtils.getPositionAsText(0));
         assertEquals("second", TextUtils.getPositionAsText(1));
         assertEquals("23th", TextUtils.getPositionAsText(22));
     }
-    
+
 }

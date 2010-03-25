@@ -45,12 +45,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
 /**
-     * A {@link nl.flotsam.preon.Codec} that reads null-terminated Strings. Basically, it will
- * read bytes until it encounters a '\0' character, in which case it
- * considers itself to be done, and construct a String from the bytes read.
+ * A {@link nl.flotsam.preon.Codec} that reads null-terminated Strings. Basically, it will read bytes until it
+ * encounters a '\0' character, in which case it considers itself to be done, and construct a String from the bytes
+ * read.
  *
  * @author Wilfred Springer (wis)
- *
  */
 public class NullTerminatedStringCodec implements Codec<String> {
 
@@ -61,14 +60,14 @@ public class NullTerminatedStringCodec implements Codec<String> {
     private BoundString.ByteConverter byteConverter;
 
     public NullTerminatedStringCodec(BoundString.Encoding encoding, String match,
-            BoundString.ByteConverter byteConverter) {
+                                     BoundString.ByteConverter byteConverter) {
         this.encoding = encoding;
         this.match = match;
         this.byteConverter = byteConverter;
     }
 
     public String decode(BitBuffer buffer, Resolver resolver,
-            Builder builder) throws DecodingException {
+                         Builder builder) throws DecodingException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         byte value;
         while ((value = buffer.readAsByte(8)) != 0x00) {
@@ -97,7 +96,7 @@ public class NullTerminatedStringCodec implements Codec<String> {
     }
 
     public Class<?>[] getTypes() {
-        return new Class[] { String.class };
+        return new Class[]{String.class};
     }
 
     public Expression<Integer, Resolver> getSize() {

@@ -33,13 +33,10 @@
 package nl.flotsam.preon.buffer;
 
 /**
- * An abstract base class for classes wrapping {@link BitBuffer}s to support
- * additional behavior. Implementations need to implement <em>at least</em>
- * {@link #getDelegate()}.
- *
+ * An abstract base class for classes wrapping {@link BitBuffer}s to support additional behavior. Implementations need
+ * to implement <em>at least</em> {@link #getDelegate()}.
  *
  * @author Wilfred Springer
- *
  */
 public abstract class AbstractBitBufferDecorator implements BitBuffer {
 
@@ -54,6 +51,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#getBitBufBitSize()
      */
+
     public long getBitBufBitSize() {
         return getDelegate().getBitBufBitSize();
     }
@@ -62,6 +60,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#getBitPos()
      */
+
     public long getBitPos() {
         return getDelegate().getBitPos();
     }
@@ -70,6 +69,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsBoolean()
      */
+
     public boolean readAsBoolean() {
         return getDelegate().readAsBoolean();
     }
@@ -78,6 +78,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsBoolean(long)
      */
+
     public boolean readAsBoolean(long bitPos) {
         return getDelegate().readAsBoolean(bitPos);
     }
@@ -86,6 +87,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsBoolean(nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public boolean readAsBoolean(ByteOrder endian) {
         return getDelegate().readAsBoolean(endian);
     }
@@ -94,6 +96,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsBoolean(long, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public boolean readAsBoolean(long bitPos, ByteOrder endian) {
         return getDelegate().readAsBoolean(bitPos, endian);
     }
@@ -102,6 +105,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsByte(int)
      */
+
     public byte readAsByte(int nrBits) {
         return getDelegate().readAsByte(nrBits);
     }
@@ -110,6 +114,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsByte(int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public byte readAsByte(int nrBits, ByteOrder endian) {
         return getDelegate().readAsByte(nrBits, endian);
     }
@@ -118,6 +123,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsByte(int, long)
      */
+
     public byte readAsByte(int nrBits, long bitPos) {
         return getDelegate().readAsByte(nrBits, bitPos);
     }
@@ -126,6 +132,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsByte(long, int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public byte readAsByte(long bitPos, int nrBits, ByteOrder endian) {
         return getDelegate().readAsByte(bitPos, nrBits, endian);
     }
@@ -134,6 +141,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsInt(int)
      */
+
     public int readAsInt(int nrBits) {
         return getDelegate().readAsInt(nrBits);
     }
@@ -142,6 +150,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsInt(long, int)
      */
+
     public int readAsInt(long bitPos, int nrBits) {
         return getDelegate().readAsInt(bitPos, nrBits);
     }
@@ -150,6 +159,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsInt(int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public int readAsInt(int nrBits, ByteOrder endian) {
         return getDelegate().readAsInt(nrBits, endian);
     }
@@ -158,6 +168,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsInt(long, int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public int readAsInt(long bitPos, int nrBits, ByteOrder endian) {
         return getDelegate().readAsInt(bitPos, nrBits, endian);
     }
@@ -166,6 +177,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsLong(int)
      */
+
     public long readAsLong(int nrBits) {
         return getDelegate().readAsLong(nrBits);
     }
@@ -174,6 +186,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsLong(long, int)
      */
+
     public long readAsLong(long bitPos, int nrBits) {
         return getDelegate().readAsLong(bitPos, nrBits);
     }
@@ -182,6 +195,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsLong(int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public long readAsLong(int nrBits, ByteOrder endian) {
         return getDelegate().readAsLong(nrBits, endian);
     }
@@ -190,6 +204,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsLong(long, int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public long readAsLong(long bitPos, int nrBits, ByteOrder endian) {
         return getDelegate().readAsLong(bitPos, nrBits, endian);
     }
@@ -198,6 +213,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsShort(int)
      */
+
     public short readAsShort(int nrBits) {
         return getDelegate().readAsShort(nrBits);
     }
@@ -206,6 +222,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsShort(long, int)
      */
+
     public short readAsShort(long bitPos, int nrBits) {
         return getDelegate().readAsShort(bitPos, nrBits);
     }
@@ -214,6 +231,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsShort(int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public short readAsShort(int nrBits, ByteOrder endian) {
         return getDelegate().readAsShort(nrBits, endian);
     }
@@ -222,6 +240,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readAsShort(long, int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public short readAsShort(long bitPos, int nrBits, ByteOrder endian) {
         return getDelegate().readAsShort(bitPos, nrBits, endian);
     }
@@ -230,6 +249,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readBits(int)
      */
+
     public long readBits(int nrBits) {
         return getDelegate().readBits(nrBits);
     }
@@ -238,6 +258,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readBits(long, int)
      */
+
     public long readBits(long bitPos, int nrBits) {
         return getDelegate().readBits(bitPos, nrBits);
     }
@@ -246,6 +267,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readBits(int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public long readBits(int nrBits, ByteOrder endian) {
         return getDelegate().readBits(nrBits, endian);
     }
@@ -254,6 +276,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#readBits(long, int, nl.flotsam.preon.buffer.ByteOrder)
      */
+
     public long readBits(long bitPos, int nrBits, ByteOrder endian) {
         return getDelegate().readBits(bitPos, nrBits, endian);
     }
@@ -262,6 +285,7 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#setBitPos(long)
      */
+
     public void setBitPos(long bitPos) {
         getDelegate().setBitPos(bitPos);
     }
@@ -270,14 +294,16 @@ public abstract class AbstractBitBufferDecorator implements BitBuffer {
      * (non-Javadoc)
      * @see nl.flotsam.preon.buffer.BitBuffer#slice(long)
      */
+
     public BitBuffer slice(long length) {
         return getDelegate().slice(length);
     }
-    
+
     /*
-     * (non-Javadoc)
-     * @see nl.flotsam.preon.buffer.BitBuffer#duplicate()
-     */
+    * (non-Javadoc)
+    * @see nl.flotsam.preon.buffer.BitBuffer#duplicate()
+    */
+
     public BitBuffer duplicate() {
         return getDelegate().duplicate();
     }

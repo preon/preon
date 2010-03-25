@@ -43,9 +43,8 @@ import java.lang.reflect.AnnotatedElement;
 
 /**
  * A {@link CodecFactory} creating {@link Codec Codecs} slicing the {@link BitBuffer} to limit the visibility of the
- * remainder of the buffer (and easily skip forward, if the data itself is not required). Triggered by the {@link
- * Slice} annotation.
- *
+ * remainder of the buffer (and easily skip forward, if the data itself is not required). Triggered by the {@link Slice}
+ * annotation.
  */
 public class SlicingCodecDecorator implements CodecDecorator {
 

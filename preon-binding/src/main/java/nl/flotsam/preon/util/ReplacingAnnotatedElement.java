@@ -36,33 +36,28 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 
 /**
- * An {@link AnnotatedElement} wrapper, replacing one of the annotations with
- * another one.
- * 
+ * An {@link AnnotatedElement} wrapper, replacing one of the annotations with another one.
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class ReplacingAnnotatedElement implements AnnotatedElement {
 
-    /**
-     * The replacement annotation.
-     */
+    /** The replacement annotation. */
     private Annotation replacement;
 
-    /**
-     * The other annotations.
-     */
+    /** The other annotations. */
     private AnnotatedElement wrapped;
 
     public ReplacingAnnotatedElement(AnnotatedElement wrapped, Annotation replacement) {
         this.wrapped = wrapped;
         this.replacement = replacement;
     }
-    
+
     /*
-     * (non-Javadoc)
-     * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
-     */
+    * (non-Javadoc)
+    * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
+    */
+
     public <T extends Annotation> T getAnnotation(Class<T> annotationType) {
         if (annotationType.isAssignableFrom(replacement.getClass())) {
             return (T) replacement;
@@ -75,6 +70,7 @@ public class ReplacingAnnotatedElement implements AnnotatedElement {
      * (non-Javadoc)
      * @see java.lang.reflect.AnnotatedElement#getAnnotations()
      */
+
     public Annotation[] getAnnotations() {
         Annotation[] annotations = wrapped.getAnnotations();
         for (int i = 0; i < annotations.length; i++) {
@@ -89,6 +85,7 @@ public class ReplacingAnnotatedElement implements AnnotatedElement {
      * (non-Javadoc)
      * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
      */
+
     public Annotation[] getDeclaredAnnotations() {
         Annotation[] annotations = wrapped.getDeclaredAnnotations();
         for (int i = 0; i < annotations.length; i++) {
@@ -103,6 +100,7 @@ public class ReplacingAnnotatedElement implements AnnotatedElement {
      * (non-Javadoc)
      * @see java.lang.reflect.AnnotatedElement#isAnnotationPresent(java.lang.Class)
      */
+
     public boolean isAnnotationPresent(Class<? extends Annotation> annotationType) {
         if (wrapped.isAnnotationPresent(annotationType)) {
             return true;

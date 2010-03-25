@@ -52,7 +52,7 @@ public class DescriptionTest extends TestCase {
 
     /**
      * Tests if a description is generated correctly.
-     * 
+     *
      * @throws XMLStreamException
      * @throws FileNotFoundException
      */
@@ -63,26 +63,26 @@ public class DescriptionTest extends TestCase {
         System.out.println("Writing " + file.getAbsolutePath() + "...");
         Codecs.document(codec, DocumentType.Html, file);
     }
-    
+
     public void testDescriptionWithInitCodec() throws Exception {
-    	resetBindingId();
-    	Codec<SimpleData> codec1 = Codecs.create(SimpleData.class);
-    	resetBindingId();
-    	Codec<Wrapper.SimpleData> codec2 = Codecs.create(Wrapper.SimpleData.class);
-    	ByteArrayOutputStream out1 = new ByteArrayOutputStream();
-    	ByteArrayOutputStream out2 = new ByteArrayOutputStream();
-    	
-    	Codecs.document(codec1, DocumentType.Html, out1);
-    	Codecs.document(codec2, DocumentType.Html, out2);
-    	
-    	assertEquals(out1.toString(), out2.toString());
-    	
+        resetBindingId();
+        Codec<SimpleData> codec1 = Codecs.create(SimpleData.class);
+        resetBindingId();
+        Codec<Wrapper.SimpleData> codec2 = Codecs.create(Wrapper.SimpleData.class);
+        ByteArrayOutputStream out1 = new ByteArrayOutputStream();
+        ByteArrayOutputStream out2 = new ByteArrayOutputStream();
+
+        Codecs.document(codec1, DocumentType.Html, out1);
+        Codecs.document(codec2, DocumentType.Html, out2);
+
+        assertEquals(out1.toString(), out2.toString());
+
     }
-    
+
     public void resetBindingId() throws Exception {
-    	Field field = StandardBindingFactory.class.getDeclaredField("id");
-    	field.setAccessible(true);
-    	field.set(null, 0);
+        Field field = StandardBindingFactory.class.getDeclaredField("id");
+        field.setAccessible(true);
+        field.set(null, 0);
     }
 
     @Purpose("Captures point of interest data.")
@@ -91,9 +91,7 @@ public class DescriptionTest extends TestCase {
         @BoundString(size = "3", match = "POI")
         private String magicNumber;
 
-        /**
-         * The longitude of the POI.
-         */
+        /** The longitude of the POI. */
         @Bound
         private int longitude;
 
@@ -107,7 +105,7 @@ public class DescriptionTest extends TestCase {
         @BoundNumber(size = "8")
         private int numberOfPois;
 
-        @BoundList(size = "numberOfPois", types = { ScenicViewPoi.class, HotelPoi.class })
+        @BoundList(size = "numberOfPois", types = {ScenicViewPoi.class, HotelPoi.class})
         private List<Poi> pois;
 
     }
@@ -134,23 +132,26 @@ public class DescriptionTest extends TestCase {
     public static class HotelPoi extends Poi {
 
     }
-    
-   
+
+
     public static class SimpleData {
-    	
-    	@Bound
-    	byte b;
+
+        @Bound
+        byte b;
     }
-    
-   public static class Wrapper {
-	    public static class SimpleData {
-	    	
-	    	@Bound
-	    	byte b;
-	    	
-	    	@Init
-	    	public void init() {};
-	    }
-   }
+
+    public static class Wrapper {
+        public static class SimpleData {
+
+            @Bound
+            byte b;
+
+            @Init
+            public void init() {
+            }
+
+            ;
+        }
+    }
 
 }

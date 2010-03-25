@@ -33,19 +33,16 @@
 package nl.flotsam.preon;
 
 /**
- * An interface implemented by some objects to notify listeners that new
- * {@link Codec Codecs} were created.
+ * An interface implemented by some objects to notify listeners that new {@link Codec Codecs} were created.
  *
  * @author Wilfred Springer
- *
  */
 public interface CodecConstructionListener {
 
     /**
      * Signals the creation of a new {@link Codec}.
      *
-     * @param codec
-     *            The new {@link Codec} constructed.
+     * @param codec The new {@link Codec} constructed.
      */
     void constructed(Codec<?> codec);
 

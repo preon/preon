@@ -38,37 +38,37 @@ import nl.flotsam.preon.annotation.Purpose;
 @Purpose("Bitmap information.")
 public class BitmapInformation {
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long headerSize;
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long bitmapWidth;
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long bitmapHeight;
 
-    @BoundNumber(size="16")
+    @BoundNumber(size = "16")
     private int numberOfColorPlanes;
 
-    @BoundNumber(size="16")
+    @BoundNumber(size = "16")
     private int colorDepth;
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long compressionMethod;
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long imageSize;
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long horizontalResolution;
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long verticalResolution;
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long numberOfColors;
 
-    @BoundNumber(size="32")
+    @BoundNumber(size = "32")
     private long numberOfImportantColors;
 
     public long getHeight() {

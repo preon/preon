@@ -40,10 +40,10 @@ public class FullAttributeInfo extends GenericAttributeInfo {
 
     @BoundNumber(size = "16", byteOrder = ByteOrder.BigEndian)
     private int attributeNameIndex;
-    
+
     @BoundNumber(size = "32", byteOrder = ByteOrder.BigEndian)
     private long attributeLength;
-    
+
     @BoundList(size = "attributeLength")
     private byte[] data;
 

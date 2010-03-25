@@ -37,7 +37,7 @@ import junit.framework.TestCase;
 public class ByteOrderingTest extends TestCase {
 
     public void testRightToLeftBigEndian() {
-        byte[] buffer = { 0x12 // 0001 0010
+        byte[] buffer = {0x12 // 0001 0010
                 , 0x34 // 0011 0100
                 , 0x45 // 0100 0101
         };
@@ -45,7 +45,7 @@ public class ByteOrderingTest extends TestCase {
         assertEquals(0x09, readAsLongBigEndianRL(0, 1, buffer, 5));
         assertEquals(0x41, readAsLongBigEndianRL(0, 4, buffer, 8));
         assertEquals(0x4d0, readAsLongBigEndianRL(0, 6, buffer, 11));
-        buffer = new byte[] { 0x20 // 0010 0000
+        buffer = new byte[]{0x20 // 0010 0000
                 , (byte) 0x88 // 1000 1000
                 , 0x41 // 0100 0001
                 , (byte) 0x8a // 1000 1001
@@ -57,7 +57,7 @@ public class ByteOrderingTest extends TestCase {
     }
 
     private long readAsLongBigEndianRL(int bytePos, int bitPos, byte[] buffer,
-            int nrBits) {
+                                       int nrBits) {
         // Long implies less than 64 bits
         assert nrBits < 64;
         // The number of bits available must be higher than requested

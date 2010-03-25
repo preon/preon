@@ -54,33 +54,25 @@ import nl.flotsam.preon.util.ParaContentsDocument;
 
 /**
  * A {@link ResolverContext} based on a collection of {@link Binding Bindings}.
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class BindingsContext implements ObjectResolverContext {
 
-    /**
-     * All {@link Binding}s.
-     */
+    /** All {@link Binding}s. */
     private List<Binding> orderedBindings;
 
-    /**
-     * All {@link Binding}s, indexed by their name.
-     */
+    /** All {@link Binding}s, indexed by their name. */
     private HashMap<String, Binding> bindingsByName;
 
-    /**
-     * The "outer" {@link ResolverContext}.
-     */
+    /** The "outer" {@link ResolverContext}. */
     private ResolverContext outer;
 
     /**
      * Constructs a new instance.
-     * 
+     *
      * @param type
-     * @param outer
-     *            The "outer" {@link ResolverContext}.
+     * @param outer The "outer" {@link ResolverContext}.
      */
     public BindingsContext(Class<?> type, ResolverContext outer) {
         this.orderedBindings = new ArrayList<Binding>();
@@ -94,6 +86,7 @@ public class BindingsContext implements ObjectResolverContext {
      * @see nl.flotsam.preon.limbo.ObjectResolverContext#add(java.lang.String,
      * nl.flotsam.preon.binding.Binding)
      */
+
     public void add(String name, Binding binding) {
         orderedBindings.add(binding);
         bindingsByName.put(name, binding);
@@ -104,6 +97,7 @@ public class BindingsContext implements ObjectResolverContext {
      * 
      * @see nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
      */
+
     public Reference<Resolver> selectAttribute(String name)
             throws BindingException {
         if ("outer".equals(name)) {
@@ -125,6 +119,7 @@ public class BindingsContext implements ObjectResolverContext {
      * 
      * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
      */
+
     public Reference<Resolver> selectItem(String index) throws BindingException {
         throw new BindingException("Cannot resolve index on BindingContext.");
     }
@@ -135,6 +130,7 @@ public class BindingsContext implements ObjectResolverContext {
      * @see
      * nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression)
      */
+
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
             throws BindingException {
         StringBuilder builder = new StringBuilder();
@@ -147,6 +143,7 @@ public class BindingsContext implements ObjectResolverContext {
      * 
      * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
      */
+
     public void document(Document target) {
         if (bindingsByName.size() > 0) {
             target.text("one of ");
@@ -170,6 +167,7 @@ public class BindingsContext implements ObjectResolverContext {
      * nl.flotsam.preon.limbo.ObjectResolverContext#getResolver(java.lang.Object
      * , nl.flotsam.preon.Resolver)
      */
+
     public Resolver getResolver(Object context, Resolver resolver) {
         return new BindingsResolver(context, resolver);
     }
@@ -179,31 +177,24 @@ public class BindingsContext implements ObjectResolverContext {
      * 
      * @see nl.flotsam.preon.limbo.ObjectResolverContext#getBindings()
      */
+
     public List<Binding> getBindings() {
         return orderedBindings;
     }
 
-    /**
-     * A {@link Reference} referring to a {@link Binding}.
-     */
+    /** A {@link Reference} referring to a {@link Binding}. */
     private class BindingReference implements Reference<Resolver> {
 
-        /**
-         * The {@link Binding} it refers to.
-         */
+        /** The {@link Binding} it refers to. */
         private Binding binding;
 
-        /**
-         * The most specific supertype of anything that can be returned from
-         * this {@link Reference}.
-         */
+        /** The most specific supertype of anything that can be returned from this {@link Reference}. */
         private Class<?> commonType;
 
         /**
          * Constructs a new instance.
-         * 
-         * @param binding
-         *            The {@link Binding}.
+         *
+         * @param binding The {@link Binding}.
          */
         public BindingReference(Binding binding) {
             this.binding = binding;
@@ -215,6 +206,7 @@ public class BindingsContext implements ObjectResolverContext {
          * 
          * @see nl.flotsam.limbo.Reference#getReferenceContext()
          */
+
         public ResolverContext getReferenceContext() {
             return BindingsContext.this;
         }
@@ -224,6 +216,7 @@ public class BindingsContext implements ObjectResolverContext {
          * 
          * @see nl.flotsam.limbo.Reference#isAssignableTo(java.lang.Class)
          */
+
         public boolean isAssignableTo(Class<?> type) {
 
             for (Class<?> bound : binding.getTypes()) {
@@ -241,6 +234,7 @@ public class BindingsContext implements ObjectResolverContext {
          * 
          * @see nl.flotsam.limbo.Reference#resolve(java.lang.Object)
          */
+
         public Object resolve(Resolver context) {
             try {
                 String name = binding.getName();
@@ -257,6 +251,7 @@ public class BindingsContext implements ObjectResolverContext {
          * @see
          * nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
          */
+
         @SuppressWarnings("unchecked")
         public Reference<Resolver> selectAttribute(String name) {
             Reference<Resolver>[] template = new Reference[0];
@@ -283,6 +278,7 @@ public class BindingsContext implements ObjectResolverContext {
          * 
          * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
          */
+
         public Reference<Resolver> selectItem(String index) {
             Expression<Integer, Resolver> expr;
             expr = Expressions.createInteger(BindingsContext.this, index);
@@ -297,6 +293,7 @@ public class BindingsContext implements ObjectResolverContext {
          * nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression
          * )
          */
+
         @SuppressWarnings("unchecked")
         public Reference<Resolver> selectItem(
                 Expression<Integer, Resolver> index) {
@@ -322,6 +319,7 @@ public class BindingsContext implements ObjectResolverContext {
          * 
          * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
          */
+
         public void document(final Document target) {
             binding.writeReference(new ParaContentsDocument(target));
         }
@@ -331,6 +329,7 @@ public class BindingsContext implements ObjectResolverContext {
          * 
          * @see nl.flotsam.limbo.Reference#getType()
          */
+
         public Class<?> getType() {
             return commonType;
         }
@@ -346,31 +345,23 @@ public class BindingsContext implements ObjectResolverContext {
     }
 
     /**
-     * A {@link Resolver} resolving to bindings. In addition, it also resolves
-     * outer.
-     * 
+     * A {@link Resolver} resolving to bindings. In addition, it also resolves outer.
+     *
      * @author Wilfred Springer (wis)
-     * 
      */
     private class BindingsResolver implements Resolver {
 
-        /**
-         * The instance on which the objects need to be resolved.
-         */
+        /** The instance on which the objects need to be resolved. */
         private Object context;
 
-        /**
-         * The outer Resolver.
-         */
+        /** The outer Resolver. */
         private Resolver outer;
 
         /**
          * Constructs a new instance.
-         * 
-         * @param context
-         *            The object for resolving bindings.
-         * @param outer
-         *            A reference to the outer context.
+         *
+         * @param context The object for resolving bindings.
+         * @param outer   A reference to the outer context.
          */
         public BindingsResolver(Object context, Resolver outer) {
             this.context = context;
@@ -382,6 +373,7 @@ public class BindingsContext implements ObjectResolverContext {
          * 
          * @see nl.flotsam.preon.Resolver#get(java.lang.String)
          */
+
         public Object get(String name) {
             if ("outer".equals(name)) {
                 return outer;
@@ -415,17 +407,12 @@ public class BindingsContext implements ObjectResolverContext {
             }
         }
 
-        /**
-         * Returns the "outer" {@link Resolver}.
-         */
+        /** Returns the "outer" {@link Resolver}. */
         public Resolver getOuter() {
             return outer;
         }
 
-        /**
-         * Returns the {@link Resolver} from which all new references need to be
-         * constructed.
-         */
+        /** Returns the {@link Resolver} from which all new references need to be constructed. */
         public Resolver getOriginalResolver() {
             return this;
         }

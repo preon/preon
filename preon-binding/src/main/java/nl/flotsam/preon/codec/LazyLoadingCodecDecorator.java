@@ -47,24 +47,17 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 
 /**
- * An attempt to create a general purpose {@link CodecFactory} whose
- * {@link Codec Codecs} will only load their data once operations are invoked
- * upon them.
- * 
- * <p>
- * Note that there are some concurrency issues with this approach. The
- * {@link Codec} will create a proxy. When an operation is invoked on that
- * proxy, the proxy will check if it already obtained the actual value. This is
- * where it's getting nasty. Multiple threads might come in simultaneously.
- * </p>
- * 
+ * An attempt to create a general purpose {@link CodecFactory} whose {@link Codec Codecs} will only load their data once
+ * operations are invoked upon them. <p/> <p> Note that there are some concurrency issues with this approach. The {@link
+ * Codec} will create a proxy. When an operation is invoked on that proxy, the proxy will check if it already obtained
+ * the actual value. This is where it's getting nasty. Multiple threads might come in simultaneously. </p>
+ *
  * @author Wilfred Springer
- * 
  */
 public class LazyLoadingCodecDecorator implements CodecDecorator {
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
-            Class<T> type, ResolverContext context) {
+                                 Class<T> type, ResolverContext context) {
         if (metadata != null && metadata.isAnnotationPresent(LazyLoading.class)) {
             return new LazyLoadingCodec<T>(decorated, type);
         } else {
@@ -75,9 +68,9 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
     /**
      * A {@link Codec} that will only start loading the data when one of the
      * methods of that object are invoked.
-     * 
+     *
      * @author Wilfred Springer (wis)
-     * 
+     *
      * @param <T>
      */
     public static class LazyLoadingCodec<T> implements Codec<T> {
@@ -94,7 +87,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
 
         /**
          * Constructs a new instance.
-         * 
+         *
          * @param wrapped
          *            The {@link Codec} to use when loading the data.
          * @param type
@@ -111,9 +104,10 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
          * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
          * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
          */
+
         @SuppressWarnings("unchecked")
         public T decode(final BitBuffer buffer, final Resolver resolver,
-                final Builder builder) throws DecodingException {
+                        final Builder builder) throws DecodingException {
             final int size = wrapped.getSize().eval(resolver);
             final long pos = buffer.getBitPos();
             ClassLoader loader = this.getClass().getClassLoader();
@@ -125,7 +119,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
                 private Object actual;
 
                 public Object intercept(Object target, Method method,
-                        Object[] args, MethodProxy proxy) throws Throwable {
+                                        Object[] args, MethodProxy proxy) throws Throwable {
                     if (actual == null) {
                         buffer.setBitPos(pos);
                         actual = wrapped.decode(buffer, resolver, builder);
@@ -146,6 +140,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
          * 
          * @see nl.flotsam.preon.Codec#getTypes()
          */
+
         public Class<?>[] getTypes() {
             return wrapped.getTypes();
         }
@@ -155,6 +150,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
          * 
          * @see nl.flotsam.preon.Codec#getSize()
          */
+
         public Expression<Integer, Resolver> getSize() {
             return wrapped.getSize();
         }
@@ -164,6 +160,7 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
          * 
          * @see nl.flotsam.preon.Codec#getType()
          */
+
         public Class<?> getType() {
             return type;
         }

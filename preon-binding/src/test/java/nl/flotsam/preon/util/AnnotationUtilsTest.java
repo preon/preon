@@ -38,9 +38,8 @@ import nl.flotsam.preon.annotation.TypePrefix;
 
 /**
  * Just checking the walls for some Annotation properties.
- * 
+ *
  * @author Wilfred Springer (wis)
- * 
  */
 public class AnnotationUtilsTest extends TestCase {
 
@@ -61,7 +60,7 @@ public class AnnotationUtilsTest extends TestCase {
     @Purpose("whatever")
     public static class Test2 {
     }
-    
+
     @TypePrefix(size = 2, value = "blaat")
     @Purpose("foobar")
     public static class Test3 {

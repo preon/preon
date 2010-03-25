@@ -1,5 +1,5 @@
 <article>
-  
+
   <articleinfo>
     <title>Preon: Bit Syntax for Java</title>
     <pubdate>April 24, 2009</pubdate>
@@ -13,20 +13,20 @@
       <keyword>Compression</keyword>
       <keyword>Decoder</keyword>
     </keywordset>
-  <abstract>
-    <title>Abstract</title>
-    <para>
-      Writing software to deal with compressed media formats is not
-      trivial. The same knowledge about the encoded representation
-      will often be replicated in both the decoder, the encoder, as
-      well as the documentation on the media format. As a consequence,
-      the software is hard to maintain. This paper introduces Preon, a
-      framework addressing these concerns. Preon allows you to define
-      the mapping between an encoded representation and the in-memory
-      representation just once, and get the decoder, the encoder and
-      documentation for free.
-    </para>
-  </abstract>
+    <abstract>
+      <title>Abstract</title>
+      <para>
+        Writing software to deal with compressed media formats is not
+        trivial. The same knowledge about the encoded representation
+        will often be replicated in both the decoder, the encoder, as
+        well as the documentation on the media format. As a consequence,
+        the software is hard to maintain. This paper introduces Preon, a
+        framework addressing these concerns. Preon allows you to define
+        the mapping between an encoded representation and the in-memory
+        representation just once, and get the decoder, the encoder and
+        documentation for free.
+      </para>
+    </abstract>
 
   </articleinfo>
 
@@ -39,15 +39,15 @@
       XML. A significant portion of the data floating around on the
       Internet is encoded using an abundance of compression
       techniques, often relying on data being encoded in a number of
-      bits rather than a number of bytes. 
+      bits rather than a number of bytes.
     </para>
     <para>
       This paper introduces Preon, a framework addressing the
       challenges for writing software dealing with binary encoded
-      data. 
+      data.
     </para>
   </section>
-  
+
   <section>
     <title>Challenges</title>
     <para>
@@ -56,27 +56,29 @@
     </para>
     <itemizedlist spacing="compact">
       <listitem>
-	<para>
-	  Not trivial because of the abundance of compression
-	  techniques available and in use;
-	</para>
+        <para>
+          Not trivial because of the abundance of compression
+          techniques available and in use;
+        </para>
       </listitem>
       <listitem>
-	<para>
-	  Not trivial because of the inter-dependencies between
-	  various parts of the encoded representation;
-	</para>
+        <para>
+          Not trivial because of the inter-dependencies between
+          various parts of the encoded representation;
+        </para>
       </listitem>
       <listitem>
-	<para>
-	  Not trivial because of resource constraints;
-	</para>
+        <para>
+          Not trivial because of resource constraints;
+        </para>
       </listitem>
       <listitem>
-	<para>
-	  And related to that, not trivial because of the need often
-	  present to pull data in <emphasis>only</emphasis> on demand.
-	</para>
+        <para>
+          And related to that, not trivial because of the need often
+          present to pull data in
+          <emphasis>only</emphasis>
+          on demand.
+        </para>
       </listitem>
     </itemizedlist>
     <para>
@@ -84,7 +86,8 @@
       responsible for encoding and decoding binary encoded data is
       notoriously hard to maintain. In most cases, knowledge about the
       encoding format is replicated in both the decoder, the encoder
-      <emphasis>and</emphasis> in the documentation.
+      <emphasis>and</emphasis>
+      in the documentation.
     </para>
   </section>
 
@@ -94,41 +97,44 @@
       Preon is a framework for dealing with bitstream compressed data,
       addressing the concerns outlined above. Preon originated from an
       attempt to restructure the way to deal with map files and other
-      compressed file formats in use at TomTom. 
+      compressed file formats in use at TomTom.
     </para>
     <para>
       Preon's scope and ambitions can be summarized like this:
     </para>
     <itemizedlist spacing="compact">
       <listitem>
-	<para>
-	  Preon allows you to capture <emphasis>intent</emphasis>.
-	</para>
+        <para>
+          Preon allows you to capture<emphasis>intent</emphasis>.
+        </para>
       </listitem>
       <listitem>
-	<para>
-	  Preon allows you to capture the <emphasis>format of the
-	  encoded representation</emphasis> unambiguously in
-	  declarative way.
-	</para>
+        <para>
+          Preon allows you to capture the
+          <emphasis>format of the
+            encoded representation
+          </emphasis>
+          unambiguously in
+          declarative way.
+        </para>
       </listitem>
       <listitem>
-	<para>
-	  Preon allows you to capture the mapping between the encoded
-	  representation and the in-memory data structure.
-	</para>
+        <para>
+          Preon allows you to capture the mapping between the encoded
+          representation and the in-memory data structure.
+        </para>
       </listitem>
       <listitem>
-	<para>
-	  Preon uses the meta data outlined above to build a
-	  codec for decoding the data.
-	</para>
+        <para>
+          Preon uses the meta data outlined above to build a
+          codec for decoding the data.
+        </para>
       </listitem>
       <listitem>
-	<para>
-	  Preon uses the meta data to generate hyperlinked
-	  human-readable documentation on the encoded representation.
-	</para>
+        <para>
+          Preon uses the meta data to generate hyperlinked
+          human-readable documentation on the encoded representation.
+        </para>
       </listitem>
     </itemizedlist>
   </section>
@@ -137,8 +143,10 @@
     <title>Preon's Bitstream Structure Description Language</title>
     <para>
       Unlike some of the other approaches that have been taken towards
-      this problem (see <xref linkend="section-languages"/>), Preon
-      does <emphasis>not</emphasis> rely on XML or a DSL to capture
+      this problem (see<xref linkend="section-languages"/>), Preon
+      does
+      <emphasis>not</emphasis>
+      rely on XML or a DSL to capture
       the specifics of a format. Instead, it relies on annotations on
       the classes defining the runtime representation of the encoded
       representation.
@@ -147,10 +155,13 @@
       Suppose there is a need to capture how a certain color is
       encoded in some graphical file format, and let us assume that
       the RGB components are values ranging from 0 to 255. Then based
-      on that simple model, <xref linkend="example-color"/>
+      on that simple model,
+      <xref linkend="example-color"/>
       illustrates how you would specify the structure of that format,
-      and how it maps to your in-memory data representation. <xref
-      linkend="example-decode"/> illustrates how you would use this
+      and how it maps to your in-memory data representation.
+      <xref
+              linkend="example-decode"/>
+      illustrates how you would use this
       'specification' to decode a color from a byte array.
     </para>
     <example id="example-color">
@@ -178,7 +189,9 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
       cause the boolean to be decoded based on a single bit.
     </para>
     <para>
-      There may and <emphasis>will</emphasis> however be cases in
+      There may and
+      <emphasis>will</emphasis>
+      however be cases in
       which these defaults are not the proper way to go. In some
       cases, you might expect the byte to be encoded in four bits
       only, for instance. In order be more specific on how values
@@ -186,11 +199,12 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
       annotations.
     </para>
     <para>
-      <xref linkend="example-color-collection"/> illustrates a situation in
+      <xref linkend="example-color-collection"/>
+      illustrates a situation in
       which specifying more meta data is required. It involves
       collection of colors, in which the format allocates two bytes
       for the number of colors in the collection, and an array of
-      colors that holds the definitions of these colors. 
+      colors that holds the definitions of these colors.
     </para>
     <example id="example-color-collection">
       <title>Color collection</title>
@@ -200,23 +214,28 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
 }]]></programlisting>
     </example>
     <para>
-      <xref linkend="example-color-collection"/> not only illustrates
+      <xref linkend="example-color-collection"/>
+      not only illustrates
       the use of more specific annotations, it also illustrates that
       Preon allows you to define dependencies between different data
       elements: the length of the colors array is based on the number
-      of colors provided by nrColors. 
+      of colors provided by nrColors.
     </para>
   </section>
   <section>
     <title>Preon Expressions</title>
     <para>
-      The size attribute on @BoundList in <xref
-      linkend="example-color-collection"/> is interpreted as a
-      Limbo<footnote>
-      <para>
-	See <ulink url="http://limbo.sourceforge.net/"/>.
-      </para>
-      </footnote> expression. Applied in this context, the expression
+      The size attribute on @BoundList in
+      <xref
+              linkend="example-color-collection"/>
+      is interpreted as a
+      Limbo
+      <footnote>
+        <para>
+          See<ulink url="http://limbo.sourceforge.net/"/>.
+        </para>
+      </footnote>
+      expression. Applied in this context, the expression
       language not only allows you to refer to data previously read in
       that same data structure, but it also allows you point to the
       outer context (for inner classes), to items of collections, and
@@ -229,7 +248,8 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
       early binding is used when building Codecs for a certain data
       element; if expressions contain invalid references, this will be
       discovered during the construction of the Codec,
-      <emphasis>before</emphasis> using the Codec to decode a piece of
+      <emphasis>before</emphasis>
+      using the Codec to decode a piece of
       data.
     </para>
     <para>
@@ -241,14 +261,18 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
       on this capability.
     </para>
   </section>
-  
+
   <section>
     <title>Preon Codecs</title>
     <para>
-      The Codec constructed as illustrated in <xref
-      linkend="example-decode"/> not only allows you to decode a
+      The Codec constructed as illustrated in
+      <xref
+              linkend="example-decode"/>
+      not only allows you to decode a
       binary representation of the runtime representation of the data
-      structure; it <emphasis>also</emphasis> captures everything
+      structure; it
+      <emphasis>also</emphasis>
+      captures everything
       known about that data structure. In fact, it is only capable of
       decoding the binary encoded representation as a consequence of
       the fact that it captures all meta data of the binary encoded
@@ -257,11 +281,12 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
     <para>
       Preon does not generate any source code or byte code. That means
       that - rather than generating a one-of Codec - the Codec is
-      <emphasis>assembled</emphasis> at runtime from smaller Codecs,
-      each with their own limited responsibility. 
+      <emphasis>assembled</emphasis>
+      at runtime from smaller Codecs,
+      each with their own limited responsibility.
     </para>
     <para>
-      In <xref linkend="example-color"/>, the Codec constructed from
+      In<xref linkend="example-color"/>, the Codec constructed from
       the Color class is an ObjectCodec that delegates to three
       instances of NumberCodec. The ObjectCodec understands the
       relationship between the object's attributes and the Codecs
@@ -269,14 +294,15 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
     </para>
     <para>
       The Codec constructed from the other example (<xref
-      linkend="example-color-collection"/>) is an ObjectCodec that
+            linkend="example-color-collection"/>) is an ObjectCodec that
       delegates to a NumberCodec and a ListCodec. The ListCodec in
       turn relies on an ObjectCodec for Color instances, which - as we
       have seen before - relies on three NumberCodecs to decode the
       bytes representing the RGB components of that color.
     </para>
     <para>
-      <xref linkend="fig-codec"/> depicts the relationship between the
+      <xref linkend="fig-codec"/>
+      depicts the relationship between the
       the classes representing a data structure at runtime, and the
       Codecs responsible for decoding the data from its binary encoded
       representation.
@@ -284,9 +310,9 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
     <figure id="fig-codec">
       <title>Codecs Linked to Data Structure</title>
       <mediaobject>
-	<imageobject>
-	  <imagedata fileref="img/rsbmp-codecs.png" width="10cm"/>
-	</imageobject>
+        <imageobject>
+          <imagedata fileref="img/rsbmp-codecs.png" width="10cm"/>
+        </imageobject>
       </mediaobject>
     </figure>
     <para>
@@ -299,8 +325,8 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
       to delegate to (Codecs that would decode data using compression
       techniques not yet known today), then the governing Codec does
       not need to know about the specifics in order to use that new
-      type of Codec it's delegating to. (See also <xref
-      linkend="section-flavor"/>.)
+      type of Codec it's delegating to. (See also<xref
+            linkend="section-flavor"/>.)
     </para>
   </section>
 
@@ -317,7 +343,7 @@ Color color = codecs.decode(codec, new byte[] { 0x33, 0x22, 0x11 });
     </para>
     <para>
       Basically, when requesting documentation based on a certain
-      Codec (see <xref linkend="example-build-documentation"/>), the
+      Codec (see<xref linkend="example-build-documentation"/>), the
       process will figure out how to best organize the document, and
       then give every Codec the change to render itself in the most
       appropriate way.
@@ -329,27 +355,30 @@ Codecs.document(codec, DocumentType.Html, new File(...));
 ]]></programlisting>
     </example>
     <para>
-      <xref linkend="fig-documentation"/> illustrates the hyperlinked
+      <xref linkend="fig-documentation"/>
+      illustrates the hyperlinked
       HTML output of a call to Codecs.document(...). In this
       particular case, it shows an excerpt of the documentation
       generated from a Preon description of Java's class file
-      format<footnote>
-      <para>
-	The full documentation can be downloaded from <ulink
-	url="http://preon.flotsam.nl/classfile.html"/>.
-      </para>
-      </footnote>.
+      format
+      <footnote>
+        <para>
+          The full documentation can be downloaded from<ulink
+                url="http://preon.flotsam.nl/classfile.html"/>.
+        </para>
+      </footnote>
+      .
     </para>
     <figure id="fig-documentation">
       <title>Documentation on Java's class file Format</title>
       <mediaobject>
-	<imageobject>
-	  <imagedata fileref="img/documentation.png" width="11cm"/>
-	</imageobject>
+        <imageobject>
+          <imagedata fileref="img/documentation.png" width="11cm"/>
+        </imageobject>
       </mediaobject>
     </figure>
   </section>
-  
+
   <section id="section-languages">
     <title>Bitstream Structure Description Languages</title>
     <para>
@@ -363,133 +392,142 @@ Codecs.document(codec, DocumentType.Html, new File(...));
     <section id="section-flavor">
       <title>Flavor</title>
       <para>
-	Flavor <xref linkend="bib-flavor-1"/> offers a DSL for
-	defining the structure of a bitstream. The tool-chain rewrites
-	specifications written in this DSL into C++ and Java sources
-	for both the decoding and encoding logic, as well as the
-	classes capable of capturing the data structures encoded in
-	the bitstream. Data will be decoded in a single pass, and the
-	entire data structure needs to fit on the heap.
+        Flavor
+        <xref linkend="bib-flavor-1"/>
+        offers a DSL for
+        defining the structure of a bitstream. The tool-chain rewrites
+        specifications written in this DSL into C++ and Java sources
+        for both the decoding and encoding logic, as well as the
+        classes capable of capturing the data structures encoded in
+        the bitstream. Data will be decoded in a single pass, and the
+        entire data structure needs to fit on the heap.
       </para>
       <para>
-	Flavor was one of the solutions originally considered when
-	searching for an alternative solution for decoding TomTom map
-	files. Unfortunately, Flavor is not extensible; it is
-	impossible to add support for other compression techniques
-	without rewriting the code generator that takes Flavor input
-	and produces Java / C++. 
+        Flavor was one of the solutions originally considered when
+        searching for an alternative solution for decoding TomTom map
+        files. Unfortunately, Flavor is not extensible; it is
+        impossible to add support for other compression techniques
+        without rewriting the code generator that takes Flavor input
+        and produces Java / C++.
       </para>
       <para>
-	Preon allows you to extend its support for compression
-	techniques by implementing a number of interfaces, and
-	registering these extensions with the framework at
-	runtime. The extensions may be triggered by annotations,
-	particular data types, or by combinations of annotations and
-	particular data types. <xref linkend="example-extension"/>
-	illustrates a situation in which an extension is triggered by
-	a new annotation introduced by the extension. Note how the
-	framework supports using the new annotation in combination
-	with other, predefined annotations.
+        Preon allows you to extend its support for compression
+        techniques by implementing a number of interfaces, and
+        registering these extensions with the framework at
+        runtime. The extensions may be triggered by annotations,
+        particular data types, or by combinations of annotations and
+        particular data types.
+        <xref linkend="example-extension"/>
+        illustrates a situation in which an extension is triggered by
+        a new annotation introduced by the extension. Note how the
+        framework supports using the new annotation in combination
+        with other, predefined annotations.
       </para>
       <example id="example-extension">
-	<title>Potential Extension</title>
-	<programlisting><![CDATA[@BoundHuffmanCoded(...) String name;
+        <title>Potential Extension</title>
+        <programlisting><![CDATA[@BoundHuffmanCoded(...) String name;
 @Bound boolean isCity;	
 ]]></programlisting>
       </example>
       <para>
-	Flavor's processing model also turned out to be problematic
-	for processing map data. Flavor is only capable of reading the
-	entire data structure into memory in a single pass. All of the
-	map data in a 1.5 GB map file would - once uncompressed - be
-	much larger than feasible.
+        Flavor's processing model also turned out to be problematic
+        for processing map data. Flavor is only capable of reading the
+        entire data structure into memory in a single pass. All of the
+        map data in a 1.5 GB map file would - once uncompressed - be
+        much larger than feasible.
       </para>
       <para>
-	Preon will <emphasis>not</emphasis> read the entire data
-	structure in a single pass. By default, it will determine
-	which parts of the data structure can be loaded lazily, and
-	then choose to do so. The paradigm is closer to random access
-	than streaming.
+        Preon will
+        <emphasis>not</emphasis>
+        read the entire data
+        structure in a single pass. By default, it will determine
+        which parts of the data structure can be loaded lazily, and
+        then choose to do so. The paradigm is closer to random access
+        than streaming.
       </para>
       <para>
-	Last, but not least, when examining Flavor for use on map
-	files, it turned out that the API constructed by it is not
-	threadsafe. Preon can be accessed by multiple threads, in case
-	the data is read from a ConcurrentBitBuffer that it it
-	shipping.
+        Last, but not least, when examining Flavor for use on map
+        files, it turned out that the API constructed by it is not
+        threadsafe. Preon can be accessed by multiple threads, in case
+        the data is read from a ConcurrentBitBuffer that it it
+        shipping.
       </para>
     </section>
     <section>
       <title>Erlang Bit Syntax</title>
       <para>
-	The Erlang programming language has support for bitstream
-	structure descriptions built into the language <xref
-	linkend="bib-erlang-bit-syntax"/>. The actual description is
-	specified as a pattern, which can then - using Erlang's
-	pattern matching syntax - be used to break a bitstream apart
-	into its different constituents, and stored in the
-	corresponding variables.
+        The Erlang programming language has support for bitstream
+        structure descriptions built into the language<xref
+              linkend="bib-erlang-bit-syntax"/>. The actual description is
+        specified as a pattern, which can then - using Erlang's
+        pattern matching syntax - be used to break a bitstream apart
+        into its different constituents, and stored in the
+        corresponding variables.
       </para>
       <para>
-	Although Erlang's bit syntax is powerful, and its tight
-	integration with the language is a bless, it also has
-	limitations. First of all, it most well fit for flat data
-	structures, without any nesting or interdependencies between
-	different data elements read. In case of more complicated data
-	structures, Erlang's bit syntax is still a convenient tool,
-	but it <emphasis>will</emphasis> require writing some
-	imperative code to deal with the complexity.
+        Although Erlang's bit syntax is powerful, and its tight
+        integration with the language is a bless, it also has
+        limitations. First of all, it most well fit for flat data
+        structures, without any nesting or interdependencies between
+        different data elements read. In case of more complicated data
+        structures, Erlang's bit syntax is still a convenient tool,
+        but it
+        <emphasis>will</emphasis>
+        require writing some
+        imperative code to deal with the complexity.
       </para>
       <para>
-	Preon supports a wider range of data structures out of the
-	box. However, given the huge number of compression techniques
-	out there, it will not be enough to cater for every existing
-	encoding format. In order to deal with that, Preon offers
-	its extension points, allowing you to make your own extensions
-	as well supported as the encoding techniques supported out of
-	the box.
+        Preon supports a wider range of data structures out of the
+        box. However, given the huge number of compression techniques
+        out there, it will not be enough to cater for every existing
+        encoding format. In order to deal with that, Preon offers
+        its extension points, allowing you to make your own extensions
+        as well supported as the encoding techniques supported out of
+        the box.
       </para>
     </section>
     <section>
       <title>BSDL, XFlavor, BFlavor, gBFlavor</title>
       <para>
-	XFlavor <xref linkend="bib-xflavor"/> is an extension of
-	Flavor, supporting XML features. It takes the Flavor syntax of
-	a bitstream structure description, and turns it into XML. The
-	MPEG-21 Bitstream Syntax Description Language is a tool of the
-	MPEG-21 specification, to assist in customizing scalable
-	bitstreams. BFlavor and gBFlavor combine these different
-	technologies.
+        XFlavor
+        <xref linkend="bib-xflavor"/>
+        is an extension of
+        Flavor, supporting XML features. It takes the Flavor syntax of
+        a bitstream structure description, and turns it into XML. The
+        MPEG-21 Bitstream Syntax Description Language is a tool of the
+        MPEG-21 specification, to assist in customizing scalable
+        bitstreams. BFlavor and gBFlavor combine these different
+        technologies.
       </para>
       <para>
-	Although all of these technologies address problems in the
-	same space as Preon, the emphasis seems to be on streaming
-	data, and the approach is quite different than Preon's. There
-	seems to be an emphasis on using XML in all of these
-	technologies. Preon opted for capturing the bitstream syntax
-	description in a programming language, to avoid having to
-	generate source code, and to be able to not only capture meta
-	data on a particular encoding technique, but also its
-	behaviour.
+        Although all of these technologies address problems in the
+        same space as Preon, the emphasis seems to be on streaming
+        data, and the approach is quite different than Preon's. There
+        seems to be an emphasis on using XML in all of these
+        technologies. Preon opted for capturing the bitstream syntax
+        description in a programming language, to avoid having to
+        generate source code, and to be able to not only capture meta
+        data on a particular encoding technique, but also its
+        behaviour.
       </para>
     </section>
     <section>
       <title>Other Data Binding Frameworks</title>
       <para>
-	Although Preon is clearly targeting a different on disk
-	representation of the data, it shares some similarities with
-	Java data binding frameworks such as JAXB, and Hibernate. Just
-	like JAXB And Hibernate, the classes defining the in-memory
-	representation are annotated to define it relation with the
-	encoded representation. In JAXB, that encoded representation
-	is XML. In Hibernate, the encoded representation is a number
-	of tables in a relational database. In Preon, the encoded
-	representation is a sequence of bits.
+        Although Preon is clearly targeting a different on disk
+        representation of the data, it shares some similarities with
+        Java data binding frameworks such as JAXB, and Hibernate. Just
+        like JAXB And Hibernate, the classes defining the in-memory
+        representation are annotated to define it relation with the
+        encoded representation. In JAXB, that encoded representation
+        is XML. In Hibernate, the encoded representation is a number
+        of tables in a relational database. In Preon, the encoded
+        representation is a sequence of bits.
       </para>
       <para>
-	It may be possible to harmonize Preon with these frameworks on
-	an API level, but it's questionable if there would be
-	immediate benefits from doing so.
+        It may be possible to harmonize Preon with these frameworks on
+        an API level, but it's questionable if there would be
+        immediate benefits from doing so.
       </para>
     </section>
   </section>
@@ -501,7 +539,9 @@ Codecs.document(codec, DocumentType.Html, new File(...));
       has already been demonstrated on various file formats, including
       various file formats capturing geographical data, MPEG headers
       and image file formats. In March this year, Preon was used to
-      capture the <emphasis>full</emphasis> structure of a Java Class
+      capture the
+      <emphasis>full</emphasis>
+      structure of a Java Class
       file, resulting in the construction of a Java byte code decoder
       without a single line of imperative code.
     </para>
@@ -509,7 +549,8 @@ Codecs.document(codec, DocumentType.Html, new File(...));
       In April this year, Preon's documentation generation mechanism
       was revised. A release is planned before summer 2009. That
       release will not support encoding though. Early versions of
-      <emphasis>encoding</emphasis> support have been removed from the
+      <emphasis>encoding</emphasis>
+      support have been removed from the
       code base. There have been a number of discussions on the types
       of encoding support (streaming, in-place, etc.) should be
       supported. The aim is to eventually have support for encoding to
@@ -521,9 +562,9 @@ Codecs.document(codec, DocumentType.Html, new File(...));
   <section>
     <title>Availability of Preon</title>
     <para>
-      Preon's source code and documentation is available at <ulink
-      url="http://preon.flotsam.nl/"/>. Preon is licensed under a GPL
-      + Classpath Exception license. 
+      Preon's source code and documentation is available at<ulink
+            url="http://preon.flotsam.nl/"/>. Preon is licensed under a GPL
+      + Classpath Exception license.
     </para>
   </section>
 
@@ -533,8 +574,10 @@ Codecs.document(codec, DocumentType.Html, new File(...));
       This paper presented Preon, a new way of dealing with
       binary/bitstream encoded data. Preon is designed to capture the
       encoded representation and its mapping to the in-memory runtime
-      representation <emphasis>only once</emphasis>, and receive the
-      decoder, the encoder <emphasis>and</emphasis> documentation on
+      representation<emphasis>only once</emphasis>, and receive the
+      decoder, the encoder
+      <emphasis>and</emphasis>
+      documentation on
       the format of the encoded representation for free.
     </para>
     <para>
@@ -560,105 +603,113 @@ Codecs.document(codec, DocumentType.Html, new File(...));
     </para>
     <bibliography>
 
-    <biblioentry id="bib-bflavor">
-      <title>BFlavor</title>
-      <subtitle>an Optimized XML-based Framework for Multimedia
-      Content Customization</subtitle>
-      <authorgroup>
-	<author>
-	  <firstname>Davy</firstname>
-	  <surname>Van Deursen</surname>
-	</author>
-	<author>
-	  <firstname>Wesley</firstname>
-	  <surname>De Neve</surname>
-	</author>
-	<author>
-	  <firstname>Rik</firstname>
-	  <surname>Van De Walle</surname>
-	</author>
-      </authorgroup>
-    </biblioentry>
-    
-    <biblioentry id="bib-xflavor">
-      <title>XFlavor</title>
-      <subtitle>Bridging Bits and Objects in Media
-      Representation</subtitle>
-      <authorgroup>
-	<author>
-	  <surname>Hong</surname>
-	  <othername>D.</othername>
-	</author>
-	<author>
-	  <surname>Eleftheriadis</surname>
-	  <othername>A.</othername>
-	</author>
-      </authorgroup>
-    </biblioentry>
+      <biblioentry id="bib-bflavor">
+        <title>BFlavor</title>
+        <subtitle>an Optimized XML-based Framework for Multimedia
+          Content Customization
+        </subtitle>
+        <authorgroup>
+          <author>
+            <firstname>Davy</firstname>
+            <surname>Van Deursen</surname>
+          </author>
+          <author>
+            <firstname>Wesley</firstname>
+            <surname>De Neve</surname>
+          </author>
+          <author>
+            <firstname>Rik</firstname>
+            <surname>Van De Walle</surname>
+          </author>
+        </authorgroup>
+      </biblioentry>
 
-    <biblioentry id="bib-erlang-bit-syntax">
-      <title>The bit syntax</title>
-      <corpauthor>Ericcson</corpauthor>
-      <copyright>
-	<year>2000</year>
-	<holder>Ericsson Utvecklings AB</holder>
-      </copyright>
-      <biblioid class="uri"><ulink url="http://www.erlang.se/euc/00/bit_syntax.html"/></biblioid>
-    </biblioentry>
+      <biblioentry id="bib-xflavor">
+        <title>XFlavor</title>
+        <subtitle>Bridging Bits and Objects in Media
+          Representation
+        </subtitle>
+        <authorgroup>
+          <author>
+            <surname>Hong</surname>
+            <othername>D.</othername>
+          </author>
+          <author>
+            <surname>Eleftheriadis</surname>
+            <othername>A.</othername>
+          </author>
+        </authorgroup>
+      </biblioentry>
 
-    <biblioentry id="bib-flavor-1" role="contribution">
-      <biblioset relation="part">
-	<title>Flavor</title>
-	<subtitle>A Language for Media Representation</subtitle>
-	<authorgroup>
-	  <author>
-	    <firstname>A.</firstname>
-	    <surname>Eleftheriadis</surname>
-	  </author>
-	  <author>
-	    <firstname>Danny</firstname>
-	    <surname>Hong</surname>
-	  </author>
-	</authorgroup>
-      </biblioset>
-      <biblioset relation="book">
-	<title>Handbook of Video Databases</title>
-	<editor>
-	  <firstname>B.</firstname>
-	  <surname>Furht</surname>
-	</editor>
-	<editor>
-	  <firstname>O.</firstname>
-	  <surname>Marques</surname>
-	</editor>
-	<publisher>
-	  <publishername>CRC Press</publishername>
-	</publisher>
-	<pubdate>2003</pubdate>
-	<biblioid class="isbn">084937006X</biblioid>
-      </biblioset>
-    </biblioentry>
+      <biblioentry id="bib-erlang-bit-syntax">
+        <title>The bit syntax</title>
+        <corpauthor>Ericcson</corpauthor>
+        <copyright>
+          <year>2000</year>
+          <holder>Ericsson Utvecklings AB</holder>
+        </copyright>
+        <biblioid class="uri">
+          <ulink url="http://www.erlang.se/euc/00/bit_syntax.html"/>
+        </biblioid>
+      </biblioentry>
 
-    <biblioentry id="bib-preon-introduction">
-      <title>Preon Introduction</title>
-      <author>
-	<firstname>Wilfred</firstname>
-	<surname>Springer</surname>
-      </author>
-      <pubdate>September 18, 2008</pubdate>
-      <biblioid class="uri"><ulink url="http://www.scribd.com/doc/8128172/Preon-Introduction"/></biblioid>
-    </biblioentry>
+      <biblioentry id="bib-flavor-1" role="contribution">
+        <biblioset relation="part">
+          <title>Flavor</title>
+          <subtitle>A Language for Media Representation</subtitle>
+          <authorgroup>
+            <author>
+              <firstname>A.</firstname>
+              <surname>Eleftheriadis</surname>
+            </author>
+            <author>
+              <firstname>Danny</firstname>
+              <surname>Hong</surname>
+            </author>
+          </authorgroup>
+        </biblioset>
+        <biblioset relation="book">
+          <title>Handbook of Video Databases</title>
+          <editor>
+            <firstname>B.</firstname>
+            <surname>Furht</surname>
+          </editor>
+          <editor>
+            <firstname>O.</firstname>
+            <surname>Marques</surname>
+          </editor>
+          <publisher>
+            <publishername>CRC Press</publishername>
+          </publisher>
+          <pubdate>2003</pubdate>
+          <biblioid class="isbn">084937006X</biblioid>
+        </biblioset>
+      </biblioentry>
 
-    <biblioentry id="bib-preon-presentation">
-      <title>Preon</title>
-      <author>
-	<firstname>Wilfred</firstname>
-	<surname>Springer</surname>
-      </author>
-      <pubdate>Fall, 2008</pubdate>
-      <biblioid class="uri"><ulink url="http://www.slideshare.net/springerw/preon-jfall-2008-presentation-746831"/></biblioid>
-    </biblioentry>
-    
+      <biblioentry id="bib-preon-introduction">
+        <title>Preon Introduction</title>
+        <author>
+          <firstname>Wilfred</firstname>
+          <surname>Springer</surname>
+        </author>
+        <pubdate>September 18, 2008</pubdate>
+        <biblioid class="uri">
+          <ulink url="http://www.scribd.com/doc/8128172/Preon-Introduction"/>
+        </biblioid>
+      </biblioentry>
+
+      <biblioentry id="bib-preon-presentation">
+        <title>Preon</title>
+        <author>
+          <firstname>Wilfred</firstname>
+          <surname>Springer</surname>
+        </author>
+        <pubdate>Fall, 2008</pubdate>
+        <biblioid class="uri">
+          <ulink url="http://www.slideshare.net/springerw/preon-jfall-2008-presentation-746831"/>
+        </biblioid>
+      </biblioentry>
+
     </bibliography>
 
   </section>

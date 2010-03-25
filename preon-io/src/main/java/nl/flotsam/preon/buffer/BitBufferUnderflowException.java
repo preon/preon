@@ -38,5 +38,5 @@ public class BitBufferUnderflowException extends BitBufferException {
     public BitBufferUnderflowException(long pos, long bits) {
         super("Failed to read " + bits + " bits from position " + pos);
     }
-    
+
 }

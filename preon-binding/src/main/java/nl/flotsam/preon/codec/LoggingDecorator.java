@@ -72,6 +72,7 @@ public class LoggingDecorator implements CodecDecorator {
      * java.lang.reflect.AnnotatedElement, java.lang.Class,
      * nl.flotsam.preon.ResolverContext)
      */
+
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
                                  Class<T> type, ResolverContext context) {
         return new LoggingCodec<T>(decorated, logger);
@@ -122,6 +123,7 @@ public class LoggingDecorator implements CodecDecorator {
          * nl.flotsam.preon.codec.LoggingDecorator.Logger#logDoneDecoding(nl
          * .flotsam.preon.Codec, long, long, java.lang.Object)
          */
+
         public void logDoneDecoding(Codec<?> codec, long position, long read,
                                     Object result) {
             level--;
@@ -157,6 +159,7 @@ public class LoggingDecorator implements CodecDecorator {
          * @see
          * nl.flotsam.preon.codec.LoggingDecorator.Logger#logFailedDecoding()
          */
+
         public void logFailedDecoding() {
             level--;
             printMessage("Failed decoding.");
@@ -169,6 +172,7 @@ public class LoggingDecorator implements CodecDecorator {
          * nl.flotsam.preon.codec.LoggingDecorator.Logger#logStartDecoding(nl
          * .flotsam.preon.Codec, long, long)
          */
+
         public void logStartDecoding(Codec<?> codec, long position, long size) {
             StringBuilder builder = new StringBuilder();
             builder.append("Start decoding at ")
@@ -228,6 +232,7 @@ public class LoggingDecorator implements CodecDecorator {
          * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer,
          * nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
          */
+
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
             T result = null;
@@ -255,6 +260,7 @@ public class LoggingDecorator implements CodecDecorator {
          * 
          * @see nl.flotsam.preon.Codec#getTypes()
          */
+
         public Class<?>[] getTypes() {
             return codec.getTypes();
         }
@@ -264,6 +270,7 @@ public class LoggingDecorator implements CodecDecorator {
          * 
          * @see nl.flotsam.preon.Codec#getSize()
          */
+
         public Expression<Integer, Resolver> getSize() {
             return codec.getSize();
         }
@@ -273,6 +280,7 @@ public class LoggingDecorator implements CodecDecorator {
          * 
          * @see nl.flotsam.preon.Codec#getType()
          */
+
         public Class<?> getType() {
             return codec.getType();
         }

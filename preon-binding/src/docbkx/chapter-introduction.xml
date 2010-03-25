@@ -41,7 +41,7 @@ exception statement from your version.
       <surname>Springer</surname>
     </author>
   </articleinfo>
-  
+
   <section>
     <title>Introduction</title>
     <para>
@@ -89,8 +89,10 @@ exception statement from your version.
       annotations.
     </para>
     <para>
-      So, let's look at an example. <xref
-      linkend="example-rectangle"/> defines a data structure
+      So, let's look at an example.
+      <xref
+              linkend="example-rectangle"/>
+      defines a data structure
       defining the coordinates of the two points defining a
       rectangle, in some coordinate system.
     </para>
@@ -124,7 +126,8 @@ Rectangle rect = Codecs.decode(codec, buffer);
       example is not entirely complete yet. If you would use the code
       as-is, you would not get anything at all. (Well, an empty
       Rectangle, maybe.) Problem is, Preon does
-      <emphasis>not</emphasis> assume anything unless you explicitly
+      <emphasis>not</emphasis>
+      assume anything unless you explicitly
       specify at least something. In order to tell Preon that it needs
       to decode the x1, y1, x2 and y2 fields, you will need to
       explicitly state it in the definition of the data structure,
@@ -174,9 +177,12 @@ Rectangle rect = Codecs.decode(codec, buffer);
 }]]></programlisting>
     </example>
     <para>
-      <xref linkend="example-two-bytes"/> changes the example given
+      <xref linkend="example-two-bytes"/>
+      changes the example given
       before to make Preon allocate only two bytes (16 bits) per
-      number. <xref linkend="example-little-endian"/> illustrates
+      number.
+      <xref linkend="example-little-endian"/>
+      illustrates
       how to change byte order.
     </para>
     <example id="example-two-bytes-little-endian">
@@ -214,7 +220,8 @@ Rectangle rect = Codecs.decode(codec, buffer);
     <para>
       The String example illustrates one way of decoding
       Strings. Note that (in this case) the size attribute denotes
-      <emphasis>the number of bytes</emphasis> and not the number of
+      <emphasis>the number of bytes</emphasis>
+      and not the number of
       bits. In this case, the bytes read will be interpreted as
       US-ASCII.
     </para>
@@ -237,8 +244,10 @@ Rectangle rect = Codecs.decode(codec, buffer);
       to deal with that?
     </para>
     <para>
-      Let's take our Rectangle from <xref
-      linkend="example-rectangle-annotated"/> as an example. What if we want
+      Let's take our Rectangle from
+      <xref
+              linkend="example-rectangle-annotated"/>
+      as an example. What if we want
       it to have a fill and border color as well? Would this be the
       solution?
     </para>
@@ -256,9 +265,10 @@ Rectangle rect = Codecs.decode(codec, buffer);
     <para>
       I hope you agree with me that the second option would be the
       preferred one. And it turns out this is possible. If you
-      define your RgbColor class as in <xref
-      linkend="example-rgb-color"/>, then you
-      <emphasis>can</emphasis> used the RgbColor type as attributes
+      define your RgbColor class as in<xref
+            linkend="example-rgb-color"/>, then you
+      <emphasis>can</emphasis>
+      used the RgbColor type as attributes
       in other classes.
     </para>
     <example id="example-rgb-color">
@@ -278,8 +288,10 @@ Rectangle rect = Codecs.decode(codec, buffer);
       in less code and makes it easier to maintain.
     </para>
     <para>
-      Just to complete the example, <xref
-      linkend="example-rectangle-colored"/> gives the source code of
+      Just to complete the example,
+      <xref
+              linkend="example-rectangle-colored"/>
+      gives the source code of
       the Rectangle supporting colors.
     </para>
     <example id="example-rectangle-colored">
@@ -298,15 +310,18 @@ Rectangle rect = Codecs.decode(codec, buffer);
     <title>Inheritance</title>
     <para>
       In the previous section (<xref
-      linkend="section-composite-content"/>), we saw one way of
+            linkend="section-composite-content"/>), we saw one way of
       factoring out commonalities. Preon allows you to factor out
       recurring snippets of content and use those definitions at
-      various places. However, it is <emphasis>not</emphasis> the
+      various places. However, it is
+      <emphasis>not</emphasis>
+      the
       only way to organize content. In this section, I will show you
       another way.
     </para>
     <para>
-      <xref linkend="example-rectangle-colored"/> defines just one
+      <xref linkend="example-rectangle-colored"/>
+      defines just one
       shape. And of course, that shape also defines some color
       attributes. But what if your application defines more
       shapes. And what if you want all of those shapes to define the
@@ -315,7 +330,8 @@ Rectangle rect = Codecs.decode(codec, buffer);
     <para>
       In order to facilitate scenarios like these, Preon supports
       inheritance. That is, subclasses will
-      <emphasis>allways</emphasis> inherit the bindings defined by
+      <emphasis>allways</emphasis>
+      inherit the bindings defined by
       the superclass. This allows you to define color bindings on a
       Shape superclass, and have all of the other shape-specific
       attributes on the various Shape subclsses.
@@ -345,7 +361,7 @@ class Circle extends Shape {
       When Preon is required to decode a subclass, it will always
       first process the inherited bindings. In case of a Rectangle,
       it will first decode the colors it inherited from Shape, and
-      only then the attributes of the rectangle itself. 
+      only then the attributes of the rectangle itself.
     </para>
   </section>
   <section>
@@ -353,7 +369,7 @@ class Circle extends Shape {
     <para>
       The 'struct'-type of support highlighted in the previous
       sections is an important concept, but not sufficient. We also
-      need a 'sequence' concept. 
+      need a 'sequence' concept.
     </para>
     <para>
       In Preon, the @BoundList annotation allows you to address all
@@ -415,7 +431,7 @@ class PseudoMondriaan {
       Rectangle. And we also know that - in order to get the third
       element - we just need to skip over the first two elements (the
       number of bits of a single Rectangle element, multiplied by
-      two). 
+      two).
     </para>
     <para>
       Using a lazy loading List is in the above case probably a fairly
@@ -472,13 +488,17 @@ class PseudoMondriaan {
     <para>
       The expression language used in the examples of the previous
       language is Limbo. Limbo is a fairly small expression language,
-      and is explicitly aiming at <emphasis>not</emphasis> being as
+      and is explicitly aiming at
+      <emphasis>not</emphasis>
+      being as
       feature rich as JSP's EL or OGNL, and for good reason.
     </para>
     <para>
       First of all, JSP's EL and OGNL allow you to call methods on
-      objects. Limbo does <emphasis>not</emphasis> allow you to call
-      methods, because <emphasis>it wants to capture the meaning of
+      objects. Limbo does
+      <emphasis>not</emphasis>
+      allow you to call
+      methods, because<emphasis>it wants to capture the meaning of
       the expression explicitly</emphasis>. And it would be impossible
       to capture the meaning of your expression if it would involve
       operations defined outside of Limbo itself. So, Limbo works on
@@ -487,7 +507,9 @@ class PseudoMondriaan {
     <para>
       Limbo is not just about evaluating expressions. It also wants to
       capture those expressions in such a way that it will be able to
-      generate <emphasis>human-readable</emphasis> expressions from it
+      generate
+      <emphasis>human-readable</emphasis>
+      expressions from it
       afterwards. So, if these would be the Limbo expressions:
     </para>
     <screen><![CDATA[width * height
@@ -553,12 +575,15 @@ class Shape {
   <section>
     <title>Complex references</title>
     <para>
-      <xref linkend="section-expressions"/> already mentioned that
+      <xref linkend="section-expressions"/>
+      already mentioned that
       Preon does not limit you to refer to other bound attributes on
       the same class only. It also supports the dot operator (to
       access attributes of objects referenced) and the item operator (
-      to access items in list-type attributes). <xref
-      linkend="example-valid-references"/> lists some sample references.
+      to access items in list-type attributes).
+      <xref
+              linkend="example-valid-references"/>
+      lists some sample references.
     </para>
     <example id="example-valid-references">
       <title>Valid references</title>
@@ -571,9 +596,13 @@ a.b[e * 21].d
     </example>
     <para>
       Another thing that Preon allows you to do is to refer to the
-      <firstterm>outer</firstterm> context. <xref
-      linkend="example-outer-context"/> relies on this to refer to the
-      <envar>bitsPerColorComponent</envar> variable in the Image, from
+      <firstterm>outer</firstterm>
+      context.
+      <xref
+              linkend="example-outer-context"/>
+      relies on this to refer to the
+      <envar>bitsPerColorComponent</envar>
+      variable in the Image, from
       within the RgbColor object.
     </para>
     <example id="example-outer-context">
@@ -614,7 +643,9 @@ public class Image {
     <para>
       Preon aims to change all of that: it set of to provide a
       framework in which you specify the encoding format once, and get
-      decoders, encoders <emphasis>and documentation</emphasis> for
+      decoders, encoders
+      <emphasis>and documentation</emphasis>
+      for
       free.
     </para>
     <para>
@@ -631,8 +662,8 @@ Rectangle rect = Codecs.decode(codec, buffer);]]></programlisting>
     <programlisting><![CDATA[Codec<Rectangle> codec = Codecs.create(Rectangle.class);
 Codecs.document(codec, DocumentType.Html, new File(...);]]></programlisting>
     <para>
-      When you apply that to <xref
-      linkend="example-shape-inheritance"/>, this is what you get:
+      When you apply that to<xref
+            linkend="example-shape-inheritance"/>, this is what you get:
     </para>
     <figure>
       <title>Sample report</title>

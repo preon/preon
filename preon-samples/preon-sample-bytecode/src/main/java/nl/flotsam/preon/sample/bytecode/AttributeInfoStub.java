@@ -35,8 +35,8 @@ package nl.flotsam.preon.sample.bytecode;
 import nl.flotsam.preon.annotation.BoundList;
 
 public class AttributeInfoStub extends AttributeInfo {
-    
-    @BoundList(size="attributeLength")
+
+    @BoundList(size = "attributeLength")
     private byte[] buffer;
 
 }

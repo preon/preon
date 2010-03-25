@@ -37,32 +37,23 @@ import java.lang.reflect.AnnotatedElement;
 
 /**
  * A wrapper of {@link AnnotatedElement}s, hiding certain annotations.
- * 
+ *
  * @author Wilfred Springer
- * 
  */
 public class HidingAnnotatedElement implements AnnotatedElement {
 
-    /**
-     * The type of annotation that needs to be hidden.
-     */
+    /** The type of annotation that needs to be hidden. */
     private Class<? extends Annotation> hidden;
 
-    /**
-     * The {@link AnnotatedElement} to wrap.
-     */
+    /** The {@link AnnotatedElement} to wrap. */
     private AnnotatedElement delegate;
 
     /**
-     * Constructs a new instance, accepting the annotation that needs to be
-     * hidden, as well as the {@link AnnotatedElement} that (probably) carries
-     * that and other annotations.
-     * 
-     * @param hidden
-     *            The type of annotation that need to be hidden.
-     * @param delegate
-     *            The {@link AnnotatedElement} from which a certain type of
-     *            annotation needs to be hidden.
+     * Constructs a new instance, accepting the annotation that needs to be hidden, as well as the {@link
+     * AnnotatedElement} that (probably) carries that and other annotations.
+     *
+     * @param hidden   The type of annotation that need to be hidden.
+     * @param delegate The {@link AnnotatedElement} from which a certain type of annotation needs to be hidden.
      */
     public HidingAnnotatedElement(Class<? extends Annotation> hidden, AnnotatedElement delegate) {
         this.hidden = hidden;
@@ -73,6 +64,7 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * (non-Javadoc)
      * @see java.lang.reflect.AnnotatedElement#getAnnotation(java.lang.Class)
      */
+
     public <T extends Annotation> T getAnnotation(Class<T> type) {
         if (hidden.equals(type)) {
             return null;
@@ -85,6 +77,7 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * (non-Javadoc)
      * @see java.lang.reflect.AnnotatedElement#getAnnotations()
      */
+
     public Annotation[] getAnnotations() {
         if (delegate.isAnnotationPresent(hidden)) {
             Annotation[] unhidden = delegate.getAnnotations();
@@ -105,6 +98,7 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * (non-Javadoc)
      * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
      */
+
     public Annotation[] getDeclaredAnnotations() {
         if (delegate.isAnnotationPresent(hidden)) {
             Annotation[] unhidden = delegate.getDeclaredAnnotations();
@@ -125,6 +119,7 @@ public class HidingAnnotatedElement implements AnnotatedElement {
      * (non-Javadoc)
      * @see java.lang.reflect.AnnotatedElement#isAnnotationPresent(java.lang.Class)
      */
+
     public boolean isAnnotationPresent(Class<? extends Annotation> type) {
         if (hidden.equals(type)) {
             return false;

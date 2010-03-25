@@ -80,6 +80,7 @@ public class ArrayCodecFactory implements CodecFactory {
      * nl.flotsam.preon.CodecFactory#create(java.lang.reflect.AnnotatedElement,
      * java.lang.Class, nl.flotsam.preon.ResolverContext)
      */
+
     @SuppressWarnings("unchecked")
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
                                ResolverContext context) {
@@ -88,8 +89,7 @@ public class ArrayCodecFactory implements CodecFactory {
                 && (settings = metadata.getAnnotation(BoundList.class)) != null
                 && type.isArray()
                 && settings.size() != null
-                && settings.size().length() != 0) 
-        {
+                && settings.size().length() != 0) {
             Expression<Integer, Resolver> expr = getSizeExpression(settings,
                     context);
             Codec<Object> elementCodec = null;

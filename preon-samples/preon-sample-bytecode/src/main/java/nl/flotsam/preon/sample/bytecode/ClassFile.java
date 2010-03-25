@@ -33,6 +33,7 @@
 package nl.flotsam.preon.sample.bytecode;
 
 import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
+
 import nl.flotsam.preon.annotation.BoundBuffer;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
@@ -45,18 +46,17 @@ import nl.flotsam.preon.annotation.Choices.Choice;
 
 /**
  * An attempt to capture Java's class file format in Preon.
- * 
+ *
  * @author Wilfred Springer
- * 
  */
 // START SNIPPET: sample
 public class ClassFile {
 
     @BoundBuffer(match = {
-            (byte)0xca,
-            (byte)0xfe,
-            (byte)0xba,
-            (byte)0xbe })
+            (byte) 0xca,
+            (byte) 0xfe,
+            (byte) 0xba,
+            (byte) 0xbe})
     private byte[] magic;
 
     @BoundNumber(size = "16", byteOrder = BigEndian)
@@ -78,10 +78,10 @@ public class ClassFile {
             MethodRefCpInfo.class,
             NameAndTypeCpInfo.class,
             StringCpInfo.class,
-            Utf8CpInfo.class })
+            Utf8CpInfo.class})
     private CpInfo[] constantPool;
 
-  // END SNIPPET: sample
+    // END SNIPPET: sample
 
     @BoundNumber(size = "16", byteOrder = BigEndian)
     private int accessFlags;
@@ -437,7 +437,7 @@ public class ClassFile {
     private static class Deprecated extends AttributeInfo {
 
     }
-    
+
     public MethodInfo[] getMethods() {
         return methods;
     }

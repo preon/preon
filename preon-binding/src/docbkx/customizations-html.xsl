@@ -43,7 +43,9 @@
   <xsl:import href="urn:docbkx:stylesheet"/>
 
   <xsl:template match="xslthl:comment">
-    <i class="hl-comment"><xsl:apply-templates/></i>
+    <i class="hl-comment">
+      <xsl:apply-templates/>
+    </i>
   </xsl:template>
-  
+
 </xsl:stylesheet>

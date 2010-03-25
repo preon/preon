@@ -38,7 +38,7 @@ import nl.flotsam.pecia.ParaContents;
 public class DocumentParaContents implements Document {
 
     private ParaContents<?> contents;
-    
+
     public DocumentParaContents(ParaContents<?> contents) {
         this.contents = contents;
     }
@@ -54,5 +54,5 @@ public class DocumentParaContents implements Document {
     public void text(String text) {
         contents.text(text);
     }
-    
+
 }

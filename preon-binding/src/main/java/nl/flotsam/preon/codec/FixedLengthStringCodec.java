@@ -93,7 +93,7 @@ public class FixedLengthStringCodec implements Codec<String> {
             bytes[i] = byteConverter.revert(bytes[i]);
         }
         int size = sizeExpr.eval(resolver);
-        assert(size <= bytes.length);
+        assert (size <= bytes.length);
         channel.write(bytes, 0, size);
     }
 

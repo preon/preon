@@ -78,5 +78,5 @@ public class ArrayCodecFactoryTest {
         when(boundList.size()).thenReturn("");
         assertThat(factory.create(metadata, type, context), is(nullValue()));
     }
-    
+
 }

@@ -46,13 +46,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 /**
- * A decorator that will inspect all methods on the object constructed by the
- * {@link Codec} to be decorated, and create a decorated Codec that will invoke
- * a method after the object has been constructed, based on the {@link Init}
+ * A decorator that will inspect all methods on the object constructed by the {@link Codec} to be decorated, and create
+ * a decorated Codec that will invoke a method after the object has been constructed, based on the {@link Init}
  * annotation.
- * 
+ *
  * @author Wilfred Springer
- * 
  */
 public class InitCodecDecorator implements CodecDecorator {
 
@@ -63,8 +61,9 @@ public class InitCodecDecorator implements CodecDecorator {
      * java.lang.reflect.AnnotatedElement, java.lang.Class,
      * nl.flotsam.preon.ResolverContext)
      */
+
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata, Class<T> type,
-            ResolverContext context) {
+                                 ResolverContext context) {
         for (Method method : type.getMethods()) {
             if (!Modifier.isStatic(method.getModifiers()) && method.getParameterTypes().length == 0
                     && method.isAnnotationPresent(Init.class)) {
@@ -76,31 +75,23 @@ public class InitCodecDecorator implements CodecDecorator {
     }
 
     /**
-     * A {@link Codec}, calling the method annotated with the {@link Init}
-     * annotation on the result, once all data of that result has been read.
+     * A {@link Codec}, calling the method annotated with the {@link Init} annotation on the result, once all data of
+     * that result has been read.
      */
     private class InitCodec<T> implements Codec<T> {
 
-        /**
-         * The {@link Codec} producing the result.
-         */
+        /** The {@link Codec} producing the result. */
         private Codec<T> codec;
 
-        /**
-         * The method to be called.
-         */
+        /** The method to be called. */
         private Method method;
 
         /**
-         * Constructs a new instance, accepting the {@link Codec} producing the
-         * result, as well as the method to be invoked on the result once it has
-         * been succesfully decoded.
-         * 
-         * @param codec
-         *            The {@link Codec} producing th result.
-         * @param method
-         *            The method to be called once it has been successfully
-         *            decoded.
+         * Constructs a new instance, accepting the {@link Codec} producing the result, as well as the method to be
+         * invoked on the result once it has been succesfully decoded.
+         *
+         * @param codec  The {@link Codec} producing th result.
+         * @param method The method to be called once it has been successfully decoded.
          */
         public InitCodec(Codec<T> codec, Method method) {
             this.codec = codec;
@@ -111,6 +102,7 @@ public class InitCodecDecorator implements CodecDecorator {
          * (non-Javadoc)
          * @see nl.flotsam.preon.Codec#decode(nl.flotsam.preon.buffer.BitBuffer, nl.flotsam.preon.Resolver, nl.flotsam.preon.Builder)
          */
+
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
             T result = codec.decode(buffer, resolver, builder);
@@ -137,6 +129,7 @@ public class InitCodecDecorator implements CodecDecorator {
          * (non-Javadoc)
          * @see nl.flotsam.preon.Codec#getTypes()
          */
+
         public Class<?>[] getTypes() {
             return codec.getTypes();
         }
@@ -145,6 +138,7 @@ public class InitCodecDecorator implements CodecDecorator {
          * (non-Javadoc)
          * @see nl.flotsam.preon.Codec#getSize()
          */
+
         public Expression<Integer, Resolver> getSize() {
             return codec.getSize();
         }
@@ -157,13 +151,13 @@ public class InitCodecDecorator implements CodecDecorator {
             return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(), true);
         }
 
-		
-		@Override
-		public boolean equals(Object obj) {
-			if(codec != null) return codec.equals(obj);
-			if (this == obj) return true;
-			return false;
-		}
+
+        @Override
+        public boolean equals(Object obj) {
+            if (codec != null) return codec.equals(obj);
+            if (this == obj) return true;
+            return false;
+        }
 
     }
 

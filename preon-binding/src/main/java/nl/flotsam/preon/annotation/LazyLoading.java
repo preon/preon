@@ -39,10 +39,8 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation to mark a field to be loaded lazily.
- * 
- * 
- * @author Wilfred Springer
  *
+ * @author Wilfred Springer
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
