@@ -27,7 +27,7 @@
   <mailingLists>
     <mailingList>
       <name>Users</name>
-      <post>users@preon.codehaus.org</post>
+      <post>user@preon.codehaus.org</post>
       <archive>http://archive.codehaus.org/lists/org.codehaus.preon.user</archive>
     </mailingList>
     <mailingList>
