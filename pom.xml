@@ -18,7 +18,7 @@
   </description>
   <issueManagement>
     <system>JIRA</system>
-    <url>http://kenai.com/jira/browse/PREON</url>
+    <url>http://jira.codehaus.org/browse/preon</url>
   </issueManagement>
   <ciManagement>
     <system>jira</system>
