@@ -26,15 +26,20 @@
   </ciManagement>
   <mailingLists>
     <mailingList>
-      <name>Users List</name>
-      <post>preon@googlegroups.com</post>
-      <archive>http://groups.google.com/group/preon</archive>
+      <name>Users</name>
+      <post>users@preon.codehaus.org</post>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.preon.user</archive>
+    </mailingList>
+    <mailingList>
+      <name>Announcements</name>
+      <post>announce@preon.codehaus.org</post>
+      <archive>http://archive.codehaus.org/lists/org.codehaus.preon.announce</archive>
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</connection>
-    <developerConnection>scm:svn:https://preon.svn.sourceforge.net/svnroot/preon/trunk</developerConnection>
-    <url>http://fisheye3.atlassian.com/browse/preon/trunk</url>
+    <connection>scm:git:git://git.codehaus.org/preon.git</connection>
+    <developerConnection>scm:git:ssh://git@git.codehaus.org/preon.git</developerConnection>
+    <url>http://git.codehaus.org/gitweb.cgi?p=preon.git</url>
   </scm>
   <repositories>
     <repository>
