@@ -6,7 +6,7 @@
   <version>1.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>Preon</name>
-  <url>http://preon.flotsam.nl/</url>
+  <url>http://preon.codehaus.org/</url>
   <description>
     Preon aims to provide a framework for dealing with binary encoded
     data; or more specifically, it aims to deal with situations in
