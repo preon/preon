@@ -158,9 +158,8 @@
       <url>sftp://web.sourceforge.net/home/groups/p/pr/preon/htdocs/snapshots</url>
     </snapshotRepository>
     <site>
-      <id>preon-sourceforge</id>
-      <name>Preon Site</name>
-      <url>scp://shell.sourceforge.net/home/groups/p/pr/preon/htdocs/</url>
+      <id>codehaus.org</id>
+      <url>dav:https://dav.codehaus.org/preon/</url>
     </site>
   </distributionManagement>
   <reporting>
