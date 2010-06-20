@@ -104,5 +104,4 @@ public class ListBasedMapCodecTest {
         Mockito.verifyNoMoreInteractions(listCodec);
     }
 
-
 }
