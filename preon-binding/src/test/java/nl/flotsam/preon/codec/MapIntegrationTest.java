@@ -30,51 +30,67 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.sample;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-
-import junit.framework.TestCase;
+package nl.flotsam.preon.codec;
 
 import nl.flotsam.preon.Codec;
 import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.Codecs.DocumentType;
-import nl.flotsam.preon.annotation.Bound;
+import nl.flotsam.preon.DecodingException;
+import nl.flotsam.preon.annotation.BoundList;
+import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.annotation.BoundString;
+import org.hamcrest.CoreMatchers;
+import org.junit.Test;
 
-public class RectangleSampleTest extends TestCase {
+import java.io.FileNotFoundException;
+import java.util.Map;
 
-    public void testRectangleDocumentation() throws FileNotFoundException {
-        Codec<Rectangle> codec = Codecs.create(Rectangle.class);
-        File file = new File(new File(System.getProperty("java.io.tmpdir")), "rectangle.html");
-        Codecs.document(codec, DocumentType.Html, file);
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
+
+public class MapIntegrationTest {
+
+    @Test
+    public void shouldDecodeMapCorrectly() throws DecodingException, FileNotFoundException {
+        Codec<Sample> codec = Codecs.create(Sample.class);
+        Sample object =
+                Codecs.decode(codec, (byte) 0x02, (byte) (0xff & 'a'), (byte) (0xff & 'b'), (byte) 0x03,
+                                     (byte) 0x02, (byte) (0xff & 'c'), (byte) (0xff & 'd'), (byte) 0x04);
+        assertThat(object.data.size(), CoreMatchers.is(2));
+        assertThat(object.data, hasEntry("ab", 3));
+        assertThat(object.data, hasEntry("cd", 4));
     }
 
-    public static class Shape {
-        @Bound
-        RgbColor fillColor;
-        @Bound
-        RgbColor borderColor;
+    public static class Sample {
+
+        @BoundList(type= SampleEntry.class)
+        public Map<String,Integer> data;
+
     }
 
-    public static class Rectangle extends Shape {
-        @Bound
-        int x1;
-        @Bound
-        int y1;
-        @Bound
-        int x2;
-        @Bound
-        int y2;
-    }
+    public static class SampleEntry implements Map.Entry<String,Integer> {
 
-    public static class RgbColor {
-        @Bound
-        int red;
-        @Bound
-        int green;
-        @Bound
-        int blue;
+        @BoundNumber(size="8")
+        private int keyLength;
+
+        @BoundString(size = "keyLength")
+        private String key;
+
+        @BoundNumber(size="8")
+        private Integer value;
+
+        public String getKey() {
+            return key;
+        }
+
+        public Integer getValue() {
+            return value;
+        }
+
+        public Integer setValue(Integer value) {
+            Integer originalValue = value;
+            this.value = value;
+            return originalValue;
+        }
     }
 
 }
