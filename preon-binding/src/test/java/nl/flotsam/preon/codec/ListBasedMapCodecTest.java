@@ -44,6 +44,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -91,5 +92,17 @@ public class ListBasedMapCodecTest {
         verify(listCodec).decode(buffer, resolver, builder);
         Mockito.verifyNoMoreInteractions(listCodec);        
     }
+
+    @Test
+    public void shouldWorkWithZeroSizeList() throws DecodingException {
+        when(listCodec.decode(any(BitBuffer.class), any(Resolver.class), any(Builder.class)))
+                .thenReturn(Collections.<Map.Entry<String, Integer>>emptyList());
+        ListBasedMapCodec<String,Integer> codec = new ListBasedMapCodec<String, Integer>(listCodec);
+        Map<String, Integer> map = codec.decode(buffer, resolver, builder);
+        assertThat(map.size(), is(0));
+        verify(listCodec).decode(buffer, resolver, builder);
+        Mockito.verifyNoMoreInteractions(listCodec);
+    }
+
 
 }
