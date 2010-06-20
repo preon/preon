@@ -17,6 +17,7 @@
     <module>preon-sample-bytecode</module>
     <module>preon-sample-mpeg</module>
     <module>preon-sample-snoop</module>
+    <module>preon-sample-bson</module>
     <!--
     <module>preon-sample-protobuf</module>
     <module>preon-sample-lucene</module>

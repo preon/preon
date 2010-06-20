@@ -30,17 +30,27 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.buffer;
+package nl.flotsam.preon.sample.bson;
 
-/**
- * An enumeration, representing byte order. (Big endian, vs. little endian.)
- *
- * @since Feb 25, 2007
- */
-public enum ByteOrder {
+import nl.flotsam.preon.annotation.BoundNumber;
+import nl.flotsam.preon.annotation.BoundString;
 
-    LittleEndian,
+import static nl.flotsam.preon.buffer.ByteOrder.LittleEndian;
 
-    BigEndian
+public class UTF8NamedElement extends NamedElement<String> {
 
+    @BoundNumber(byteOrder= LittleEndian)
+    private int numberOfBytes;
+
+    @BoundString(size="numberOfBytes")
+    private String value;
+
+    @BoundNumber(match = "0")
+    private byte redundantTrailingNullByte; 
+
+    @Override
+    String getValue() {
+        return value;
+    }
+    
 }
