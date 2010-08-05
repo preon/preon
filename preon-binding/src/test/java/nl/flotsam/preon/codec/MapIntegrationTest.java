@@ -38,12 +38,12 @@ import nl.flotsam.preon.DecodingException;
 import nl.flotsam.preon.annotation.BoundList;
 import nl.flotsam.preon.annotation.BoundNumber;
 import nl.flotsam.preon.annotation.BoundString;
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import java.io.FileNotFoundException;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 
@@ -55,7 +55,7 @@ public class MapIntegrationTest {
         Sample object =
                 Codecs.decode(codec, (byte) 0x02, (byte) (0xff & 'a'), (byte) (0xff & 'b'), (byte) 0x03,
                                      (byte) 0x02, (byte) (0xff & 'c'), (byte) (0xff & 'd'), (byte) 0x04);
-        assertThat(object.data.size(), CoreMatchers.is(2));
+        assertThat(object.data.size(), is(2));
         assertThat(object.data, hasEntry("ab", 3));
         assertThat(object.data, hasEntry("cd", 4));
     }
