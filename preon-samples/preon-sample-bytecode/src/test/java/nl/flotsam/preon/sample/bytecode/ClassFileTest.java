@@ -37,20 +37,19 @@ import nl.flotsam.preon.Codecs;
 import nl.flotsam.preon.Codecs.DocumentType;
 import nl.flotsam.preon.DecodingException;
 import org.apache.commons.io.IOUtils;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertThat;
-
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.FileNotFoundException;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
 
 public class ClassFileTest {
 
@@ -75,7 +74,8 @@ public class ClassFileTest {
 
     @Test
     public void printDocumentation() throws FileNotFoundException {
-        File file = new File("/tmp/documentation.html");
+        File directory = new File(System.getProperty("java.io.tmpdir"));
+        File file = new File(directory, "documentation.html");
         Codecs.document(codec, DocumentType.Html, file);
     }
 
