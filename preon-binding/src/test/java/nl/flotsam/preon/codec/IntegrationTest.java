@@ -32,7 +32,18 @@
  */
 package nl.flotsam.preon.codec;
 
-import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
+import junit.framework.TestCase;
+import nl.flotsam.preon.*;
+import nl.flotsam.preon.Codecs.DocumentType;
+import nl.flotsam.preon.annotation.*;
+import nl.flotsam.preon.annotation.Choices.Choice;
+import nl.flotsam.preon.binding.BindingFactory;
+import nl.flotsam.preon.binding.ConditionalBindingFactory;
+import nl.flotsam.preon.binding.StandardBindingFactory;
+import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
+import nl.flotsam.preon.limbo.ImportStatic;
+import org.junit.Rule;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,31 +51,12 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import junit.framework.TestCase;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.CodecConstructionException;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Resolver;
-import nl.flotsam.preon.Codecs.DocumentType;
-import nl.flotsam.preon.annotation.Bound;
-import nl.flotsam.preon.annotation.BoundEnumOption;
-import nl.flotsam.preon.annotation.BoundList;
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.annotation.BoundObject;
-import nl.flotsam.preon.annotation.BoundString;
-import nl.flotsam.preon.annotation.Choices;
-import nl.flotsam.preon.annotation.If;
-import nl.flotsam.preon.annotation.Init;
-import nl.flotsam.preon.annotation.TypePrefix;
-import nl.flotsam.preon.annotation.Choices.Choice;
-import nl.flotsam.preon.binding.BindingFactory;
-import nl.flotsam.preon.binding.ConditionalBindingFactory;
-import nl.flotsam.preon.binding.StandardBindingFactory;
-import nl.flotsam.preon.codec.IntegrationTest.Test21.Test23;
-import nl.flotsam.preon.limbo.ImportStatic;
+import static nl.flotsam.preon.buffer.ByteOrder.BigEndian;
 
 public class IntegrationTest extends TestCase {
+
+    @Rule
+    private TemporaryFolder folder = new TemporaryFolder();
 
     private CompoundCodecFactory factory;
 
@@ -468,9 +460,11 @@ public class IntegrationTest extends TestCase {
         assertEquals("ab", value.values[0].value);
     }
 
-    public void testReferencesPartiallyResolvable() throws DecodingException, FileNotFoundException {
+    public void testReferencesPartiallyResolvable() throws DecodingException, IOException {
         Codec<Test45> codec = Codecs.create(Test45.class);
-        Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
+        File file = folder.newFile("test.html");
+        Codecs.document(codec, DocumentType.Html, file);
+        // TODO: Add some tests on the contents of this file.
     }
 
     public void testStaticReferences() throws DecodingException {
