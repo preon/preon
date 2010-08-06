@@ -2,11 +2,11 @@
 <project>
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>nl.flotsam.preon</groupId>
+    <groupId>org.codehaus.preon</groupId>
     <artifactId>preon</artifactId>
     <version>1.1-SNAPSHOT</version>
   </parent>
-  <groupId>nl.flotsam.preon.archetypes</groupId>
+  <groupId>org.codehaus.preon.archetypes</groupId>
   <artifactId>preon-archetypes</artifactId>
   <packaging>pom</packaging>
   <name>Preon Archetypes</name>

@@ -13,7 +13,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>nl.flotsam.preon</groupId>
+      <groupId>org.codehaus.preon</groupId>
       <artifactId>preon-binding</artifactId>
       <version>1.0</version>
     </dependency>
