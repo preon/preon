@@ -32,18 +32,15 @@
  */
 package nl.flotsam.preon.sample.bmp;
 
+import junit.framework.TestCase;
+import nl.flotsam.preon.Codec;
+import nl.flotsam.preon.Codecs;
+import nl.flotsam.preon.Codecs.DocumentType;
+import nl.flotsam.preon.DecodingException;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.DecodingException;
-import nl.flotsam.preon.Codecs.DocumentType;
-import nl.flotsam.preon.sample.bmp.BitmapFile;
-import nl.flotsam.preon.sample.bmp.RgbQuad;
-
-import junit.framework.TestCase;
 
 
 public class BitmapFileTest extends TestCase {
@@ -54,7 +51,7 @@ public class BitmapFileTest extends TestCase {
     public void testHeightWidth() throws FileNotFoundException,
             DecodingException, IOException {
         Codec<BitmapFile> codec = Codecs.create(BitmapFile.class);
-        File file = new File(getBasedir(), "src/test/resources/test.bmp");
+        File file = new File(BitmapFileTest.class.getClassLoader().getResource("test.bmp").getFile());
         System.out.println(file.getAbsolutePath());
         BitmapFile bitmap = Codecs.decode(codec, file);
         assertEquals(48, bitmap.getHeight());
@@ -69,7 +66,9 @@ public class BitmapFileTest extends TestCase {
             System.out.println();
         }
         System.out.println("Data " + bitmap.getData().length);
-        Codecs.document(codec, DocumentType.Html, new File("/tmp/test.html"));
+        File directory = new File(System.getProperty("java.io.tmpdir"));
+        File document = new File(directory, "bitmap.html");
+        Codecs.document(codec, DocumentType.Html, document);
     }
 
     public File getBasedir() {
