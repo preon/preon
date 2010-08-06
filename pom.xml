@@ -223,12 +223,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>org.codehaus.plexus</groupId>
-            <artifactId>plexus-resources</artifactId>
-            <version>1.0-alpha-7</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 </project>
