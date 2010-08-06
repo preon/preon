@@ -30,14 +30,14 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.sample.bson;
+package org.codehaus.preon.sample.bson;
 
-import nl.flotsam.preon.annotation.BoundList;
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.annotation.Choices;
-import nl.flotsam.preon.annotation.Choices.Choice;
-import nl.flotsam.preon.annotation.Slice;
-import nl.flotsam.preon.buffer.ByteOrder;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.Choices;
+import org.codehaus.preon.annotation.Choices.Choice;
+import org.codehaus.preon.annotation.Slice;
+import org.codehaus.preon.buffer.ByteOrder;
 
 import java.util.List;
 

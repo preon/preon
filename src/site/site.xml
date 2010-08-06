@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="Preon">
   <skin>
-    <groupId>nl.flotsam.preon</groupId>
+    <groupId>org.codehaus.preon</groupId>
     <artifactId>preon-skin</artifactId>
     <version>1.0-SNAPSHOT</version>
   </skin>

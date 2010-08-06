@@ -30,12 +30,12 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package nl.flotsam.preon.sample.bson;
+package org.codehaus.preon.sample.bson;
 
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.annotation.BoundString;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.annotation.BoundString;
 
-import static nl.flotsam.preon.buffer.ByteOrder.LittleEndian;
+import static org.codehaus.preon.buffer.ByteOrder.LittleEndian;
 
 public class UTF8NamedElement extends NamedElement<String> {
 
