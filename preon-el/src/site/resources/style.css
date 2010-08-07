@@ -1,0 +1,31 @@
+body {
+    font-family: Arial;
+    font-size: 10pt;
+    width: 500px;
+}
+
+.programlisting {
+    font-family: Consolas, Courier;
+}
+
+h1 {
+    padding-top: 20px;
+}
+
+h2 {
+    padding-top: 45px;
+}
+
+h3 {
+    padding-top: 20px;
+}
+
+h4 {
+    padding-top: 20px;
+}
+
+pre {
+    border: 1px silver dashed;
+    background-color: #e0e0e0;
+    padding: 10px;
+}

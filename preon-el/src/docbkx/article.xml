@@ -1,0 +1,32 @@
+<article>
+  <title>Limbo</title>
+  <programlisting><![CDATA[
+class Person {
+  private boolean qualified;
+  private int age;
+  private Certification[] certifications;
+}
+
+class Certification {
+  private String name;
+}
+
+Expression<Boolean,Person> qualified = 
+  Expressions.createBoolean(new EarlyBinding(Person.class), "qualified");
+Expression<Integer,Person> age = 
+  Expressions.createInteger(new EarlyBinding(Person.class), "age");
+age = Expressions.createInteger(new LateBinding(Person.class), "age");
+Expressions.from(Person.class).to(Integer.class);
+Expressions.from(Person.class).toInteger().create("age * 2");
+Expressions.from(Person.class).toBoolean().create("qualified");
+Expressions.from(Person.class).toBoolean().using(LateBinding).create();
+Expressions.from(Person.class).toInteger().using(EarlyBinding).create();
+Expressions.fromBinding(new Binding(...)).toBoolean();
+Expression<Boolean,Person> expr;
+expr.toString(); // age * (2 + 2)
+expr.toReadableString(); // age times the sum of 2 and 2
+expr.simplify().toString(); // age * 4
+expr.simplify(); // age times 4
+]]>
+  </programlisting>
+</article>

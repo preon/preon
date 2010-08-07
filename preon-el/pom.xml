@@ -1,0 +1,226 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.codehaus.preon</groupId>
+    <artifactId>preon</artifactId>
+    <version>1.1-SNAPSHOT</version>
+  </parent>
+  <groupId>org.codehaus.preon</groupId>
+  <artifactId>preon-el</artifactId>
+  <name>Preon EL</name>
+  <description>
+    An extremely simple expression language. The objective is to have
+    an expression language that is expressive, while preserving the
+    ability to turn the expression into something that can be read by
+    non-programmers. In that sense, it is much more constrained than
+    for instance the JSP EL.
+  </description>
+  <dependencies>
+    <dependency>
+      <groupId>org.antlr</groupId>
+      <artifactId>antlr</artifactId>
+      <version>3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easymock</groupId>
+      <artifactId>easymock</artifactId>
+      <version>2.3</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-release-plugin</artifactId>
+	<configuration>
+	  <goals>deploy</goals>
+	  <tagBase>https://limbo.svn.sourceforge.net/svnroot/limbo/trunk</tagBase>
+	  <useReleaseProfile>false</useReleaseProfile>
+	  <arguments>-Prelease</arguments>
+	</configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <docfilesubdirs>true</docfilesubdirs>
+          <excludePackageNames>nl.flotsam.limbo.ast</excludePackageNames>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <configuration>
+              <tasks>
+                <mkdir dir="${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
+                <java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
+                  <arg value="${basedir}/src/main/antlr/Limbo.g" />
+                  <arg line="-lib ${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
+                  <arg line="-o ${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
+                </java>
+                <java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
+                  <arg value="${basedir}/src/main/antlr/LimboWalker.g" />
+                  <arg line="-lib ${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
+                  <arg line="-o ${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
+                </java>
+              </tasks>
+              <sourceRoot>${project.build.directory}/generated-sources/antlr</sourceRoot>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>process-test-resources</phase>
+            <id>cobertura:bugfix</id>
+            <configuration>
+              <tasks>
+                <copy file="${basedir}/target/cobertura/cobertura.ser" todir="${basedir}/" overwrite="true" failonerror="false" />
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr</artifactId>
+            <version>3.0</version>
+            <scope>compile</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>com.agilejava.docbkx</groupId>
+        <artifactId>docbkx-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate-pdf</goal>
+              <goal>generate-html</goal>
+            </goals>
+            <phase>pre-site</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <generateIdAttributes>1</generateIdAttributes>
+          <cssDecoration>1</cssDecoration>
+          <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
+          <includes>overview.xml</includes>
+          <htmlStylesheet>style.css</htmlStylesheet>
+          <alignment>left</alignment>
+          <bodyStartIndent>2cm</bodyStartIndent>
+          <bodyFontFamily>Calibri</bodyFontFamily>
+          <titleFontFamily>Calibri</titleFontFamily>
+          <monospaceFontFamily>Consola</monospaceFontFamily>
+          <headerRule>0</headerRule>
+          <footerRule>0</footerRule>
+          <foCustomization>${basedir}/src/docbkx/customizations.xsl</foCustomization>
+          <htmlCustomization>${basedir}/src/docbkx/customizations-html.xsl</htmlCustomization>
+          <fonts>
+            <font>
+              <name>Consola</name>
+              <style>normal</style>
+              <weight>normal</weight>
+              <embedFile>${basedir}/src/fonts/consola.ttf</embedFile>
+              <metricsFile>${basedir}/target/fonts/consola-metrics.xml</metricsFile>
+            </font>
+            <font>
+              <name>Calibri</name>
+              <style>normal</style>
+              <weight>normal</weight>
+              <embedFile>${basedir}/src/fonts/calibri.ttf</embedFile>
+              <metricsFile>${basedir}/target/fonts/calibri-metrics.xml</metricsFile>
+            </font>
+            <font>
+              <name>Calibri</name>
+              <style>italic</style>
+              <weight>normal</weight>
+              <embedFile>${basedir}/src/fonts/calibrii.ttf</embedFile>
+              <metricsFile>${basedir}/target/fonts/calibrii-metrics.xml</metricsFile>
+            </font>
+            <font>
+              <name>Calibri</name>
+              <style>normal</style>
+              <weight>bold</weight>
+              <embedFile>${basedir}/src/fonts/calibrib.ttf</embedFile>
+              <metricsFile>${basedir}/target/fonts/calibrib-metrics.xml</metricsFile>
+            </font>
+          </fonts>
+          <xincludeSupported>true</xincludeSupported>
+          <sectionAutolabel>1</sectionAutolabel>
+          <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
+          <highlightSource>1</highlightSource>
+          <targetDirectory>${basedir}/target/site</targetDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <distributionManagement>
+    <repository>
+      <id>limbo-sourceforge</id>
+      <name>Limbo Repository</name>
+      <url>sftp://web.sourceforge.net/home/groups/l/li/limbo/htdocs/repository</url>
+    </repository>
+    <snapshotRepository>
+      <id>limbo-sourceforge</id>
+      <name>Limbo Snapshot Repository</name>
+      <url>sftp://web.sourceforge.net/home/groups/l/li/limbo/htdocs/snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>limbo-sourceforge</id>
+      <name>Limbo Site</name>
+      <url>scp://shell.sourceforge.net/home/groups/l/li/limbo/htdocs</url>
+    </site>
+  </distributionManagement>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+	<plugins>
+	  <plugin>
+	    <groupId>org.apache.maven.plugins</groupId>
+	    <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.1</version>
+	    <executions>
+	      <execution>
+		<id>sign-artifacts</id>
+		<phase>verify</phase>
+		<goals>
+		  <goal>sign</goal>
+		</goals>
+	      </execution>
+	    </executions>
+	  </plugin>
+	</plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

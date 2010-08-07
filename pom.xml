@@ -81,6 +81,7 @@
     <module>preon-binding</module>
     <module>preon-samples</module>
     <module>preon-archetypes</module>
+    <module>preon-el</module>
   </modules>
   <licenses>
     <license>

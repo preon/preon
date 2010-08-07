@@ -1,0 +1,313 @@
+<article>
+  
+  <articleinfo>
+    <title>Limbo Overview</title>
+    <author>
+      <firstname>Wilfred</firstname>
+      <surname>Springer</surname>
+    </author>
+    <keywordset>
+      <keyword>expression language</keyword>
+      <keyword>antlr</keyword>
+    </keywordset>
+  </articleinfo>
+  
+  <section>
+    <title>Introduction</title>
+    <para>
+      Limbo is an expression language. It allows you to evaluate
+      expressions on a certain context. The expression language is
+      fairly simple; it supports basic logical and arithmetic
+      operators, and it supports attribute references and item
+      references.
+    </para>
+    <example id="example-simple">
+      <title>Simple Limbo Examples</title>
+      <programlisting><![CDATA[
+3 * 4
+3 * person.age
+2 ^ group.persons[3].age
+person.age >= 12      
+      ]]></programlisting>
+    </example>
+    <para>
+      ... and that's probably where the correspondence with the JSP
+      Expression Language and other expression languages ends. Because
+      there is a <emphasis>big</emphasis> difference with those
+      languages. And that difference is not based on notation (syntax
+      and grammar), but on the way you apply Limbo.
+    </para>
+    <para>
+      Here are some of the differences of Limbo:
+    </para>
+    <itemizedlist>
+      <listitem>
+        <para>
+          Limbo supports <firstterm>early binding</firstterm>.
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          Limbo allows you to bind to <emphasis>any</emphasis>
+          context, not just state exposed through bean properties or
+          private fields. 
+        </para>
+      </listitem>
+      <listitem>
+        <para>
+          The Limbo API allows you to export the expression as a
+          natural language based human readable snippet of text.
+        </para>
+      </listitem>
+    </itemizedlist>
+    <para>
+      Limbo originates from a project to capture dependencies in
+      different fields in a binary media format in an unambiguous
+      way. Using Limbo, that project is capable of generating a human
+      readable description of the encoding format. Expressions like
+      the ones mentioned in <xref linkend="example-simple"/> could be
+      rendered into this:
+    </para>
+    <programlisting><![CDATA[
+3 times 4
+3 times the age of a person
+2 to the power of the age of the third person in the group
+the age of the person is greater than or equal to 2
+    ]]></programlisting>
+    <para>
+      This article is a tutorial on Limbo. It will explain the
+      language itself, but also the way you <emphasis>apply</emphasis>
+      the language, in your own software.
+    </para>
+  </section>
+  
+  <section>
+    <title>The Language</title>
+    <para>
+      The first thing you need to know about Limbo is that it is an
+      <emphasis>expression language</emphasis>, intended to execute on
+      a certain context. The context might be a fairly complicated
+      data structure, or it may not. Two things are for sure: Limbo
+      only allows you to refer to things by name or their index, and
+      Limbo does <emphasis>not</emphasis> allow you to define complex
+      structures in the language itself.
+    </para>
+    <para>
+      Let's start with the most commons example: let's look at an
+      simple example object-based data structure. In <xref
+      linkend="fig-person"/>, Persons have a name and an age, a father
+      and mother, and optionally some children of their own.
+    </para>
+    <figure id="fig-person">
+      <title>Simple data model</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="sample.png"/>
+        </imageobject>
+      </mediaobject>
+    </figure>
+    <para>
+      Based on this, here are some example Limbo expressions, given
+      that the context is a person.
+    </para>
+    <programlisting><![CDATA[
+age // the age of the current person
+age >= 35 // the age is greater than or equal to 35
+father.age // the age of the father
+father.age + mother.age >= 70 // the sum of the age of the father and
+                              // the age of the mother is greater than 
+                              //or equal to 70
+children[0].age < 7
+    ]]></programlisting>
+    <para>
+      There are a couple of lessons to learn from the example
+      above. First of all, valid Limbo expressions always evaluate to
+      boolean values or integer values. You wonder why? Well, simply
+      because we did not need anything else. The whole purpose of
+      Limbo is to express arithmetical and logical relationships
+      between things. Producing text simply has never been a
+      requirement.
+    </para>
+    <para>
+      The next thing to notice is that the expressions do not look all
+      that different than Java expressions<footnote>
+      <para>
+        Notice that I say it does not <emphasis>look</emphasis> all
+        that different. It <emphasis>actually</emphasis> more
+        different than you might expect. More on that somewhere else.
+      </para>
+      </footnote>. It supports arithmetic operators ('+', '-', '/',
+      '*', '^'), comparison operators ('&gt;', '&lt;', '&gt;=',
+      '&lt;=', '==') and logical operators ('&amp;&amp;', '||', '!').
+    </para>
+    <para>
+      The third thing to notice is that you can refer to attributes
+      as well as items. (In that sense, Limbo is comparable to
+      Python.) In this example, that works out quite well. Objects
+      also have attributes and some types of objects might have
+      items. However, it is important to remember that Limbo does not
+      bind to objects only. Limbo is able to bind to
+      <emphasis>any</emphasis> model exposed as 'things' with
+      attributes and items.
+    </para>
+    <para>
+      Integer literals can be expressed as decimals (1254),
+      hexadecimals (0xFF, 0xff, etc.) or as binary numbers
+      (0b10101011, 0b1001, etc.). Limbo ignores all whitespace.
+    </para>
+  </section>
+
+  <section>
+    <title>The API</title>
+    <section>
+      <title>Getting Started</title>
+      <para>
+        Let's start with a simple example first:
+      </para>
+      <programlisting><![CDATA[
+Expression<Integer, Person> doubleAge = 
+    Expressions.from(Person.class)
+               .toInteger("age * 2");
+Person wilfred = new Person();
+wilfred.name = "Wilfred";
+wilfred.age = 35;
+assert 70 == doubleAge.eval(wilfred);
+      ]]></programlisting>
+      <para>
+        In the first line, we build the
+        <interfacename>Expression</interfacename> instance. Since the
+        expression is based on a <classname>Person</classname> object,
+        the <methodname>from(...)</methodname> method takes
+        <classname>Person</classname> class reference. After that, we
+        specify that we expect an integer result, and pass the
+        expression at the same time. (The builder methods actually
+        have a couple of other options, but we will leave that out for
+        now.)
+      </para>
+      <para>
+        Once the <interfacename>Expression</interfacename> has been
+        built, evaluating is simply calling
+        <methodname>eval(...)</methodname> on the expression, passing
+        in the <classname>Person</classname> instance. And - like you
+        could have expected - the result is 70. Note there is no cast
+        in order to compare to 70, courtesy of the use of generics and
+        auto unboxing.
+      </para>
+    </section>
+    <section>
+      <title>The ReferenceContext</title>
+      <para>
+        I said before that Limbo is capable of binding to
+        <emphasis>anything</emphasis> capable of representing itself
+        as 'things' with named attributes and numbered items. Let me
+        refine that: it is capable of binding to anything for which
+        you can implement a
+        <interfacename>ReferenceContext</interfacename>. Now, if you
+        ever used an expression language like the JSP EL, then you are
+        probably aware of a similar mechanism in that expression
+        language. JSP EL has a
+        <interfacename>VariableResolver</interfacename>. Your EL
+        expression can be evaluated against anything, as long as there
+        is a <interfacename>VariableResolver</interfacename> capable
+        of resolving the named things.
+      </para>
+      <para>
+        One of the differences between Limbo's ReferenceContext and
+        JSP EL's VaribleResolver is that the ReferenceContext is
+        parameterized with type of contex passed in at evaluation
+        time. Typically, with JSP EL, you will evaluate your
+        expression against a context of of type
+        <classname>java.lang.Object</classname>. The Java compiler
+        will not be able to verify if the subtype of
+        <classname>java.lang.Object</classname> you pass in is
+        actually something against which you can evaluate the
+        expression.
+      </para>
+      <para>
+        If you are creating an expression in Limbo, you will always
+        need to construct that expression parameterized
+        <interfacename>ReferenceContext</interfacename>, in which the
+        type parameter is the type of object on which you can apply
+        the expression. So if you have an expression you want to
+        evaluate against an instance of <classname>Person</classname>,
+        you need to construct the
+        <interfacename>Expression</interfacename> based on a
+        <interfacename>ReferenceContext&lt;Person&gt;</interfacename>.
+      </para>
+      <para>
+        Now, you probably wonder why all of that is relevant. What's
+        the purpose of adding the extra complexity of having to deal
+        with parameterized types. After all, the JSP EL works fine
+        with a non-parameterized
+        <interfacename>VariableResolver</interfacename>, and
+        expressions accepting <classname>java.lang.Object</classname>
+        instances.
+      </para>
+      <para>
+        The real reason for this is that Limbo is capable of early
+        binding. <interfacename>ReferenceContext</interfacename>
+        implementations can make guarantees on the validity of
+        references used in the expression. Which means that the
+        Expression based on that ReferenceContext can guarantee it
+        will be capable of acting upon a certain context.
+      </para>
+      <para>
+        <xref linkend="example-reference-context"/> shows how you
+        build references using a
+        <interfacename>ReferenceContext</interfacename>. In this case,
+        the data model to which we bind is a Java version of the
+        object model outlined in <xref linkend="fig-person"/>. The
+        <classname>ClassReferenceContext</classname> used in this case
+        not only allows you to build references to data contained by
+        an instance of that class, but will also check for the
+        existence of those attributes. Any attempt to reference
+        something that is not defined by the class will generate a
+        <classname>BindingException</classname>. 
+      </para>
+      <example id="example-reference-context">
+        <title>ReferenceContext and References</title>
+        <programlisting><![CDATA[
+ReferenceContext<Person> context = 
+  new ClassReferenceContext<Person>(Person.class);
+Reference<Person> personsName = 
+  context.selectAttribute("name");
+Reference<Person> fathersName = 
+  context.selectAttribute("father").selectAttribute("name");
+Person wilfred = new Person();
+wilfred.name = "Wilfred";
+wilfred.age = 35;
+Person levi = new Person();
+levi.name = "Levi";
+levi.age = 8;
+levi.father = wilfred;
+assert "Levi".equals(personsName.resolve(levi));
+assert "Wilfred".equals(fathersName.resolve(levi));
+assert "Wilfred".equals(personsName.resolve(wilfred));
+// ... and this will throw a BindingException
+Reference<Person> gender = context.selectAttribute("gender");
+        ]]></programlisting>
+      </example>
+    </section>
+    <section>
+      <title>Natural Language Description</title>
+      <para>
+        Early validation is not the only benefit we gain from
+        <interfacename>ReferenceContexts</interfacename> supporting
+        early binding. Another benefit is that we basically gather
+        enough information to generate a fairly decent description of
+        the References created.
+      </para>
+      <para>
+        In the example above, the fathersName reference will be
+        printed as: "the name (a String) of the father (a Person) of a
+        Person ". Now, this description might not be ideally suited in
+        your case, but the way your reference is rendered is
+        <emphasis>also</emphasis> determined by the
+        <interfacename>ReferenceContext</interfacename>. You can
+        basically render it any way you like, as long as you are
+        willing to go through the trouble of implementing your own
+        <interfacename>ReferenceContext</interfacename>.
+      </para>
+    </section>
+  </section>
+</article>
