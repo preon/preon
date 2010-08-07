@@ -68,8 +68,8 @@ package org.codehaus.preon.util;
 
 import java.lang.reflect.Field;
 
-import nl.flotsam.limbo.ReferenceResolver;
-import nl.flotsam.limbo.UnresolvableReferenceException;
+import org.codehaus.preon.el.ReferenceResolver;
+import org.codehaus.preon.el.UnresolvableReferenceException;
 import org.codehaus.preon.reflect.ReflectionUtils;
 import org.codehaus.preon.reflect.RuntimeNoSuchFieldException;
 

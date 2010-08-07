@@ -34,7 +34,7 @@ package org.codehaus.preon;
 
 import java.io.UnsupportedEncodingException;
 
-import nl.flotsam.limbo.BindingException;
+import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.buffer.BitBuffer;
 
 /**

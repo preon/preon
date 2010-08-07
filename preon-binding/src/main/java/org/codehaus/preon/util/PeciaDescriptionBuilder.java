@@ -66,7 +66,7 @@ package org.codehaus.preon.util;
 
 /*package org.codehaus.preon.util;
 
-import nl.flotsam.limbo.DescriptionBuilder;
+import org.codehaus.preon.el.DescriptionBuilder;
 import nl.flotsam.pecia.ParaContents;
 
 public class PeciaDescriptionBuilder implements DescriptionBuilder {

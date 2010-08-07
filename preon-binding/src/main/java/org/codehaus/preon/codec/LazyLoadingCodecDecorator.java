@@ -35,7 +35,7 @@ package org.codehaus.preon.codec;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import nl.flotsam.limbo.Expression;
+import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.*;
 import org.codehaus.preon.annotation.LazyLoading;
 import org.codehaus.preon.buffer.BitBuffer;

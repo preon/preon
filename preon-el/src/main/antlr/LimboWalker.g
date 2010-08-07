@@ -6,12 +6,12 @@ options {
 }
 
 @header {
-package nl.flotsam.limbo;
+package org.codehaus.preon.el;
 
-import nl.flotsam.limbo.ast.RelationalNode.Relation;
-import nl.flotsam.limbo.ast.ArithmeticNode.Operator;
-import nl.flotsam.limbo.ast.BooleanOperatorNode.BooleanOperator;
-import nl.flotsam.limbo.ast.*;
+import org.codehaus.preon.el.ast.RelationalNode.Relation;
+import org.codehaus.preon.el.ast.ArithmeticNode.Operator;
+import org.codehaus.preon.el.ast.BooleanOperatorNode.BooleanOperator;
+import org.codehaus.preon.el.ast.*;
 }
 
 @members {

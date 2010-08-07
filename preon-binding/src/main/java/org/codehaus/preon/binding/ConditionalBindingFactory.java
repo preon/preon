@@ -33,7 +33,6 @@
 package org.codehaus.preon.binding;
 
 import edu.emory.mathcs.backport.java.util.Collections;
-import nl.flotsam.limbo.*;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
@@ -42,6 +41,7 @@ import org.codehaus.preon.annotation.If;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
+import org.codehaus.preon.el.*;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;

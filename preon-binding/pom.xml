@@ -46,9 +46,9 @@
       <artifactId>junit</artifactId>
     </dependency>
     <dependency>
-      <groupId>nl.flotsam.limbo</groupId>
-      <artifactId>limbo</artifactId>
-      <version>1.1.2</version>
+      <groupId>org.codehaus.preon</groupId>
+      <artifactId>preon-el</artifactId>
+      <version>${version}</version>
     </dependency>
     <dependency>
       <groupId>org.easymock</groupId>

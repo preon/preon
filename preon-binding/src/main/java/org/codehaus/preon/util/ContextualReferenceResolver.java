@@ -68,9 +68,9 @@ package org.codehaus.preon.util;
 
 import java.util.Arrays;
 
-import nl.flotsam.limbo.DescriptionBuilder;
-import nl.flotsam.limbo.ReferenceResolver;
-import nl.flotsam.limbo.UnresolvableReferenceException;
+import org.codehaus.preon.el.DescriptionBuilder;
+import org.codehaus.preon.el.ReferenceResolver;
+import org.codehaus.preon.el.UnresolvableReferenceException;
 
 public class ContextualReferenceResolver<T> implements ReferenceResolver {
 

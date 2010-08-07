@@ -37,7 +37,7 @@ import static org.easymock.EasyMock.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.flotsam.limbo.Reference;
+import org.codehaus.preon.el.Reference;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecSelector;
 import org.codehaus.preon.CodecSelectorFactory;

@@ -32,8 +32,8 @@
  */
 package org.codehaus.preon;
 
-import nl.flotsam.limbo.BindingException;
-import nl.flotsam.limbo.InvalidExpressionException;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.InvalidExpressionException;
 
 
 /**

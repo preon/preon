@@ -36,7 +36,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.nio.ByteBuffer;
 
-import nl.flotsam.limbo.Expressions;
+import org.codehaus.preon.el.Expressions;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecFactory;

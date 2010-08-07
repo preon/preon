@@ -32,8 +32,8 @@
  */
 package org.codehaus.preon.util;
 
-import nl.flotsam.limbo.Descriptive;
-import nl.flotsam.limbo.util.StringBuilderDocument;
+import org.codehaus.preon.el.Descriptive;
+import org.codehaus.preon.el.util.StringBuilderDocument;
 
 /**
  * A collection of text utilities.
@@ -48,7 +48,7 @@ public class TextUtils {
             "sixteen", "seventeen", "eighteen", "nineteen", "twenty"};
 
     /**
-     * Describes a {@link Descriptive} element by calling its {@link Descriptive#document(nl.flotsam.limbo.Document)}
+     * Describes a {@link Descriptive} element by calling its {@link Descriptive#document(org.codehaus.preon.el.Document)}
      * operation, and turning the results back into a String.
      *
      * @param descriptive The object to be described.

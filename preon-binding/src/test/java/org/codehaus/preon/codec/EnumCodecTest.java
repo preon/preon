@@ -32,7 +32,7 @@
  */
 package org.codehaus.preon.codec;
 
-import nl.flotsam.limbo.Expression;
+import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.Resolver;
 
 import static org.codehaus.preon.buffer.ByteOrder.BigEndian;

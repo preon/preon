@@ -32,7 +32,7 @@
  */
 package org.codehaus.preon.codec;
 
-import nl.flotsam.limbo.Expression;
+import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;

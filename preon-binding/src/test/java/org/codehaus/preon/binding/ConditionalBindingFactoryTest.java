@@ -42,11 +42,11 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
 import junit.framework.TestCase;
-import nl.flotsam.limbo.BindingException;
-import nl.flotsam.limbo.Document;
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Reference;
-import nl.flotsam.limbo.ReferenceContext;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecException;

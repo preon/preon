@@ -42,8 +42,8 @@ import static org.easymock.EasyMock.verify;
 import java.lang.reflect.AnnotatedElement;
 import java.util.List;
 
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecFactory;

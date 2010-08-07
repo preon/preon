@@ -36,20 +36,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import nl.flotsam.limbo.BindingException;
-import nl.flotsam.limbo.Document;
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.Reference;
-import nl.flotsam.limbo.ctx.MultiReference;
-import nl.flotsam.limbo.util.StringBuilderDocument;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ctx.MultiReference;
+import org.codehaus.preon.el.util.StringBuilderDocument;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.binding.Binding;
-import org.codehaus.preon.limbo.ArrayElementReference;
-import org.codehaus.preon.limbo.ObjectResolverContext;
-import org.codehaus.preon.limbo.OuterReference;
-import org.codehaus.preon.limbo.PropertyReference;
+import org.codehaus.preon.el.ArrayElementReference;
+import org.codehaus.preon.el.ObjectResolverContext;
+import org.codehaus.preon.el.OuterReference;
+import org.codehaus.preon.el.PropertyReference;
 import org.codehaus.preon.util.ParaContentsDocument;
 
 /**
@@ -83,7 +83,7 @@ public class BindingsContext implements ObjectResolverContext {
     /*
      * (non-Javadoc)
      * 
-     * @see org.codehaus.preon.limbo.ObjectResolverContext#add(java.lang.String,
+     * @see org.codehaus.preon.el.ObjectResolverContext#add(java.lang.String,
      * org.codehaus.preon.binding.Binding)
      */
 
@@ -95,7 +95,7 @@ public class BindingsContext implements ObjectResolverContext {
     /*
      * (non-Javadoc)
      * 
-     * @see nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
+     * @see org.codehaus.preon.el.ReferenceContext#selectAttribute(java.lang.String)
      */
 
     public Reference<Resolver> selectAttribute(String name)
@@ -117,7 +117,7 @@ public class BindingsContext implements ObjectResolverContext {
     /*
      * (non-Javadoc)
      * 
-     * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
+     * @see org.codehaus.preon.el.ReferenceContext#selectItem(java.lang.String)
      */
 
     public Reference<Resolver> selectItem(String index) throws BindingException {
@@ -128,7 +128,7 @@ public class BindingsContext implements ObjectResolverContext {
      * (non-Javadoc)
      * 
      * @see
-     * nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression)
+     * org.codehaus.preon.el.ReferenceContext#selectItem(org.codehaus.preon.el.Expression)
      */
 
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
@@ -141,7 +141,7 @@ public class BindingsContext implements ObjectResolverContext {
     /*
      * (non-Javadoc)
      * 
-     * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
+     * @see org.codehaus.preon.el.Descriptive#document(org.codehaus.preon.el.Document)
      */
 
     public void document(Document target) {
@@ -164,7 +164,7 @@ public class BindingsContext implements ObjectResolverContext {
      * (non-Javadoc)
      * 
      * @see
-     * org.codehaus.preon.limbo.ObjectResolverContext#getResolver(java.lang.Object
+     * org.codehaus.preon.el.ObjectResolverContext#getResolver(java.lang.Object
      * , org.codehaus.preon.Resolver)
      */
 
@@ -175,7 +175,7 @@ public class BindingsContext implements ObjectResolverContext {
     /*
      * (non-Javadoc)
      * 
-     * @see org.codehaus.preon.limbo.ObjectResolverContext#getBindings()
+     * @see org.codehaus.preon.el.ObjectResolverContext#getBindings()
      */
 
     public List<Binding> getBindings() {
@@ -204,7 +204,7 @@ public class BindingsContext implements ObjectResolverContext {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.limbo.Reference#getReferenceContext()
+         * @see org.codehaus.preon.el.Reference#getReferenceContext()
          */
 
         public ResolverContext getReferenceContext() {
@@ -214,7 +214,7 @@ public class BindingsContext implements ObjectResolverContext {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.limbo.Reference#isAssignableTo(java.lang.Class)
+         * @see org.codehaus.preon.el.Reference#isAssignableTo(java.lang.Class)
          */
 
         public boolean isAssignableTo(Class<?> type) {
@@ -232,7 +232,7 @@ public class BindingsContext implements ObjectResolverContext {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.limbo.Reference#resolve(java.lang.Object)
+         * @see org.codehaus.preon.el.Reference#resolve(java.lang.Object)
          */
 
         public Object resolve(Resolver context) {
@@ -249,7 +249,7 @@ public class BindingsContext implements ObjectResolverContext {
          * (non-Javadoc)
          * 
          * @see
-         * nl.flotsam.limbo.ReferenceContext#selectAttribute(java.lang.String)
+         * org.codehaus.preon.el.ReferenceContext#selectAttribute(java.lang.String)
          */
 
         @SuppressWarnings("unchecked")
@@ -276,7 +276,7 @@ public class BindingsContext implements ObjectResolverContext {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.limbo.ReferenceContext#selectItem(java.lang.String)
+         * @see org.codehaus.preon.el.ReferenceContext#selectItem(java.lang.String)
          */
 
         public Reference<Resolver> selectItem(String index) {
@@ -290,7 +290,7 @@ public class BindingsContext implements ObjectResolverContext {
          * (non-Javadoc)
          * 
          * @see
-         * nl.flotsam.limbo.ReferenceContext#selectItem(nl.flotsam.limbo.Expression
+         * org.codehaus.preon.el.ReferenceContext#selectItem(org.codehaus.preon.el.Expression
          * )
          */
 
@@ -317,7 +317,7 @@ public class BindingsContext implements ObjectResolverContext {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.limbo.Descriptive#document(nl.flotsam.limbo.Document)
+         * @see org.codehaus.preon.el.Descriptive#document(org.codehaus.preon.el.Document)
          */
 
         public void document(final Document target) {
@@ -327,7 +327,7 @@ public class BindingsContext implements ObjectResolverContext {
         /*
          * (non-Javadoc)
          * 
-         * @see nl.flotsam.limbo.Reference#getType()
+         * @see org.codehaus.preon.el.Reference#getType()
          */
 
         public Class<?> getType() {

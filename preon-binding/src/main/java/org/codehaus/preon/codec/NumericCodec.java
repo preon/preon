@@ -37,11 +37,11 @@ import java.lang.reflect.AnnotatedElement;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.flotsam.limbo.Document;
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.util.Converters;
-import nl.flotsam.limbo.util.StringBuilderDocument;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.util.Converters;
+import org.codehaus.preon.el.util.StringBuilderDocument;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;

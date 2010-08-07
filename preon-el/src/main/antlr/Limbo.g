@@ -12,11 +12,11 @@ tokens {
 }
 
 @header {
-package nl.flotsam.limbo;
+package org.codehaus.preon.el;
 }
 
 @lexer::header {
-package nl.flotsam.limbo;
+package org.codehaus.preon.el;
 }
 
 relationalOp

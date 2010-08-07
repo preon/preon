@@ -34,7 +34,7 @@ package org.codehaus.preon.codec;
 
 import java.lang.reflect.AnnotatedElement;
 
-import nl.flotsam.limbo.Expression;
+import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;

@@ -41,7 +41,7 @@
 	<artifactId>maven-release-plugin</artifactId>
 	<configuration>
 	  <goals>deploy</goals>
-	  <tagBase>https://limbo.svn.sourceforge.net/svnroot/limbo/trunk</tagBase>
+	  <tagBase>https://limbo.svn.sourceforge.net/svnroot/limbo/tags</tagBase>
 	  <useReleaseProfile>false</useReleaseProfile>
 	  <arguments>-Prelease</arguments>
 	</configuration>
@@ -51,7 +51,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <docfilesubdirs>true</docfilesubdirs>
-          <excludePackageNames>nl.flotsam.limbo.ast</excludePackageNames>
+          <excludePackageNames>org.codehaus.preon.el.ast</excludePackageNames>
         </configuration>
       </plugin>
       <plugin>
@@ -69,16 +69,16 @@
             <phase>generate-sources</phase>
             <configuration>
               <tasks>
-                <mkdir dir="${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
+                <mkdir dir="${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
                 <java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
                   <arg value="${basedir}/src/main/antlr/Limbo.g" />
-                  <arg line="-lib ${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
-                  <arg line="-o ${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
+                  <arg line="-lib ${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
+                  <arg line="-o ${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
                 </java>
                 <java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
                   <arg value="${basedir}/src/main/antlr/LimboWalker.g" />
-                  <arg line="-lib ${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
-                  <arg line="-o ${project.build.directory}/generated-sources/antlr/nl/flotsam/limbo" />
+                  <arg line="-lib ${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
+                  <arg line="-o ${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
                 </java>
               </tasks>
               <sourceRoot>${project.build.directory}/generated-sources/antlr</sourceRoot>

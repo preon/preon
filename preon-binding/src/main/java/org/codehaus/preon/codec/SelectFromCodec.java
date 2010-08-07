@@ -32,18 +32,17 @@
  */
 package org.codehaus.preon.codec;
 
-import nl.flotsam.limbo.*;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Table2Cols;
 import org.codehaus.preon.*;
-import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.annotation.Choices;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
+import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
-import org.codehaus.preon.limbo.ContextReplacingReference;
+import org.codehaus.preon.el.*;
 
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;

@@ -32,10 +32,10 @@
  */
 package org.codehaus.preon.codec;
 
-import nl.flotsam.limbo.BindingException;
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
-import nl.flotsam.limbo.InvalidExpressionException;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.InvalidExpressionException;
 import org.codehaus.preon.*;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.annotation.BoundList;

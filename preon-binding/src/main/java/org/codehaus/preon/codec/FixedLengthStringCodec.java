@@ -32,8 +32,8 @@
  */
 package org.codehaus.preon.codec;
 
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;

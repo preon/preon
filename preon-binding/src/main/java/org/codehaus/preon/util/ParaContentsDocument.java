@@ -32,7 +32,7 @@
  */
 package org.codehaus.preon.util;
 
-import nl.flotsam.limbo.Document;
+import org.codehaus.preon.el.Document;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.Footnote;
 import nl.flotsam.pecia.Para;

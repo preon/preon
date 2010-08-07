@@ -35,7 +35,7 @@ package org.codehaus.preon.sample.snoop;
 import org.codehaus.preon.annotation.*;
 import org.codehaus.preon.annotation.Choices.Choice;
 import org.codehaus.preon.buffer.ByteOrder;
-import org.codehaus.preon.limbo.ImportStatic;
+import org.codehaus.preon.el.ImportStatic;
 
 import java.util.List;
 

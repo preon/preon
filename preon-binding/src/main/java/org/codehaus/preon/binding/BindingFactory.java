@@ -35,7 +35,7 @@ package org.codehaus.preon.binding;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
-import nl.flotsam.limbo.ReferenceContext;
+import org.codehaus.preon.el.ReferenceContext;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import org.codehaus.preon.Codec;

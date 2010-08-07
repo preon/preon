@@ -35,7 +35,7 @@ package org.codehaus.preon.util;
 import java.util.Iterator;
 import java.util.List;
 
-import nl.flotsam.limbo.Expression;
+import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.DecodingException;

@@ -32,7 +32,7 @@
  */
 package org.codehaus.preon;
 
-import nl.flotsam.limbo.BindingException;
+import org.codehaus.preon.el.BindingException;
 
 /**
  * A <code>null</code> implementation of the {@link Resolver} interface.

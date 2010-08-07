@@ -32,7 +32,7 @@
  */
 package org.codehaus.preon;
 
-import nl.flotsam.limbo.BindingException;
+import org.codehaus.preon.el.BindingException;
 
 /**
  * A simple interface for resolving variable values. The interface is introduced to have a flexible bridge between Limbo

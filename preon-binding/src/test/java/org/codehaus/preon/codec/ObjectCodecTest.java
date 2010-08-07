@@ -35,7 +35,7 @@ package org.codehaus.preon.codec;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.binding.Binding;
 import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.limbo.ObjectResolverContext;
+import org.codehaus.preon.el.ObjectResolverContext;
 import org.codehaus.preon.rendering.IdentifierRewriter;
 import org.junit.Before;
 import org.junit.runner.RunWith;

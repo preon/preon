@@ -41,7 +41,7 @@ import org.codehaus.preon.binding.BindingFactory;
 import org.codehaus.preon.binding.ConditionalBindingFactory;
 import org.codehaus.preon.binding.StandardBindingFactory;
 import org.codehaus.preon.codec.IntegrationTest.Test21.Test23;
-import org.codehaus.preon.limbo.ImportStatic;
+import org.codehaus.preon.el.ImportStatic;
 import org.junit.Rule;
 import org.junit.rules.TemporaryFolder;
 

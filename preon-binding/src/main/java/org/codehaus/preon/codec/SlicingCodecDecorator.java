@@ -32,8 +32,8 @@
  */
 package org.codehaus.preon.codec;
 
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.Expressions;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
 import org.codehaus.preon.*;
 import org.codehaus.preon.annotation.Slice;
 import org.codehaus.preon.buffer.BitBuffer;

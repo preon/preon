@@ -32,7 +32,7 @@
  */
 package org.codehaus.preon;
 
-import nl.flotsam.limbo.Expression;
+import org.codehaus.preon.el.Expression;
 import nl.flotsam.pecia.*;
 import org.codehaus.preon.binding.BindingFactory;
 import org.codehaus.preon.binding.ConditionalBindingFactory;

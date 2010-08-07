@@ -32,8 +32,8 @@
  */
 package org.codehaus.preon.binding;
 
-import nl.flotsam.limbo.Expression;
-import nl.flotsam.limbo.ctx.VariableResolver;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.ctx.VariableResolver;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;

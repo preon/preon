@@ -36,7 +36,7 @@ import org.codehaus.preon.*;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.annotation.BoundString;
-import nl.flotsam.limbo.Expression;
+import org.codehaus.preon.el.Expression;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;

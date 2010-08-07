@@ -32,7 +32,7 @@
  */
 package org.codehaus.preon;
 
-import nl.flotsam.limbo.ReferenceContext;
+import org.codehaus.preon.el.ReferenceContext;
 
 /**
  * A convenience interface, defining a {@link ReferenceContext} of {@link Resolver}. {@link Resolver} is the only

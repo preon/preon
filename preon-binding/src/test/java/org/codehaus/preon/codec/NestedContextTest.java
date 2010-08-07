@@ -33,7 +33,7 @@
 //
 //package org.codehaus.preon.codec;
 //
-//import nl.flotsam.limbo.Reference;
+//import org.codehaus.preon.el.Reference;
 //import org.codehaus.preon.Resolver;
 //import org.codehaus.preon.ResolverContext;
 //import org.codehaus.preon.codec.CombinedObjectResolverContext;
