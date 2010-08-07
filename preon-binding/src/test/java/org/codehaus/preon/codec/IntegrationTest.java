@@ -32,7 +32,6 @@
  */
 package org.codehaus.preon.codec;
 
-import junit.framework.TestCase;
 import org.codehaus.preon.*;
 import org.codehaus.preon.Codecs.DocumentType;
 import org.codehaus.preon.annotation.*;
@@ -42,7 +41,9 @@ import org.codehaus.preon.binding.ConditionalBindingFactory;
 import org.codehaus.preon.binding.StandardBindingFactory;
 import org.codehaus.preon.codec.IntegrationTest.Test21.Test23;
 import org.codehaus.preon.el.ImportStatic;
+import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
@@ -52,16 +53,18 @@ import java.nio.ByteBuffer;
 import java.util.List;
 
 import static org.codehaus.preon.buffer.ByteOrder.BigEndian;
+import static org.junit.Assert.*;
 
-public class IntegrationTest extends TestCase {
+public class IntegrationTest {
 
     @Rule
-    private TemporaryFolder folder = new TemporaryFolder();
+    public TemporaryFolder folder = new TemporaryFolder();
 
     private CompoundCodecFactory factory;
 
     private ObjectCodecFactory objectCodecFactory;
 
+    @Before
     public void setUp() {
         factory = new CompoundCodecFactory();
         BindingFactory bindingFactory = new StandardBindingFactory();
@@ -72,6 +75,7 @@ public class IntegrationTest extends TestCase {
         factory.add(objectCodecFactory);
     }
 
+    @Test
     public void testAllFieldsBound() throws DecodingException, FileNotFoundException {
         Codec<Test1> codec = Codecs.create(Test1.class);
         Test1 result = Codecs.decode(codec, new byte[]{1, 2, 3});
@@ -83,6 +87,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(24, codec.getSize().eval(null).intValue());
     }
 
+    @Test
     public void testEncodingBytes() throws IOException {
         Codec<Test1> codec = Codecs.create(Test1.class);
         Test1 object = new Test1();
@@ -97,6 +102,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(14, encoded[2]);
     }
 
+    @Test
     public void testSomeFieldsTransient() throws DecodingException, FileNotFoundException {
         Codec<Test2> codec = Codecs.create(Test2.class);
         ByteBuffer byteBuffer = ByteBuffer.allocate(12);
@@ -112,6 +118,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(64, codec.getSize().eval(null).intValue());
     }
 
+    @Test
     public void testEncodingSomeFieldsTransient() throws IOException, DecodingException {
         Codec<Test2> codec = Codecs.create(Test2.class);
         Test2 object = new Test2();
@@ -125,6 +132,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(3, replica.value3);
     }
 
+    @Test
     public void testChoice() throws DecodingException, FileNotFoundException {
         Codec<Test28> codec = Codecs.create(Test28.class);
         Test28 result = Codecs.decode(codec, new byte[]{1, 2, 3, 4});
@@ -138,6 +146,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(32, codec.getSize().eval(null).intValue());
     }
 
+    @Test
     public void testEncodingChoice() throws DecodingException, IOException {
         Codec<Test28> codec = Codecs.create(Test28.class);
         Test5a embedded = new Test5a();
@@ -154,6 +163,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(4, buffer[3]);
     }
 
+    @Test
     public void testListSingleElement() throws DecodingException, FileNotFoundException {
         Codec<Test3> codec = Codecs.create(Test3.class);
         ByteBuffer byteBuffer = ByteBuffer
@@ -172,6 +182,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(Integer.valueOf(48), codec.getSize().eval(null));
     }
 
+    @Test
     public void testListMultipleElements() throws DecodingException,
             FileNotFoundException {
         Codec<Test4> codec = Codecs.create(Test4.class);
@@ -189,6 +200,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(2, ((Test5b) result.elements.get(1)).value2);
     }
 
+    @Test
     public void testConditionals() throws DecodingException, FileNotFoundException {
         Codec<Test6> codec = Codecs.create(Test6.class);
         ByteBuffer buffer = null;
@@ -204,6 +216,7 @@ public class IntegrationTest extends TestCase {
         assertNotNull(codec.getSize());
     }
 
+    @Test
     public void testCompoundObject() throws DecodingException, FileNotFoundException {
         Codec<Test7> codec = Codecs.create(Test7.class);
         ByteBuffer buffer = ByteBuffer.wrap(new byte[]{1, 2, 3});
@@ -214,6 +227,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(3, result.value1.value3);
     }
 
+    @Test
     public void testInheritance() throws DecodingException {
         Codec<Test9> codec = Codecs.create(Test9.class);
         ByteBuffer buffer = ByteBuffer.wrap(new byte[]{7, 8});
@@ -225,6 +239,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(16, codec.getSize().eval(null).intValue());
     }
 
+    @Test
     public void testArrayOfObjects() throws DecodingException, FileNotFoundException {
         Codec<Test10> codec = Codecs.create(Test10.class);
         ByteBuffer buffer = ByteBuffer.wrap(new byte[]{1, 2, 3, 4, 5, 6});
@@ -241,6 +256,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(48, codec.getSize().eval(null).intValue());
     }
 
+    @Test
     public void testArrayOfBytes() throws DecodingException, FileNotFoundException {
         Codec<Test11> codec = Codecs.create(Test11.class);
         ByteBuffer buffer = ByteBuffer.wrap(new byte[]{1, 2});
@@ -250,6 +266,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(2, value.elements[1]);
     }
 
+    @Test
     public void testDynamicListSingleElement() throws DecodingException, FileNotFoundException {
         Codec<Test3> codec = Codecs.create(Test3.class);
         ByteBuffer byteBuffer = ByteBuffer
@@ -265,6 +282,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(6, result.elements.get(1).value3);
     }
 
+    @Test
     public void testEnclosingConstruction() throws DecodingException, FileNotFoundException {
         Codec<Test13> codec = Codecs.create(Test13.class);
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{3, 8});
@@ -276,6 +294,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(16, codec.getSize().eval(null).intValue());
     }
 
+    @Test
     public void testEnclosingReferences() throws DecodingException {
         Codec<Test15> codec = Codecs.create(Test15.class);
         ByteBuffer byteBuffer = ByteBuffer.wrap(new byte[]{3, (byte) 0xff});
@@ -286,6 +305,7 @@ public class IntegrationTest extends TestCase {
         assertTrue(codec.getSize().isParameterized());
     }
 
+    @Test
     public void testEnclosingReferencesWithList() throws DecodingException, FileNotFoundException {
         Codec<Test17> codec = Codecs.create(Test17.class);
         ByteBuffer byteBuffer = ByteBuffer
@@ -297,6 +317,7 @@ public class IntegrationTest extends TestCase {
         assertNull(codec.getSize());
     }
 
+    @Test
     public void testDoubleNestedEnclosingReferencesWithList()
             throws DecodingException, FileNotFoundException {
         Codec<Test21> codec = Codecs.create(Test21.class);
@@ -314,6 +335,7 @@ public class IntegrationTest extends TestCase {
         assertNull(codec.getSize());
     }
 
+    @Test
     public void testUnboundedList() throws DecodingException, FileNotFoundException {
         Codec<Test12> codec = Codecs.create(Test12.class);
         Test12 result = Codecs.decode(codec, new byte[]{1, 2, 3, 4, 5, 6});
@@ -327,6 +349,7 @@ public class IntegrationTest extends TestCase {
         assertNull(codec.getSize());
     }
 
+    @Test
     public void testUnboundedListMultipleElementTypes()
             throws DecodingException, FileNotFoundException {
         Codec<Test22> codec = Codecs.create(Test22.class);
@@ -348,6 +371,7 @@ public class IntegrationTest extends TestCase {
      * @throws DecodingException
      * @throws FileNotFoundException
      */
+    @Test
     public void testSimpleLookup() throws DecodingException, FileNotFoundException {
         Codec<Test26> codec = Codecs.create(Test26.class);
         Test26 result = Codecs.decode(codec, new byte[]{1, 2, (byte) 255});
@@ -366,6 +390,7 @@ public class IntegrationTest extends TestCase {
      * @throws DecodingException
      * @throws FileNotFoundException
      */
+    @Test
     public void testComplexLookup() throws DecodingException, FileNotFoundException {
         Codec<Test27> codec = Codecs.create(Test27.class);
         Test27 result = Codecs
@@ -376,10 +401,12 @@ public class IntegrationTest extends TestCase {
         assertEquals(1, result.number);
     }
 
+    @Test
     public void testRecursion() throws DecodingException, FileNotFoundException {
         Codec<Test29> codec = Codecs.create(Test29.class);
     }
 
+    @Test
     public void testSelectFrom() throws DecodingException, FileNotFoundException {
         Codec<Test30> codec = Codecs.create(Test30.class);
         Test30 value = Codecs.decode(codec, new byte[]{2, 3, 4, 5, 6, 7, 8});
@@ -388,6 +415,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(0x304, ((Test5b) value.value).value1);
     }
 
+    @Test
     public void testSelectFromUsingLookup() throws DecodingException, FileNotFoundException {
         Codec<Test31> codec = Codecs.create(Test31.class);
         Test31 value = Codecs.decode(codec, new byte[]{5, 6, 1, 3, 4, 5, 6,
@@ -396,6 +424,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(Test5b.class, value.value.getClass());
     }
 
+    @Test
     public void testSelectFromCompareString() throws DecodingException, FileNotFoundException {
         Codec<Test32> codec = Codecs.create(Test32.class);
         Test32 value = Codecs.decode(codec, new byte[]{(byte) 'a',
@@ -404,6 +433,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(Test5a.class, value.value.getClass());
     }
 
+    @Test
     public void testSelectFromCompareStringFromArray() throws DecodingException, FileNotFoundException {
         Codec<Test33> codec = Codecs.create(Test33.class);
         Test33 value = Codecs.decode(codec, new byte[]{(byte) 'a',
@@ -412,6 +442,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(Test5b.class, value.value.getClass());
     }
 
+    @Test
     public void testSelectFromCompareStringFromArrayAndOuter()
             throws DecodingException, FileNotFoundException {
         Codec<Test35> codec = Codecs.create(Test35.class);
@@ -420,6 +451,7 @@ public class IntegrationTest extends TestCase {
         assertNotNull(value.values[0].value);
     }
 
+    @Test
     public void testOuterReferencesFromArray() throws DecodingException, FileNotFoundException {
         Codec<Test37> codec = Codecs.create(Test37.class);
         Test37 value = Codecs.decode(codec, new byte[]{1, (byte) 'a'});
@@ -427,6 +459,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(1, value.values.length);
     }
 
+    @Test
     public void testOuterReferencesFromArrayIncludingLocal()
             throws DecodingException, FileNotFoundException {
         Codec<Test39> codec = Codecs.create(Test39.class);
@@ -439,6 +472,7 @@ public class IntegrationTest extends TestCase {
         assertEquals("abcd", value.values[0].value);
     }
 
+    @Test
     public void testOuterIndexReferences() throws DecodingException {
         Codec<Test41> codec = Codecs.create(Test41.class);
         Test41 value = Codecs.decode(codec, new byte[]{1, 2, 'a', 'b', 'c',
@@ -449,6 +483,7 @@ public class IntegrationTest extends TestCase {
         assertEquals("a", value.values[0].value);
     }
 
+    @Test
     public void testOuterIndexReferencesIndexedByLocal()
             throws DecodingException, FileNotFoundException {
         Codec<Test43> codec = Codecs.create(Test43.class);
@@ -460,6 +495,7 @@ public class IntegrationTest extends TestCase {
         assertEquals("ab", value.values[0].value);
     }
 
+    @Test
     public void testReferencesPartiallyResolvable() throws DecodingException, IOException {
         Codec<Test45> codec = Codecs.create(Test45.class);
         File file = folder.newFile("test.html");
@@ -467,6 +503,7 @@ public class IntegrationTest extends TestCase {
         // TODO: Add some tests on the contents of this file.
     }
 
+    @Test
     public void testStaticReferences() throws DecodingException {
         Codec<Test48> codec = Codecs.create(Test48.class);
         Test48 value = Codecs.decode(codec, new byte[]{1, 4});
@@ -475,12 +512,14 @@ public class IntegrationTest extends TestCase {
         assertEquals(0, value.value);
     }
 
+    @Test
     public void testDefaultBigEndian() throws DecodingException {
         Codec<Test49> codec = Codecs.create(Test49.class);
         Test49 value = Codecs.decode(codec, new byte[]{0, 0, 0, 1});
         assertEquals(1, value.value);
     }
 
+    @Test
     public void testNoBoundFields1() {
         try {
             Codec<Test50> codec = Codecs.create(Test50.class);
@@ -489,6 +528,7 @@ public class IntegrationTest extends TestCase {
         }
     }
 
+    @Test
     public void testNoBoundFields2() {
         try {
             Codec<Test51> codec = Codecs.create(Test51.class);
@@ -497,6 +537,7 @@ public class IntegrationTest extends TestCase {
         }
     }
 
+    @Test
     public void testListWithUnboundField() throws DecodingException {
         Codec<Test52> codec = Codecs.create(Test52.class);
         byte[] data = new byte[9];
@@ -504,6 +545,7 @@ public class IntegrationTest extends TestCase {
         Test52 out = Codecs.decode(codec, data);
     }
 
+    @Test
     public void testInitMethod() throws Exception {
         Codec<Test54> codec = Codecs.create(Test54.class);
         byte[] data = new byte[]{1, 1, 1};
@@ -511,6 +553,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(0, out.b);
     }
 
+    @Test
     public void testInitMethodInChildInstance() throws Exception {
         Codec<Test54> codec = Codecs.create(Test54.class);
         byte[] data = new byte[]{1, 1, 1};
@@ -518,6 +561,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(0, out.instance.b);
     }
 
+    @Test
     public void testInitMethodInChildArray() throws Exception {
         Codec<Test54> codec = Codecs.create(Test54.class);
         byte[] data = new byte[]{1, 1, 1};
@@ -525,6 +569,7 @@ public class IntegrationTest extends TestCase {
         assertEquals(0, out.array[0].b);
     }
 
+    @Test
     public void testInitMethodInChildList() throws Exception {
         Codec<Test54> codec = Codecs.create(Test54.class);
         byte[] data = new byte[]{1, 1, 1, 1};
