@@ -41,6 +41,11 @@ public enum ByteOrder {
 
     LittleEndian,
 
-    BigEndian
+    BigEndian;
+
+    public static final ByteOrder Native =
+            java.nio.ByteOrder.nativeOrder() == java.nio.ByteOrder.BIG_ENDIAN
+                    ? BigEndian
+                    : LittleEndian;
 
 }
