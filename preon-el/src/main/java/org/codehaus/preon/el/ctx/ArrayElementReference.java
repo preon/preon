@@ -222,4 +222,8 @@ public class ArrayElementReference<T> implements Reference<T> {
         }
     }
 
+    public boolean isBasedOn(ReferenceContext<T> other) {
+        return arrayReference.isBasedOn(other);
+    }
+
 }

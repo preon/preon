@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 /**
  * A base class for {@link Node} implementations, implementing the
@@ -66,4 +67,8 @@ public abstract class AbstractNode<T extends Comparable<T>, E> implements Node<T
         return references;
     }
 
+    public boolean isConstantFor(ReferenceContext<E> eReferenceContext) {
+        return true;
+    }
+    
 }

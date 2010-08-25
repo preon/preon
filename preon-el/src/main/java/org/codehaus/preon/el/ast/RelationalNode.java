@@ -37,6 +37,7 @@ import java.util.Set;
 import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.el.util.ClassUtils;
 import org.codehaus.preon.el.util.StringBuilderDocument;
 
@@ -244,4 +245,8 @@ public class RelationalNode<T extends Comparable<T>, E> extends
         }
     }
 
+    @Override
+    public boolean isConstantFor(ReferenceContext<E> context) {
+        return lhs.isConstantFor(context) && rhs.isConstantFor(context);
+    }
 }

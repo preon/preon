@@ -156,4 +156,8 @@ public class PropertyReference<T> implements Reference<T> {
         }
     }
 
+    public boolean isBasedOn(ReferenceContext<T> context) {
+        return reference.isBasedOn(context);
+    }
+
 }

@@ -196,4 +196,11 @@ public class MultiReference<E> implements Reference<E> {
         }
     }
 
+    public boolean isBasedOn(ReferenceContext<E> context) {
+        for (Reference<E> reference : references) {
+            if (!reference.isBasedOn(context)) return false;
+        }
+        return true;
+    }
+
 }

@@ -87,4 +87,8 @@ public class ClassReferenceContext<T> implements Reference<T> {
         }
     }
 
+    public boolean isBasedOn(ReferenceContext<T> other) {
+        return this.equals(other);
+    }
+
 }

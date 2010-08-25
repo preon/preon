@@ -37,6 +37,7 @@ import java.util.Set;
 import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.el.util.StringBuilderDocument;
 
 /**
@@ -206,4 +207,9 @@ public class BooleanOperatorNode<E> extends AbstractNode<Boolean, E> {
         }
     }
 
+    @Override
+    public boolean isConstantFor(ReferenceContext<E> eReferenceContext) {
+        return lhs.isConstantFor(eReferenceContext) && rhs.isConstantFor(eReferenceContext);
+
+    }
 }

@@ -174,4 +174,8 @@ public class PropertyReference implements Reference<Resolver> {
         }
     }
 
+    public boolean isBasedOn(ReferenceContext<Resolver> context) {
+        return this.context.equals(context);
+    }
+
 }

@@ -122,6 +122,10 @@ public class VariableContext implements ReferenceContext<VariableResolver> {
             }
         }
 
+        public boolean isBasedOn(ReferenceContext<VariableResolver> other) {
+            return context.equals(other);            
+        }
+
     }
 
     public Reference<VariableResolver> selectItem(String index) {

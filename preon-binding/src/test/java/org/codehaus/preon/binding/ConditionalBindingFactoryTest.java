@@ -201,6 +201,10 @@ public class ConditionalBindingFactoryTest extends TestCase {
             }
         }
 
+        public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+            return false;
+        }
+
     }
 
 }

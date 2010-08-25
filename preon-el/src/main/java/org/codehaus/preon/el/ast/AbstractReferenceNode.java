@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 /**
  * The superclass of reference nodes.
@@ -70,4 +71,8 @@ public abstract class AbstractReferenceNode<T extends Comparable<T>, E> extends 
         reference.document(target);
     }
 
+    @Override
+    public boolean isConstantFor(ReferenceContext<E> context) {
+        return reference.isBasedOn(context);
+    }
 }

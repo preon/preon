@@ -208,4 +208,8 @@ public class OuterResolvingReference implements Reference<Resolver> {
         }
     }
 
+    public boolean isBasedOn(ReferenceContext<Resolver> context) {
+        return this.wrapped.isBasedOn(context);
+    }
+
 }

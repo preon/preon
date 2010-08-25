@@ -141,18 +141,15 @@ public class ListCodecFactory implements CodecFactory {
                 // of the individual elements may be determined by some
                 // variables read upstream, so we won't know if the size is a
                 // constant until we actually start decoding the List.
+
+
                 Expression<Integer, Resolver> expr = getSizeExpression(
                         settings, context);
                 Expression<Integer, Resolver> elementSize = codec.getSize();
-                if (elementSize != null && !elementSize.isParameterized()) {
+                if (elementSize != null && (!elementSize.isParameterized() || elementSize.isConstantFor(context))) {
                     return new StaticListCodec(expr, codec);
                 } else {
-                    Codec<List<Object>> skipCodec = new StaticListCodec(expr,
-                            codec);
-                    // TODO: Make this more efficient by passing the size as
-                    // well.
-                    Codec<List<Object>> seqCodec = new DynamicListCodec(codec);
-                    return new SwitchingListCodec(skipCodec, seqCodec);
+                    return new DynamicListCodec(codec);
                 }
             }
         } else {
@@ -563,6 +560,10 @@ public class ListCodecFactory implements CodecFactory {
                 } else {
                     return null;
                 }
+            }
+
+            public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+                return false;
             }
 
         }

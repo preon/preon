@@ -355,6 +355,10 @@ public class SelectFromCodec<T> implements Codec<T> {
                 }
             }
 
+            public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+                return context.equals(resolverReferenceContext);
+            }
+
         }
 
     }

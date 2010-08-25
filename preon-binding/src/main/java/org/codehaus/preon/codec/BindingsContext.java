@@ -36,20 +36,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.codehaus.preon.el.BindingException;
-import org.codehaus.preon.el.Document;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Expressions;
-import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.*;
 import org.codehaus.preon.el.ctx.MultiReference;
 import org.codehaus.preon.el.util.StringBuilderDocument;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.binding.Binding;
-import org.codehaus.preon.el.ArrayElementReference;
-import org.codehaus.preon.el.ObjectResolverContext;
-import org.codehaus.preon.el.OuterReference;
-import org.codehaus.preon.el.PropertyReference;
 import org.codehaus.preon.util.ParaContentsDocument;
 
 /**
@@ -340,6 +332,10 @@ public class BindingsContext implements ObjectResolverContext {
             } else {
                 return null;
             }
+        }
+
+        public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+            return BindingsContext.this.equals(resolverReferenceContext);
         }
 
     }

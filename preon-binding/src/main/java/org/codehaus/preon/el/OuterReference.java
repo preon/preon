@@ -163,4 +163,8 @@ public class OuterReference implements Reference<Resolver> {
         return null;
     }
 
+    public boolean isBasedOn(ReferenceContext<Resolver> context) {
+        return outerContext.equals(context);
+    }
+
 }

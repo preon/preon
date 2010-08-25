@@ -47,7 +47,6 @@ import org.codehaus.preon.util.TextUtils;
  * A reference to an array element.
  *
  * @author Wilfred Springer (wis)
- * @param <T> The type of object referenced.
  */
 public class ArrayElementReference implements Reference<Resolver> {
 
@@ -205,6 +204,11 @@ public class ArrayElementReference implements Reference<Resolver> {
         } else {
             return null;
         }
+    }
+
+    public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+        return this.arrayReference.isBasedOn(resolverReferenceContext) 
+                && this.index.isConstantFor(resolverReferenceContext);
     }
 
 }

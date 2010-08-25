@@ -118,6 +118,10 @@ public class ConditionalBindingFactory implements BindingFactory {
                         return this;
                     }
 
+                    public boolean isConstantFor(ReferenceContext<Resolver> resolverReferenceContext) {
+                        return false;
+                    }
+
                 };
             }
             return new ConditionalBinding(expr, decorated.create(metadata, field, codec, context, containerReference));
@@ -241,6 +245,10 @@ public class ConditionalBindingFactory implements BindingFactory {
 
         public Expression<Integer, Resolver> simplify() {
             return new ConditionalValue(condition.simplify(), expr.simplify());
+        }
+
+        public boolean isConstantFor(ReferenceContext<Resolver> context) {
+            return condition.isConstantFor(context) && expr.isConstantFor(context);
         }
 
         public void document(Document document) {

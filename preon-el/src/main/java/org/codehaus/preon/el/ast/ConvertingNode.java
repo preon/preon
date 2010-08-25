@@ -37,6 +37,7 @@ import java.util.Set;
 
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.el.util.Converter;
 import org.codehaus.preon.el.util.Converters;
 
@@ -97,6 +98,10 @@ public class ConvertingNode<T extends Comparable<T>, E, S> implements Node<T, E>
 
     public Node<T, E> simplify() {
         return new ConvertingNode<T, E, S>(converter, source.simplify());
+    }
+
+    public boolean isConstantFor(ReferenceContext<E> context) {
+        return source.isConstantFor(context);
     }
 
     public Set<Reference<E>> getReferences() {

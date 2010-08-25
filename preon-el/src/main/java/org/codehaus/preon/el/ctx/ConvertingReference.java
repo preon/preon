@@ -98,4 +98,8 @@ public class ConvertingReference<T, E> implements Reference<E> {
         }
     }
 
+    public boolean isBasedOn(ReferenceContext<E> context) {
+        return reference.isBasedOn(context);
+    }
+
 }

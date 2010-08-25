@@ -98,4 +98,8 @@ public class ContextReplacingReference implements Reference<Resolver> {
         }
     }
 
+    public boolean isBasedOn(ReferenceContext<Resolver> other) {
+        return reference.isBasedOn(other);
+    }
+
 }

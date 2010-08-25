@@ -133,6 +133,10 @@ public class ImportSupportingObjectResolverContext implements
             return this; // Forgot how to implement this
         }
 
+        public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+            return true;
+        }
+
         public Object resolve(Resolver resolver) {
             return imported;
         }
@@ -206,6 +210,10 @@ public class ImportSupportingObjectResolverContext implements
 
         public Reference<Resolver> narrow(Class<?> other) {
             return this;
+        }
+
+        public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
+            return true;
         }
 
         public Object resolve(Resolver resolver) {

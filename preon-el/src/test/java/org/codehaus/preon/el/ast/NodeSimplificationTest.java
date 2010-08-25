@@ -75,7 +75,7 @@ public class NodeSimplificationTest extends TestCase {
         IntegerNode<Object> node1 = new IntegerNode<Object>(12);
         IntegerNode<Object> node2 = new IntegerNode<Object>(5);
         IntegerReferenceNode<Object> node3 = new IntegerReferenceNode<Object>(
-                new TestReference<Object>("a"));
+                new TestReference("a"));
         ArithmeticNode<Object> node4 = new ArithmeticNode<Object>(Operator.plus, node1, node2);
         node4 = new ArithmeticNode<Object>(Operator.plus, node4, node3);
         Node<Integer, Object> result = node4.simplify();
@@ -84,7 +84,7 @@ public class NodeSimplificationTest extends TestCase {
         assertEquals("the sum of 17 and a", doc.toString());
     }
 
-    private class TestReference<Object> implements Reference<Object> {
+    private class TestReference implements Reference<Object> {
 
         private String name;
 
@@ -127,6 +127,10 @@ public class NodeSimplificationTest extends TestCase {
 
         public Reference<Object> narrow(Class<?> type) {
             return null;
+        }
+
+        public boolean isBasedOn(ReferenceContext<java.lang.Object> objectReferenceContext) {
+            return false;
         }
 
     }

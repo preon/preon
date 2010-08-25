@@ -46,7 +46,7 @@ import org.codehaus.preon.el.Reference;
  * @param <T>
  *            The type of value represented by the node. (Or more precisely, the
  *            type of value to which this node will evaluate when invoking
- *            {@link #eval(E context)}.
+ *            {@link #eval(Object)}. 
  */
 public interface Node<T, E> extends Expression<T, E> {
 
@@ -93,5 +93,5 @@ public interface Node<T, E> extends Expression<T, E> {
      * @return See {@link Comparable#compareTo(Object)}.
      */
     int compareTo(E context, Node<T, E> other);
-    
+
 }
