@@ -122,6 +122,10 @@ public class ConditionalBindingFactory implements BindingFactory {
                         return false;
                     }
 
+                    public Expression<Boolean, Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
+                        throw new UnsupportedOperationException();
+                    }
+
                 };
             }
             return new ConditionalBinding(expr, decorated.create(metadata, field, codec, context, containerReference));
@@ -249,6 +253,10 @@ public class ConditionalBindingFactory implements BindingFactory {
 
         public boolean isConstantFor(ReferenceContext<Resolver> context) {
             return condition.isConstantFor(context) && expr.isConstantFor(context);
+        }
+
+        public Expression<Integer, Resolver> rescope(ReferenceContext<Resolver> context) {
+            return new ConditionalValue(condition.rescope(context), expr.rescope(context));
         }
 
         public void document(Document document) {

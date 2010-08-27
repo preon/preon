@@ -211,4 +211,8 @@ public class ArrayElementReference implements Reference<Resolver> {
                 && this.index.isConstantFor(resolverReferenceContext);
     }
 
+    public Reference<Resolver> rescope(ReferenceContext<Resolver> newScope) {
+        return new ArrayElementReference(arrayReference.rescope(newScope), elementType, index.rescope(newScope), newScope);
+    }
+
 }

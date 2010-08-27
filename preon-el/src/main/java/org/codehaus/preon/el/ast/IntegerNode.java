@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 /**
  * A node representing an integer literal.
@@ -89,6 +90,10 @@ public class IntegerNode<E> extends AbstractNode<Integer, E> {
      */
     public boolean isParameterized() {
         return false;
+    }
+
+    public Node<Integer, E> rescope(ReferenceContext<E> context) {
+        return this;
     }
 
 }

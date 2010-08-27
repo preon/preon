@@ -35,7 +35,9 @@ package org.codehaus.preon.el.ast;
 import java.util.Set;
 
 import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 /**
  * A convenience {@link Node} wrapper around <code>String</code>s.
@@ -80,6 +82,10 @@ public class StringNode<E> extends AbstractNode<String, E> {
      * @see org.codehaus.preon.el.ast.Node#simplify()
      */
     public Node<String, E> simplify() {
+        return this;
+    }
+
+    public Node<String, E> rescope(ReferenceContext<E> eReferenceContext) {
         return this;
     }
 

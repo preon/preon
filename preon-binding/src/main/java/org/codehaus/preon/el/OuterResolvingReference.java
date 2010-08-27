@@ -32,11 +32,6 @@
  */
 package org.codehaus.preon.el;
 
-import org.codehaus.preon.el.BindingException;
-import org.codehaus.preon.el.Document;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Reference;
-import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.ResolverContext;
 
@@ -61,25 +56,32 @@ public class OuterResolvingReference implements Reference<Resolver> {
 
     /**
      * The original {@link ResolverContext} to return by this reference. (To make sure that any other references are
-     * always contructed from this context.
+     * always contructed from this context.)
      */
-    private ResolverContext originalContext;
+    private final ResolverContext originalContext;
 
     /** The {@link Reference} wrapped. */
     private Reference<Resolver> wrapped;
 
     /**
+     * The {@link ResolverContext} to which this is reference is essentially pointing.
+     */
+    private final ResolverContext outerContext;
+
+    /**
      * Constructs a new instance.
      *
-     * @param outerName       The name to use when resolving the outer {@link Resolver} from the {@link Resolver} passed
-     *                        to {@link #resolve(Resolver)}.
+     * @param outerName       The name to use when resolving the outer {@link org.codehaus.preon.Resolver} from the {@link org.codehaus.preon.Resolver} passed
+     *                        to {@link #resolve(org.codehaus.preon.Resolver)}.
      * @param originalContext The context to be returned.
+     * @param outerContext
      */
     public OuterResolvingReference(String outerName,
-                                   ResolverContext originalContext, Reference<Resolver> wrapped) {
+                                   ResolverContext originalContext, Reference<Resolver> wrapped, ResolverContext outerContext) {
         this.outerName = outerName;
         this.originalContext = originalContext;
         this.wrapped = wrapped;
+        this.outerContext = outerContext;
     }
 
     /*
@@ -140,7 +142,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
     public Reference<Resolver> selectAttribute(String name)
             throws BindingException {
         Reference<Resolver> actual = wrapped.selectAttribute(name);
-        return new OuterResolvingReference(outerName, originalContext, actual);
+        return new OuterResolvingReference(outerName, originalContext, actual, null);
     }
 
     /*
@@ -151,7 +153,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
 
     public Reference<Resolver> selectItem(String index) throws BindingException {
         Reference<Resolver> actual = wrapped.selectItem(index);
-        return new OuterResolvingReference(outerName, originalContext, actual);
+        return new OuterResolvingReference(outerName, originalContext, actual, null);
     }
 
     /*
@@ -164,7 +166,7 @@ public class OuterResolvingReference implements Reference<Resolver> {
     public Reference<Resolver> selectItem(Expression<Integer, Resolver> index)
             throws BindingException {
         Reference<Resolver> actual = wrapped.selectItem(index);
-        return new OuterResolvingReference(outerName, originalContext, actual);
+        return new OuterResolvingReference(outerName, originalContext, actual, null);
     }
 
     /*
@@ -204,12 +206,20 @@ public class OuterResolvingReference implements Reference<Resolver> {
             return this;
         } else {
             return new OuterResolvingReference(outerName, originalContext,
-                    narrowed);
+                    narrowed, null);
         }
     }
 
     public boolean isBasedOn(ReferenceContext<Resolver> context) {
         return this.wrapped.isBasedOn(context);
+    }
+
+    public Reference<Resolver> rescope(ReferenceContext<Resolver> context) {
+        if (outerContext.equals(context)) {
+            return wrapped;
+        } else {
+            return wrapped.rescope(context);
+        }
     }
 
 }

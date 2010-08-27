@@ -203,4 +203,13 @@ public class MultiReference<E> implements Reference<E> {
         return true;
     }
 
+    public Reference<E> rescope(ReferenceContext<E> eReferenceContext) {
+        Reference<E>[] replacements = new Reference[this.references.length];
+        int i = 0;
+        for (Reference<E> reference : references) {
+            replacements[i] = reference.rescope(context);
+        }
+        return new MultiReference<E>(replacements);
+    }
+
 }

@@ -100,6 +100,10 @@ public class ConvertingNode<T extends Comparable<T>, E, S> implements Node<T, E>
         return new ConvertingNode<T, E, S>(converter, source.simplify());
     }
 
+    public Node<T, E> rescope(ReferenceContext<E> context) {
+        return this;
+    }
+
     public boolean isConstantFor(ReferenceContext<E> context) {
         return source.isConstantFor(context);
     }

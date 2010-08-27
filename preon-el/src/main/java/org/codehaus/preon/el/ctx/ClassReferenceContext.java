@@ -91,4 +91,9 @@ public class ClassReferenceContext<T> implements Reference<T> {
         return this.equals(other);
     }
 
+    public Reference<T> rescope(ReferenceContext<T> context) {
+        assert context == this;
+        return this;
+    }
+
 }

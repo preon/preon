@@ -119,4 +119,6 @@ public interface Reference<E> extends ReferenceContext<E> {
      */
     boolean isBasedOn(ReferenceContext<E> context);
 
+    Reference<E> rescope(ReferenceContext<E> context);
+
 }

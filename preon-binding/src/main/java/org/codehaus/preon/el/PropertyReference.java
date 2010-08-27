@@ -94,6 +94,12 @@ public class PropertyReference implements Reference<Resolver> {
         this.includeType = includeType;
     }
 
+    private PropertyReference(Reference<Resolver> reference, Field field, ReferenceContext<Resolver> context) {
+        this.reference = reference;
+        this.field = field;
+        this.context = context;
+    }
+
     public Object resolve(Resolver context) {
         try {
             return field.get(reference.resolve(context));
@@ -176,6 +182,10 @@ public class PropertyReference implements Reference<Resolver> {
 
     public boolean isBasedOn(ReferenceContext<Resolver> context) {
         return this.context.equals(context);
+    }
+
+    public Reference<Resolver> rescope(ReferenceContext<Resolver> context) {
+        return new PropertyReference(reference.rescope(context), field, context);
     }
 
 }

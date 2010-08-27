@@ -37,6 +37,7 @@ import java.util.Set;
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 /**
  * A {@link Node} wrapping around an {@link Expression}. Relevant in cases in
@@ -100,6 +101,10 @@ public class ExpressionNode<T extends Comparable<T>, E> extends AbstractNode<T, 
      */
     public Node<T, E> simplify() {
         return new ExpressionNode<T, E>(expression.simplify());
+    }
+
+    public Node<T, E> rescope(ReferenceContext<E> context) {
+        return new ExpressionNode(expression.rescope(context));
     }
 
     /*

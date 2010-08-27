@@ -56,28 +56,44 @@ import java.util.List;
  */
 public class SelectFromCodec<T> implements Codec<T> {
 
-    /** The name of the variable that holds the prefix's value. */
+    /**
+     * The name of the variable that holds the prefix's value.
+     */
     private final static String PREFIX_NAME = "prefix";
 
-    /** The size of the prefix, in number of bits. */
+    /**
+     * The size of the prefix, in number of bits.
+     */
     private int prefixSize;
 
-    /** The byte order of the prefix. */
+    /**
+     * The byte order of the prefix.
+     */
     private ByteOrder byteOrder;
 
-    /** A list of all conditions. */
+    /**
+     * A list of all conditions.
+     */
     private List<Expression<Boolean, Resolver>> conditions;
 
-    /** A list of all {@link Codec}s. */
+    /**
+     * A list of all {@link Codec}s.
+     */
     private List<Codec<?>> codecs;
 
-    /** The types potentially returned by this {@link Codec}. */
+    /**
+     * The types potentially returned by this {@link Codec}.
+     */
     private Class<?>[] types;
 
-    /** The common type. */
+    /**
+     * The common type.
+     */
     private Class<?> type;
 
-    /** The {@link Codec} to apply when none of the conditions are met. */
+    /**
+     * The {@link Codec} to apply when none of the conditions are met.
+     */
     private Codec<?> defaultCodec;
 
     /**
@@ -357,6 +373,10 @@ public class SelectFromCodec<T> implements Codec<T> {
 
             public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
                 return context.equals(resolverReferenceContext);
+            }
+
+            public Reference<Resolver> rescope(ReferenceContext<Resolver> context) {
+                return this;
             }
 
         }

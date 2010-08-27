@@ -126,6 +126,11 @@ public class VariableContext implements ReferenceContext<VariableResolver> {
             return context.equals(other);            
         }
 
+        public Reference<VariableResolver> rescope(ReferenceContext<VariableResolver> variableResolverReferenceContext) {
+            return this;
+        }
+
+
     }
 
     public Reference<VariableResolver> selectItem(String index) {

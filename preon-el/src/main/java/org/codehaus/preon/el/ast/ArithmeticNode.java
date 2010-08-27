@@ -240,6 +240,10 @@ public class ArithmeticNode<E> extends AbstractNode<Integer, E> {
         return this;
     }
 
+    public Node<Integer, E> rescope(ReferenceContext<E> context) {
+        return new ArithmeticNode<E>(operator, lhs.rescope(context), rhs.rescope(context));
+    }
+
     /**
      * Returns the left-hand side of the expression.
      * 

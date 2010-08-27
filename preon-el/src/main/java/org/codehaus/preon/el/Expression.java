@@ -113,4 +113,12 @@ public interface Expression<R, C> extends Descriptive {
      */
     boolean isConstantFor(ReferenceContext<C> context);
 
+    /**
+     * Returns an expression that is rescoped for the context passed in. Only if {@link #isConstantFor(ReferenceContext)} returns true.
+     *
+     * @param context The context to rescope for.
+     * @return A rescoped version of the expression.
+     */
+    Expression<R, C> rescope(ReferenceContext<C> context);
+
 }

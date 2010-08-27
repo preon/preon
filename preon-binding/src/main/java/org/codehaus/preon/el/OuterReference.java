@@ -34,11 +34,6 @@ package org.codehaus.preon.el;
 
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.ResolverContext;
-import org.codehaus.preon.el.BindingException;
-import org.codehaus.preon.el.Document;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Reference;
-import org.codehaus.preon.el.ReferenceContext;
 
 /**
  * A {@link Reference} to the outer context. This {@link Reference} will create new references ({@link
@@ -50,10 +45,14 @@ import org.codehaus.preon.el.ReferenceContext;
  */
 public class OuterReference implements Reference<Resolver> {
 
-    /** The default name of referring to the outer context. */
+    /**
+     * The default name of referring to the outer context.
+     */
     public final static String DEFAULT_OUTER_NAME = "outer";
 
-    /** The "outer" {@link ResolverContext}. */
+    /**
+     * The "outer" {@link ResolverContext}.
+     */
     private ResolverContext outerContext;
 
     /**
@@ -112,7 +111,7 @@ public class OuterReference implements Reference<Resolver> {
             throws BindingException {
         Reference<Resolver> actual = outerContext.selectAttribute(name);
         return new OuterResolvingReference(DEFAULT_OUTER_NAME, originalContext,
-                actual);
+                actual, outerContext);
     }
 
     /*
@@ -123,7 +122,7 @@ public class OuterReference implements Reference<Resolver> {
     public Reference<Resolver> selectItem(String index) throws BindingException {
         Reference<Resolver> actual = outerContext.selectItem(index);
         return new OuterResolvingReference(DEFAULT_OUTER_NAME, originalContext,
-                actual);
+                actual, null);
     }
 
     /*
@@ -135,7 +134,7 @@ public class OuterReference implements Reference<Resolver> {
             throws BindingException {
         Reference<Resolver> actual = outerContext.selectItem(index);
         return new OuterResolvingReference(DEFAULT_OUTER_NAME, originalContext,
-                actual);
+                actual, null);
     }
 
     /*
@@ -165,6 +164,12 @@ public class OuterReference implements Reference<Resolver> {
 
     public boolean isBasedOn(ReferenceContext<Resolver> context) {
         return outerContext.equals(context);
+    }
+
+    public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
+        // Since instance of this class are taken out of the reference path, this operation is never expected to be
+        // invoked on an instance of this class.
+        throw new UnsupportedOperationException();
     }
 
 }

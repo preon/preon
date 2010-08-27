@@ -102,4 +102,8 @@ public class ConvertingReference<T, E> implements Reference<E> {
         return reference.isBasedOn(context);
     }
 
+    public Reference<E> rescope(ReferenceContext<E> context) {
+        return new ConvertingReference<T,E>(type, reference.rescope(context));
+    }
+
 }

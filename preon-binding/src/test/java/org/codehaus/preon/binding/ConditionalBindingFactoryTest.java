@@ -205,6 +205,10 @@ public class ConditionalBindingFactoryTest extends TestCase {
             return false;
         }
 
+        public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
+            return this;
+        }
+
     }
 
 }

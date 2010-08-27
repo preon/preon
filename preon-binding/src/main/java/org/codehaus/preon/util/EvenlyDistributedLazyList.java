@@ -75,7 +75,7 @@ public class EvenlyDistributedLazyList<E> implements List<E> {
      */
     private int elementSize;
 
-    /** A reference to the {@link Resolver} resolving variables referenced in {@link Expression}s. */
+    /** A reference to the {@link Resolver} resolving variables referenced in {@link org.codehaus.preon.el.Expression}s. */
     private Resolver resolver;
 
     /**
@@ -90,19 +90,19 @@ public class EvenlyDistributedLazyList<E> implements List<E> {
      * @param codec    The {@link Codec} responsible for decoding elements in the list.
      * @param offset   The start position of the encoded list, relative to the start of the {@link BitBuffer}.
      * @param buffer   The {@link BitBuffer} from which data will be decoded.
-     * @param maxSize  The number of elements in the list.
+     * @param numberOfElements  The number of elements in the list.
      * @param builder  The object capable of constructing new instances of a class, including non-static inner classes.
      * @param resolver The context for evaluating expressions.
      */
-    public EvenlyDistributedLazyList(Codec<E> codec, long offset, BitBuffer buffer, int maxSize,
-                                     Builder builder, Resolver resolver) {
+    public EvenlyDistributedLazyList(Codec<E> codec, long offset, BitBuffer buffer, int numberOfElements,
+                                     Builder builder, Resolver resolver, int elementSize) {
         this.codec = codec;
         this.offset = offset;
         this.buffer = buffer;
         this.builder = builder;
-        this.maxSize = maxSize;
+        this.maxSize = numberOfElements;
         this.resolver = resolver;
-        this.elementSize = codec.getSize().eval(resolver);
+        this.elementSize = elementSize;
         this.policy = new CodecExceptionPolicy<E>() {
 
             public E handle(CodecException ce) {
@@ -331,7 +331,7 @@ public class EvenlyDistributedLazyList<E> implements List<E> {
 
     public List<E> subList(int fromIndex, int toIndex) {
         return new EvenlyDistributedLazyList<E>(codec, offset + elementSize * fromIndex, buffer,
-                toIndex - fromIndex, builder, resolver);
+                toIndex - fromIndex, builder, resolver, elementSize);
     }
 
     /*

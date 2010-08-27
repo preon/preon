@@ -334,8 +334,16 @@ public class BindingsContext implements ObjectResolverContext {
             }
         }
 
-        public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
-            return BindingsContext.this.equals(resolverReferenceContext);
+        public boolean isBasedOn(ReferenceContext<Resolver> context) {
+            return BindingsContext.this.equals(context);
+        }
+
+        public Reference<Resolver> rescope(ReferenceContext<Resolver> context) {
+            if (BindingsContext.this.equals(context)) {
+                return this;
+            } else {
+                throw new IllegalStateException();
+            }
         }
 
     }

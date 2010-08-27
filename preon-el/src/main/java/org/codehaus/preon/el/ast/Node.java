@@ -36,6 +36,7 @@ import java.util.Set;
 
 import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 /**
  * A node in the AST representing the expression.
@@ -73,6 +74,8 @@ public interface Node<T, E> extends Expression<T, E> {
      * @return The simplified expression.
      */
     Node<T, E> simplify();
+    
+    Node<T, E> rescope(ReferenceContext<E> context);
 
     /**
      * Append references used.

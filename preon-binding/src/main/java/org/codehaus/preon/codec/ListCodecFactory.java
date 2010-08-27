@@ -147,7 +147,12 @@ public class ListCodecFactory implements CodecFactory {
                         settings, context);
                 Expression<Integer, Resolver> elementSize = codec.getSize();
                 if (elementSize != null && (!elementSize.isParameterized() || elementSize.isConstantFor(context))) {
-                    return new StaticListCodec(expr, codec);
+                    if (!elementSize.isParameterized()) {
+                        return new StaticListCodec(expr, codec, elementSize);
+                    } else {
+                        elementSize = elementSize.rescope(context);
+                        return new StaticListCodec(expr.rescope(context), codec, elementSize);
+                    }
                 } else {
                     return new DynamicListCodec(codec);
                 }
@@ -210,22 +215,29 @@ public class ListCodecFactory implements CodecFactory {
         private Codec<T> codec;
 
         /**
+         * An expression to be used to calculate the size of the elements at list construction time.
+         */
+        private Expression<Integer, Resolver> elementSize;
+
+        /**
          * Constructs a new instance.
          *
          * @param maxSize An {@link Expression} representing the number of elements in the {@link List}.
          * @param codec   The {@link Codec} constructing elements in the {@link List}.
          */
         public StaticListCodec(Expression<Integer, Resolver> maxSize,
-                               Codec<T> codec) {
+                               Codec<T> codec,
+                               Expression<Integer, Resolver> elementSize) {
             this.size = maxSize;
             this.codec = codec;
+            this.elementSize = elementSize;
         }
 
         @SuppressWarnings("unchecked")
         public List<T> decode(BitBuffer buffer, Resolver resolver,
                               Builder builder) throws DecodingException {
             return new EvenlyDistributedLazyList(codec, buffer.getBitPos(),
-                    buffer, size.eval(resolver), builder, resolver);
+                    buffer, size.eval(resolver), builder, resolver, elementSize.eval(resolver));
         }
 
         public void encode(List<T> value, BitChannel channel, Resolver resolver) {
@@ -237,7 +249,7 @@ public class ListCodecFactory implements CodecFactory {
         }
 
         public Expression<Integer, Resolver> getSize() {
-            return Expressions.multiply(size, codec.getSize());
+            return Expressions.multiply(size, elementSize);
         }
 
         public Class<?> getType() {
@@ -564,6 +576,10 @@ public class ListCodecFactory implements CodecFactory {
 
             public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
                 return false;
+            }
+
+            public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
+                return this;
             }
 
         }

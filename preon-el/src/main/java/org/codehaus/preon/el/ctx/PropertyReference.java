@@ -69,6 +69,12 @@ public class PropertyReference<T> implements Reference<T> {
         }
     }
 
+    private PropertyReference(Reference<T> reference, Field field, ReferenceContext<T> context) {
+        this.reference = reference;
+        this.field = field;
+        this.context = context;
+    }
+
     public PropertyReference(Reference<T> reference, Class<?> type,
             String name, ReferenceContext<T> context, boolean includeType) {
         this(reference, type, name, context);
@@ -158,6 +164,10 @@ public class PropertyReference<T> implements Reference<T> {
 
     public boolean isBasedOn(ReferenceContext<T> context) {
         return reference.isBasedOn(context);
+    }
+
+    public Reference<T> rescope(ReferenceContext<T> other) {
+        return new PropertyReference<T>(reference.rescope(other), field, this.context);
     }
 
 }

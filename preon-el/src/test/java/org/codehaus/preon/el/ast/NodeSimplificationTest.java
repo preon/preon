@@ -133,6 +133,10 @@ public class NodeSimplificationTest extends TestCase {
             return false;
         }
 
+        public Reference<Object> rescope(ReferenceContext<Object> objectReferenceContext) {
+            return this;
+        }
+
     }
 
 }

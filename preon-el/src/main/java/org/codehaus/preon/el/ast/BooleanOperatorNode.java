@@ -144,6 +144,10 @@ public class BooleanOperatorNode<E> extends AbstractNode<Boolean, E> {
         return this;
     }
 
+    public Node<Boolean, E> rescope(ReferenceContext<E> context) {
+        return this;
+    }
+
     /*
      * (non-Javadoc)
      * 

@@ -137,6 +137,10 @@ public class ImportSupportingObjectResolverContext implements
             return true;
         }
 
+        public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
+            return this;
+        }
+
         public Object resolve(Resolver resolver) {
             return imported;
         }
@@ -214,6 +218,10 @@ public class ImportSupportingObjectResolverContext implements
 
         public boolean isBasedOn(ReferenceContext<Resolver> resolverReferenceContext) {
             return true;
+        }
+
+        public Reference<Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
+            return this;
         }
 
         public Object resolve(Resolver resolver) {

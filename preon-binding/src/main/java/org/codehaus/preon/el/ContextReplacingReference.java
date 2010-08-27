@@ -102,4 +102,8 @@ public class ContextReplacingReference implements Reference<Resolver> {
         return reference.isBasedOn(other);
     }
 
+    public Reference<Resolver> rescope(ReferenceContext<Resolver> context) {
+        return reference.rescope(context);
+    }
+
 }

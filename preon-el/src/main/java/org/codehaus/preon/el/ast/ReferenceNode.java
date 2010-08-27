@@ -87,6 +87,10 @@ public class ReferenceNode<T, E> implements Node<T, E> {
         return this;
     }
 
+    public Node<T, E> rescope(ReferenceContext<E> context) {
+        return new ReferenceNode<T,E>(reference.rescope(context));
+    }
+
     public boolean isConstantFor(ReferenceContext<E> context) {
         return reference.isBasedOn(context);
     }

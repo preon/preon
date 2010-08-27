@@ -32,30 +32,43 @@
  */
 package org.codehaus.preon.el.ast;
 
-import org.codehaus.preon.el.Reference;
+import java.util.Set;
 
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
 /**
- * A {@link AbstractReferenceNode} subclass that evaluates to an integer value.
+ * The superclass of reference nodes.
  * 
  * @author Wilfred Springer
  * 
  */
-public class IntegerReferenceNode<E> extends AbstractReferenceNode<Integer, E> {
+public class IntegerReferenceNode<E> extends AbstractNode<Integer, E> {
+
+    private Reference<E> reference;
 
     public IntegerReferenceNode(Reference<E> reference) {
-        super(reference);
+        this.reference = reference;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.codehaus.preon.el.ast.Node#getType()
-     */
-    public Class<Integer> getType() {
-        return Integer.class;
+    protected Object resolveValue(E context) {
+        return reference.resolve(context);
+    }
+
+    public void gather(Set<Reference<E>> references) {
+        references.add(reference);
+    }
+
+    public void document(Document target) {
+        reference.document(target);
     }
 
     @Override
+    public boolean isConstantFor(ReferenceContext<E> context) {
+        return reference.isBasedOn(context);
+    }
+
     public Integer eval(E context) {
         Object value = resolveValue(context);
         Class<?> type = value.getClass();
@@ -89,21 +102,19 @@ public class IntegerReferenceNode<E> extends AbstractReferenceNode<Integer, E> {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.codehaus.preon.el.ast.Node#simplify()
-     */
+    public Class<Integer> getType() {
+        return Integer.class;
+    }
+
     public Node<Integer, E> simplify() {
         return this;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see org.codehaus.preon.el.Expression#isParameterized()
-     */
+    public Node<Integer, E> rescope(ReferenceContext<E> context) {
+        return new IntegerReferenceNode<E>(reference.rescope(context));
+    }
+
     public boolean isParameterized() {
         return true;
     }
-
-
 }
