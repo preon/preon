@@ -96,6 +96,7 @@ public class ObjectCodec<T> implements Codec<T> {
     }
 
     public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+        resolver = context.getResolver(value, resolver);
         for (Binding binding : context.getBindings()) {
             binding.save(value, channel, resolver);
         }

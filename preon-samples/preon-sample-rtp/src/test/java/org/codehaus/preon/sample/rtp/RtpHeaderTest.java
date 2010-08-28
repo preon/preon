@@ -30,69 +30,37 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.codec;
+package org.codehaus.preon.sample.rtp;
 
-import org.codehaus.preon.Resolver;
-import org.codehaus.preon.binding.Binding;
-import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.el.ObjectResolverContext;
-import org.codehaus.preon.rendering.IdentifierRewriter;
-import org.junit.Before;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.Codecs;
+import org.junit.Test;
 
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-
-import java.util.Arrays;
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
-@RunWith(org.mockito.runners.MockitoJUnitRunner.class)
-public class ObjectCodecTest {
+public class RtpHeaderTest {
 
-    @Mock
-    private ObjectResolverContext context;
-
-    @Mock
-    private IdentifierRewriter rewriter;
-
-    @Mock
-    private Binding binding1;
-
-    @Mock
-    private Binding binding2;
-
-    @Mock
-    private BitChannel channel;
-
-    @Mock
-    private Resolver resolver;
-
-    private List<Binding> listOfBindings;
-
-    @Before
-    public void prepareListOfBindings() {
-        listOfBindings = Arrays.asList(binding1, binding2);
-    }
-
-    @org.junit.Test
-    public void shouldEncodeAllFields() throws IOException {
-        ObjectCodec<Test> codec = new ObjectCodec<Test>(Test.class, rewriter, context);
-        Test value = new Test();
-        when(context.getBindings()).thenReturn(listOfBindings);
-        codec.encode(value, channel, resolver);
-        verify(binding1).save(Mockito.eq(value), Mockito.eq(channel), Mockito.<Resolver>any(Resolver.class));
-        verify(binding2).save(Mockito.eq(value), Mockito.eq(channel), Mockito.<Resolver>any(Resolver.class));
-        verifyNoMoreInteractions(binding1, binding2);
-    }
-
-    private static class Test {
-
-
+    @Test
+    public void shouldRenderCorrectly() throws IOException {
+        Codec<RtpHeader> codec = Codecs.create(RtpHeader.class);
+        RtpHeader header = new RtpHeader();
+        header.version = 1;
+        header.padding = true;
+        header.extension = false;
+        header.csrcCount = 2;
+        header.marker = false;
+        header.payloadType = 8; // PCMA
+        header.sequenceNumber = 12301;
+        header.timestamp = 1298301;
+        header.synchronizationSource = 1209182;
+        header.csrcs = new int[header.csrcCount];
+        header.csrcs[0] = 123;
+        header.csrcs[1] = 321;
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Codecs.encode(header, codec, out);
     }
 
 }
