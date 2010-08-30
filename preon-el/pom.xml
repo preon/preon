@@ -122,13 +122,14 @@
           </execution>
         </executions>
         <configuration>
+          <bibliographyStyle>iso690</bibliographyStyle>
+          <bibliographyNumbered>1</bibliographyNumbered>
           <generateIdAttributes>1</generateIdAttributes>
           <cssDecoration>1</cssDecoration>
           <sourceDirectory>${basedir}/src/docbkx</sourceDirectory>
-          <includes>overview.xml</includes>
-          <htmlStylesheet>style.css</htmlStylesheet>
+          <includes>paper.xml,chapter-introduction.xml,chapter-under-the-hood.xml</includes>
+          <htmlStylesheet>css/docbkx-style.css</htmlStylesheet>
           <alignment>left</alignment>
-          <bodyStartIndent>2cm</bodyStartIndent>
           <bodyFontFamily>Calibri</bodyFontFamily>
           <titleFontFamily>Calibri</titleFontFamily>
           <monospaceFontFamily>Consola</monospaceFontFamily>
@@ -141,28 +142,28 @@
               <name>Consola</name>
               <style>normal</style>
               <weight>normal</weight>
-              <embedFile>${basedir}/src/fonts/consola.ttf</embedFile>
+              <embedFile>${fonts.dir}/consola.ttf</embedFile>
               <metricsFile>${basedir}/target/fonts/consola-metrics.xml</metricsFile>
             </font>
             <font>
               <name>Calibri</name>
               <style>normal</style>
               <weight>normal</weight>
-              <embedFile>${basedir}/src/fonts/calibri.ttf</embedFile>
+              <embedFile>${fonts.dir}/calibri.ttf</embedFile>
               <metricsFile>${basedir}/target/fonts/calibri-metrics.xml</metricsFile>
             </font>
             <font>
               <name>Calibri</name>
               <style>italic</style>
               <weight>normal</weight>
-              <embedFile>${basedir}/src/fonts/calibrii.ttf</embedFile>
+              <embedFile>${fonts.dir}/calibrii.ttf</embedFile>
               <metricsFile>${basedir}/target/fonts/calibrii-metrics.xml</metricsFile>
             </font>
             <font>
               <name>Calibri</name>
               <style>normal</style>
               <weight>bold</weight>
-              <embedFile>${basedir}/src/fonts/calibrib.ttf</embedFile>
+              <embedFile>${fonts.dir}/calibrib.ttf</embedFile>
               <metricsFile>${basedir}/target/fonts/calibrib-metrics.xml</metricsFile>
             </font>
           </fonts>
@@ -186,11 +187,6 @@
       <name>Limbo Snapshot Repository</name>
       <url>sftp://web.sourceforge.net/home/groups/l/li/limbo/htdocs/snapshots</url>
     </snapshotRepository>
-    <site>
-      <id>limbo-sourceforge</id>
-      <name>Limbo Site</name>
-      <url>scp://shell.sourceforge.net/home/groups/l/li/limbo/htdocs</url>
-    </site>
   </distributionManagement>
   <reporting>
     <plugins>
@@ -223,4 +219,7 @@
       </build>
     </profile>
   </profiles>
+  <properties>
+    <fonts.dir>/Users/wilfred/Library/Fonts</fonts.dir>
+  </properties>
 </project>
