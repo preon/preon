@@ -31,6 +31,19 @@
     </snapshotRepository>
   </distributionManagement>
   -->
+  <distributionManagement>
+    <repository>
+      <id>codehaus.org</id>
+      <name>XFire Central Repository</name>
+      <url>dav:https://dav.codehaus.org/repository/preon/</url>
+    </repository>
+    <snapshotRepository>
+      <id>codehaus.org</id>
+      <name>XFire Central Development Repository</name>
+      <url>dav:https://dav.codehaus.org/snapshots.repository/preon/</url>
+      <uniqueVersion>false</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
   <build>
     <resources>
       <resource>

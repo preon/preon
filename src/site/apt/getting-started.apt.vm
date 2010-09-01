@@ -6,7 +6,7 @@ complicated, but it really isn't. All you have to do is go into a
 directory of your preference, and type this on the commandline:
 
 +----------------------------------------------------------+
-mvn -DarchetypeCatalog=http://is.gd/4l9Zo archetype:generate
+mvn -DarchetypeCatalog=http://snapshots.repository.codehaus.org/org/codehaus/preon/archetypes/preon-archetypes/${currentVersion}/preon-archetypes-${currentVersion}-catalog.xml archetype:generate
 +----------------------------------------------------------+
 
   The URL passed above is point to the catalog file that has the

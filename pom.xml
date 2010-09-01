@@ -224,4 +224,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  <properties>
+    <currentVersion>${version}</currentVersion>
+  </properties>
 </project>
