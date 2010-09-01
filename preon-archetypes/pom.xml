@@ -16,6 +16,7 @@
   <modules>
     <module>preon-simple-archetype</module>
   </modules>
+  <!--
   <distributionManagement>
     <repository>
       <id>preon-sourceforge</id>
@@ -29,6 +30,7 @@
       <uniqueVersion>false</uniqueVersion>
     </snapshotRepository>
   </distributionManagement>
+  -->
   <build>
     <resources>
       <resource>

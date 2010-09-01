@@ -176,18 +176,6 @@
       </plugin>
     </plugins>
   </build>
-  <distributionManagement>
-    <repository>
-      <id>limbo-sourceforge</id>
-      <name>Limbo Repository</name>
-      <url>sftp://web.sourceforge.net/home/groups/l/li/limbo/htdocs/repository</url>
-    </repository>
-    <snapshotRepository>
-      <id>limbo-sourceforge</id>
-      <name>Limbo Snapshot Repository</name>
-      <url>sftp://web.sourceforge.net/home/groups/l/li/limbo/htdocs/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
   <reporting>
     <plugins>
       <plugin>

@@ -35,7 +35,7 @@
         #set($symbol_escape='\' )
         package ${packageInPathFormat};
 
-import nl.flotsam.preon.annotation.Bound;
+import org.codehaus.preon.annotation.Bound;
 
 public class Color {
 

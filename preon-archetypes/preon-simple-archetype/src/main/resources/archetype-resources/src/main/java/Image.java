@@ -35,9 +35,9 @@
         #set($symbol_escape='\' )
         package ${packageInPathFormat};
 
-import nl.flotsam.preon.annotation.BoundList;
-import nl.flotsam.preon.annotation.BoundNumber;
-import nl.flotsam.preon.buffer.ByteOrder;
+import org.codehaus.preon.annotation.BoundList;
+import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.buffer.ByteOrder;
 
 public class Image {
 

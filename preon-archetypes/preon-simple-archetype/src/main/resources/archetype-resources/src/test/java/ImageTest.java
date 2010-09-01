@@ -38,9 +38,9 @@
 import org.junit.Test;
 import static org.junit.Assert.assertThat;
 import static org.hamcrest.CoreMatchers.*;
-import nl.flotsam.preon.Codecs;
-import nl.flotsam.preon.Codec;
-import nl.flotsam.preon.DecodingException;
+import org.codehaus.preon.Codecs;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.DecodingException;
 import ${packageInPathFormat}.Image;
 
 public class ImageTest {

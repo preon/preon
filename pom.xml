@@ -147,16 +147,16 @@
       </plugin>
     </plugins>
   </build>
-  <distributionManagement>
+<distributionManagement>
     <repository>
-      <id>preon-sourceforge</id>
-      <name>Preon Repository</name>
-      <url>sftp://web.sourceforge.net/home/groups/p/pr/preon/htdocs/repository</url>
+      <id>codehaus.org</id>
+      <name>XFire Central Repository</name>
+      <url>dav:https://dav.codehaus.org/repository/preon/</url>
     </repository>
     <snapshotRepository>
-      <id>preon-sourceforge</id>
-      <name>Preon Snapshot Repository</name>
-      <url>sftp://web.sourceforge.net/home/groups/p/pr/preon/htdocs/snapshots</url>
+      <id>codehaus.org</id>
+      <name>XFire Central Development Repository</name>
+      <url>dav:https://dav.codehaus.org/snapshots.repository/preon/</url>
     </snapshotRepository>
     <site>
       <id>codehaus.org</id>

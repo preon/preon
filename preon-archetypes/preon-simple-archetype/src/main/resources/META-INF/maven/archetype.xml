@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <archetype>
-  <id>preon-simple</id>
+  <id>preon-simple-archetype</id>
   <sources>
     <source>src/main/java/Color.java</source>
     <source>src/main/java/Image.java</source>
@@ -12,5 +12,6 @@
     <resource>preon-archetype.iml</resource>
     <resource>preon-archetype.ipr</resource>
     <resource>preon-archetype.iws</resource>
+    <resource filtered="false">pom.xml</resource>
   </resources>
 </archetype>
