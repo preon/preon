@@ -28,6 +28,7 @@ div.source {
     border: 1px solid #aaa;
     background-color: #f3f3f3;
     border-style: dashed;
+    overflow-x:scroll;
 }
 
 pre {
