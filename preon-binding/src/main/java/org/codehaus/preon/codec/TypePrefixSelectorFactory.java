@@ -77,12 +77,12 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                             "To little context to decide between codecs.");
                 } else {
                     if (byteOrder == null) {
-                        byteOrder = prefix.endian();
+                        byteOrder = prefix.byteOrder();
                     } else {
-                        if (byteOrder != prefix.endian()) {
+                        if (byteOrder != prefix.byteOrder()) {
                             throw new CodecConstructionException("Two distinct types of byte orders are not supported: "
                             + "expected " + byteOrder.asText() + ", got "
-                            + prefix.endian().asText() + " for " + codec);
+                            + prefix.byteOrder().asText() + " for " + codec);
                         }
                     }
                     if (size != -1) {

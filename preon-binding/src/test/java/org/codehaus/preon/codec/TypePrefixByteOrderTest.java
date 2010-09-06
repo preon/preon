@@ -16,13 +16,13 @@ public class TypePrefixByteOrderTest {
         @BoundObject(types = {Alpha.class, Beta.class})
         public Object sub;
 
-        @TypePrefix(endian = ByteOrder.BigEndian, size = 16, value = "0xFF00")
+        @TypePrefix(byteOrder = ByteOrder.BigEndian, size = 16, value = "0xFF00")
         public static class Alpha {
             @Bound
             private byte value;
         }
 
-        @TypePrefix(endian = ByteOrder.BigEndian, size = 16, value = "0x00FF")
+        @TypePrefix(byteOrder = ByteOrder.BigEndian, size = 16, value = "0x00FF")
         public static class Beta {
             @Bound
             private byte value;
@@ -34,13 +34,13 @@ public class TypePrefixByteOrderTest {
         @BoundObject(types = {Alpha.class, Beta.class})
         public Object sub;
 
-        @TypePrefix(endian = ByteOrder.LittleEndian, size = 16, value = "0xFF00")
+        @TypePrefix(byteOrder = ByteOrder.LittleEndian, size = 16, value = "0xFF00")
         public static class Alpha {
             @Bound
             private byte value;
         }
 
-        @TypePrefix(endian = ByteOrder.LittleEndian, size = 16, value = "0x00FF")
+        @TypePrefix(byteOrder = ByteOrder.LittleEndian, size = 16, value = "0x00FF")
         public static class Beta {
             @Bound
             private byte value;
