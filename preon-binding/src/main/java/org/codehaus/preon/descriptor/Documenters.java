@@ -92,14 +92,7 @@ public class Documenters {
             final ByteOrder byteOrder) {
         return new Documenter<ParaContents<?>>() {
             public void document(ParaContents<?> target) {
-                switch (byteOrder) {
-                    case BigEndian:
-                        target.text("big endian");
-                        break;
-                    case LittleEndian:
-                        target.text("little endian");
-                        break;
-                }
+                target.text(byteOrder.asText());
             }
         };
     }

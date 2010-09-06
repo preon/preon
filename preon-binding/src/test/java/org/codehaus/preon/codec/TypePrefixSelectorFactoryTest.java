@@ -37,6 +37,7 @@ import static org.easymock.EasyMock.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.el.Reference;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecSelector;
@@ -77,7 +78,7 @@ public class TypePrefixSelectorFactoryTest extends TestCase {
     public void testSimplePrefixes() throws DecodingException {
         expect(codec1.getTypes()).andReturn(new Class<?>[]{Test1.class});
         expect(codec2.getTypes()).andReturn(new Class<?>[]{Test2.class});
-        expect(bitBuffer.readAsLong(8)).andReturn(1L);
+        expect(bitBuffer.readAsLong(8, ByteOrder.LittleEndian)).andReturn(1L);
         replay(context, codec1, codec2, resolver, bitBuffer);
         CodecSelectorFactory factory = new TypePrefixSelectorFactory();
         List<Codec<?>> codecs = new ArrayList<Codec<?>>();
@@ -92,7 +93,7 @@ public class TypePrefixSelectorFactoryTest extends TestCase {
         expect(codec1.getTypes()).andReturn(new Class<?>[]{Test3.class});
         expect(codec2.getTypes()).andReturn(new Class<?>[]{Test4.class});
         expect(context.selectAttribute("p")).andReturn(reference);
-        expect(bitBuffer.readAsLong(8)).andReturn(1L);
+        expect(bitBuffer.readAsLong(8, ByteOrder.LittleEndian)).andReturn(1L);
         expect(reference.resolve(resolver)).andReturn(-2);
         expect(reference.getType()).andReturn((Class) Integer.class).anyTimes();
         replay(context, codec1, codec2, resolver, bitBuffer, reference);

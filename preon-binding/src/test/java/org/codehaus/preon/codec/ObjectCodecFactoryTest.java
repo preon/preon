@@ -38,6 +38,7 @@ import org.codehaus.preon.annotation.BoundObject;
 import org.codehaus.preon.annotation.Choices;
 import org.codehaus.preon.annotation.TypePrefix;
 import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.buffer.ByteOrder;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -128,7 +129,7 @@ public class ObjectCodecFactoryTest {
         expect(delegate.create(null, TestObject4.class, null)).andReturn(codecTest4);
         // expect(codecTest3.getSize(resolver)).andReturn(6);
         // expect(codecTest4.getSize(resolver)).andReturn(6);
-        expect(buffer.readAsLong(8)).andReturn(0L);
+        expect(buffer.readAsLong(8, ByteOrder.LittleEndian)).andReturn(0L);
         expect(codecTest3.decode(buffer, resolver, builder)).andReturn(new TestObject3());
         replay(metadata, delegate, buffer, resolver, settings, codecTest3, codecTest4, builder,
                 choices);

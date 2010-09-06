@@ -67,6 +67,7 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
         int size = -1;
         List<Expression<Integer, Resolver>> expressions = new ArrayList<Expression<Integer, Resolver>>();
         List<Codec<?>> codecs = new ArrayList<Codec<?>>();
+        ByteOrder byteOrder = null;
         for (Codec<?> codec : allCodecs) {
             for (Class<?> valueType : codec.getTypes()) {
                 TypePrefix prefix = (TypePrefix) valueType
@@ -75,6 +76,15 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                     throw new CodecConstructionException(
                             "To little context to decide between codecs.");
                 } else {
+                    if (byteOrder == null) {
+                        byteOrder = prefix.endian();
+                    } else {
+                        if (byteOrder != prefix.endian()) {
+                            throw new CodecConstructionException("Two distinct types of byte orders are not supported: "
+                            + "expected " + byteOrder.asText() + ", got "
+                            + prefix.endian().asText() + " for " + codec);
+                        }
+                    }
                     if (size != -1) {
                         if (size != prefix.size()) {
                             throw new CodecConstructionException(
@@ -94,7 +104,7 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
                 }
             }
         }
-        return new TypePrefixSelector(expressions, codecs, size);
+        return new TypePrefixSelector(expressions, codecs, size, byteOrder);
     }
 
     /**
@@ -109,15 +119,18 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
 
         private List<Expression<Integer, Resolver>> expressions;
 
+        private final ByteOrder byteOrder;
+
         private int size;
 
         public TypePrefixSelector(
                 List<Expression<Integer, Resolver>> expressions,
-                List<Codec<?>> codecs, int size) {
+                List<Codec<?>> codecs, int size, ByteOrder byteOrder) {
             this.uniqueCodecs = new HashSet<Codec<?>>();
             this.codecs = codecs;
             this.expressions = expressions;
             this.size = size;
+            this.byteOrder = byteOrder;
             this.uniqueCodecs.addAll(codecs);
         }
 
@@ -127,7 +140,7 @@ public class TypePrefixSelectorFactory implements CodecSelectorFactory {
 
         public Codec<?> select(BitBuffer buffer, Resolver resolver)
                 throws DecodingException {
-            long index = buffer.readAsLong(size);
+            long index = buffer.readAsLong(size, byteOrder);
             for (int i = 0; i < codecs.size(); i++) {
                 if (index == expressions.get(i).eval(resolver)) {
                     return codecs.get(i);

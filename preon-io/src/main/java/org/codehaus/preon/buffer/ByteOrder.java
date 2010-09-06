@@ -39,13 +39,23 @@ package org.codehaus.preon.buffer;
  */
 public enum ByteOrder {
 
-    LittleEndian,
+    LittleEndian("little endian"),
 
-    BigEndian;
+    BigEndian("big endian");
 
     public static final ByteOrder Native =
             java.nio.ByteOrder.nativeOrder() == java.nio.ByteOrder.BIG_ENDIAN
                     ? BigEndian
                     : LittleEndian;
+
+    private final String text;
+
+    ByteOrder(String text) {
+        this.text = text;
+    }
+
+    public String asText() {
+        return text;
+    }
 
 }
