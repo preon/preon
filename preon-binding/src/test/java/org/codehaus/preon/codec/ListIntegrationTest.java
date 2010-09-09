@@ -71,6 +71,21 @@ public class ListIntegrationTest {
         assertThat(result.records.get(1).value, is("ef"));
     }
 
+    @Test
+    public void shouldLoadListsOfBoolean() throws DecodingException {
+        Codec<Test5> codec = Codecs.create(Test5.class);
+        Test5 value = Codecs.decode(codec, (byte) 0xf0);
+        assertThat(value.booleans, is(not(nullValue())));
+        assertThat(value.booleans.length, is(8));
+        assertThat(value.booleans[0], is(true));
+        assertThat(value.booleans[1], is(true));
+        assertThat(value.booleans[2], is(true));
+        assertThat(value.booleans[3], is(true));
+        assertThat(value.booleans[4], is(false));
+        assertThat(value.booleans[5], is(false));
+        assertThat(value.booleans[6], is(false));
+        assertThat(value.booleans[7], is(false));
+    }
 
     public static class Test1 {
 
@@ -115,6 +130,13 @@ public class ListIntegrationTest {
             public String value;
 
         }
+
+    }
+
+    public static class Test5 {
+
+        @BoundList(size="8", type = Boolean.class)
+        public boolean[] booleans;
 
     }
 
