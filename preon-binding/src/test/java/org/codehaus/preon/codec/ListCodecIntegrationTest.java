@@ -48,7 +48,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class ListIntegrationTest {
+public class ListCodecIntegrationTest {
 
     @Test
     public void shouldLoadListLazily() throws DecodingException {
