@@ -71,6 +71,8 @@ import org.codehaus.preon.util.CodecDescriptorHolder;
 import org.codehaus.preon.util.EvenlyDistributedLazyList;
 import org.codehaus.preon.util.ParaContentsDocument;
 
+import javax.annotation.Nullable;
+
 /**
  * A {@link CodecFactory} capable of supporting Lists. <p/> <p> There are a couple of cases that we need to clarify.
  * First of all, the {@link ListCodecFactory} is triggered by the {@link BoundList} annotation. The specific way of
@@ -110,9 +112,7 @@ public class ListCodecFactory implements CodecFactory {
         if (metadata != null
                 && (settings = metadata.getAnnotation(BoundList.class)) != null
                 && java.util.List.class.equals(type)) {
-            BoundObject objectSettings = getObjectSettings(settings);
-            Codec<?> codec = delegate.create(new AnnotationWrapper(
-                    objectSettings), objectSettings.type() == Void.class ? Object.class : objectSettings.type(), context);
+            Codec<?> codec = createElementCodec(context, settings);
             if (settings.size().length() == 0) {
                 // So, we don't know the number of elements in this list.
                 // This means we need to keep on reading elements until we get
@@ -163,6 +163,25 @@ public class ListCodecFactory implements CodecFactory {
 
     }
 
+    private <T> Codec<?> createElementCodec(ResolverContext context, BoundList settings) {
+        if (settings.types().length > 0) {
+            BoundObject objectSettings = getObjectSettings(settings);
+            return delegate.create(toAnnotatedElemented(objectSettings), objectSettings.type() == Void.class ? Object.class : objectSettings.type(), context);
+        } else if (settings.type() != null) {
+            return delegate.create(null, settings.type(), context);
+        } else {
+            throw new CodecConstructionException("Failed to determine the type of element.");
+        }
+    }
+
+    private AnnotatedElement toAnnotatedElemented(BoundObject objectSettings) {
+        if (objectSettings == null) {
+            return null;
+        } else {
+            return new AnnotationWrapper(objectSettings);
+        }
+    }
+
     /**
      * Returns a {@link BoundObject} annotation containing the properties it shares in common with the {@link BoundList}
      * annotation.
@@ -208,10 +227,14 @@ public class ListCodecFactory implements CodecFactory {
      */
     private static class StaticListCodec<T> implements Codec<List<T>> {
 
-        /** The number of elements in the list. */
+        /**
+         * The number of elements in the list.
+         */
         private Expression<Integer, Resolver> size;
 
-        /** The {@link Codec} that will construct elements from the {@link List}. */
+        /**
+         * The {@link Codec} that will construct elements from the {@link List}.
+         */
         private Codec<T> codec;
 
         /**
@@ -632,10 +655,14 @@ public class ListCodecFactory implements CodecFactory {
          */
         private Expression<Integer, Resolver> offsets;
 
-        /** The size of the list. */
+        /**
+         * The size of the list.
+         */
         private Expression<Integer, Resolver> size;
 
-        /** The Codec for decoding elements from the list. */
+        /**
+         * The Codec for decoding elements from the list.
+         */
         private Codec<T> codec;
 
         /**

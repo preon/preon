@@ -72,7 +72,7 @@ public class ListIntegrationTest {
     }
 
     @Test
-    public void shouldLoadListsOfBoolean() throws DecodingException {
+    public void shouldLoadArrayOfBooleans() throws DecodingException {
         Codec<Test5> codec = Codecs.create(Test5.class);
         Test5 value = Codecs.decode(codec, (byte) 0xf0);
         assertThat(value.booleans, is(not(nullValue())));
@@ -86,6 +86,15 @@ public class ListIntegrationTest {
         assertThat(value.booleans[6], is(false));
         assertThat(value.booleans[7], is(false));
     }
+
+    @Test
+    public void shouldLoadListOfBooleans() throws DecodingException {
+        Codec<Test6> codec = Codecs.create(Test6.class);
+        Test6 value = Codecs.decode(codec, (byte) 0xf0);
+        assertThat(value.booleans, is(not(nullValue())));
+        assertThat(value.booleans.size(), is(8));
+    }
+
 
     public static class Test1 {
 
@@ -139,5 +148,13 @@ public class ListIntegrationTest {
         public boolean[] booleans;
 
     }
+
+    public static class Test6 {
+
+        @BoundList(size="8", type = Boolean.class)
+        public List<Boolean> booleans;
+
+    }
+
 
 }
