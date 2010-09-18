@@ -49,8 +49,9 @@ person.age >= 12]]></programlisting>
       <listitem>
         <para>
           Limbo supports <firstterm>early binding</firstterm>. That
-          is, it will validate the correctness of the expression
-          before it actually validates it. So, when you build the
+          is, it will <firstterm>validate</firstterm> the correctness
+          of the expression before it actually
+          <firstterm>evaluate</firstterm> it. So, when you build the
           expression, you know if it is an expression that can be
           evaluated at runtime within a certain context.
         </para>

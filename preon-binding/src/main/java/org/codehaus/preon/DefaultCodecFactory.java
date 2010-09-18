@@ -32,6 +32,7 @@
  */
 package org.codehaus.preon;
 
+import org.codehaus.preon.binding.DecoratingBindingFactory;
 import org.codehaus.preon.el.Expression;
 import nl.flotsam.pecia.*;
 import org.codehaus.preon.binding.BindingFactory;
@@ -50,9 +51,9 @@ import java.util.List;
 /**
  * The default {@link CodecFactory} implementation, constructing {@link Codecs} based on all {@link CodecFactory
  * CodecFactories} available by default. The {@link Codec Codecs} constructed by this factory will most likely wrap an
- * {@link org.codehaus.preon.codec.ObjectCodecFactory}. The main difference between that {@link Codec} and the one created
- * by this factory is that this one actually remembers all of the {@link Codec Codecs} that were constructed, making it
- * a better candidate for building documentation.
+ * {@link org.codehaus.preon.codec.ObjectCodecFactory}. The main difference between that {@link Codec} and the one
+ * created by this factory is that this one actually remembers all of the {@link Codec Codecs} that were constructed,
+ * making it a better candidate for building documentation.
  *
  * @author Wilfred Springer
  */
@@ -65,11 +66,15 @@ public class DefaultCodecFactory implements CodecFactory {
     public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
                                ResolverContext context) {
         return create(metadata, type, new CodecFactory[0],
-                new CodecDecorator[0]);
+                new CodecDecorator[0], new BindingDecorator[0]);
     }
 
-    public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
-                               CodecFactory[] addOnFactories, CodecDecorator[] addOnDecorators) {
+    public <T> Codec<T> create(AnnotatedElement metadata,
+                               Class<T> type,
+                               CodecFactory[] addOnFactories,
+                               CodecDecorator[] addOnDecorators,
+                               BindingDecorator[] bindingDecorators)
+    {
 
         // The actual cache of Codecs.
         final List<Codec<?>> created = new ArrayList<Codec<?>>();
@@ -77,6 +82,9 @@ public class DefaultCodecFactory implements CodecFactory {
         // Create the default BindingFactory.
         BindingFactory bindingFactory = new StandardBindingFactory();
         bindingFactory = new ConditionalBindingFactory(bindingFactory);
+        if (bindingDecorators.length != 0) {
+            bindingFactory = new DecoratingBindingFactory(bindingFactory, bindingDecorators);
+        }
 
         // Eventually, *every* request for a Codec will be processed by this
         // CodecFactory.
@@ -230,10 +238,14 @@ public class DefaultCodecFactory implements CodecFactory {
      */
     private static class DecoratingCodecFactory implements CodecFactory {
 
-        /** The {@link CodecFactory} performing the actual work. */
+        /**
+         * The {@link CodecFactory} performing the actual work.
+         */
         private CodecFactory delegate;
 
-        /** The decorators for decorating the {@link Codec}s constructed. */
+        /**
+         * The decorators for decorating the {@link Codec}s constructed.
+         */
         private List<CodecDecorator> decorators;
 
         /**
@@ -249,7 +261,9 @@ public class DefaultCodecFactory implements CodecFactory {
             this.decorators = decorators;
         }
 
-        /** {@inheritDoc} Every Codec constructed will be decorated by the {@link #decorators}. */
+        /**
+         * {@inheritDoc} Every Codec constructed will be decorated by the {@link #decorators}.
+         */
         public <T> Codec<T> create(AnnotatedElement metadata, Class<T> type,
                                    ResolverContext context) {
             Codec<T> codec = delegate.create(metadata, type, context);

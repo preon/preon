@@ -30,7 +30,7 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.codec;
+package org.codehaus.preon.codec.progress;
 
 
 import org.codehaus.preon.el.Expression;
@@ -46,23 +46,23 @@ import java.lang.reflect.AnnotatedElement;
  *
  * @author Wilfred Springer (wis)
  */
-public class LoggingDecorator implements CodecDecorator {
+public class ProgressEmittingDecorator implements CodecDecorator {
 
     /** The actual logging object. */
-    private Logger logger;
+    private final Emitter emitter;
 
     /**
-     * Constructs a new instance, accepting the {@link Logger} to use.
+     * Constructs a new instance, accepting the {@link ProgressEmittingDecorator.Emitter} to use.
      *
-     * @param logger The {@link Logger} to use.
+     * @param emitter The {@link ProgressEmittingDecorator.Emitter} to use.
      */
-    public LoggingDecorator(Logger logger) {
-        this.logger = logger;
+    public ProgressEmittingDecorator(Emitter emitter) {
+        this.emitter = emitter;
     }
 
     /** Constructs a new instance that will log to System.out. */
-    public LoggingDecorator() {
-        this(new DefaultLogger());
+    public ProgressEmittingDecorator() {
+        this(new LoggingEmitter());
     }
 
     /*
@@ -75,11 +75,11 @@ public class LoggingDecorator implements CodecDecorator {
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
                                  Class<T> type, ResolverContext context) {
-        return new LoggingCodec<T>(decorated, logger);
+        return new ProgressEmittingCodec<T>(decorated, emitter);
     }
 
     /** The object that will generate the messages. Receives events for anything of interest. */
-    public interface Logger {
+    public interface Emitter {
 
         /**
          * The operation called whenever a {@link Codec} kicks in.
@@ -88,7 +88,7 @@ public class LoggingDecorator implements CodecDecorator {
          * @param position The position in the {@link BitBuffer}.
          * @param size     The expected number of bits that will be read, or <code>-1</code> if unknown in advance.
          */
-        void logStartDecoding(Codec<?> codec, long position, long size);
+        void markStart(Codec<?> codec, long position, long size);
 
         /**
          * The operation called whenever a {@link Codec} is done.
@@ -98,20 +98,23 @@ public class LoggingDecorator implements CodecDecorator {
          * @param read     The number of bits that actually have been read.
          * @param result   The value decoded by the {@link Codec}.
          */
-        void logDoneDecoding(Codec<?> codec, long position, long read,
+        void markEnd(Codec<?> codec, long position, long read,
                              Object result);
 
         /** The operation called when the {@link Codec} failed to decode a value. */
-        void logFailedDecoding();
+        void markFailure();
 
+        void markStartLoad(String name, Object object);
+
+        void markEndLoad();
     }
 
     /**
-     * A default implementation of the {@link Logger} interface, logging to System.out.
+     * A default implementation of the {@link ProgressEmittingDecorator.Emitter} interface, logging to System.out.
      *
      * @author Wilfred Springer (wis)
      */
-    private static class DefaultLogger implements Logger {
+    private static class LoggingEmitter implements Emitter {
 
         /** "Call-stack depth" */
         private int level = 0;
@@ -120,11 +123,11 @@ public class LoggingDecorator implements CodecDecorator {
          * (non-Javadoc)
          * 
          * @see
-         * org.codehaus.preon.codec.LoggingDecorator.Logger#logDoneDecoding(nl
+         * org.codehaus.preon.codec.progress.ProgressEmittingDecorator.Emitter#markEnd(nl
          * .flotsam.preon.Codec, long, long, java.lang.Object)
          */
 
-        public void logDoneDecoding(Codec<?> codec, long position, long read,
+        public void markEnd(Codec<?> codec, long position, long read,
                                     Object result) {
             level--;
             // TODO: 
@@ -157,23 +160,31 @@ public class LoggingDecorator implements CodecDecorator {
          * (non-Javadoc)
          * 
          * @see
-         * org.codehaus.preon.codec.LoggingDecorator.Logger#logFailedDecoding()
+         * org.codehaus.preon.codec.progress.ProgressEmittingDecorator.Emitter#markFailure()
          */
 
-        public void logFailedDecoding() {
+        public void markFailure() {
             level--;
             printMessage("Failed decoding.");
+        }
+
+        public void markStartLoad(String name, Object object) {
+            
+        }
+
+        public void markEndLoad() {
+            
         }
 
         /*
          * (non-Javadoc)
          * 
          * @see
-         * org.codehaus.preon.codec.LoggingDecorator.Logger#logStartDecoding(nl
+         * org.codehaus.preon.codec.progress.ProgressEmittingDecorator.Emitter#markStart(nl
          * .flotsam.preon.Codec, long, long)
          */
 
-        public void logStartDecoding(Codec<?> codec, long position, long size) {
+        public void markStart(Codec<?> codec, long position, long size) {
             StringBuilder builder = new StringBuilder();
             builder.append("Start decoding at ")
                     .append(position)
@@ -185,8 +196,8 @@ public class LoggingDecorator implements CodecDecorator {
         }
 
         /**
-         * Prints the message. (Used both by {@link #logDoneDecoding(Codec, long, long, Object)}, {@link
-         * #logStartDecoding(Codec, long, long)}, as well as {@link #logFailedDecoding()}.
+         * Prints the message. (Used both by {@link #markEnd(Codec, long, long, Object)}, {@link
+         * #markStart(Codec, long, long)}, as well as {@link #markFailure()}.
          *
          * @param message The message to be printed.
          */
@@ -200,30 +211,30 @@ public class LoggingDecorator implements CodecDecorator {
     }
 
     /**
-     * The {@link Codec} constructed by the {@link LoggingDecorator}.
+     * The {@link Codec} constructed by the {@link ProgressEmittingDecorator}.
      *
      * @author Wilfred Springer (wis)
      * @param <T>
      */
-    private static class LoggingCodec<T> implements Codec<T> {
+    private static class ProgressEmittingCodec<T> implements Codec<T> {
 
         /** The {@link Codec} wrapped. */
         private final Codec<T> codec;
 
-        /** The {@link Logger} to use. */
-        private final Logger logger;
+        /** The {@link ProgressEmittingDecorator.Emitter} to use. */
+        private final Emitter emitter;
 
         /**
          * Constructs a new instance.
          *
          * @param codec  The {@link Codec} to wrap.
-         * @param logger The {@link Logger} to use.
+         * @param emitter The {@link ProgressEmittingDecorator.Emitter} to use.
          */
-        public LoggingCodec(Codec<T> codec, Logger logger) {
+        public ProgressEmittingCodec(Codec<T> codec, Emitter emitter) {
             assert codec != null;
-            assert logger != null;
+            assert emitter != null;
             this.codec = codec;
-            this.logger = logger;
+            this.emitter = emitter;
         }
 
         /*
@@ -237,14 +248,14 @@ public class LoggingDecorator implements CodecDecorator {
                 throws DecodingException {
             T result = null;
             long pos = buffer.getActualBitPos();
-            logger.logStartDecoding(codec, pos, LoggingDecorator.getSize(codec, resolver));
+            emitter.markStart(codec, pos, ProgressEmittingDecorator.getSize(codec, resolver));
             try {
                 result = codec.decode(buffer, resolver, builder);
             } catch (DecodingException de) {
-                logger.logFailedDecoding();
+                emitter.markFailure();
                 throw de;
             } finally {
-                logger.logDoneDecoding(codec, buffer.getActualBitPos(), buffer
+                emitter.markEnd(codec, buffer.getActualBitPos(), buffer
                         .getActualBitPos()
                         - pos, result);
             }

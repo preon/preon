@@ -319,8 +319,13 @@ public class Codecs {
      */
 	public static <T> Codec<T> create(Class<T> type, CodecFactory[] factories,
 			CodecDecorator[] decorators) {
-		return new DefaultCodecFactory().create(null, type,
-				factories, decorators);
+        return create(type, factories, decorators, new BindingDecorator[0]);
 	}
+
+    public static <T> Codec<T> create(Class<T> type, CodecFactory[] factories,
+            CodecDecorator[] decorators, BindingDecorator[] bindingDecorators) {
+        return new DefaultCodecFactory().create(null, type,
+                factories, decorators, bindingDecorators);
+    }
 
 }

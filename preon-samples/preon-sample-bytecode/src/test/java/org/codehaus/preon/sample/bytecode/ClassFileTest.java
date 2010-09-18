@@ -32,11 +32,13 @@
  */
 package org.codehaus.preon.sample.bytecode;
 
-import org.codehaus.preon.Codec;
-import org.codehaus.preon.Codecs;
+import org.codehaus.preon.*;
 import org.codehaus.preon.Codecs.DocumentType;
-import org.codehaus.preon.DecodingException;
 import org.apache.commons.io.IOUtils;
+import org.codehaus.preon.codec.progress.EmittingBindingDecorator;
+import org.codehaus.preon.codec.progress.ProgressEmittingDecorator;
+import org.codehaus.preon.codec.progress.TempFileOutputStreamFactory;
+import org.codehaus.preon.codec.progress.XmlEmitter;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -69,7 +71,10 @@ public class ClassFileTest {
 
     @Before
     public void constructCodec() {
-        codec = Codecs.create(ClassFile.class);
+        ProgressEmittingDecorator.Emitter emitter = new XmlEmitter(new TempFileOutputStreamFactory(false));
+        CodecDecorator codecDecorator = new ProgressEmittingDecorator(emitter);
+        BindingDecorator bindingDecorator = new EmittingBindingDecorator(emitter);
+        codec = Codecs.create(ClassFile.class, new CodecFactory[0], new CodecDecorator[] {codecDecorator}, new BindingDecorator[] { bindingDecorator });
     }
 
     @Test
