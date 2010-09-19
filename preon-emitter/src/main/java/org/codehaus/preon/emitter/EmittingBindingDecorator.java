@@ -30,33 +30,21 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.binding;
+package org.codehaus.preon.emitter;
 
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-import org.codehaus.preon.Codec;
-import org.codehaus.preon.ResolverContext;
+import org.codehaus.preon.binding.BindingDecorator;
+import org.codehaus.preon.binding.Binding;
 
-import java.lang.reflect.AnnotatedElement;
-import java.lang.reflect.Field;
+public class EmittingBindingDecorator implements BindingDecorator {
 
-public class DecoratingBindingFactory implements BindingFactory {
+    private final Emitter emitter;
 
-    private final BindingFactory bindingFactory;
-    private final BindingDecorator[] bindingDecorators;
-
-    public DecoratingBindingFactory(BindingFactory bindingFactory, BindingDecorator[] bindingDecorators) {
-        this.bindingDecorators = bindingDecorators;
-        this.bindingFactory = bindingFactory;
+    public EmittingBindingDecorator(Emitter emitter) {
+        this.emitter = emitter;
     }
 
-    public Binding create(AnnotatedElement metadata, Field field, Codec<?> codec, ResolverContext context, Documenter<ParaContents<?>> containerReference) {
-        Binding binding = bindingFactory.create(metadata, field, codec, context, containerReference);
-        if (binding != null) {
-            for (BindingDecorator decorator : bindingDecorators) {
-                binding = decorator.decorate(binding);
-            }
-        }
-        return binding;
+    public Binding decorate(Binding binding) {
+        return new EmittingBinding(binding, emitter);
     }
+
 }

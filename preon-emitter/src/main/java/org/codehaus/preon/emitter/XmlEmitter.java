@@ -30,7 +30,7 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.codec.progress;
+package org.codehaus.preon.emitter;
 
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.Para;
@@ -46,7 +46,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import java.io.OutputStream;
 
-public class XmlEmitter implements ProgressEmittingDecorator.Emitter {
+public class XmlEmitter implements Emitter {
 
     private final OutputStreamFactory outputStreamFactory;
     private int depth = 0;
@@ -56,13 +56,13 @@ public class XmlEmitter implements ProgressEmittingDecorator.Emitter {
         this.outputStreamFactory = outputStreamFactory;
     }
 
-    public void markStart(Codec<?> codec, long position, long size) {
+    public void markStart(Codec<?> codec, long position) {
         if (depth == 0) {
             current = createWriter();
             current.writeStartDocument();
-            current.writeStartElement("progress");
+            current.writeStartElement("emitter");
         }
-        current.writeStartElement("fragement");
+        current.writeStartElement("fragment");
         current.writeStartElement("start");
         current.writeAttribute("position", Long.toString(position));
         current.writeStartElement("desc");

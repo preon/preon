@@ -30,7 +30,7 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.codec.progress;
+package org.codehaus.preon.emitter;
 
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
@@ -51,9 +51,9 @@ import java.io.IOException;
 public class EmittingBinding implements Binding {
 
     private final Binding binding;
-    private final ProgressEmittingDecorator.Emitter emitter;
+    private final Emitter emitter;
 
-    public EmittingBinding(Binding binding, ProgressEmittingDecorator.Emitter emitter) {
+    public EmittingBinding(Binding binding, Emitter emitter) {
         this.binding = binding;
         this.emitter = emitter;
     }

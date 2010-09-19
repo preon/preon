@@ -32,12 +32,9 @@
  */
 package org.codehaus.preon;
 
-import org.codehaus.preon.binding.DecoratingBindingFactory;
+import org.codehaus.preon.binding.*;
 import org.codehaus.preon.el.Expression;
 import nl.flotsam.pecia.*;
-import org.codehaus.preon.binding.BindingFactory;
-import org.codehaus.preon.binding.ConditionalBindingFactory;
-import org.codehaus.preon.binding.StandardBindingFactory;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.codec.*;

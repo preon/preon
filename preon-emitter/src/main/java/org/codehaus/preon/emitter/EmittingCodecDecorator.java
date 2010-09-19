@@ -30,14 +30,11 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.codec.progress;
+package org.codehaus.preon.emitter;
 
 
 import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.*;
-import org.codehaus.preon.buffer.BitBuffer;
-import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.descriptor.PassThroughCodecDescriptor2;
 
 import java.lang.reflect.AnnotatedElement;
 
@@ -46,22 +43,22 @@ import java.lang.reflect.AnnotatedElement;
  *
  * @author Wilfred Springer (wis)
  */
-public class ProgressEmittingDecorator implements CodecDecorator {
+public class EmittingCodecDecorator implements CodecDecorator {
 
     /** The actual logging object. */
     private final Emitter emitter;
 
     /**
-     * Constructs a new instance, accepting the {@link ProgressEmittingDecorator.Emitter} to use.
+     * Constructs a new instance, accepting the {@link Emitter} to use.
      *
-     * @param emitter The {@link ProgressEmittingDecorator.Emitter} to use.
+     * @param emitter The {@link Emitter} to use.
      */
-    public ProgressEmittingDecorator(Emitter emitter) {
+    public EmittingCodecDecorator(Emitter emitter) {
         this.emitter = emitter;
     }
 
     /** Constructs a new instance that will log to System.out. */
-    public ProgressEmittingDecorator() {
+    public EmittingCodecDecorator() {
         this(new LoggingEmitter());
     }
 
@@ -75,42 +72,11 @@ public class ProgressEmittingDecorator implements CodecDecorator {
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata,
                                  Class<T> type, ResolverContext context) {
-        return new ProgressEmittingCodec<T>(decorated, emitter);
-    }
-
-    /** The object that will generate the messages. Receives events for anything of interest. */
-    public interface Emitter {
-
-        /**
-         * The operation called whenever a {@link Codec} kicks in.
-         *
-         * @param codec    The {@link Codec} called.
-         * @param position The position in the {@link BitBuffer}.
-         * @param size     The expected number of bits that will be read, or <code>-1</code> if unknown in advance.
-         */
-        void markStart(Codec<?> codec, long position, long size);
-
-        /**
-         * The operation called whenever a {@link Codec} is done.
-         *
-         * @param codec    The {@link Codec} called.
-         * @param position The position in the {@link BitBuffer}.
-         * @param read     The number of bits that actually have been read.
-         * @param result   The value decoded by the {@link Codec}.
-         */
-        void markEnd(Codec<?> codec, long position, long read,
-                             Object result);
-
-        /** The operation called when the {@link Codec} failed to decode a value. */
-        void markFailure();
-
-        void markStartLoad(String name, Object object);
-
-        void markEndLoad();
+        return new EmittingCodec<T>(decorated, emitter);
     }
 
     /**
-     * A default implementation of the {@link ProgressEmittingDecorator.Emitter} interface, logging to System.out.
+     * A default implementation of the {@link Emitter} interface, logging to System.out.
      *
      * @author Wilfred Springer (wis)
      */
@@ -123,7 +89,7 @@ public class ProgressEmittingDecorator implements CodecDecorator {
          * (non-Javadoc)
          * 
          * @see
-         * org.codehaus.preon.codec.progress.ProgressEmittingDecorator.Emitter#markEnd(nl
+         * org.codehaus.preon.emitter.EmittingCodecDecorator.Emitter#markEnd(nl
          * .flotsam.preon.Codec, long, long, java.lang.Object)
          */
 
@@ -160,7 +126,7 @@ public class ProgressEmittingDecorator implements CodecDecorator {
          * (non-Javadoc)
          * 
          * @see
-         * org.codehaus.preon.codec.progress.ProgressEmittingDecorator.Emitter#markFailure()
+         * org.codehaus.preon.emitter.EmittingCodecDecorator.Emitter#markFailure()
          */
 
         public void markFailure() {
@@ -180,15 +146,14 @@ public class ProgressEmittingDecorator implements CodecDecorator {
          * (non-Javadoc)
          * 
          * @see
-         * org.codehaus.preon.codec.progress.ProgressEmittingDecorator.Emitter#markStart(nl
+         * org.codehaus.preon.emitter.EmittingCodecDecorator.Emitter#markStart(nl
          * .flotsam.preon.Codec, long, long)
          */
 
-        public void markStart(Codec<?> codec, long position, long size) {
+        public void markStart(Codec<?> codec, long position) {
             StringBuilder builder = new StringBuilder();
             builder.append("Start decoding at ")
                     .append(position)
-                    .append(size >= 0 ? " (maximal up to " + (position + size) + ")" : "")
                     .append(" Codec: ")
                     .append(codec.toString());
             printMessage(builder.toString());
@@ -197,7 +162,7 @@ public class ProgressEmittingDecorator implements CodecDecorator {
 
         /**
          * Prints the message. (Used both by {@link #markEnd(Codec, long, long, Object)}, {@link
-         * #markStart(Codec, long, long)}, as well as {@link #markFailure()}.
+         * #markStart(Codec, long)}, as well as {@link #markFailure()}.
          *
          * @param message The message to be printed.
          */
@@ -206,99 +171,6 @@ public class ProgressEmittingDecorator implements CodecDecorator {
                 System.out.print(' ');
             }
             System.out.println(message);
-        }
-
-    }
-
-    /**
-     * The {@link Codec} constructed by the {@link ProgressEmittingDecorator}.
-     *
-     * @author Wilfred Springer (wis)
-     * @param <T>
-     */
-    private static class ProgressEmittingCodec<T> implements Codec<T> {
-
-        /** The {@link Codec} wrapped. */
-        private final Codec<T> codec;
-
-        /** The {@link ProgressEmittingDecorator.Emitter} to use. */
-        private final Emitter emitter;
-
-        /**
-         * Constructs a new instance.
-         *
-         * @param codec  The {@link Codec} to wrap.
-         * @param emitter The {@link ProgressEmittingDecorator.Emitter} to use.
-         */
-        public ProgressEmittingCodec(Codec<T> codec, Emitter emitter) {
-            assert codec != null;
-            assert emitter != null;
-            this.codec = codec;
-            this.emitter = emitter;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.codehaus.preon.Codec#decode(org.codehaus.preon.buffer.BitBuffer,
-         * org.codehaus.preon.Resolver, org.codehaus.preon.Builder)
-         */
-
-        public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
-                throws DecodingException {
-            T result = null;
-            long pos = buffer.getActualBitPos();
-            emitter.markStart(codec, pos, ProgressEmittingDecorator.getSize(codec, resolver));
-            try {
-                result = codec.decode(buffer, resolver, builder);
-            } catch (DecodingException de) {
-                emitter.markFailure();
-                throw de;
-            } finally {
-                emitter.markEnd(codec, buffer.getActualBitPos(), buffer
-                        .getActualBitPos()
-                        - pos, result);
-            }
-            return result;
-        }
-
-        public void encode(T object, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.codehaus.preon.Codec#getTypes()
-         */
-
-        public Class<?>[] getTypes() {
-            return codec.getTypes();
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.codehaus.preon.Codec#getSize()
-         */
-
-        public Expression<Integer, Resolver> getSize() {
-            return codec.getSize();
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see org.codehaus.preon.Codec#getType()
-         */
-
-        public Class<?> getType() {
-            return codec.getType();
-        }
-
-        public CodecDescriptor getCodecDescriptor() {
-            return new PassThroughCodecDescriptor2(codec.getCodecDescriptor(),
-                    false);
         }
 
     }

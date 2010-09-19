@@ -30,21 +30,36 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.codec.progress;
+package org.codehaus.preon.emitter;
 
-import org.codehaus.preon.BindingDecorator;
-import org.codehaus.preon.binding.Binding;
+import org.codehaus.preon.Codec;
 
-public class EmittingBindingDecorator implements BindingDecorator {
+/** The object that will generate the messages. Receives events for anything of interest. */
+public interface Emitter {
 
-    private final ProgressEmittingDecorator.Emitter emitter;
+    /**
+     * The operation called whenever a {@link org.codehaus.preon.Codec} kicks in.
+     *
+     * @param codec    The {@link org.codehaus.preon.Codec} called.
+     * @param position The position in the {@link org.codehaus.preon.buffer.BitBuffer}.
+     */
+    void markStart(Codec<?> codec, long position);
 
-    public EmittingBindingDecorator(ProgressEmittingDecorator.Emitter emitter) {
-        this.emitter = emitter;
-    }
+    /**
+     * The operation called whenever a {@link org.codehaus.preon.Codec} is done.
+     *
+     * @param codec    The {@link org.codehaus.preon.Codec} called.
+     * @param position The position in the {@link org.codehaus.preon.buffer.BitBuffer}.
+     * @param read     The number of bits that actually have been read.
+     * @param result   The value decoded by the {@link org.codehaus.preon.Codec}.
+     */
+    void markEnd(Codec<?> codec, long position, long read,
+                         Object result);
 
-    public Binding decorate(Binding binding) {
-        return new EmittingBinding(binding, emitter);
-    }
+    /** The operation called when the {@link org.codehaus.preon.Codec} failed to decode a value. */
+    void markFailure();
 
+    void markStartLoad(String name, Object object);
+
+    void markEndLoad();
 }

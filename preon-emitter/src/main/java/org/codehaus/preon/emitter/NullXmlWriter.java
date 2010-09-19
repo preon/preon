@@ -30,7 +30,7 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.codec.progress;
+package org.codehaus.preon.emitter;
 
 import nl.flotsam.pecia.builder.xml.XmlWriter;
 import nl.flotsam.pecia.builder.xml.XmlWriterException;

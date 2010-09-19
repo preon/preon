@@ -30,12 +30,32 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon;
+package org.codehaus.preon.emitter;
 
-import org.codehaus.preon.binding.Binding;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
-public interface BindingDecorator {
+public class TempFileOutputStreamFactory implements OutputStreamFactory {
 
-    Binding decorate(Binding binding);
+    private final boolean deleteOnExit;
+
+    public TempFileOutputStreamFactory(boolean deleteOnExit) {
+        this.deleteOnExit = deleteOnExit;
+    }
+
+    public OutputStream create() {
+        try {
+            File file = File.createTempFile("emitter-", ".xml");
+            System.err.println("Creating " + file.getAbsolutePath() + " for keeping track of emitter.");
+            if (deleteOnExit) {
+                file.deleteOnExit();
+            }
+            return new FileOutputStream(file);
+        } catch (IOException e) {
+            return null;            
+        }
+    }
 
 }

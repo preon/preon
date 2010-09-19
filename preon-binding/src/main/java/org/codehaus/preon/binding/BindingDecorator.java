@@ -30,32 +30,12 @@
  * you are not obligated to do so. If you do not wish to do so, delete this
  * exception statement from your version.
  */
-package org.codehaus.preon.codec.progress;
+package org.codehaus.preon.binding;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import org.codehaus.preon.binding.Binding;
 
-public class TempFileOutputStreamFactory implements OutputStreamFactory {
+public interface BindingDecorator {
 
-    private final boolean deleteOnExit;
-
-    public TempFileOutputStreamFactory(boolean deleteOnExit) {
-        this.deleteOnExit = deleteOnExit;
-    }
-
-    public OutputStream create() {
-        try {
-            File file = File.createTempFile("progress-", ".xml");
-            System.err.println("Creating " + file.getAbsolutePath() + " for keeping track of progress.");
-            if (deleteOnExit) {
-                file.deleteOnExit();
-            }
-            return new FileOutputStream(file);
-        } catch (IOException e) {
-            return null;            
-        }
-    }
+    Binding decorate(Binding binding);
 
 }

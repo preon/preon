@@ -82,6 +82,7 @@
     <module>preon-samples</module>
     <module>preon-archetypes</module>
     <module>preon-el</module>
+    <module>preon-emitter</module>
   </modules>
   <licenses>
     <license>
