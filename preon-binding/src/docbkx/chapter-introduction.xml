@@ -112,14 +112,14 @@ private int y2;
       you would decode a Rectangle from a file:
     </para>
     <programlisting><![CDATA[
-byte[] buffer = new byte[] {
+byte[] in = new byte[] {
   0, 0, 0, 1,
   0, 0, 0, 2,
   0, 0, 0, 3, 
   0, 0, 0, 4
 };
 Codec<Rectangle> codec = Codecs.create(Rectangle.class);
-Rectangle rect = Codecs.decode(codec, buffer); 
+Rectangle rect = Codecs.decode(codec, in);
     ]]></programlisting>
     <para>
       That's how easy it is. Although... To be perfectly honest, the
@@ -208,7 +208,7 @@ Rectangle rect = Codecs.decode(codec, buffer);
 // Reads a String from a fixed number of bytes
 @BoundString(size="10") String value;
 
-// Reads a bit from the buffer, and interprets it as an enum value, 
+// Reads a bit from the in, and interprets it as an enum value,
 // interpreting the number as its ordinal value.
 @BoundNumber(size="1") Type type;]]></programlisting>
     <para>
@@ -227,7 +227,7 @@ Rectangle rect = Codecs.decode(codec, buffer);
     </para>
     <para>
       The third example illustrates how an type-safe enum value is
-      bound to the bit buffer. Again, it relies on an existing
+      bound to the bit in. Again, it relies on an existing
       annotation that we have already seen before: the @BoundNumber
       annotation specifies how a certain numeric value needs to be
       read. That numeric value read needs to correspond to the
@@ -409,7 +409,7 @@ class PseudoMondriaan {
       it treats Lists.
     </para>
     <para>
-      Whenever Preon decodes a List of items from the bit buffer,
+      Whenever Preon decodes a List of items from the bit in,
       there is a chance it will inject a lazy-loading List into the
       List type attribute instead of fully-populated eagerly loaded
       List instance. I say there is 'a chance', since it really
@@ -654,7 +654,7 @@ public class Image {
       Codecs class, like this:
     </para>
     <programlisting><![CDATA[Codec<Rectangle> codec = Codecs.create(Rectangle.class);
-Rectangle rect = Codecs.decode(codec, buffer);]]></programlisting>
+Rectangle rect = Codecs.decode(codec, in);]]></programlisting>
     <para>
       Generating documentation just requires using another operation
       on Codecs:
