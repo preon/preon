@@ -54,7 +54,11 @@ public class HexDumper {
     private final DumpFragment[] fragments;
 
     /**
-     * @param bytesPerLine The number of bytes that will be fed to every line.
+     * Constructs a new instance, accepting the number of bytes to printed on every line, and the fragments that should
+     * be included in every line.
+     *
+     * @param bytesPerLine
+     * @param fragments
      */
     public HexDumper(int bytesPerLine, DumpFragment... fragments) {
         this.bytesPerLine = bytesPerLine;
@@ -85,6 +89,14 @@ public class HexDumper {
         return lineNumber * bytesPerLine + written;
     }
 
+    /**
+     * Fills a buffer with {@link #bytesPerLine} from a {@link ByteBuffer} passed in.
+     *
+     * @param in
+     * @param buffer
+     * @return The number of bytes pushed into the buffer. (Might be less than {@link #bytesPerLine} in case of a buffer
+     *         underflow.
+     */
     private int fillBuffer(ByteBuffer in, byte[] buffer) {
         try {
             in.get(buffer, 0, bytesPerLine);

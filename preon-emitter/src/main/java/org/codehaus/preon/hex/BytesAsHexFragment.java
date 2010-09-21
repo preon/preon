@@ -45,6 +45,11 @@ public class BytesAsHexFragment implements DumpFragment {
     private static final char[] symbols = {'0', '1', '2', '3', '4', '5', '6',
             '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
+    /**
+     * Constructs a new instance, accepting the number of bytes that together make a group.
+     *
+     * @param groupSize
+     */
     public BytesAsHexFragment(int groupSize) {
         this.groupSize = groupSize;
     }

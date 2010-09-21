@@ -44,7 +44,7 @@ public class BytesAsCharFragment implements DumpFragment {
 
     static {
         for (int i = 0; i <= 255; i++) {
-            if (Character.isLetter((char) i)) {
+            if (Character.isLetter((char) i) || (char) i == ' ') {
                 asc[i] = (char) i;
             } else {
                 asc[i] = '.';

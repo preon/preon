@@ -42,6 +42,11 @@ public class LinePosFragment implements DumpFragment {
 
     private final int size;
 
+    /**
+     * Constructs a new instance, accepting the number of character positions reserved for the line number.
+     *
+     * @param size
+     */
     public LinePosFragment(int size) {
         this.size = size;
     }

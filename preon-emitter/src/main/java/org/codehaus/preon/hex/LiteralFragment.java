@@ -42,6 +42,11 @@ public class LiteralFragment implements DumpFragment {
 
     private final String literal;
 
+    /**
+     * Constructs a new instance, accepting the literal fragment to be included when this fragment renders itself.
+     *
+     * @param literal
+     */
     public LiteralFragment(String literal) {
         this.literal = literal;
     }

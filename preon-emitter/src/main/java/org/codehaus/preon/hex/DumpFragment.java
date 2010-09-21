@@ -48,9 +48,12 @@ public interface DumpFragment {
     int getSize(int numberOfBytes);
 
     /**
-     * @param lineNumber
-     * @param buffer
-     * @param out
+     * Dumps the contents of this fragment to <code>out</code>.
+     *
+     * @param lineNumber The line number.
+     * @param buffer     The bytes to be rendered. (Assume that the number of bytes normally to be printed to every line
+     *                   is the length of this buffer.
+     * @param out The object receiving output.
      */
     void dump(long lineNumber, byte[] buffer, int length, Appendable out) throws IOException;
 
