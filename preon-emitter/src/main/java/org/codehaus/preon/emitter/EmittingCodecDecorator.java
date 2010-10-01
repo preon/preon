@@ -33,6 +33,7 @@
 package org.codehaus.preon.emitter;
 
 
+import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.el.Expression;
 import org.codehaus.preon.*;
 
@@ -150,7 +151,7 @@ public class EmittingCodecDecorator implements CodecDecorator {
          * .flotsam.preon.Codec, long, long)
          */
 
-        public void markStart(Codec<?> codec, long position) {
+        public void markStart(Codec<?> codec, long position, BitBuffer buffer) {
             StringBuilder builder = new StringBuilder();
             builder.append("Start decoding at ")
                     .append(position)
@@ -162,7 +163,7 @@ public class EmittingCodecDecorator implements CodecDecorator {
 
         /**
          * Prints the message. (Used both by {@link #markEnd(Codec, long, long, Object)}, {@link
-         * #markStart(Codec, long)}, as well as {@link #markFailure()}.
+         * Emitter#markStart(org.codehaus.preon.Codec}, as well as {@link #markFailure()}.
          *
          * @param message The message to be printed.
          */

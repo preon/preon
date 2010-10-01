@@ -32,8 +32,6 @@
  */
 package org.codehaus.preon.hex;
 
-import java.io.IOException;
-
 /**
  * A {@link org.codehaus.preon.hex.DumpFragment} that will continuously generate the same literal, over and over again,
  * for every line getting generated. Mainly useful for adding spacers between different other types of fragments.
@@ -55,7 +53,7 @@ public class LiteralFragment implements DumpFragment {
         return literal.length();
     }
 
-    public void dump(long lineNumber, byte[] buffer, int length, Appendable out) throws IOException {
-        out.append(literal);
+    public void dump(long lineNumber, byte[] buffer, int length, HexDumpTarget out) throws HexDumperException {
+        out.writeText(literal);
     }
 }

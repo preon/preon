@@ -33,18 +33,22 @@
 package org.codehaus.preon.sample.bytecode;
 
 import org.apache.commons.io.IOUtils;
-import org.codehaus.preon.*;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.Codecs;
 import org.codehaus.preon.Codecs.DocumentType;
-import org.codehaus.preon.binding.BindingDecorator;
-import org.codehaus.preon.emitter.*;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.emitter.Exporter;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -55,6 +59,9 @@ public class ClassFileTest {
 
     private Codec<ClassFile> codec;
     private static byte[] bytecode;
+
+    @Rule
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @BeforeClass
     public static void loadBytecode() throws IOException {
@@ -69,10 +76,7 @@ public class ClassFileTest {
 
     @Before
     public void constructCodec() {
-        Emitter emitter = new XmlEmitter(new TempFileOutputStreamFactory(false));
-        CodecDecorator codecDecorator = new EmittingCodecDecorator(emitter);
-        BindingDecorator bindingDecorator = new EmittingBindingDecorator(emitter);
-        codec = Codecs.create(ClassFile.class, new CodecFactory[0], new CodecDecorator[] {codecDecorator}, new BindingDecorator[] { bindingDecorator });
+        codec = Codecs.create(ClassFile.class);
     }
 
     @Test
@@ -94,5 +98,20 @@ public class ClassFileTest {
         file.deleteOnExit();
         Codecs.document(codec, DocumentType.Html, file);
     }
+
+    @Test
+    public void shouldExportCorrectly() throws DecodingException, IOException {
+        File root = new File("/tmp");
+        Exporter.decodeAndExport(ClassFile.class, ByteBuffer.wrap(bytecode), new File(root, "hello.html"));
+//        assertThat(Arrays.asList(root.list()),
+//                hasItems("hello-structure.xml", "hello-contents.txt"));
+//        System.out.println(readFileToString(new File(root, "hello-structure.xml"), "UTF-8"));
+//        File contentsFile = new File(root, "hello-contents.txt");
+//        assertThat(contentsFile.exists(), is(true));
+//        assertThat(contentsFile.length(), is(greaterThan(0L)));
+//        System.out.println(readFileToString(new File(root, "hello-contents.txt"), "UTF-8"));
+    }
+
+
 
 }

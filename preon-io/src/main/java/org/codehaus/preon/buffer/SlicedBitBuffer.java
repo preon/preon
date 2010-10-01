@@ -252,6 +252,10 @@ public class SlicedBitBuffer implements BitBuffer {
         }
     }
 
+    public ByteBuffer readAsByteBuffer() {
+        return delegate.readAsByteBuffer();
+    }
+
     public long getActualBitPos() {
         return delegate.getActualBitPos();
     }

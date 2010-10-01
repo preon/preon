@@ -39,7 +39,7 @@ import org.codehaus.preon.descriptor.PassThroughCodecDescriptor2;
 import org.codehaus.preon.el.Expression;
 
 /**
- * The {@link org.codehaus.preon.Codec} constructed by the {@link ProgressEmittingDecorator}.
+ * The {@link org.codehaus.preon.Codec} constructed by the {@link org.codehaus.preon.emitter.EmittingCodecDecorator}.
  *
  * @author Wilfred Springer (wis)
  * @param <T>
@@ -49,14 +49,14 @@ public class EmittingCodec<T> implements Codec<T> {
     /** The {@link org.codehaus.preon.Codec} wrapped. */
     private final Codec<T> codec;
 
-    /** The {@link ProgressEmittingDecorator.Emitter} to use. */
+    /** The {@link Emitter} to use. */
     private final Emitter emitter;
 
     /**
      * Constructs a new instance.
      *
      * @param codec  The {@link org.codehaus.preon.Codec} to wrap.
-     * @param emitter The {@link ProgressEmittingDecorator.Emitter} to use.
+     * @param emitter The {@link Emitter} to use.
      */
     public EmittingCodec(Codec<T> codec, Emitter emitter) {
         assert codec != null;
@@ -76,7 +76,7 @@ public class EmittingCodec<T> implements Codec<T> {
             throws DecodingException {
         T result = null;
         long pos = buffer.getActualBitPos();
-        emitter.markStart(codec, pos);
+        emitter.markStart(codec, pos, buffer);
         try {
             result = codec.decode(buffer, resolver, builder);
         } catch (DecodingException de) {

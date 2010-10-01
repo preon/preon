@@ -33,6 +33,7 @@
 package org.codehaus.preon.emitter;
 
 import org.codehaus.preon.Codec;
+import org.codehaus.preon.buffer.BitBuffer;
 
 /** The object that will generate the messages. Receives events for anything of interest. */
 public interface Emitter {
@@ -42,8 +43,9 @@ public interface Emitter {
      *
      * @param codec    The {@link org.codehaus.preon.Codec} called.
      * @param position The position in the {@link org.codehaus.preon.buffer.BitBuffer}.
+     * @param buffer
      */
-    void markStart(Codec<?> codec, long position);
+    void markStart(Codec<?> codec, long position, BitBuffer buffer);
 
     /**
      * The operation called whenever a {@link org.codehaus.preon.Codec} is done.

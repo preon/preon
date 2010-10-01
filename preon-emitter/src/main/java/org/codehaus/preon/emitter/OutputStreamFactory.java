@@ -33,10 +33,11 @@
 package org.codehaus.preon.emitter;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.io.OutputStream;
 
 public interface OutputStreamFactory {
 
-    @Nullable OutputStream create();
+    @Nullable OutputStream create() throws IOException;
 
 }

@@ -88,6 +88,10 @@ public class ConcurrentBitBuffer extends AbstractBitBufferDecorator {
         return getDelegate().readAsByteBuffer(length);
     }
 
+    public ByteBuffer readAsByteBuffer() {
+        return getDelegate().readAsByteBuffer();
+    }
+
     public long getActualBitPos() {
         return getDelegate().getActualBitPos();
     }

@@ -32,8 +32,6 @@
  */
 package org.codehaus.preon.hex;
 
-import java.io.IOException;
-
 /**
  * A {@link org.codehaus.preon.hex.DumpFragment} that will generate the line position, with the given number of
  * characters, with trailing zeroes if required.
@@ -55,15 +53,15 @@ public class LinePosFragment implements DumpFragment {
         return size;
     }
 
-    public void dump(long lineNumber, byte[] buffer, int length, Appendable out) throws IOException {
-        String position = Long.toString(lineNumber);
+    public void dump(long lineNumber, byte[] buffer, int length, HexDumpTarget out) throws HexDumperException {
+        String position = Long.toHexString(lineNumber);
         if (position.length() > size) {
             position = position.substring(position.length() - size);
         } else {
             for (int i = position.length(); i < size; i++) {
-                out.append('0');
+                out.writeText('0');
             }
         }
-        out.append(position);
+        out.writeText(position);
     }
 }

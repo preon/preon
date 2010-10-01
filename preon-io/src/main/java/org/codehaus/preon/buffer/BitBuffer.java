@@ -377,6 +377,12 @@ public interface BitBuffer {
     ByteBuffer readAsByteBuffer(int length) throws BitBufferUnderflowException;
 
     /**
+     * Returns the contents of the underlying collection of bytes a {@link java.nio.ByteBuffer}.
+     *
+     */
+    ByteBuffer readAsByteBuffer();
+
+    /**
      * Returns the actual position in the underlying data representation.
      *
      * @return The actual position in the underlying related to the underlying data representation.

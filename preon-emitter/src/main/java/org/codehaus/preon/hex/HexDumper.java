@@ -65,6 +65,10 @@ public class HexDumper {
         this.fragments = fragments;
     }
 
+    public long dump(ByteBuffer in, Appendable out) throws HexDumperException {
+        return dump(in, new AppendableHexDumpTarget(out));        
+    }
+
     /**
      * Dumps a representation of the {@link ByteBuffer} to the given output object.
      *
@@ -73,7 +77,7 @@ public class HexDumper {
      * @return The number of <em>bytes</em> generated
      * @throws IOException If the operation fails while writing.
      */
-    public long dump(ByteBuffer in, Appendable out) throws IOException {
+    public long dump(ByteBuffer in, HexDumpTarget out) throws HexDumperException {
         long lineNumber = 0;
         byte[] buffer = new byte[this.bytesPerLine];
         int written = 0;
@@ -83,7 +87,6 @@ public class HexDumper {
             for (DumpFragment fragment : fragments) {
                 fragment.dump(lineNumber, buffer, written, out);
             }
-            out.append('\n');
             lineNumber += 1;
         }
         return lineNumber * bytesPerLine + written;

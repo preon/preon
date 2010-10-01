@@ -32,7 +32,9 @@
  */
 package org.codehaus.preon.hex;
 
-import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 /**
  * A {@link org.codehaus.preon.hex.DumpFragment} that translates every byte to a character representation - as long as
@@ -43,12 +45,15 @@ public class BytesAsCharFragment implements DumpFragment {
     private static final char[] asc = new char[256];
 
     static {
+        Charset charset = Charset.forName("ASCII");
+        byte[] bytes = new byte[256];
         for (int i = 0; i <= 255; i++) {
-            if (Character.isLetter((char) i) || (char) i == ' ') {
-                asc[i] = (char) i;
-            } else {
-                asc[i] = '.';
-            }
+            asc[i] = '.';
+            bytes[i] = (byte) (0xff & i);
+        }
+        CharBuffer buffer = charset.decode(ByteBuffer.wrap(bytes));
+        for (int i = 0x20; i <= 0x7E; i++) {
+            asc[i] = buffer.get(i);
         }
     }
 
@@ -56,12 +61,12 @@ public class BytesAsCharFragment implements DumpFragment {
         return numberOfBytes;
     }
 
-    public void dump(long lineNumber, byte[] buffer, int length, Appendable out) throws IOException {
+    public void dump(long lineNumber, byte[] buffer, int length, HexDumpTarget out) throws HexDumperException {
         for (int i = 0; i < length; i++) {
-            out.append(asc[0xff & buffer[i]]);
+            out.writeText(asc[0xff & buffer[i]]);
         }
         for (int i = length; i < buffer.length; i++) {
-            out.append(' ');
+            out.writeText(' ');
         }
     }
 }

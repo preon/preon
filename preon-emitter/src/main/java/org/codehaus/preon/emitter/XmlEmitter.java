@@ -40,10 +40,13 @@ import nl.flotsam.pecia.builder.html.HtmlDocumentBuilder;
 import nl.flotsam.pecia.builder.xml.StreamingXmlWriter;
 import nl.flotsam.pecia.builder.xml.XmlWriter;
 import org.codehaus.preon.Codec;
+import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.hex.*;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
+import java.io.IOException;
 import java.io.OutputStream;
 
 public class XmlEmitter implements Emitter {
@@ -51,16 +54,22 @@ public class XmlEmitter implements Emitter {
     private final OutputStreamFactory outputStreamFactory;
     private int depth = 0;
     private XmlWriter current;
+    private static final String ROOT_ELEMENT = "emitter";
+    private static final HexDumper contentsAsBytesDumper =
+            new HexDumper(16,
+                    new LinePosFragment(8),
+                    new LiteralFragment("  "),
+                    new BytesAsHexFragment(8, true),
+                    new LiteralFragment("\n"));
 
     public XmlEmitter(OutputStreamFactory outputStreamFactory) {
         this.outputStreamFactory = outputStreamFactory;
     }
 
-    public void markStart(Codec<?> codec, long position) {
+    public void markStart(Codec<?> codec, long position, BitBuffer buffer) {
         if (depth == 0) {
             current = createWriter();
-            current.writeStartDocument();
-            current.writeStartElement("emitter");
+            writeStart(buffer);
         }
         current.writeStartElement("fragment");
         current.writeStartElement("start");
@@ -88,6 +97,8 @@ public class XmlEmitter implements Emitter {
             }
         } catch (XMLStreamException e) {
             return new NullXmlWriter();
+        } catch (IOException e) {
+            return new NullXmlWriter();
         }
     }
 
@@ -95,15 +106,29 @@ public class XmlEmitter implements Emitter {
         current.writeEndElement(); // end of contents element
         current.writeStartElement("end");
         current.writeAttribute("position", Long.toString(position));
-        current.writeAttribute("type", result.getClass().getName());
+        current.writeAttribute("type", result.getClass().getSimpleName());
+        current.writeAttribute("value", result.toString());
         current.writeEndElement();
         current.writeEndElement();
         depth -= 1;
         if (depth == 0) {
-            current.writeEndElement();
-            current.writeEndDocument();
-            current.close();
+            writeEnd();
         }
+    }
+
+    private void writeStart(BitBuffer buffer) {
+        current.writeStartDocument();
+        current.writeStartElement(ROOT_ELEMENT);
+        current.writeStartElement("bytes");
+        contentsAsBytesDumper.dump(buffer.readAsByteBuffer(), new XmlWriterHexDumpTarget(current));
+        buffer.readAsByteBuffer();
+        current.writeEndElement();
+    }
+
+    private void writeEnd() {
+        current.writeEndElement();
+        current.writeEndDocument();
+        current.close();
     }
 
     public void markFailure() {
@@ -112,9 +137,7 @@ public class XmlEmitter implements Emitter {
         current.writeEndElement();
         depth -= 1;
         if (depth == 0) {
-            current.writeEndElement();
-            current.writeEndDocument();
-            current.close();
+            writeEnd();
         }
     }
 

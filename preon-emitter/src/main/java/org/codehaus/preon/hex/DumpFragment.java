@@ -32,8 +32,6 @@
  */
 package org.codehaus.preon.hex;
 
-import java.io.IOException;
-
 /**
  * A fixed-size framgment of output.
  */
@@ -55,6 +53,6 @@ public interface DumpFragment {
      *                   is the length of this buffer.
      * @param out The object receiving output.
      */
-    void dump(long lineNumber, byte[] buffer, int length, Appendable out) throws IOException;
+    void dump(long lineNumber, byte[] buffer, int length, HexDumpTarget out) throws HexDumperException;
 
 }

@@ -32,8 +32,6 @@
  */
 package org.codehaus.preon.hex;
 
-import java.io.IOException;
-
 /**
  * A {@link org.codehaus.preon.hex.DumpFragment} that translates every byte to a two-character hex represenation, with
  * support for grouping.
@@ -41,40 +39,53 @@ import java.io.IOException;
 public class BytesAsHexFragment implements DumpFragment {
 
     private final int groupSize;
+    private final boolean insertSpan;
 
     private static final char[] symbols = {'0', '1', '2', '3', '4', '5', '6',
             '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+
+    public BytesAsHexFragment(int groupSize) {
+        this(groupSize, false);
+    }
 
     /**
      * Constructs a new instance, accepting the number of bytes that together make a group.
      *
      * @param groupSize
      */
-    public BytesAsHexFragment(int groupSize) {
+    public BytesAsHexFragment(int groupSize, boolean insertSpan) {
         this.groupSize = groupSize;
+        this.insertSpan = insertSpan;
     }
 
     public int getSize(int numberOfBytes) {
         return numberOfBytes * 2 + (numberOfBytes - 1) + ((numberOfBytes - 1) % groupSize);
     }
 
-    public void dump(long lineNumber, byte[] buffer, int length, Appendable out) throws IOException {
+    public void dump(long lineNumber, byte[] buffer, int length, HexDumpTarget out) throws HexDumperException {
         for (int i = 0; i < length; i++) {
-            append(i, symbols[hiword(buffer[i])], symbols[loword(buffer[i])], out);
+            append(i, symbols[hiword(buffer[i])], symbols[loword(buffer[i])], out, i + lineNumber * length);
         }
         for (int i = length; i < buffer.length; i++) {
-            append(i, ' ', ' ', out);
+            append(i, ' ', ' ', out, i + lineNumber * length);
         }
     }
 
-    private void append(int i, char first, char second, Appendable out) throws IOException {
+    private void append(int i, char first, char second, HexDumpTarget out, long bytePos) {
         if (i != 0) {
-            out.append(' ');
+            out.writeText(' ');
             if (i % groupSize == 0) {
-                out.append(' ');
+                out.writeText(' ');
             }
         }
-        out.append(first).append(second);
+        if (insertSpan) {
+            out.writeStartElement("span");
+        }
+        out.writeText(first);
+        out.writeText(second);
+        if (insertSpan) {
+            out.writeEndElement();            
+        }
     }
 
     /**
