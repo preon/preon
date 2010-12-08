@@ -123,19 +123,19 @@ public class LimboTest {
                 "3 * 4 + 5"));
     }
 
-    @Test
+    @Test(expected=InvalidExpressionException.class)
     public void testParserProblemArithmetic() {
         EasyMock.expect(defs.getType("a")).andReturn(Integer.class);
-        EasyMock.expect(defs.getType("b")).andReturn(Integer.class);
+        // Previously asserted that "b" would also be checked, but a different
+        // ANTLR generated code path negates that now.
         EasyMock.replay(defs);
         try {
             Expression<Integer, VariableResolver> expr = Expressions.createInteger(context,
                     "a - * b");
             fail("Expection parser problem.");
-        } catch (InvalidExpressionException e) {
-            // Ah, this is what we expected
+        } finally {
+            EasyMock.verify(defs);
         }
-        EasyMock.verify(defs);
     }
 
     @Test
