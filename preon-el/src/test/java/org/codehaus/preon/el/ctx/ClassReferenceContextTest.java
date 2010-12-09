@@ -32,14 +32,16 @@
  */
 package org.codehaus.preon.el.ctx;
 
-import junit.framework.TestCase;
 import org.codehaus.preon.el.*;
 import org.codehaus.preon.el.util.StringBuilderDocument;
+import static org.junit.Assert.*;
+import org.junit.Test;
 
 import static org.codehaus.preon.el.Bindings.EarlyBinding;
 
-public class ClassReferenceContextTest extends TestCase {
+public class ClassReferenceContextTest {
 
+    @Test
     public void testFromBindings() {
         Expression<Integer, Person> expr = Expressions.from(Person.class)
                 .using(EarlyBinding).toInteger("age * 2");
@@ -48,7 +50,7 @@ public class ClassReferenceContextTest extends TestCase {
         wilfred.age = 35;
         assertEquals(70, expr.eval(wilfred).intValue());
     }
-
+    @Test
     public void testValidReferences() {
         ReferenceContext<Person> context = new ClassReferenceContext<Person>(
                 Person.class);
@@ -70,15 +72,11 @@ public class ClassReferenceContextTest extends TestCase {
         System.out.println(builder.toString());
     }
 
+    @Test(expected=BindingException.class)
     public void testInvalidReferences() {
         ReferenceContext<Person> context = new ClassReferenceContext<Person>(
                 Person.class);
-        try {
-            context.selectAttribute("gender");
-            fail("Expected binding exception.");
-        } catch (BindingException be) {
-            // Ok!
-        }
+        context.selectAttribute("gender");
     }
 
     private static class Person {

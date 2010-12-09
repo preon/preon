@@ -194,17 +194,17 @@ public class LimboTest {
         EasyMock.verify(resolver);
     }
     
-    @Test
+    @Test(expected=BindingException.class)
     public void testAddingStrings() {
         EasyMock.expect(defs.getType("a")).andReturn(String.class).anyTimes();
         EasyMock.replay(resolver, defs);
         try {
             Expression<Object, VariableResolver> expr = Expressions.create(context, "a > 3");
             fail("Expecting BindingException because of incompatible types.");
-        } catch (BindingException e) {
-            // Allright!
+        } finally {
+            EasyMock.verify(resolver, defs);
         }
-        EasyMock.verify(resolver, defs);
+        
     }
 
     @Test

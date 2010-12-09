@@ -32,11 +32,13 @@
  */
 package org.codehaus.preon.el.util;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.codehaus.preon.el.util.ClassUtils;
 
-public class ClassUtilsTest extends TestCase {
+public class ClassUtilsTest {
 
+    @Test
     public void testCommonSuperType() {
         assertEquals(Number.class, ClassUtils.calculateCommonSuperType(Byte.class, Integer.class));
         assertEquals(Number.class, ClassUtils.calculateCommonSuperType(double.class, Integer.class));

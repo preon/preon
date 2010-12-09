@@ -32,7 +32,8 @@
  */
 package org.codehaus.preon.el.ctx;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.InvalidExpressionException;
@@ -40,8 +41,9 @@ import org.codehaus.preon.el.Reference;
 import org.codehaus.preon.el.util.StringBuilderDocument;
 
 
-public class VariableContextTest extends TestCase {
+public class VariableContextTest {
 
+    @Test
     public void testPropertySelectors() {
         final Data data = new Data();
         data.data = new Data();
@@ -54,6 +56,7 @@ public class VariableContextTest extends TestCase {
         assertEquals("foobar", reference.resolve(new DataResolver(data)));
     }
 
+    @Test
     public void testIndexSelectors() throws InvalidExpressionException {
         final Data data = new Data();
         data.datas = new Data[2];
@@ -70,6 +73,7 @@ public class VariableContextTest extends TestCase {
         assertEquals("bar", reference.resolve(new DataResolver(data)));
     }
 
+    @Test
     public void testReferenceEquality() throws InvalidExpressionException {
         VariableDefinitions defs = new DataVariableDefinitions();
         VariableContext context = new VariableContext(defs);
@@ -87,6 +91,7 @@ public class VariableContextTest extends TestCase {
         assertEquals(reference, reference);
     }
 
+    @Test
     public void testDocumentation() throws InvalidExpressionException {
         VariableDefinitions defs = new DataVariableDefinitions();
         VariableContext context = new VariableContext(defs);
@@ -101,6 +106,7 @@ public class VariableContextTest extends TestCase {
         documentArrayElement(context, reference);
         documentPropertyOfArrayElement(context, reference);
     }
+
 
     private void documentArrayElement(VariableContext context,
             Reference<VariableResolver> reference)

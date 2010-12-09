@@ -32,12 +32,15 @@
  */
 package org.codehaus.preon.el.ast;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.el.ast.ArithmeticNode.Operator;
+import org.junit.Test;
 
-public class ArithmeticNodeTest extends TestCase {
+public class ArithmeticNodeTest {
 
+    @Test
     public void testAddIntegers() {
         Node<Integer, Object> node1 = new IntegerNode<Object>(5);
         Node<Integer, Object> node2 = new IntegerNode<Object>(5);
@@ -50,24 +53,18 @@ public class ArithmeticNodeTest extends TestCase {
         assertNotNull(sum.getType());
         assertEquals(Integer.class, sum.getType());
     }
-    
-    public void testAddNonIntegers() {
+
+    @Test(expected = BindingException.class)
+    public void testAddNonIntegers1() {
         Node<String, Object> node1 = new StringNode<Object>("Whatever");
         Node<Integer, Object> node2 = new IntegerNode<Object>(5);
-        Node<Integer, Object> sum = null;
-        try {
-            sum = ArithmeticNode.create(Operator.plus, node1, node2);
-            fail("Expected binding exception.");
-        } catch(BindingException be) {
-            // Right on.
-        }
-        try {
-            sum = ArithmeticNode.create(Operator.plus, node2, node1);
-            fail("Expected binding exception.");
-        } catch(BindingException be) {
-            // Right on.
-        }
-
+        Node<Integer, Object> sum = ArithmeticNode.create(Operator.plus, node1, node2);
     }
-
+    
+    @Test(expected = BindingException.class)
+    public void testAddNonIntegers2() {
+        Node<String, Object> node1 = new StringNode<Object>("Whatever");
+        Node<Integer, Object> node2 = new IntegerNode<Object>(5);
+        Node<Integer, Object> sum = ArithmeticNode.create(Operator.plus, node2, node1);
+    }
 }

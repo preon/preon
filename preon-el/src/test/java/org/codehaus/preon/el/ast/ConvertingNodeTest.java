@@ -32,9 +32,9 @@
  */
 package org.codehaus.preon.el.ast;
 
-import junit.framework.TestCase;
-import org.codehaus.preon.el.ast.ConvertingNode;
-import org.codehaus.preon.el.ast.Node;
+import org.junit.Before;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 import static org.easymock.EasyMock.*;
 
@@ -44,7 +44,7 @@ import static org.easymock.EasyMock.*;
  * @author Wilfred Springer (wis)
  * 
  */
-public class ConvertingNodeTest extends TestCase {
+public class ConvertingNodeTest {
 
     /**
      * The source node.
@@ -55,6 +55,7 @@ public class ConvertingNodeTest extends TestCase {
      * (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
      */
+    @Before
     public void setUp() {
         source = createMock(Node.class);
     }
@@ -62,6 +63,7 @@ public class ConvertingNodeTest extends TestCase {
     /**
      * Tests a conversion from String to Integer.
      */
+    @Test
     public void testNonConvertingInteger() {
         expect(source.getType()).andReturn(String.class);
         replay(source);
@@ -73,6 +75,7 @@ public class ConvertingNodeTest extends TestCase {
     /**
      * Tests a conversion from Byte to Integer.
      */
+    @Test
     public void testConvertingInteger() {
         Object context = new Object();
         expect(source.getType()).andReturn(Byte.class).times(2);

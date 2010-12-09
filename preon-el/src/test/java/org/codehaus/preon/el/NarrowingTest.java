@@ -38,20 +38,22 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import org.codehaus.preon.el.*;
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class NarrowingTest extends TestCase {
+public class NarrowingTest {
 
     private ReferenceContext<Object> context = createMock(ReferenceContext.class);
     private Reference<Object> reference1 = createMock(Reference.class);
     private Reference<Object> reference2 = createMock(Reference.class);
 
+    @Test
     public void testAssignable() {
         assertTrue(Number.class.isAssignableFrom(Long.class));
         assertFalse(Long.class.isAssignableFrom(Number.class));
     }
-    
+
+    @Test(expected = BindingException.class)
     public void testNoNarrowingPossible() {
         expect(context.selectAttribute("a")).andReturn(reference1);
         expect(reference1.getType()).andStubReturn(Integer.class);
@@ -60,12 +62,12 @@ public class NarrowingTest extends TestCase {
         try {
             Expression expr = Expressions.createBoolean(context, "a=='123'");
             fail("Expected binding exception.");
-        } catch (BindingException be) {
-            // Ok
+        } finally {
+            verify(context, reference1);
         }
-        verify(context, reference1);
     }
 
+    @Test
     public void testNoNarrowingNeeded() {
         expect(context.selectAttribute("a")).andReturn(reference1);
         expect(reference1.getType()).andStubReturn(String.class);
@@ -74,6 +76,7 @@ public class NarrowingTest extends TestCase {
         verify(context, reference1);
     }
 
+    @Test
     public void testNarrowingPossibleAndNeeded() {
         expect(context.selectAttribute("a")).andReturn(reference1);
         expect(reference1.getType()).andStubReturn(Object.class);
@@ -83,5 +86,4 @@ public class NarrowingTest extends TestCase {
         Expression expr = Expressions.createBoolean(context, "a=='123'");
         verify(context, reference1, reference2);
     }
-    
 }
