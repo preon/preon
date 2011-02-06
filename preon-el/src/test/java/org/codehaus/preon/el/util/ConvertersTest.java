@@ -32,10 +32,12 @@
  */
 package org.codehaus.preon.el.util;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class ConvertersTest extends TestCase {
+public class ConvertersTest {
 
+    @Test
     public void testConversions() {
         assertNull(Converters.get(String.class, Boolean.class));
         Converter<Byte, Integer> converter1 = Converters.get(Byte.class, Integer.class);

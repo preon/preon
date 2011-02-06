@@ -123,19 +123,19 @@ public class LimboTest {
                 "3 * 4 + 5"));
     }
 
-    @Test
+    @Test(expected=InvalidExpressionException.class)
     public void testParserProblemArithmetic() {
         EasyMock.expect(defs.getType("a")).andReturn(Integer.class);
-        EasyMock.expect(defs.getType("b")).andReturn(Integer.class);
+        // Previously asserted that "b" would also be checked, but a different
+        // ANTLR generated code path negates that now.
         EasyMock.replay(defs);
         try {
             Expression<Integer, VariableResolver> expr = Expressions.createInteger(context,
                     "a - * b");
             fail("Expection parser problem.");
-        } catch (InvalidExpressionException e) {
-            // Ah, this is what we expected
+        } finally {
+            EasyMock.verify(defs);
         }
-        EasyMock.verify(defs);
     }
 
     @Test
@@ -194,17 +194,17 @@ public class LimboTest {
         EasyMock.verify(resolver);
     }
     
-    @Test
+    @Test(expected=BindingException.class)
     public void testAddingStrings() {
         EasyMock.expect(defs.getType("a")).andReturn(String.class).anyTimes();
         EasyMock.replay(resolver, defs);
         try {
             Expression<Object, VariableResolver> expr = Expressions.create(context, "a > 3");
             fail("Expecting BindingException because of incompatible types.");
-        } catch (BindingException e) {
-            // Allright!
+        } finally {
+            EasyMock.verify(resolver, defs);
         }
-        EasyMock.verify(resolver, defs);
+        
     }
 
     @Test

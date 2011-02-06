@@ -32,7 +32,7 @@
  */
 package org.codehaus.preon.el.ctx;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.*;
 import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.el.Document;
 import org.codehaus.preon.el.Reference;
@@ -40,6 +40,8 @@ import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.el.util.StringBuilderDocument;
 
 import java.util.Date;
+import org.junit.Before;
+import org.junit.Test;
 
 import static org.easymock.EasyMock.*;
 
@@ -49,7 +51,7 @@ import static org.easymock.EasyMock.*;
  * @author Wilfred Springer (wis)
  * 
  */
-public class MultiReferenceTest extends TestCase {
+public class MultiReferenceTest {
 
     private Reference reference1;
 
@@ -59,6 +61,7 @@ public class MultiReferenceTest extends TestCase {
 
     private ReferenceContext context;
 
+    @Before
     public void setUp() {
         this.reference1 = createMock(Reference.class);
         this.reference2 = createMock(Reference.class);
@@ -66,6 +69,7 @@ public class MultiReferenceTest extends TestCase {
         this.context = createMock(ReferenceContext.class);
     }
 
+    @Test
     public void testResolution() {
         Object runtimeContext = new Object();
         Object result = new Object();
@@ -80,6 +84,7 @@ public class MultiReferenceTest extends TestCase {
         verify(reference1, reference2);
     }
 
+    @Test
     public void testResolution2ndAttempt() {
         Object runtimeContext = new Object();
         Object result = new Object();
@@ -95,6 +100,7 @@ public class MultiReferenceTest extends TestCase {
         verify(reference1, reference2);
     }
 
+    @Test(expected=BindingException.class)
     public void testFailedResolution() {
         Object runtimeContext = new Object();
         Object result = new Object();
@@ -108,13 +114,12 @@ public class MultiReferenceTest extends TestCase {
         MultiReference multi = new MultiReference(reference1, reference2);
         try {
             multi.resolve(runtimeContext);
-            fail("Expecting exception.");
-        } catch (BindingException rre) {
-            // Right on!
+        } finally {
+            verify(reference1, reference2);
         }
-        verify(reference1, reference2);
     }
 
+    @Test
     public void testSelectIndex() {
         String index = "pi";
         Reference selected1 = createMock(Reference.class);
@@ -135,6 +140,7 @@ public class MultiReferenceTest extends TestCase {
         verify(reference1, reference2, selected1, selected2);
     }
 
+    @Test
     public void testSelectProperty() {
         String propertyName = "pi";
         Reference selected1 = createMock(Reference.class);
@@ -154,7 +160,8 @@ public class MultiReferenceTest extends TestCase {
         assertNotNull(multi.selectAttribute(propertyName));
         verify(reference1, reference2, selected1, selected2);
     }
-    
+
+    @Test
     public void testSelectNonExistingProperty() {
         StringBuilder builder = new StringBuilder();
         Document document = new StringBuilderDocument(builder);
@@ -177,7 +184,8 @@ public class MultiReferenceTest extends TestCase {
         selected.document(document);
         verify(reference1, reference2, selected1, selected2);
     }
-    
+
+    @Test
     public void testNarrow() {
         StringBuilder builder = new StringBuilder();
         Document document = new StringBuilderDocument(builder);
@@ -194,6 +202,7 @@ public class MultiReferenceTest extends TestCase {
         verify(reference1, reference2, context);
     }
 
+    @Test
     public void testNarrowPartly() {
         StringBuilder builder = new StringBuilder();
         Document document = new StringBuilderDocument(builder);
@@ -210,6 +219,7 @@ public class MultiReferenceTest extends TestCase {
         verify(reference1, reference2, context);
     }
 
+    @Test
     public void testDocumentation() {
         StringBuilderDocument document = new StringBuilderDocument();
         expect(reference1.getReferenceContext()).andReturn(context);

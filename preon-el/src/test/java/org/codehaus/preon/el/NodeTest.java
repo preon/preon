@@ -38,12 +38,14 @@ import org.codehaus.preon.el.ast.Node;
 import org.codehaus.preon.el.ast.RelationalNode;
 import org.codehaus.preon.el.ast.ArithmeticNode.Operator;
 import org.codehaus.preon.el.ast.RelationalNode.Relation;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-import junit.framework.TestCase;
 
-public class NodeTest extends TestCase {
+public class NodeTest {
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testJustArithmetic() {
         Node<Integer,?> a = new IntegerNode(12);
         Node<Integer,?> b = new IntegerNode(13);
@@ -52,6 +54,7 @@ public class NodeTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testJustRelation() {
         Node<Integer,?> a = new IntegerNode(12);
         Node<Integer,?> b = new IntegerNode(13);
@@ -60,6 +63,7 @@ public class NodeTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
+    @Test
     public void testCompound() {
         Node<Integer,?> a = new IntegerNode(12);
         Node<Integer,?> b = new IntegerNode(13);

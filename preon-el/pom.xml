@@ -18,8 +18,8 @@
   <dependencies>
     <dependency>
       <groupId>org.antlr</groupId>
-      <artifactId>antlr</artifactId>
-      <version>3.0</version>
+      <artifactId>antlr-runtime</artifactId>
+      <version>3.3</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -62,31 +62,36 @@
           <target>1.5</target>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>org.antlr</groupId>
+        <artifactId>antlr3-maven-plugin</artifactId>
+        <version>3.3</version>
+        <executions>
+            <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>antlr</goal>
+                </goals>
+            </execution>
+        </executions>
+        <configuration>
+            <!--
+                <debug>true</debug>
+                -->
+                <!--
+                <libDirectory>src/main/antlr3/imports</libDirectory>
+                <messageFormat>antlr</messageFormat>
+                <outputDirectory>src/main/java/</outputDirectory>
+                <profile>false</profile>
+                <sourceDirectory>src/main/antlr3</sourceDirectory>
+                -->
+            <verbose>true</verbose>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <configuration>
-              <tasks>
-                <mkdir dir="${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
-                <java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
-                  <arg value="${basedir}/src/main/antlr/Limbo.g" />
-                  <arg line="-lib ${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
-                  <arg line="-o ${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
-                </java>
-                <java classname="org.antlr.Tool" classpathref="maven.plugin.classpath" fork="true" dir="src/main/antlr">
-                  <arg value="${basedir}/src/main/antlr/LimboWalker.g" />
-                  <arg line="-lib ${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
-                  <arg line="-o ${project.build.directory}/generated-sources/antlr/org/codehaus/preon/el" />
-                </java>
-              </tasks>
-              <sourceRoot>${project.build.directory}/generated-sources/antlr</sourceRoot>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
           <execution>
             <phase>process-test-resources</phase>
             <id>cobertura:bugfix</id>
@@ -101,12 +106,6 @@
           </execution>
         </executions>
         <dependencies>
-          <dependency>
-            <groupId>org.antlr</groupId>
-            <artifactId>antlr</artifactId>
-            <version>3.0</version>
-            <scope>compile</scope>
-          </dependency>
         </dependencies>
       </plugin>
       <plugin>

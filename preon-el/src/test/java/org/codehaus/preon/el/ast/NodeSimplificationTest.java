@@ -32,7 +32,8 @@
  */
 package org.codehaus.preon.el.ast;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import org.codehaus.preon.el.*;
 import org.codehaus.preon.el.ast.ArithmeticNode.Operator;
 import org.codehaus.preon.el.util.StringBuilderDocument;
@@ -43,8 +44,9 @@ import org.codehaus.preon.el.util.StringBuilderDocument;
  * @author Wilfred Springer (wis)
  * 
  */
-public class NodeSimplificationTest extends TestCase {
+public class NodeSimplificationTest {
 
+    @Test
     public void testSimplifySimple() {
         IntegerNode<Object> node1 = new IntegerNode<Object>(12);
         IntegerNode<Object> node2 = new IntegerNode<Object>(5);
@@ -59,6 +61,7 @@ public class NodeSimplificationTest extends TestCase {
         assertEquals("17", doc.toString());
     }
 
+    @Test
     public void testSimplifyTriple() {
         IntegerNode<Object> node1 = new IntegerNode<Object>(12);
         IntegerNode<Object> node2 = new IntegerNode<Object>(5);
@@ -71,6 +74,7 @@ public class NodeSimplificationTest extends TestCase {
         assertEquals("22", doc.toString());
     }
 
+    @Test
     public void testTripleWithVarible() {
         IntegerNode<Object> node1 = new IntegerNode<Object>(12);
         IntegerNode<Object> node2 = new IntegerNode<Object>(5);
