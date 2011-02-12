@@ -51,6 +51,7 @@ import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CharsetDecoder;
 import java.nio.BufferUnderflowException;
 import java.io.StringWriter;
+import java.io.IOException;
 
 /**
  * A {@link org.codehaus.preon.Codec} that reads null-terminated Strings. Basically, it will read bytes until it
@@ -125,12 +126,12 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		return sw.toString();
     }
 
-    public void encode(String value, BitChannel channel, Resolver resolver) {
-		/* I left this unimplemented. It's probably just a case of copying
-		 * the code from FixedLengthStringCodec, adding a NULL to the
-		 * end of the string.
+    public void encode(String value, BitChannel channel, Resolver resolver) throws IOException {
+		/* This is a crude first attempt
 		 * */
-        throw new UnsupportedOperationException();
+		ByteBuffer bytebuffer = encoding.encode(value+"\u0000");
+        byte[] bytes = bytebuffer.array();
+        channel.write(bytes, 0, bytes.length);
     }
 
     public Class<?>[] getTypes() {
