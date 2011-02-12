@@ -49,7 +49,9 @@ import java.lang.annotation.Target;
 public @interface BoundString {
 
     class Encoding {
-
+		/* This is a compatibility stub. Encodings are strings now, and this ensures
+		 * that anyone using the old syntax will get the same results.
+		 * */
         public static final String ASCII = "US-ASCII";
         public static final String ISO_8859_1 = "ISO-8859-1";
 
@@ -74,7 +76,15 @@ public @interface BoundString {
      *
      * @return The String that needs to be matched. Or the empty String if matching is not important.
      */
+     
     String match() default "";
+    
+    /* I've left this in, but I don't use this code anywhere in the actual
+     * factory. It might be possible to alter the factories to use
+     * ByteConverters, by wrapping around ByteBuffer in some clever way, 
+     * but my feeling is that the aims of this code would be better
+     * achieved by Charsets.
+     * */
 
     Class<? extends ByteConverter> converter() default NullConverter.class;
 
