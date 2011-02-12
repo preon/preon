@@ -44,6 +44,14 @@ import nl.flotsam.pecia.ParaContents;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CharsetDecoder;
+import java.nio.BufferUnderflowException;
+import java.io.StringWriter;
+
 /**
  * A {@link org.codehaus.preon.Codec} that reads null-terminated Strings. Basically, it will read bytes until it
  * encounters a '\0' character, in which case it considers itself to be done, and construct a String from the bytes
@@ -53,13 +61,13 @@ import java.io.UnsupportedEncodingException;
  */
 public class NullTerminatedStringCodec implements Codec<String> {
 
-    private BoundString.Encoding encoding;
+    private Charset encoding;
 
     private String match;
 
     private BoundString.ByteConverter byteConverter;
 
-    public NullTerminatedStringCodec(BoundString.Encoding encoding, String match,
+    public NullTerminatedStringCodec(Charset encoding, String match,
                                      BoundString.ByteConverter byteConverter) {
         this.encoding = encoding;
         this.match = match;
@@ -68,30 +76,60 @@ public class NullTerminatedStringCodec implements Codec<String> {
 
     public String decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte value;
-        while ((value = buffer.readAsByte(8)) != 0x00) {
-            out.write(byteConverter.convert(value));
-        }
-        String charset = null;
-        switch (encoding) {
-            case ASCII: {
-                charset = "US-ASCII";
-                break;
-            }
-            case ISO_8859_1: {
-                charset = "ISO-8859-1";
-                break;
-            }
-        }
-        try {
-            return new String(out.toByteArray(), charset);
-        } catch (UnsupportedEncodingException uee) {
-            throw new DecodingException(uee);
-        }
+		/* This has been gutted, and now uses Charsets to do decoding.
+		 * It opens the bitbuffer as a bytebuffer (taking care to note
+		 * and preserve positions), creates a CharBuffer with space for
+		 * one character, and decodes the ByteBuffer one character at a
+		 * time. If the character decoded is NULL, it finishes up (it has
+		 * to use the decoded character, not the byte, as multibyte
+		 * encodings can include null bytes in non-null characters).
+		 * 
+		 * I used a StringWriter for the string, as it's more memory
+		 * efficient, for what it's worth.
+		 * 
+		 * I wasn't able to find a way to include the byteConverter in
+		 * the decoding process. I'm guessing the main use for byteConverter
+		 * was encoding conversion anyway, but if it's needed, it might
+		 * be possible to subclass ByteBuffer.
+		 * */
+        CharsetDecoder decoder = encoding.newDecoder();
+        int pos = (int) buffer.getBitPos()/8; //readAsByteBuffer rewinds the buffer, so we note the position first
+        ByteBuffer bytebuffer = buffer.readAsByteBuffer();
+        bytebuffer.position(pos);//and jump to the relevant position
+        CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
+        StringWriter sw = new StringWriter(); //This will eventually hold our string
+        byte bytevalue;
+        char charvalue;
+        boolean readOK = true;
+		do {
+			decoder.decode(bytebuffer,charbuffer,false);
+			charbuffer.rewind();
+			charvalue = charbuffer.get();
+			charbuffer.rewind();
+			try
+			{
+				if (charvalue == 0) { //If character is null, we're finished
+					readOK = false;
+				}
+				else {
+					sw.append(charvalue); //Write character to StringWriter
+				}
+			}
+			catch (BufferUnderflowException e) {
+				throw new DecodingException(e.getMessage());
+			}
+		}
+		while(readOK);
+		long bitpos = (long) bytebuffer.position()*8;
+		buffer.setBitPos(bitpos); //After reading, make sure BitPos matches the ByteBuffer position
+		return sw.toString();
     }
 
     public void encode(String value, BitChannel channel, Resolver resolver) {
+		/* I left this unimplemented. It's probably just a case of copying
+		 * the code from FixedLengthStringCodec, adding a NULL to the
+		 * end of the string.
+		 * */
         throw new UnsupportedOperationException();
     }
 

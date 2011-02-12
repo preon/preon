@@ -33,6 +33,7 @@
 package org.codehaus.preon.annotation;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -47,32 +48,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface BoundString {
 
-    public enum Encoding {
+    class Encoding {
 
-        ASCII("US-ASCII"),
-        ISO_8859_1("ISO-8859-1");
-
-        private String charset;
-
-        Encoding(String charset) {
-            this.charset = charset;
-        }
-
-        public String decode(byte[] bytes) {
-            try {
-                return new String(bytes, charset);
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException("Character set " + charset + " not supported.");
-            }
-        }
-
-        public byte[] encode(String text) {
-            try {
-                return text.getBytes(charset);
-            } catch (UnsupportedEncodingException e) {
-                throw new IllegalStateException("Character set " + charset + " not supported.");
-            }
-        }
+        public static final String ASCII = "US-ASCII";
+        public static final String ISO_8859_1 = "ISO-8859-1";
 
     }
 
@@ -88,7 +67,7 @@ public @interface BoundString {
      *
      * @return The type of encoding used for the String.
      */
-    Encoding encoding() default Encoding.ASCII;
+    String encoding() default "US-ASCII";
 
     /**
      * The String that needs to be matched.

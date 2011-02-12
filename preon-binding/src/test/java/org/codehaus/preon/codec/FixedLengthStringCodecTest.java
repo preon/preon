@@ -50,6 +50,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 @RunWith(org.mockito.runners.MockitoJUnitRunner.class)
 public class FixedLengthStringCodecTest {
@@ -61,12 +62,13 @@ public class FixedLengthStringCodecTest {
     private Expression<Integer, Resolver> sizeExpr;
 
     @Test
-    public void shouldEncodeCorrectly() throws IOException {
+    public void shouldEncodeCorrectly() throws IOException, NullPointerException {
+		Charset charset = Charset.availableCharsets().get(BoundString.Encoding.ASCII);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         BitChannel channel = new OutputStreamBitChannel(out);
         when(sizeExpr.eval(Matchers.any(Resolver.class))).thenReturn(4);
         FixedLengthStringCodec codec =
-                new FixedLengthStringCodec(BoundString.Encoding.ASCII, sizeExpr, null, new BoundString.NullConverter());
+                new FixedLengthStringCodec(charset, sizeExpr, null, new BoundString.NullConverter());
         codec.encode("Whatever", channel, resolver);
         out.flush();
         byte[] result = out.toByteArray();
