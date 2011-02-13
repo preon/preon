@@ -1,29 +1,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.codehaus.preon</groupId>
-    <artifactId>preon</artifactId>
-    <version>1.1-SNAPSHOT</version>
-  </parent>
-  <artifactId>preon-samples</artifactId>
-  <name>Preon Examples</name>
-  <description>
-    A bunch of examples showing how Preon could be used.
-  </description>
-  <packaging>pom</packaging>
-  <modules>
-    <module>preon-sample-bmp</module>
-    <module>preon-sample-bytecode</module>
-    <module>preon-sample-mpeg</module>
-    <module>preon-sample-snoop</module>
-    <!--
-    <module>preon-sample-bson</module>
-    -->
-    <module>preon-sample-rtp</module>
-    <!--
-    <module>preon-sample-protobuf</module>
-    <module>preon-sample-lucene</module>
-    -->
-  </modules>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.codehaus.preon</groupId>
+        <artifactId>preon</artifactId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>preon-samples</artifactId>
+    <name>Preon Examples</name>
+    <description>
+        A bunch of examples showing how Preon could be used.
+    </description>
+    <packaging>pom</packaging>
+    <modules>
+        <module>preon-sample-bmp</module>
+        <module>preon-sample-bytecode</module>
+        <module>preon-sample-mpeg</module>
+        <module>preon-sample-snoop</module>
+        <!--
+        <module>preon-sample-bson</module>
+        -->
+        <module>preon-sample-rtp</module>
+        <module>preon-sample-varlength-encoding</module>
+        <!--
+        <module>preon-sample-protobuf</module>
+        <module>preon-sample-lucene</module>
+        -->
+    </modules>
 </project>
