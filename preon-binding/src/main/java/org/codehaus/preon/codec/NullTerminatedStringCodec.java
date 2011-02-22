@@ -62,6 +62,8 @@ import java.io.IOException;
  */
 public class NullTerminatedStringCodec implements Codec<String> {
 
+	private static int BUFFER_SIZE = 32; //32 Bytes is probably overkill, but these days it hardly matters
+
     private Charset encoding;
 
     private String match;
@@ -94,36 +96,37 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		 * be possible to subclass ByteBuffer.
 		 * */
         CharsetDecoder decoder = encoding.newDecoder();
-        int bytepos = (int) buffer.getActualBitPos()/8; //readAsByteBuffer sometimes rewinds the buffer, so we note the position first
-		long bitpos = buffer.getBitPos(); // This won't necessarily match the bitposition, so we note this too
-        ByteBuffer bytebuffer = buffer.readAsByteBuffer();
-        bytebuffer.position(bytepos);//and jump to the relevant position
-        CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
+        ByteBuffer bytebuffer = ByteBuffer.allocate(BUFFER_SIZE); //Allocate a bytebuffer. We'll need this for multibyte encodings
+		CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
         StringWriter sw = new StringWriter(); //This will eventually hold our string
         byte bytevalue;
         char charvalue;
         boolean readOK = true;
 		do {
-			decoder.decode(bytebuffer,charbuffer,false);
-			charbuffer.rewind();
-			charvalue = charbuffer.get();
-			charbuffer.rewind();
-			try
-			{
-				if (charvalue == 0) { //If character is null, we're finished
-					readOK = false;
+			bytevalue = byteConverter.convert(buffer.readAsByte(8)); //Convert our byte
+			bytebuffer.put(bytevalue); // and add it to the bytebuffer
+			bytebuffer.flip(); // Flip the buffer, so we can read it
+			decoder.decode(bytebuffer,charbuffer,false); // Decode up to one char from bytebuffer
+			if (charbuffer.position() == 1) {
+				charbuffer.rewind();
+				charvalue = charbuffer.get();
+				charbuffer.rewind();
+				try
+				{
+					if (charvalue == 0) { //If character is null, we're finished
+						readOK = false;
+					}
+					else {
+						sw.append(charvalue); //Write character to StringWriter
+					}
 				}
-				else {
-					sw.append(charvalue); //Write character to StringWriter
+				catch (BufferUnderflowException e) {
+					throw new DecodingException(e.getMessage());
 				}
 			}
-			catch (BufferUnderflowException e) {
-				throw new DecodingException(e.getMessage());
-			}
+			bytebuffer.compact(); //Compact the buffer, so we can write to it
 		}
 		while(readOK);
-		bitpos = (long) bytebuffer.position()*8 - (long) bytepos*8 + bitpos;
-		buffer.setBitPos(bitpos); //After reading, make sure BitPos matches the ByteBuffer position
 		return sw.toString();
     }
 
@@ -132,6 +135,9 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		 * */
 		ByteBuffer bytebuffer = encoding.encode(value+"\u0000");
         byte[] bytes = bytebuffer.array();
+        for (int i = 0; i < bytes.length; i++) {
+            bytes[i] = byteConverter.revert(bytes[i]);
+        }
         channel.write(bytes, 0, bytes.length);
     }
 

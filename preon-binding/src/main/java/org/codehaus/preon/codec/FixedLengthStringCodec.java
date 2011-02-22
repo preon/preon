@@ -79,7 +79,12 @@ public class FixedLengthStringCodec implements Codec<String> {
 		 * and feeds it into encoding.decode.
 		 * */
         int size = sizeExpr.eval(resolver);
-        ByteBuffer bytebuffer = buffer.readAsByteBuffer(size);
+        ByteBuffer bytebuffer = ByteBuffer.allocate(size);
+		byte readbyte;
+		for (int i = 0; i < size; i++) {
+			readbyte = byteConverter.convert(buffer.readAsByte(8));
+            bytebuffer.put(readbyte);
+        }
         bytebuffer.rewind();
         String result;
         result = encoding.decode(bytebuffer).toString();
@@ -103,11 +108,9 @@ public class FixedLengthStringCodec implements Codec<String> {
 			//Do nothing. bytes will fill with nulls instead
 			//Could change this to throw an exception
 		}
-        /*for (int i = 0; i < bytes.length; i++) {
-			// I've commented this section out, as I haven't been able
-			// to find a way to use the byteConverter elsewhere
+        for (int i = 0; i < bytes.length; i++) {
             bytes[i] = byteConverter.revert(bytes[i]);
-        }*/
+        }
         //assert (size <= bytes.length); //No longer needed
         channel.write(bytes, 0, size);
     }

@@ -84,8 +84,8 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.size()).andReturn("2").anyTimes();
         expect(settings.converter()).andStubReturn(NullConverter.class);
         expect(settings.match()).andReturn("");
-        expect(buffer.readAsByteBuffer(2)).andReturn(
-					ByteBuffer.allocate(2).put((byte) 'b').put((byte) 'm'));
+        expect(buffer.readAsByte(8)).andReturn((byte) 'b');
+		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
         replay(settings, metadata, buffer, context, resolver);
 
         StringCodecFactory factory = new StringCodecFactory();
@@ -104,8 +104,8 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.size()).andReturn("2").anyTimes();
         expect(settings.converter()).andStubReturn(NullConverter.class);
         expect(settings.match()).andReturn("fo");
-        expect(buffer.readAsByteBuffer(2)).andReturn(
-					ByteBuffer.allocate(2).put((byte) 'b').put((byte) 'm'));
+        expect(buffer.readAsByte(8)).andReturn((byte) 'b');
+		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
         replay(settings, metadata, buffer, context, resolver);
         StringCodecFactory factory = new StringCodecFactory();
         Codec<String> codec = factory.create(metadata, String.class, context);
@@ -124,12 +124,10 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.encoding()).andReturn(Encoding.ASCII);
         expect(settings.size()).andReturn("").anyTimes();
         expect(settings.converter()).andStubReturn(NullConverter.class);
-		expect(buffer.getActualBitPos()).andReturn((long) 0);
-        expect(buffer.getBitPos()).andReturn((long) 0);
-		expect(buffer.readAsByteBuffer()).andReturn(
-				ByteBuffer.allocate(3).put((byte) 'b').put((byte) 'm').put((byte) 0));
-		buffer.setBitPos((long) 24);
-        expect(settings.match()).andReturn("");
+		expect(buffer.readAsByte(8)).andReturn((byte) 'b');
+		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
+		expect(buffer.readAsByte(8)).andReturn((byte) 0);
+		expect(settings.match()).andReturn("");
         replay(settings, buffer, metadata, context, resolver);
         StringCodecFactory factory = new StringCodecFactory();
         Codec<String> codec = factory.create(metadata, String.class, context);
