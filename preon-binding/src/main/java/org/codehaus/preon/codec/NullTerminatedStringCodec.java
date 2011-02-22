@@ -94,9 +94,10 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		 * be possible to subclass ByteBuffer.
 		 * */
         CharsetDecoder decoder = encoding.newDecoder();
-        int pos = (int) buffer.getBitPos()/8; //readAsByteBuffer rewinds the buffer, so we note the position first
+        int bytepos = (int) buffer.getActualBitPos()/8; //readAsByteBuffer sometimes rewinds the buffer, so we note the position first
+		long bitpos = buffer.getBitPos(); // This won't necessarily match the bitposition, so we note this too
         ByteBuffer bytebuffer = buffer.readAsByteBuffer();
-        bytebuffer.position(pos);//and jump to the relevant position
+        bytebuffer.position(bytepos);//and jump to the relevant position
         CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
         StringWriter sw = new StringWriter(); //This will eventually hold our string
         byte bytevalue;
@@ -121,7 +122,7 @@ public class NullTerminatedStringCodec implements Codec<String> {
 			}
 		}
 		while(readOK);
-		long bitpos = (long) bytebuffer.position()*8;
+		bitpos = (long) bytebuffer.position()*8 - (long) bytepos*8 + bitpos;
 		buffer.setBitPos(bitpos); //After reading, make sure BitPos matches the ByteBuffer position
 		return sw.toString();
     }

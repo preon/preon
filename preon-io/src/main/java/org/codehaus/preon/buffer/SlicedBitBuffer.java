@@ -61,6 +61,12 @@ public class SlicedBitBuffer implements BitBuffer {
         this.startPos = delegate.getBitPos();
         this.endPos = startPos + length;
     }
+	
+	public SlicedBitBuffer(BitBuffer delegate, long length, long startPos) {
+        this.delegate = delegate;
+        this.startPos = startPos;
+        this.endPos = startPos + length;
+    }
 
     /*
      * (non-Javadoc)
@@ -241,7 +247,7 @@ public class SlicedBitBuffer implements BitBuffer {
     // JavaDoc inherited
 
     public BitBuffer duplicate() {
-        return new SlicedBitBuffer(delegate.duplicate(), endPos - startPos);
+        return new SlicedBitBuffer(delegate.duplicate(), endPos - startPos, startPos);
     }
 
     public ByteBuffer readAsByteBuffer(int length) throws BitBufferUnderflowException {

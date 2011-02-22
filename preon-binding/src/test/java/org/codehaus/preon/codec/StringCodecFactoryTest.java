@@ -124,6 +124,7 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.encoding()).andReturn(Encoding.ASCII);
         expect(settings.size()).andReturn("").anyTimes();
         expect(settings.converter()).andStubReturn(NullConverter.class);
+		expect(buffer.getActualBitPos()).andReturn((long) 0);
         expect(buffer.getBitPos()).andReturn((long) 0);
 		expect(buffer.readAsByteBuffer()).andReturn(
 				ByteBuffer.allocate(3).put((byte) 'b').put((byte) 'm').put((byte) 0));
