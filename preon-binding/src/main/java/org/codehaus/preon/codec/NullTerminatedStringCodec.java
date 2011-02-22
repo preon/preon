@@ -111,17 +111,11 @@ public class NullTerminatedStringCodec implements Codec<String> {
 				charbuffer.rewind();
 				charvalue = charbuffer.get();
 				charbuffer.rewind();
-				try
-				{
-					if (charvalue == 0) { //If character is null, we're finished
-						readOK = false;
-					}
-					else {
-						sw.append(charvalue); //Write character to StringWriter
-					}
+				if (charvalue == 0) { //If character is null, we're finished
+					readOK = false;
 				}
-				catch (BufferUnderflowException e) {
-					throw new DecodingException(e.getMessage());
+				else {
+					sw.append(charvalue); //Write character to StringWriter
 				}
 			}
 			bytebuffer.compact(); //Compact the buffer, so we can write to it
