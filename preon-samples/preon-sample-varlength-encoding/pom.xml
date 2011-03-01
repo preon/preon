@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.codehaus.preon</groupId>
+        <artifactId>preon-samples</artifactId>
+        <version>1.1-SNAPSHOT</version>
+    </parent>
+    <artifactId>preon-sample-varlength-encoding</artifactId>
+    <name>Preon Example Variable Length Encoding</name>
+    <description>
+        An example how to implement variable length encoding in Preon.
+    </description>
+    <dependencies>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.8.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.preon</groupId>
+            <artifactId>preon-binding</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.preon</groupId>
+            <artifactId>preon-io</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.preon</groupId>
+            <artifactId>preon-el</artifactId>
+            <version>${version}</version>
+        </dependency>
+        <dependency>
+            <groupId>nl.flotsam.pecia</groupId>
+            <artifactId>pecia</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+    </dependencies>
+    <packaging>jar</packaging>
+
+</project>
