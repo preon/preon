@@ -39,6 +39,11 @@ import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
 import org.codehaus.preon.*;
 import org.codehaus.preon.annotation.BoundString;
+import java.nio.charset.Charset;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.io.StringWriter;
+import java.nio.BufferUnderflowException;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
@@ -51,7 +56,7 @@ import java.io.IOException;
  */
 public class FixedLengthStringCodec implements Codec<String> {
 
-    private final BoundString.Encoding encoding;
+    private final Charset encoding;
 
     private final Expression<Integer, Resolver> sizeExpr;
 
@@ -59,7 +64,7 @@ public class FixedLengthStringCodec implements Codec<String> {
 
     private final BoundString.ByteConverter byteConverter;
 
-    public FixedLengthStringCodec(BoundString.Encoding encoding,
+    public FixedLengthStringCodec(Charset encoding,
                                   Expression<Integer, Resolver> sizeExpr, String match,
                                   BoundString.ByteConverter byteConverter) {
         this.encoding = encoding;
@@ -70,13 +75,19 @@ public class FixedLengthStringCodec implements Codec<String> {
 
     public String decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
+		/* This takes a slice of the BitBuffer as a ByteBuffer,
+		 * and feeds it into encoding.decode.
+		 * */
         int size = sizeExpr.eval(resolver);
-        byte[] bytes = new byte[size];
-        for (int i = 0; i < size; i++) {
-            bytes[i] = byteConverter.convert(buffer.readAsByte(8));
+        ByteBuffer bytebuffer = ByteBuffer.allocate(size);
+		byte readbyte;
+		for (int i = 0; i < size; i++) {
+			readbyte = byteConverter.convert(buffer.readAsByte(8));
+            bytebuffer.put(readbyte);
         }
+        bytebuffer.rewind();
         String result;
-        result = encoding.decode(bytes);
+        result = encoding.decode(bytebuffer).toString();
         if (match.length() > 0) {
             if (!match.equals(result)) {
                 throw new DecodingException(new IllegalStateException(
@@ -88,12 +99,19 @@ public class FixedLengthStringCodec implements Codec<String> {
     }
 
     public void encode(String value, BitChannel channel, Resolver resolver) throws IOException {
-        byte[] bytes = encoding.encode(value);
+        ByteBuffer bytebuffer = encoding.encode(value);
+        int size = sizeExpr.eval(resolver);
+        byte[] bytes = new byte[size];
+        try{
+			bytebuffer.get(bytes);
+		} catch (BufferUnderflowException e) {
+			//Do nothing. bytes will fill with nulls instead
+			//Could change this to throw an exception
+		}
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = byteConverter.revert(bytes[i]);
         }
-        int size = sizeExpr.eval(resolver);
-        assert (size <= bytes.length);
+        //assert (size <= bytes.length); //No longer needed
         channel.write(bytes, 0, size);
     }
 
