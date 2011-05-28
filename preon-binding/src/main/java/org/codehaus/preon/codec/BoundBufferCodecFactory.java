@@ -81,7 +81,7 @@ public class BoundBufferCodecFactory implements CodecFactory {
         }
 
         public void encode(Object object, BitChannel channel, Resolver resolver) throws IOException {
-            channel.write(criterion, 0, criterion.length - 1);
+            channel.write(criterion, 0, criterion.length);
         }
 
         public CodecDescriptor getCodecDescriptor() {
