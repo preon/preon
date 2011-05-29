@@ -33,8 +33,12 @@
 package org.codehaus.preon.codec;
 
 import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.DecodingException;
 import org.codehaus.preon.Resolver;
 import org.codehaus.preon.annotation.BoundString;
+import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.buffer.DefaultBitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.channel.OutputStreamBitChannel;
 
@@ -50,6 +54,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
 @RunWith(org.mockito.runners.MockitoJUnitRunner.class)
@@ -60,6 +65,9 @@ public class FixedLengthStringCodecTest {
 
     @Mock
     private Expression<Integer, Resolver> sizeExpr;
+    
+    @Mock
+    private Builder builder;
 
     @Test
     public void shouldEncodeCorrectly() throws IOException, NullPointerException {
@@ -76,4 +84,24 @@ public class FixedLengthStringCodecTest {
         assertThat(new String(result, "US-ASCII"), is("What"));
     }
 
+    @Test
+    public void shouldPadStringsShorterThanDeclared() throws DecodingException,
+            IOException {
+        int size = 16;
+        String original = "short\u0100";
+        when(sizeExpr.eval(Matchers.any(Resolver.class))).thenReturn(size);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        FixedLengthStringCodec codec = new FixedLengthStringCodec(
+                Charset.forName("UTF-16BE"), sizeExpr, "",
+                new BoundString.NullConverter());
+
+        codec.encode(original, new OutputStreamBitChannel(out), resolver);
+        byte[] encoded = out.toByteArray();
+        assertThat(encoded.length, is(size));
+
+        BitBuffer buffer = new DefaultBitBuffer(ByteBuffer.wrap(encoded));
+        String result = codec.decode(buffer, resolver, builder);
+        assertThat(result, is(original));
+    }
 }

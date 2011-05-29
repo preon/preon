@@ -40,6 +40,7 @@ import nl.flotsam.pecia.SimpleContents;
 import org.codehaus.preon.*;
 import org.codehaus.preon.annotation.BoundString;
 import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.io.StringWriter;
@@ -57,6 +58,8 @@ import java.io.IOException;
 public class FixedLengthStringCodec implements Codec<String> {
 
     private final Charset encoding;
+    
+    private final CharsetEncoder encoder;
 
     private final Expression<Integer, Resolver> sizeExpr;
 
@@ -71,6 +74,7 @@ public class FixedLengthStringCodec implements Codec<String> {
         this.sizeExpr = sizeExpr;
         this.match = match;
         this.byteConverter = byteConverter;
+        this.encoder = encoding.newEncoder();
     }
 
     public String decode(BitBuffer buffer, Resolver resolver,
@@ -88,6 +92,7 @@ public class FixedLengthStringCodec implements Codec<String> {
         bytebuffer.rewind();
         String result;
         result = encoding.decode(bytebuffer).toString();
+        result = result.trim(); // remove padding characters
         if (match.length() > 0) {
             if (!match.equals(result)) {
                 throw new DecodingException(new IllegalStateException(
@@ -99,15 +104,17 @@ public class FixedLengthStringCodec implements Codec<String> {
     }
 
     public void encode(String value, BitChannel channel, Resolver resolver) throws IOException {
-        ByteBuffer bytebuffer = encoding.encode(value);
         int size = sizeExpr.eval(resolver);
+        ByteBuffer bytebuffer = ByteBuffer.allocate(size);
+        encoder.encode(CharBuffer.wrap(value), bytebuffer, true);
+
+        if (bytebuffer.position() < size) { // pad with 0's
+            bytebuffer.put(new byte[size - bytebuffer.position()]);
+        }
+        bytebuffer.flip(); // switch to reading
+        
         byte[] bytes = new byte[size];
-        try{
-			bytebuffer.get(bytes);
-		} catch (BufferUnderflowException e) {
-			//Do nothing. bytes will fill with nulls instead
-			//Could change this to throw an exception
-		}
+        bytebuffer.get(bytes);
         for (int i = 0; i < bytes.length; i++) {
             bytes[i] = byteConverter.revert(bytes[i]);
         }
