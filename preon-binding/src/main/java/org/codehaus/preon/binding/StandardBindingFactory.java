@@ -172,6 +172,7 @@ public class StandardBindingFactory implements BindingFactory {
 
         public void save(Object value, BitChannel channel, Resolver resolver) throws IOException {
             try {
+                ReflectionUtils.makeAssessible(field);
                 codec.encode(field.get(value), channel, resolver);
             } catch (IllegalAccessException e) {
                 // TODO: Need a better way to handle this properly
