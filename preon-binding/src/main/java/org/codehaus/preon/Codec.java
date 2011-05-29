@@ -77,7 +77,7 @@ public interface Codec<T> {
      * <p> This method may return null, indicating that it is impossible to state anything at all on the expected number
      * of bits. Note that if this method <em>does</em> return an {@link Expression}, then it will require a {@link
      * Resolver} to resolve variables inside this expression, <em>unless {@link Expression#isParameterized()} returns
-     * <code>true</code></em> . </p>
+     * <code>false</code></em> . </p>
      *
      * @return A Limbo {@link Expression}, expressing the number of bits occupied by instance loaded and stored by this
      *         Codec.
