@@ -101,7 +101,7 @@ public class ClassFileTest {
 
     @Test
     public void shouldExportCorrectly() throws DecodingException, IOException {
-        File root = new File("/tmp");
+        File root = new File(System.getProperty("java.io.tmpdir"));
         Exporter.decodeAndExport(ClassFile.class, ByteBuffer.wrap(bytecode), new File(root, "hello.html"));
 //        assertThat(Arrays.asList(root.list()),
 //                hasItems("hello-structure.xml", "hello-contents.txt"));

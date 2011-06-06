@@ -50,6 +50,8 @@ import org.codehaus.preon.annotation.BoundString.Encoding;
 import org.codehaus.preon.annotation.BoundString.NullConverter;
 import org.codehaus.preon.buffer.BitBuffer;
 
+import java.nio.ByteBuffer;
+
 import junit.framework.TestCase;
 
 
@@ -83,7 +85,7 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.converter()).andStubReturn(NullConverter.class);
         expect(settings.match()).andReturn("");
         expect(buffer.readAsByte(8)).andReturn((byte) 'b');
-        expect(buffer.readAsByte(8)).andReturn((byte) 'm');
+		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
         replay(settings, metadata, buffer, context, resolver);
 
         StringCodecFactory factory = new StringCodecFactory();
@@ -103,7 +105,7 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.converter()).andStubReturn(NullConverter.class);
         expect(settings.match()).andReturn("fo");
         expect(buffer.readAsByte(8)).andReturn((byte) 'b');
-        expect(buffer.readAsByte(8)).andReturn((byte) 'm');
+		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
         replay(settings, metadata, buffer, context, resolver);
         StringCodecFactory factory = new StringCodecFactory();
         Codec<String> codec = factory.create(metadata, String.class, context);
@@ -122,10 +124,10 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.encoding()).andReturn(Encoding.ASCII);
         expect(settings.size()).andReturn("").anyTimes();
         expect(settings.converter()).andStubReturn(NullConverter.class);
-        expect(buffer.readAsByte(8)).andReturn((byte) 'b');
-        expect(buffer.readAsByte(8)).andReturn((byte) 'm');
-        expect(buffer.readAsByte(8)).andReturn((byte) 0x00);
-        expect(settings.match()).andReturn("");
+		expect(buffer.readAsByte(8)).andReturn((byte) 'b');
+		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
+		expect(buffer.readAsByte(8)).andReturn((byte) 0);
+		expect(settings.match()).andReturn("");
         replay(settings, buffer, metadata, context, resolver);
         StringCodecFactory factory = new StringCodecFactory();
         Codec<String> codec = factory.create(metadata, String.class, context);
@@ -133,9 +135,9 @@ public class StringCodecFactoryTest extends TestCase {
         verify(settings, metadata, buffer, context, resolver);
     }
 
-    public void testDecodeASCII() throws UnsupportedEncodingException {
+    /* public void testDecodeASCII() throws UnsupportedEncodingException {
         byte[] buffer = "foobar".getBytes();
         assertEquals("foobar", BoundString.Encoding.ASCII.decode(buffer));
-    }
+    } */ //Commented out, as no longer implemented this way
 
 }
