@@ -123,6 +123,18 @@ public class LimboTest {
                 "3 * 4 + 5"));
     }
 
+    @Test
+    public void testBooleans() throws RecognitionException, InvalidExpressionException {
+        EasyMock.expect(resolver.get("foo")).andReturn(true).anyTimes();
+        EasyMock.expect(defs.getType("foo")).andReturn(Boolean.class).anyTimes();
+        EasyMock.expect(resolver.get("bar")).andReturn(false).anyTimes();
+        EasyMock.expect(defs.getType("bar")).andReturn(Boolean.class).anyTimes();
+        EasyMock.replay(resolver, defs);
+        assertTrue(condition(context, resolver, "true"));
+        assertFalse(condition(context, resolver, "false"));
+        assertTrue(condition(context, resolver, "true == foo"));
+    }
+
     @Test(expected=InvalidExpressionException.class)
     public void testParserProblemArithmetic() {
         EasyMock.expect(defs.getType("a")).andReturn(Integer.class);

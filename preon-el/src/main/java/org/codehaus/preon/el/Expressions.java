@@ -132,7 +132,7 @@ public class Expressions {
     private static <E> Node<Boolean, E> condition(ReferenceContext<E> context, String expr)
             throws InvalidExpressionException {
         try {
-            return (Node<Boolean, E>) buildWalker(context, expr).bexpr();
+            return (Node<Boolean, E>) buildWalker(context, expr).zexpr();
         } catch (RecognitionException re) {
             throw new InvalidExpressionException(re);
         }
@@ -157,7 +157,7 @@ public class Expressions {
         CommonTree tree = (CommonTree) parser.condExpression().getTree();
         CommonTreeNodeStream nodes = new CommonTreeNodeStream(tree);
         nodes.setTokenStream(tokens);
-        LimboWalker walker = new org.codehaus.preon.el.LimboWalker(nodes, context);
+        LimboWalker walker = new org.codehaus.preon.el.LimboWalker(nodes, new ImplicitsContext(context));
         return walker;
     }
 

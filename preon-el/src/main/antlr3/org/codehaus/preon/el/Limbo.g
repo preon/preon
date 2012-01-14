@@ -29,13 +29,7 @@ condExpression
 
 relationalExpression
 	:	additiveExpression (relationalOp^ additiveExpression)?
-	|	booleanLiteral
 	|   '('! condExpression ')'!
-	;
-
-booleanLiteral
-	:	'true'
-	|	'false'
 	;
 
 additiveExpression

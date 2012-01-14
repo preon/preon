@@ -153,7 +153,6 @@ public class StandardBindingFactory implements BindingFactory {
         }
 
         public <T, V extends ParaContents<T>> V writeReference(V contents) {
-            System.out.println(containerReference);
             contents.link(getId(), rewriter.rewrite(getName())).text(" of ").document(containerReference);
             return contents;
         }

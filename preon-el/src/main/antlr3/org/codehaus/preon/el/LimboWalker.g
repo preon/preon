@@ -83,6 +83,18 @@ vexpr returns [Node node]
 		}
 	;
 
+zexpr returns [Node node]
+    :   a=bexpr { $node = $a.node; }
+	|   { java.util.List selectors = new java.util.ArrayList(); }
+	^(REFERENCE var=ID (selector { selectors.add($selector.node); })* ) {
+			Reference ref = context.selectAttribute($var.text);
+			for (int i = 0; i < selectors.size(); i++) {
+			    ref = ((Selector) selectors.get(i)).select(ref);
+			}
+			$node = new ReferenceNode(ref);
+		}
+	;
+
 selector returns [Selector node]
     :   ^(PROP ID) {
             $node = new PropertySelector($ID.text);

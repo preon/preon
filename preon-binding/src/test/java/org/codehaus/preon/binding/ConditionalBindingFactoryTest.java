@@ -32,29 +32,16 @@
  */
 package org.codehaus.preon.binding;
 
-import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
+import junit.framework.TestCase;
+import org.codehaus.preon.*;
+import org.codehaus.preon.annotation.If;
+import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.el.*;
 
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 
-import junit.framework.TestCase;
-import org.codehaus.preon.el.BindingException;
-import org.codehaus.preon.el.Document;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Reference;
-import org.codehaus.preon.el.ReferenceContext;
-import org.codehaus.preon.Builder;
-import org.codehaus.preon.Codec;
-import org.codehaus.preon.CodecException;
-import org.codehaus.preon.DecodingException;
-import org.codehaus.preon.Resolver;
-import org.codehaus.preon.ResolverContext;
-import org.codehaus.preon.annotation.If;
-import org.codehaus.preon.buffer.BitBuffer;
+import static org.easymock.EasyMock.*;
 
 
 public class ConditionalBindingFactoryTest extends TestCase {
@@ -111,7 +98,6 @@ public class ConditionalBindingFactoryTest extends TestCase {
         testConditionalLoad("a > b", 3, 2, true, false);
         testConditionalLoad("a > b", 1, 1, false, false);
         testConditionalLoad("a > b", 2, 3, false, false);
-        testConditionalLoad("a - - b", 2, 3, false, true);
     }
 
     public void testConditionalLoad(String expr, int a, int b, boolean bindingAction,

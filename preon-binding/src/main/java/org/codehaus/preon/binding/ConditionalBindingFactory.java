@@ -32,7 +32,6 @@
  */
 package org.codehaus.preon.binding;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
@@ -87,48 +86,11 @@ public class ConditionalBindingFactory implements BindingFactory {
             String value = condition.value();
             try {
                 expr = Expressions.createBoolean(context, value);
-            } catch (InvalidExpressionException iee) {
-                expr = new Expression<Boolean, Resolver>() {
-
-                    public Boolean eval(Resolver resolver) throws BindingException {
-                        return false;
-                    }
-
-                    public Set<Reference<Resolver>> getReferences() {
-                        return Collections.emptySet();
-                    }
-
-                    public void document(Document target) {
-                        target.text("[invalid expression]");
-                    }
-
-                    public Expression<Boolean, Resolver> getSimplified() {
-                        return this;
-                    }
-
-                    public boolean isParameterized() {
-                        return false;
-                    }
-
-                    public Class<Boolean> getType() {
-                        return Boolean.class;
-                    }
-
-                    public Expression<Boolean, Resolver> simplify() {
-                        return this;
-                    }
-
-                    public boolean isConstantFor(ReferenceContext<Resolver> resolverReferenceContext) {
-                        return false;
-                    }
-
-                    public Expression<Boolean, Resolver> rescope(ReferenceContext<Resolver> resolverReferenceContext) {
-                        throw new UnsupportedOperationException();
-                    }
-
-                };
+                return new ConditionalBinding(expr, decorated.create(metadata, field, codec, context, containerReference));
+            } catch (InvalidExpressionException e) {
+                System.err.println("All wrong");
+                throw e;
             }
-            return new ConditionalBinding(expr, decorated.create(metadata, field, codec, context, containerReference));
         } else {
             return decorated.create(metadata, field, codec, context, containerReference);
         }
