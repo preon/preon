@@ -21,37 +21,37 @@ looking at.
 Distinctive features
 ====================
 
- * Preon does *not* a assume a finite set of compression
-   algorithms. There are many ways to compress data. Preon allows
-   compression experts to add components that from that part on become
-   part of Preon's declarative language. Preon is extensible.
- * Preon is capable of generating documentation that would not look
-   bad on Wikipedia. 
- * Preon does *not* assume all data can be loaded in memory in a single
-   go. Instead, it will pull data in on demand, only if it's
-   needed. All logic required to understand how to jump to different
-   parts of the file are hidden from the user. 
- * Preon does *not* assume there will only be a single thread
-   consuming the data.
- * Preon is declarative in nature, but the dependencies between
-   different data elements inside an encoded representation can be
-   modelled as complex expressions.
- * Preon was used to creata a Java bytecode parser without writing a
-   single line of imperative code.
+* Preon does *not* a assume a finite set of compression
+  algorithms. There are many ways to compress data. Preon allows
+  compression experts to add components that from that part on become
+  part of Preon's declarative language. Preon is extensible.
+* Preon is capable of generating documentation that would not look
+  bad on Wikipedia. 
+* Preon does *not* assume all data can be loaded in memory in a single
+  go. Instead, it will pull data in on demand, only if it's
+  needed. All logic required to understand how to jump to different
+  parts of the file are hidden from the user.
+* Preon does *not* assume there will only be a single thread
+  consuming the data.
+* Preon is declarative in nature, but the dependencies between
+  different data elements inside an encoded representation can be
+  modelled as complex expressions.
+* Preon was used to creata a Java bytecode parser without writing a
+  single line of imperative code.
 
 More documentation
 ==================
 
- * `Bit Syntax for Java <http://dl.acm.org/citation.cfm?id=1639955>`_
-   Wilfred Springer, 2009, Proceedings of the 24th ACM SIGPLAN
-   conference companion on Object oriented programming systems
-   languages and applications
- * `OOPSLA slides
-   <http://www.slideshare.net/springerw/oopsla-talk-on-preon>`_
- * `Preon Introduction
-   <http://www.scribd.com/doc/8128172/Preon-Introduction>`_
- * `Preon Under the Hood
-   <http://www.scribd.com/doc/7988375/Preon-Under-the-Hood>`_
+* `Bit Syntax for Java <http://dl.acm.org/citation.cfm?id=1639955>`_
+  Wilfred Springer, 2009, Proceedings of the 24th ACM SIGPLAN
+  conference companion on Object oriented programming systems
+  languages and applications
+* `OOPSLA slides
+  <http://www.slideshare.net/springerw/oopsla-talk-on-preon>`_
+* `Preon Introduction
+  <http://www.scribd.com/doc/8128172/Preon-Introduction>`_
+* `Preon Under the Hood
+  <http://www.scribd.com/doc/7988375/Preon-Under-the-Hood>`_
 
 
 
