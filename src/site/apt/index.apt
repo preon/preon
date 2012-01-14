@@ -1,0 +1,20 @@
+                                 ----
+                             About Preon
+                                 ----
+                                 ----
+
+
+About Preon
+
+  Preon aims to provide a framework for dealing with binary encoded
+data; or more specifically, it aims to deal with situations in which
+bytes are considered to be overkill. The project is named after the
+"point-like" particles, conceived to be subcomponents of quarks and
+leptons. Let's just say very small particles that you don't see with
+the naked eye, but you probably rely on them without knowing.
+
+Github Blessed Repository (2012-01-14)
+
+  Preon used to be hosted at SourceForge. Then it moved to
+Codehaus. We still gratefully leverage the services Codehaus offers,
+but we decided to move the blessed repository over to {{{https://github.com/wspringer/preon}Github}} instead.
