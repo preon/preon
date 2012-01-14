@@ -37,9 +37,9 @@
     </mailingList>
   </mailingLists>
   <scm>
-    <connection>scm:git:git://git.codehaus.org/preon.git</connection>
-    <developerConnection>scm:git:ssh://git@git.codehaus.org/preon.git</developerConnection>
-    <url>http://git.codehaus.org/gitweb.cgi?p=preon.git</url>
+    <connection>scm:git:git://git@github.com:wspringer/preon.git</connection>
+    <developerConnection>scm:git:git://git@github.com:wspringer/preon.git</developerConnection>
+    <url>https://github.com/wspringer/preon</url>
   </scm>
   <repositories>
     <repository>
