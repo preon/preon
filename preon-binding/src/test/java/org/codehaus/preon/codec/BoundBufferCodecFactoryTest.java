@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2011 Jerzy Smyczek
+ * Copyright (C) 2009-2010 Wilfred Springer
  *
  * This file is part of Preon.
  *
