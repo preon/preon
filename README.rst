@@ -58,7 +58,7 @@ Issue tracker, JavaDocs, etc.
 
 We gratefully use the issue tracker and other services provided by
 Codehaus. The Maven generated documentation can be found `over there
-<http://preon.codehaus.org/`_, as well as the issue tracker, JavaDoc
+<http://preon.codehaus.org/>`_, as well as the issue tracker, JavaDoc
 documentation and a bunch of other things.
 
 
