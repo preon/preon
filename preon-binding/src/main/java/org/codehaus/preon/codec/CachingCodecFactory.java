@@ -39,6 +39,7 @@ import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.PassThroughCodecDescriptor2;
 import org.codehaus.preon.util.AnnotationUtils;
 
+import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.util.*;
 
@@ -170,8 +171,8 @@ public class CachingCodecFactory implements CodecFactory {
             return codec.decode(buffer, resolver, builder);
         }
 
-        public void encode(T value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+            codec.encode(value, channel, resolver);
         }
 
         public Class<?>[] getTypes() {
