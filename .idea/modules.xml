@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/preon.iml" filepath="$PROJECT_DIR$/preon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-archetypes/preon-archetypes.iml" filepath="$PROJECT_DIR$/preon-archetypes/preon-archetypes.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-binding/preon-binding.iml" filepath="$PROJECT_DIR$/preon-binding/preon-binding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-el/preon-el.iml" filepath="$PROJECT_DIR$/preon-el/preon-el.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-emitter/preon-emitter.iml" filepath="$PROJECT_DIR$/preon-emitter/preon-emitter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-io/preon-io.iml" filepath="$PROJECT_DIR$/preon-io/preon-io.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-samples/preon-sample-bmp/preon-sample-bmp.iml" filepath="$PROJECT_DIR$/preon-samples/preon-sample-bmp/preon-sample-bmp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-samples/preon-sample-bytecode/preon-sample-bytecode.iml" filepath="$PROJECT_DIR$/preon-samples/preon-sample-bytecode/preon-sample-bytecode.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-samples/preon-sample-mpeg/preon-sample-mpeg.iml" filepath="$PROJECT_DIR$/preon-samples/preon-sample-mpeg/preon-sample-mpeg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-samples/preon-sample-rtp/preon-sample-rtp.iml" filepath="$PROJECT_DIR$/preon-samples/preon-sample-rtp/preon-sample-rtp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-samples/preon-sample-snoop/preon-sample-snoop.iml" filepath="$PROJECT_DIR$/preon-samples/preon-sample-snoop/preon-sample-snoop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-samples/preon-sample-varlength-encoding/preon-sample-varlength-encoding.iml" filepath="$PROJECT_DIR$/preon-samples/preon-sample-varlength-encoding/preon-sample-varlength-encoding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-samples/preon-samples.iml" filepath="$PROJECT_DIR$/preon-samples/preon-samples.iml" />
+      <module fileurl="file://$PROJECT_DIR$/preon-archetypes/preon-simple-archetype/preon-simple-archetype.iml" filepath="$PROJECT_DIR$/preon-archetypes/preon-simple-archetype/preon-simple-archetype.iml" />
+    </modules>
+  </component>
+</project>
+
