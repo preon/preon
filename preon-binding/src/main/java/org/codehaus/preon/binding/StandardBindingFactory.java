@@ -122,7 +122,9 @@ public class StandardBindingFactory implements BindingFactory {
         public <V extends SimpleContents<?>> V describe(V contents) {
             CodecDescriptor codecDescriptor = codec.getCodecDescriptor();
             contents.para().document(codecDescriptor.summary()).end();
-            contents.document(codecDescriptor.details("buffer"));
+            if (!codecDescriptor.requiresDedicatedSection()) {
+                contents.document(codecDescriptor.details("buffer"));
+            }
             return contents;
         }
 

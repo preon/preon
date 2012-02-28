@@ -32,12 +32,13 @@
  */
 package org.codehaus.preon;
 
-import org.codehaus.preon.binding.*;
-import org.codehaus.preon.el.Expression;
 import nl.flotsam.pecia.*;
+import org.codehaus.preon.annotation.Purpose;
+import org.codehaus.preon.binding.*;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.codec.*;
+import org.codehaus.preon.el.Expression;
 
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
@@ -182,11 +183,12 @@ public class DefaultCodecFactory implements CodecFactory {
                 public <C extends SimpleContents<?>> Documenter<C> details(
                         final String bufferReference) {
                     return new Documenter<C>() {
+
                         public void document(C target) {
                             created.remove(delegate);
                             target.document(delegate.getCodecDescriptor()
                                     .details(bufferReference));
-                            for (Codec<?> codec : created) {
+                            for (final Codec<?> codec : created) {
                                 assert codec != null;
                                 CodecDescriptor descriptor = codec
                                         .getCodecDescriptor();
@@ -196,6 +198,15 @@ public class DefaultCodecFactory implements CodecFactory {
                                             .section(descriptor.getTitle());
                                     section
                                             .mark(descriptor.getTitle())
+                                            .document(new Documenter<SimpleContents<?>>() {
+                                                public void document(SimpleContents<?> target) {
+                                                    // This really is a heck
+                                                    Purpose purpose = codec.getType().getAnnotation(Purpose.class);
+                                                    if (purpose != null) {
+                                                        target.para().text(purpose.value()).end();
+                                                    }
+                                                }
+                                            })
                                             .document(
                                                     descriptor
                                                             .details(bufferReference));
