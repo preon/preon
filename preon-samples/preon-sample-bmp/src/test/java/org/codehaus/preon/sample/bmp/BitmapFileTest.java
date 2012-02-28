@@ -68,6 +68,7 @@ public class BitmapFileTest extends TestCase {
         System.out.println("Data " + bitmap.getData().length);
         File directory = new File(System.getProperty("java.io.tmpdir"));
         File document = new File(directory, "bitmap.html");
+        System.out.println("Location of HTML document: " + document);
         Codecs.document(codec, DocumentType.Html, document);
     }
 

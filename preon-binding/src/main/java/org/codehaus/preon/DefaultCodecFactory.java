@@ -93,6 +93,7 @@ public class DefaultCodecFactory implements CodecFactory {
         decorators.add(new SlicingCodecDecorator());
         decorators.add(new ByteAligningDecorator());
         decorators.add(new InitCodecDecorator());
+        decorators.add(new PurposeDecorator());
         decorators.addAll(Arrays.asList(addOnDecorators));
 
         DecoratingCodecFactory top = new DecoratingCodecFactory(codecFactory,
