@@ -47,7 +47,6 @@ import org.codehaus.preon.Resolver;
 import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.BoundString;
 import org.codehaus.preon.annotation.BoundString.Encoding;
-import org.codehaus.preon.annotation.BoundString.NullConverter;
 import org.codehaus.preon.buffer.BitBuffer;
 
 import java.nio.ByteBuffer;
@@ -82,7 +81,6 @@ public class StringCodecFactoryTest extends TestCase {
         expect(metadata.getAnnotation(BoundString.class)).andReturn(settings);
         expect(settings.encoding()).andReturn(Encoding.ASCII);
         expect(settings.size()).andReturn("2").anyTimes();
-        expect(settings.converter()).andStubReturn(NullConverter.class);
         expect(settings.match()).andReturn("");
         expect(buffer.readAsByte(8)).andReturn((byte) 'b');
 		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
@@ -102,7 +100,6 @@ public class StringCodecFactoryTest extends TestCase {
         expect(metadata.getAnnotation(BoundString.class)).andReturn(settings);
         expect(settings.encoding()).andReturn(Encoding.ASCII);
         expect(settings.size()).andReturn("2").anyTimes();
-        expect(settings.converter()).andStubReturn(NullConverter.class);
         expect(settings.match()).andReturn("fo");
         expect(buffer.readAsByte(8)).andReturn((byte) 'b');
 		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
@@ -123,7 +120,6 @@ public class StringCodecFactoryTest extends TestCase {
         expect(metadata.getAnnotation(BoundString.class)).andReturn(settings);
         expect(settings.encoding()).andReturn(Encoding.ASCII);
         expect(settings.size()).andReturn("").anyTimes();
-        expect(settings.converter()).andStubReturn(NullConverter.class);
 		expect(buffer.readAsByte(8)).andReturn((byte) 'b');
 		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
 		expect(buffer.readAsByte(8)).andReturn((byte) 0);

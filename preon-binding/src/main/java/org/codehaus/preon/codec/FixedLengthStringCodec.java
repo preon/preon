@@ -65,15 +65,11 @@ public class FixedLengthStringCodec implements Codec<String> {
 
     private final String match;
 
-    private final BoundString.ByteConverter byteConverter;
-
     public FixedLengthStringCodec(Charset encoding,
-                                  Expression<Integer, Resolver> sizeExpr, String match,
-                                  BoundString.ByteConverter byteConverter) {
+                                  Expression<Integer, Resolver> sizeExpr, String match) {
         this.encoding = encoding;
         this.sizeExpr = sizeExpr;
         this.match = match;
-        this.byteConverter = byteConverter;
         this.encoder = encoding.newEncoder();
     }
 
@@ -86,7 +82,7 @@ public class FixedLengthStringCodec implements Codec<String> {
         ByteBuffer bytebuffer = ByteBuffer.allocate(size);
 		byte readbyte;
 		for (int i = 0; i < size; i++) {
-			readbyte = byteConverter.convert(buffer.readAsByte(8));
+			readbyte = buffer.readAsByte(8);
             bytebuffer.put(readbyte);
         }
         bytebuffer.rewind();
@@ -115,9 +111,6 @@ public class FixedLengthStringCodec implements Codec<String> {
         
         byte[] bytes = new byte[size];
         bytebuffer.get(bytes);
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = byteConverter.revert(bytes[i]);
-        }
         //assert (size <= bytes.length); //No longer needed
         channel.write(bytes, 0, size);
     }
