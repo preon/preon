@@ -76,7 +76,7 @@ public class FixedLengthStringCodecTest {
         BitChannel channel = new OutputStreamBitChannel(out);
         when(sizeExpr.eval(Matchers.any(Resolver.class))).thenReturn(4);
         FixedLengthStringCodec codec =
-                new FixedLengthStringCodec(charset, sizeExpr, null, new BoundString.NullConverter());
+                new FixedLengthStringCodec(charset, sizeExpr, null);
         codec.encode("Whatever", channel, resolver);
         out.flush();
         byte[] result = out.toByteArray();
@@ -93,8 +93,7 @@ public class FixedLengthStringCodecTest {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         FixedLengthStringCodec codec = new FixedLengthStringCodec(
-                Charset.forName("UTF-16BE"), sizeExpr, "",
-                new BoundString.NullConverter());
+                Charset.forName("UTF-16BE"), sizeExpr, "");
 
         codec.encode(original, new OutputStreamBitChannel(out), resolver);
         byte[] encoded = out.toByteArray();

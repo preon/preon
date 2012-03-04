@@ -66,18 +66,12 @@ public class StringCodecFactory implements CodecFactory {
                     return (Codec<T>) new FixedLengthStringCodec(
 							charset, //Note that this is a Charset, not an Encoding
 							expr,
-							settings.match(),
-							settings.converter().newInstance());
+							settings.match());
                 } else {
                     return (Codec<T>) new NullTerminatedStringCodec(
 							charset, //Note that this is a Charset, not an Encoding
-							settings.match(),
-							settings.converter().newInstance());
+							settings.match());
                 }
-            } catch (InstantiationException e) {
-                throw new CodecConstructionException(e.getMessage());
-            } catch (IllegalAccessException e) {
-                throw new CodecConstructionException(e.getMessage());
             } catch (NullPointerException e) {
 				throw new CodecConstructionException(
 							"Unsupported encoding: "+e.getMessage());

@@ -78,40 +78,4 @@ public @interface BoundString {
      */
      
     String match() default "";
-    
-    /* I've left this in, but I don't use this code anywhere in the actual
-     * factory. It might be possible to alter the factories to use
-     * ByteConverters, by wrapping around ByteBuffer in some clever way, 
-     * but my feeling is that the aims of this code would be better
-     * achieved by Charsets.
-     * */
-
-    Class<? extends ByteConverter> converter() default NullConverter.class;
-
-    public interface ByteConverter {
-
-        byte convert(byte in);
-
-        byte revert(byte in);
-
-        String getDescription();
-
-    }
-
-    public class NullConverter implements ByteConverter {
-
-        public byte convert(byte in) {
-            return in;
-        }
-
-        public byte revert(byte in) {
-            return in;
-        }
-
-        public String getDescription() {
-            return "";
-        }
-
-    }
-
 }

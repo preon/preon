@@ -68,13 +68,9 @@ public class NullTerminatedStringCodec implements Codec<String> {
 
     private String match;
 
-    private BoundString.ByteConverter byteConverter;
-
-    public NullTerminatedStringCodec(Charset encoding, String match,
-                                     BoundString.ByteConverter byteConverter) {
+    public NullTerminatedStringCodec(Charset encoding, String match) {
         this.encoding = encoding;
         this.match = match;
-        this.byteConverter = byteConverter;
     }
 
     public String decode(BitBuffer buffer, Resolver resolver,
@@ -103,7 +99,7 @@ public class NullTerminatedStringCodec implements Codec<String> {
         char charvalue;
         boolean readOK = true;
 		do {
-			bytevalue = byteConverter.convert(buffer.readAsByte(8)); //Convert our byte
+			bytevalue = buffer.readAsByte(8); //Convert our byte
 			bytebuffer.put(bytevalue); // and add it to the bytebuffer
 			bytebuffer.flip(); // Flip the buffer, so we can read it
 			decoder.decode(bytebuffer,charbuffer,false); // Decode up to one char from bytebuffer
@@ -129,9 +125,6 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		 * */
 		ByteBuffer bytebuffer = encoding.encode(value+"\u0000");
         byte[] bytes = bytebuffer.array();
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = byteConverter.revert(bytes[i]);
-        }
         channel.write(bytes, 0, bytes.length);
     }
 
