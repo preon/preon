@@ -37,6 +37,8 @@ import org.codehaus.preon.el.Expressions;
 import org.codehaus.preon.*;
 import org.codehaus.preon.annotation.BoundString;
 import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.util.DefaultInputStreamReaderFactory;
+
 import java.nio.charset.Charset;
 
 import java.lang.reflect.AnnotatedElement;
@@ -70,6 +72,7 @@ public class StringCodecFactory implements CodecFactory {
                 } else {
                     return (Codec<T>) new NullTerminatedStringCodec(
 							charset, //Note that this is a Charset, not an Encoding
+                            new DefaultInputStreamReaderFactory(),
 							settings.match());
                 }
             } catch (NullPointerException e) {

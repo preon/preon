@@ -40,9 +40,9 @@ import org.codehaus.preon.el.Expression;
 import nl.flotsam.pecia.SimpleContents;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
+import org.codehaus.preon.util.InputStreamReaderFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
@@ -50,11 +50,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CharsetDecoder;
 import java.nio.BufferUnderflowException;
-import java.io.StringWriter;
-import java.io.IOException;
 
 /**
- * A {@link org.codehaus.preon.Codec} that reads null-terminated Strings. Basically, it will read bytes until it
+ * A {@link Codec} that reads null-terminated Strings. Basically, it will read bytes until it
  * encounters a '\0' character, in which case it considers itself to be done, and construct a String from the bytes
  * read.
  *
@@ -62,68 +60,47 @@ import java.io.IOException;
  */
 public class NullTerminatedStringCodec implements Codec<String> {
 
-	private static int BUFFER_SIZE = 32; //32 Bytes is probably overkill, but these days it hardly matters
+    private final Charset charset;
+    private final String match;
+    private final InputStreamReaderFactory factory;
 
-    private Charset encoding;
-
-    private String match;
-
-    public NullTerminatedStringCodec(Charset encoding, String match) {
-        this.encoding = encoding;
+    public NullTerminatedStringCodec(final Charset charset, final InputStreamReaderFactory factory, final String match) {
+        this.charset = charset;
         this.match = match;
+        this.factory = factory;
     }
 
-    public String decode(BitBuffer buffer, Resolver resolver,
-                         Builder builder) throws DecodingException {
-		/* This has been gutted, and now uses Charsets to do decoding.
-		 * It opens the bitbuffer as a bytebuffer (taking care to note
-		 * and preserve positions), creates a CharBuffer with space for
-		 * one character, and decodes the ByteBuffer one character at a
-		 * time. If the character decoded is NULL, it finishes up (it has
-		 * to use the decoded character, not the byte, as multibyte
-		 * encodings can include null bytes in non-null characters).
-		 * 
-		 * I used a StringWriter for the string, as it's more memory
-		 * efficient, for what it's worth.
-		 * 
-		 * I wasn't able to find a way to include the byteConverter in
-		 * the decoding process. I'm guessing the main use for byteConverter
-		 * was encoding conversion anyway, but if it's needed, it might
-		 * be possible to subclass ByteBuffer.
-		 * */
-        CharsetDecoder decoder = encoding.newDecoder();
-        ByteBuffer bytebuffer = ByteBuffer.allocate(BUFFER_SIZE); //Allocate a bytebuffer. We'll need this for multibyte encodings
-		CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
-        StringWriter sw = new StringWriter(); //This will eventually hold our string
-        byte bytevalue;
-        char charvalue;
-        boolean readOK = true;
-		do {
-			bytevalue = buffer.readAsByte(8); //Convert our byte
-			bytebuffer.put(bytevalue); // and add it to the bytebuffer
-			bytebuffer.flip(); // Flip the buffer, so we can read it
-			decoder.decode(bytebuffer,charbuffer,false); // Decode up to one char from bytebuffer
-			if (charbuffer.position() == 1) {
-				charbuffer.rewind();
-				charvalue = charbuffer.get();
-				charbuffer.rewind();
-				if (charvalue == 0) { //If character is null, we're finished
-					readOK = false;
-				}
-				else {
-					sw.append(charvalue); //Write character to StringWriter
-				}
-			}
-			bytebuffer.compact(); //Compact the buffer, so we can write to it
-		}
-		while(readOK);
-		return sw.toString();
+    public String decode(final BitBuffer buffer, final Resolver resolver, final Builder builder) throws DecodingException {
+        final InputStreamReader reader = factory.createBitBufferInputStreamReader(buffer, charset);
+        final StringBuilder strBuilder = new StringBuilder();
+
+        try {
+            for (int charRead = reader.read(); !isNullTerminationCharacter(charRead); charRead = reader.read()) {
+                if (isEndOfStreamValue(charRead)) {
+                    throw new DecodingException("NullTerminatedStringCodec.decode(): Read past end of BitBuffer");
+                }
+
+                strBuilder.append((char)charRead);
+            }
+        } catch (IOException e) {
+            throw new DecodingException("NullTerminatedStringCodec.decode() threw IOException", e);
+        }
+
+        return strBuilder.toString();
+    }
+
+    private static boolean isEndOfStreamValue(final int value) {
+        return value == -1;
+    }
+
+    private static boolean isNullTerminationCharacter(final int character) {
+        return character == '\0';
     }
 
     public void encode(String value, BitChannel channel, Resolver resolver) throws IOException {
 		/* This is a crude first attempt
 		 * */
-		ByteBuffer bytebuffer = encoding.encode(value+"\u0000");
+		ByteBuffer bytebuffer = charset.encode(value + "\u0000");
         byte[] bytes = bytebuffer.array();
         channel.write(bytes, 0, bytes.length);
     }
@@ -179,7 +156,7 @@ public class NullTerminatedStringCodec implements Codec<String> {
                     public void document(C target) {
                         target
                                 .text("A null-terminated sequence of characters, encoded in "
-                                        + encoding + ".");
+                                        + charset + ".");
                     }
                 };
             }
