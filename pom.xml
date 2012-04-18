@@ -183,7 +183,6 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <configuration>
           <reportOutputDirectory>${project.reporting.outputDirectory}/apidocs/${version}</reportOutputDirectory>
-          <destDir>apidocs/${version}</destDir>
         </configuration>
       </plugin>
     </plugins>
