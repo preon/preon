@@ -119,7 +119,7 @@
             </goals>
             <configuration>
               <ansi>true</ansi>
-              <sourceDirectory>${fonts.dir}</sourceDirectory>
+              <!--<sourceDirectory>${fonts.dir}</sourceDirectory>-->
             </configuration>
           </execution>
         </executions>
@@ -152,6 +152,7 @@
           <footerRule>0</footerRule>
           <foCustomization>${basedir}/src/docbkx/customizations.xsl</foCustomization>
           <htmlCustomization>${basedir}/src/docbkx/customizations-html.xsl</htmlCustomization>
+	  <!--
           <fonts>
             <font>
               <name>Consola</name>
@@ -182,6 +183,7 @@
               <metricsFile>${basedir}/target/fonts/calibrib-metrics.xml</metricsFile>
             </font>
           </fonts>
+	  -->
           <xincludeSupported>true</xincludeSupported>
           <sectionAutolabel>1</sectionAutolabel>
           <sectionLabelIncludesComponentLabel>1</sectionLabelIncludesComponentLabel>
@@ -223,6 +225,6 @@
     </profile>
   </profiles>
   <properties>
-    <fonts.dir>/Users/wilfred/Library/Fonts</fonts.dir>
+    <!--<fonts.dir>/Users/wilfred/Library/Fonts</fonts.dir>-->
   </properties>
 </project>
