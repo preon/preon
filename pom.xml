@@ -43,16 +43,6 @@
   </scm>
   <repositories>
     <repository>
-      <id>limbo-repository</id>
-      <url>http://limbo.sourceforge.net/repository</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </repository>
-    <repository>
       <id>pecia-repository</id>
       <url>http://pecia.sourceforge.net/repository</url>
       <snapshots>
