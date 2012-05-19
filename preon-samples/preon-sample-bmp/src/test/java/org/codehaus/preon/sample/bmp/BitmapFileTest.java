@@ -33,13 +33,13 @@
 package org.codehaus.preon.sample.bmp;
 
 import junit.framework.TestCase;
+import org.apache.commons.io.FileUtils;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.Codecs;
 import org.codehaus.preon.Codecs.DocumentType;
 import org.codehaus.preon.DecodingException;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -48,36 +48,34 @@ public class BitmapFileTest extends TestCase {
     public void setUp() {
     }
 
-    public void testHeightWidth() throws FileNotFoundException,
+    public void testHeightWidth() throws
             DecodingException, IOException {
         Codec<BitmapFile> codec = Codecs.create(BitmapFile.class);
-        File file = new File(BitmapFileTest.class.getClassLoader().getResource("test.bmp").getFile());
-        System.out.println(file.getAbsolutePath());
-        BitmapFile bitmap = Codecs.decode(codec, file);
-        assertEquals(48, bitmap.getHeight());
-        assertEquals(48, bitmap.getWidth());
-        for (RgbQuad quad : bitmap.getColors()) {
-            System.out.print("Color ");
-            System.out.print(quad.getRed());
-            System.out.print(", ");
-            System.out.print(quad.getGreen());
-            System.out.print(", ");
-            System.out.print(quad.getBlue());
-            System.out.println();
+        File file = File.createTempFile("test", ".bmp");
+        file.deleteOnExit();
+        FileUtils.copyURLToFile(BitmapFileTest.class.getClassLoader().getResource("test.bmp"), file);
+        try {
+            System.out.println(file.getAbsolutePath());
+            BitmapFile bitmap = Codecs.decode(codec, file);
+            assertEquals(48, bitmap.getHeight());
+            assertEquals(48, bitmap.getWidth());
+            for (RgbQuad quad : bitmap.getColors()) {
+                System.out.print("Color ");
+                System.out.print(quad.getRed());
+                System.out.print(", ");
+                System.out.print(quad.getGreen());
+                System.out.print(", ");
+                System.out.print(quad.getBlue());
+                System.out.println();
+            }
+            System.out.println("Data " + bitmap.getData().length);
+            File directory = new File(System.getProperty("java.io.tmpdir"));
+            File document = new File(directory, "bitmap.html");
+            System.out.println("Location of HTML document: " + document);
+            Codecs.document(codec, DocumentType.Html, document);
+        } finally {
+            file.delete();
         }
-        System.out.println("Data " + bitmap.getData().length);
-        File directory = new File(System.getProperty("java.io.tmpdir"));
-        File document = new File(directory, "bitmap.html");
-        System.out.println("Location of HTML document: " + document);
-        Codecs.document(codec, DocumentType.Html, document);
-    }
-
-    public File getBasedir() {
-        String basedir = System.getProperty("basedir");
-        if (basedir == null) {
-            basedir = System.getProperty("user.dir");
-        }
-        return new File(basedir);
     }
 
 }
