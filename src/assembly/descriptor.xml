@@ -28,10 +28,24 @@
   </fileSets>
   <moduleSets>
     <moduleSet>
+      <useAllReactorProjects>true</useAllReactorProjects>
       <includes>
-        <include>nl.flotsam.preon:preon-binding</include>
-        <include>nl.flotsam.preon:preon-bitbuffer</include>
+        <include>org.codehaus.preon:preon-binding</include>
+        <include>org.codehaus.preon:preon-io</include>
+        <include>org.codehaus.preon:preon-el</include>
+        <include>org.codehaus.preon:preon-samples</include>
+        <include>org.codehaus.preon:preon-emitter</include>
       </includes>
+      <binaries>
+        <outputDirectory>lib</outputDirectory>
+        <unpack>false</unpack>
+        <dependencySets>
+          <dependencySet>
+            <outputDirectory>lib/ext</outputDirectory>
+          </dependencySet>
+        </dependencySets>
+      </binaries>
+      <!--
       <binaries>
         <outputDirectory>lib</outputDirectory>
         <outputFileNameMapping>${module.artifactId}-${module.version}.${module.extension}</outputFileNameMapping>
@@ -43,6 +57,7 @@
           </dependencySet>
         </dependencySets>
       </binaries>
+      -->
     </moduleSet>
   </moduleSets>
 </assembly>
