@@ -55,6 +55,10 @@ public class DecodingException extends CodecException {
         super(ie);
     }
 
+    public DecodingException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
     public DecodingException(IllegalAccessException iae) {
         super(iae);
     }
