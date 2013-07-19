@@ -199,6 +199,15 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         }
     }
 
+    public void flush() throws IOException {
+    	assert bitPos < 8;
+    	if (bitPos > 0) {
+    		 int remainder = 8 - bitPos;
+    		 write(remainder, (byte) 0);
+    	}
+    	out.flush();
+    }
+
     public
     @Nonnegative
     int getRelativeBitPos() {

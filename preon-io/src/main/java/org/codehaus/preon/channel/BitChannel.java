@@ -85,5 +85,8 @@ public interface BitChannel {
 
     /** Closes the channel. */
     void close() throws IOException;
+    
+    /** flushes the channel. Writes remaining bits to the underlying stream. */
+    void flush() throws IOException;
 
 }
