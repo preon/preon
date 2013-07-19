@@ -256,6 +256,7 @@ public class Codecs {
      */
     public static <T> void encode(T value, Codec<T> codec, BitChannel channel) throws IOException {
         codec.encode(value, channel, new NullResolver());
+        channel.flush(); 
     }
 
     public static <T> byte[] encode(T value, Codec<T> codec) throws IOException {
