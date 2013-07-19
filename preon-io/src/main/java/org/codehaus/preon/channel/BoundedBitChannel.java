@@ -134,8 +134,4 @@ public class BoundedBitChannel implements BitChannel {
     public void close() throws IOException {
         channel.close();
     }
-
-    public void flush() throws IOException {
-    	channel.flush();
-    }
 }
