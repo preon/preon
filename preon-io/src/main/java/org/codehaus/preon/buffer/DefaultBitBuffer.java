@@ -106,8 +106,7 @@ public class DefaultBitBuffer implements BitBuffer {
             bitPos = 0;
 
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException("Should never happen", e);
         }
     }
 

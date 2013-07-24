@@ -62,7 +62,7 @@ public class EnumUtils {
                         }
                     }
                     catch (IllegalAccessException iae) {
-                        iae.printStackTrace(); // Should never happen.
+                    	throw new RuntimeException("Should never happen.", iae);
                     }
                 }
             }

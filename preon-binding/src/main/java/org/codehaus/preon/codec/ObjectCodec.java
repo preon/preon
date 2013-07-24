@@ -87,7 +87,6 @@ public class ObjectCodec<T> implements Codec<T> {
             return result;
         }
         catch (InstantiationException ie) {
-            ie.printStackTrace();
             throw new DecodingException(type, ie);
         }
         catch (IllegalAccessException iae) {
