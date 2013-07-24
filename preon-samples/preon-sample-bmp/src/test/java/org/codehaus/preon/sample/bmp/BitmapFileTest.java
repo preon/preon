@@ -33,6 +33,7 @@
 package org.codehaus.preon.sample.bmp;
 
 import junit.framework.TestCase;
+
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.Codecs;
 import org.codehaus.preon.Codecs.DocumentType;
@@ -41,6 +42,7 @@ import org.codehaus.preon.DecodingException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 
 public class BitmapFileTest extends TestCase {
@@ -49,9 +51,9 @@ public class BitmapFileTest extends TestCase {
     }
 
     public void testHeightWidth() throws FileNotFoundException,
-            DecodingException, IOException {
+            DecodingException, IOException, URISyntaxException {
         Codec<BitmapFile> codec = Codecs.create(BitmapFile.class);
-        File file = new File(BitmapFileTest.class.getClassLoader().getResource("test.bmp").getFile());
+        File file = new File(BitmapFileTest.class.getClassLoader().getResource("test.bmp").toURI());
         System.out.println(file.getAbsolutePath());
         BitmapFile bitmap = Codecs.decode(codec, file);
         assertEquals(48, bitmap.getHeight());
