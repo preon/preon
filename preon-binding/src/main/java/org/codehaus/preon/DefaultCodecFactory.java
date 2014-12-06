@@ -92,6 +92,7 @@ public class DefaultCodecFactory implements CodecFactory {
         decorators.add(new LazyLoadingCodecDecorator());
         decorators.add(new SlicingCodecDecorator());
         decorators.add(new ByteAligningDecorator());
+        decorators.add(new InjectCodecDecorator());
         decorators.add(new InitCodecDecorator());
         decorators.addAll(Arrays.asList(addOnDecorators));
 
