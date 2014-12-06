@@ -64,7 +64,7 @@ public class InitCodecDecorator implements CodecDecorator {
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata, Class<T> type,
                                  ResolverContext context) {
-        for (Method method : type.getMethods()) {
+        for (Method method : type.getDeclaredMethods()) {
             if (!Modifier.isStatic(method.getModifiers()) && method.getParameterTypes().length == 0
                     && method.isAnnotationPresent(Init.class)) {
                 method.setAccessible(true);
