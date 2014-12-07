@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.preon.*;
@@ -28,21 +29,28 @@ public class InjectCodecDecorator implements CodecDecorator {
   @Override
   public <T> Codec<T> decorate(Codec<T> codec, AnnotatedElement metadata,
       Class<T> type, ResolverContext context) {
+    return new InjectCodec<T>(codec, getInjectFields(type));
+  }
+  
+  private List<Field> getInjectFields (Class<?> pType) {
+    if (pType == null) {
+      return Collections.<Field>emptyList();
+    }
     List<Field> fields = new ArrayList<>();
-    for (Field field : type.getDeclaredFields()) {
+    for (Field field : pType.getDeclaredFields()) {
       if (field.isAnnotationPresent(Inject.class)) {
         field.setAccessible(true);
         fields.add(field);
       }
     }
-    return new InjectCodec<T>(codec, fields);
+    fields.addAll(getInjectFields(pType.getSuperclass()));
+    return fields;
   }
 
   private class InjectCodec<T> implements Codec<T> {
 
     private Codec<T> codec;
     private List<Field> fields;
-    private ResolverContext context;
 
     public InjectCodec(Codec<T> pCodec, List<Field> pFields) {
       codec = pCodec;
@@ -91,7 +99,5 @@ public class InjectCodecDecorator implements CodecDecorator {
     public Class<?> getType() {
       return codec.getType();
     }
-
   }
-
 }
