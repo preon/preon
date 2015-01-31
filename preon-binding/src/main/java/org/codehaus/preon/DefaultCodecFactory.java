@@ -72,6 +72,25 @@ public class DefaultCodecFactory implements CodecFactory {
                                CodecDecorator[] addOnDecorators,
                                BindingDecorator[] bindingDecorators)
     {
+    	CodecFactoryFactory[] codecFactoryFactory = new CodecFactoryFactory[addOnFactories.length];
+    	int i = 0;
+    	for (CodecFactory codecFactory : addOnFactories) {
+    		codecFactoryFactory[i] = new InstanceFactoryFactory(codecFactory);
+    	}
+    	
+    	return create(metadata,
+                type,
+                codecFactoryFactory,
+                addOnDecorators,
+                bindingDecorators);
+    }
+    
+    public <T> Codec<T> create(AnnotatedElement metadata,
+            Class<T> type,
+            CodecFactoryFactory[] addOnFactoryFactories,
+            CodecDecorator[] addOnDecorators,
+            BindingDecorator[] bindingDecorators)
+{
 
         // The actual cache of Codecs.
         final List<Codec<?>> created = new ArrayList<Codec<?>>();
@@ -99,8 +118,8 @@ public class DefaultCodecFactory implements CodecFactory {
                 decorators);
 
         // Add additional CodecFactories passed in.
-        for (CodecFactory factory : addOnFactories) {
-            codecFactory.add(factory);
+        for (CodecFactoryFactory factory : addOnFactoryFactories) {
+            codecFactory.add(factory.create(top));
         }
 
         // Add other default CodecFactories.
