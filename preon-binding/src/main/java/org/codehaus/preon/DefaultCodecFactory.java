@@ -111,6 +111,8 @@ public class DefaultCodecFactory implements CodecFactory {
         codecFactory.add(new BooleanCodecFactory());
         codecFactory.add(new EnumCodec.Factory());
 
+        codecFactory.add(new RepeatingBitSizeBufferCodecFactory());
+
         // Create an ObjectCodecFactory that delegates to the
         // CompoundCodecFactory for each of its members.
         ObjectCodecFactory objectCodecFactory = new ObjectCodecFactory(top,
