@@ -46,8 +46,6 @@ import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.DefaultBitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 
-import com.sun.org.apache.xalan.internal.xsltc.dom.BitArray;
-
 import java.io.IOException;
 import java.lang.reflect.AnnotatedElement;
 import java.nio.ByteBuffer;
@@ -203,6 +201,14 @@ public class RepeatingBitSizeBufferCodecFactory implements CodecFactory {
 						String bufferReference) {
 					return new Documenter<T>() {
 						public void document(T target) {
+							target.para().text("A buffer who's size in bytes is determined by an embedded series of repeating bits immediately before the buffer's data.").end();
+
+							target.para().text(
+                                    "Size Series will be terminated by a bit of value \"")
+                                    .text(terminateBit+"").text("\".").end();
+
+							target.para().text("i.e. 110|11111 11111111 11111111 -> (3 data bytes) 0x1FFFFF, where terminateBit = 0, no maxLength provided (unlimited)").end();
+							target.para().emphasis("NOTE: ").text("Size is determined by the number of non-terminateBits in series, minimum of 1 byte, values greater then 127/0x7F are a minimum of 2 bytes.").end();
 						}
 					};
 				}
@@ -228,25 +234,26 @@ public class RepeatingBitSizeBufferCodecFactory implements CodecFactory {
 				public <T extends ParaContents<?>> Documenter<T> summary() {
 					return new Documenter<T>() {
 						public void document(T target) {
-							target.text("A buffer who's size in bytes is determined by an embedded series of repeating bits immediately before the buffers data.");
-							target.text("i.e. 110|11111 11111111 11111111 -> (3 data bytes) 0x1FFFFF, where terminateBit = 0, no maxLength provided (unlimited)");
 						}
 					};
-				}
-
+				}			
+				
 			};
 		}
 
 		public Expression<Integer, Resolver> getSize() {
-			return maxLengthExpr;
+			if (maxLengthExpr != null) { 
+				return maxLengthExpr; 
+			}
+            return Expressions.createInteger(8, Resolver.class);
 		}
 
 		public Class<?> getType() {
-			return Integer.class;
+			return byte[].class;
 		}
 
 		public Class<?>[] getTypes() {
-			return new Class[]{Integer.class};
+			return new Class[]{byte[].class};
 		}
 
 	}
