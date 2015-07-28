@@ -40,6 +40,7 @@ import nl.flotsam.pecia.SimpleContents;
 import org.codehaus.preon.*;
 import org.codehaus.preon.annotation.Bound;
 import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
 
 import java.io.IOException;
@@ -63,9 +64,11 @@ public class BooleanCodecFactory implements CodecFactory {
                                ResolverContext context) {
         if (metadata == null || metadata.isAnnotationPresent(Bound.class)) {
             if (boolean.class.equals(type)) {
-                return (Codec<T>) new BooleanCodec(true);
+            	  ByteOrder endian = ByteOrder.BigEndian;
+                return (Codec<T>) new BooleanCodec(true, endian);
             } else if (Boolean.class.equals(type)) {
-                return (Codec<T>) new BooleanCodec(false);
+            	  ByteOrder endian = ByteOrder.BigEndian;
+                return (Codec<T>) new BooleanCodec(false, endian);
             } else {
                 return null;
             }
@@ -77,9 +80,12 @@ public class BooleanCodecFactory implements CodecFactory {
     private static class BooleanCodec implements Codec<Boolean> {
 
         private boolean primitive;
+        
+    	  protected ByteOrder byteOrder;
 
-        public BooleanCodec(boolean primitive) {
+        public BooleanCodec(boolean primitive, ByteOrder byteOrder) {
             this.primitive = primitive;
+            this.byteOrder = byteOrder;
         }
 
         public Boolean decode(BitBuffer buffer, Resolver resolver,
@@ -88,7 +94,7 @@ public class BooleanCodecFactory implements CodecFactory {
         }
 
         public void encode(Boolean value, BitChannel channel, Resolver resolver) throws IOException {
-            channel.write(value);
+            channel.write(value, byteOrder);
         }
 
         public CodecDescriptor getCodecDescriptor() {

@@ -63,9 +63,9 @@ public class BoundedBitChannel implements BitChannel {
         this.maxBits = maxBits;
     }
 
-    public void write(boolean value) throws IOException {
+    public void write(boolean value, ByteOrder byteOrder) throws IOException {
         if (written + 1 <= maxBits) {
-            channel.write(value);
+            channel.write(value, byteOrder);
             written += 1;
         } else {
             throw new IOException(OVERRUN_MESSAGE);
@@ -80,6 +80,15 @@ public class BoundedBitChannel implements BitChannel {
             throw new IOException(OVERRUN_MESSAGE);
         }
     }
+    
+    public void writeLE(int nrbits, byte value) throws IOException {
+      if (written + nrbits <= maxBits) {
+          channel.writeLE(nrbits, value);
+          written += nrbits;
+      } else {
+          throw new IOException(OVERRUN_MESSAGE);
+      }
+  }
 
     public void write(int nrbits, int value, ByteOrder byteOrder) throws IOException {
         if (written + nrbits <= maxBits) {
@@ -133,5 +142,10 @@ public class BoundedBitChannel implements BitChannel {
 
     public void close() throws IOException {
         channel.close();
+    }
+    
+    
+    public void flush() throws IOException {
+    		channel.flush();
     }
 }
