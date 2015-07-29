@@ -32,6 +32,7 @@
  */
 package org.codehaus.preon.codec;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
@@ -263,8 +264,10 @@ public class ListCodecFactory implements CodecFactory {
                     buffer, size.eval(resolver), builder, resolver, elementSize.eval(resolver));
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
+            for (T val : value) {
+                codec.encode(val, channel, resolver);
+            }
         }
 
         public Class<?>[] getTypes() {
@@ -375,8 +378,10 @@ public class ListCodecFactory implements CodecFactory {
             return result;
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
+            for (T val : value) {
+                codec.encode(val, channel, resolver);
+            }
         }
 
         public Class<?>[] getTypes() {
