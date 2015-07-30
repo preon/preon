@@ -90,5 +90,5 @@ public interface BitChannel {
     void close() throws IOException;
     
     /** Flush any remaining bits. */
-    void flush() throws IOException;
+    void flush(ByteOrder byteOrder) throws IOException;
 }

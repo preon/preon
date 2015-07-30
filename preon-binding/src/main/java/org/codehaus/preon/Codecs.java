@@ -52,6 +52,7 @@ import nl.flotsam.pecia.builder.xml.StreamingXmlWriter;
 import nl.flotsam.pecia.builder.xml.XmlWriter;
 import org.codehaus.preon.binding.BindingDecorator;
 import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.buffer.DefaultBitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.channel.OutputStreamBitChannel;
@@ -241,7 +242,7 @@ public class Codecs {
             }
         }
     }
-
+    
     /**
      * Encodes the value to the channel passed in, using the given Codec. So why not have this operation on codec
      * instead? Well, it <em>is</em> actually there. However, there will be quite a few overloaded versions of this
@@ -251,22 +252,48 @@ public class Codecs {
      * @param value   The object that needs to be encoded.
      * @param codec   The codec to be used.
      * @param channel The target {@link org.codehaus.preon.channel.BitChannel}.
+     * @param byteOrder The byteOrder (necessary for final flush)
+     * @param <T>     The type of object to be encoded.
+     * @throws IOException If the {@link org.codehaus.preon.channel.BitChannel} no longer receives the data.
+     */
+    public static <T> void encode(T value, Codec<T> codec, BitChannel channel, ByteOrder byteOrder) throws IOException {
+        codec.encode(value, channel, new NullResolver());
+        channel.flush(byteOrder);
+    }
+
+    public static <T> byte[] encode(T value, Codec<T> codec, ByteOrder byteOrder) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        encode(value, codec, out, byteOrder);
+        return out.toByteArray();
+    }
+
+    public static <T> void encode(T value, Codec<T> codec, OutputStream out, ByteOrder byteOrder) throws IOException {
+        encode(value, codec, new OutputStreamBitChannel(out), byteOrder);
+    }
+
+    /**
+     * Encodes the value to the channel passed in, using the given Codec. So why not have this operation on codec
+     * instead? Well, it <em>is</em> actually there. However, there will be quite a few overloaded versions of this
+     * operation, and Java would force you to implement these operations on <em>every Codec</em>. That's not a very
+     * attractive objection. So instead of inheritance, it's all delegation now.  Be aware, this method will always 
+     * flush the last byte as ByteOrder.BigEndian.
+     *
+     * @param value   The object that needs to be encoded.
+     * @param codec   The codec to be used.
+     * @param channel The target {@link org.codehaus.preon.channel.BitChannel}.
      * @param <T>     The type of object to be encoded.
      * @throws IOException If the {@link org.codehaus.preon.channel.BitChannel} no longer receives the data.
      */
     public static <T> void encode(T value, Codec<T> codec, BitChannel channel) throws IOException {
-        codec.encode(value, channel, new NullResolver());
-        channel.flush();
+        encode(value, codec, channel, ByteOrder.BigEndian);
     }
 
     public static <T> byte[] encode(T value, Codec<T> codec) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        encode(value, codec, out);
-        return out.toByteArray();
+    	  return encode(value, codec, ByteOrder.BigEndian);
     }
 
     public static <T> void encode(T value, Codec<T> codec, OutputStream out) throws IOException {
-        encode(value, codec, new OutputStreamBitChannel(out));
+    	  encode(value, codec, out, ByteOrder.BigEndian);
     }
 
     /**

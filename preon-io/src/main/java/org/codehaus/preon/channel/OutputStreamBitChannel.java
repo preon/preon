@@ -249,12 +249,16 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
     public void close() throws IOException {
         out.close();
     }
-
-    public void flush() throws IOException {
+    
+    public void flush(ByteOrder byteOrder) throws IOException {
     		assert bitPos < 8;
     		if (bitPos > 0) {
     	  				int remaining = 8 - bitPos; 
-    	  				write(remaining, (byte)0);
+    	  				if (byteOrder == ByteOrder.LittleEndian) {
+    	  				    writeLE(remaining, (byte)0);
+    	  				} else {
+    	  					  write(remaining, (byte)0);
+    	  				}	
     	  }
     	  out.flush();
     }
