@@ -32,24 +32,27 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Expressions;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.pecia.SimpleContents;
-import org.codehaus.preon.*;
-import org.codehaus.preon.annotation.BoundString;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.io.StringWriter;
-import java.nio.BufferUnderflowException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.annotation.BoundString;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
 
-import java.io.IOException;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 
 /**
  * A {@link org.codehaus.preon.Codec} decoding Strings based on a fixed number of <em>bytes</em>. (Note that it says
@@ -58,7 +61,7 @@ import java.io.IOException;
 public class FixedLengthStringCodec implements Codec<String> {
 
     private final Charset encoding;
-    
+
     private final CharsetEncoder encoder;
 
     private final Expression<Integer, Resolver> sizeExpr;
@@ -112,7 +115,7 @@ public class FixedLengthStringCodec implements Codec<String> {
             bytebuffer.put(new byte[size - bytebuffer.position()]);
         }
         bytebuffer.flip(); // switch to reading
-        
+
         byte[] bytes = new byte[size];
         bytebuffer.get(bytes);
         for (int i = 0; i < bytes.length; i++) {

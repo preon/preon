@@ -32,26 +32,26 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.*;
-import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.buffer.BitBuffer;
-import org.codehaus.preon.annotation.BoundString;
-import org.codehaus.preon.el.Expression;
-import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-
+import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CharsetDecoder;
-import java.nio.BufferUnderflowException;
-import java.io.StringWriter;
-import java.io.IOException;
+
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.annotation.BoundString;
+import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.channel.BitChannel;
+import org.codehaus.preon.el.Expression;
+
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 
 /**
  * A {@link org.codehaus.preon.Codec} that reads null-terminated Strings. Basically, it will read bytes until it
@@ -86,10 +86,10 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		 * time. If the character decoded is NULL, it finishes up (it has
 		 * to use the decoded character, not the byte, as multibyte
 		 * encodings can include null bytes in non-null characters).
-		 * 
+		 *
 		 * I used a StringWriter for the string, as it's more memory
 		 * efficient, for what it's worth.
-		 * 
+		 *
 		 * I wasn't able to find a way to include the byteConverter in
 		 * the decoding process. I'm guessing the main use for byteConverter
 		 * was encoding conversion anyway, but if it's needed, it might
