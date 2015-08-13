@@ -220,8 +220,8 @@ public class NumericCodec implements Codec<Object> {
                 return java.lang.Float.intBitsToFloat(value);
             }
 
-            public void encode(BitChannel channel, int size, ByteOrder endian, Object value) {
-                throw new UnsupportedOperationException("Encoding not supported for floats.");
+            public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
+            	channel.write(size, (Float) value, endian);
             }
 
             public Class<?> getType() {
@@ -241,8 +241,8 @@ public class NumericCodec implements Codec<Object> {
                         size, endian));
             }
 
-            public void encode(BitChannel channel, int size, ByteOrder endian, Object value) {
-                throw new UnsupportedOperationException("Encoding not supported for doubles.");
+            public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
+                channel.write(size, (Double) value, endian);
             }
 
             public Class<?> getType() {

@@ -92,7 +92,7 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
             buffer = 0;
         }
     }
-    
+
     public void writeLE(@Nonnegative int nrbits, byte value) throws IOException {
         assert nrbits > 0;
         assert nrbits <= 8;
@@ -110,7 +110,7 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
 
         // Check if the buffer needs to be flushed
         if (bitPos > 7) {
-            out.write(buffer);   
+            out.write(buffer);
             buffer = 0;
             bitPos = 0;
         }
@@ -118,10 +118,10 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         // Check if there is something else left to copy
         if (length < nrbits) {
         	bitPos = nrbits - length;
-        	
+
           // Chop off bits not required
           value = (byte) (0xff & MASK_UPPER[bitPos] & (value >> length));
-          
+
           // Fill the buffer
           buffer = (byte) (buffer | (0xff & value));
         }
@@ -156,6 +156,16 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
             buffer = (byte) (MASK_UPPER[nrbits - length] & value);
             bitPos = nrbits - length;
         }
+    }
+    
+    public void write(@Nonnegative int nrbits, float value, ByteOrder byteOrder)
+            throws IOException {
+    	write(nrbits, Float.floatToIntBits(value), byteOrder);
+    }
+
+    public void write(@Nonnegative int nrbits, double value, ByteOrder byteOrder)
+            throws IOException {
+    	write(nrbits, Double.doubleToLongBits(value), byteOrder);
     }
 
     public void write(@Nonnegative int nrbits, int value, ByteOrder byteOrder)
@@ -249,16 +259,16 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
     public void close() throws IOException {
         out.close();
     }
-    
+
     public void flush(ByteOrder byteOrder) throws IOException {
     		assert bitPos < 8;
     		if (bitPos > 0) {
-    	  				int remaining = 8 - bitPos; 
+    	  				int remaining = 8 - bitPos;
     	  				if (byteOrder == ByteOrder.LittleEndian) {
     	  				    writeLE(remaining, (byte)0);
     	  				} else {
     	  					  write(remaining, (byte)0);
-    	  				}	
+    	  				}
     	  }
     	  out.flush();
     }
