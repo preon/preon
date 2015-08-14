@@ -315,10 +315,12 @@ public class NumericCodec implements Codec<Object> {
             }
 
             public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
-            	if (endian == ByteOrder.LittleEndian) {
-            		channel.writeLE(size, (Byte) value);
-            	} else {
-                channel.write(size, (Byte) value);
+            	if(value != null) {
+            		if (endian == ByteOrder.LittleEndian) {
+            			channel.writeLE(size, (Byte) value);
+            		} else {
+            			channel.write(size, (Byte) value);
+            		}
             	}
             }
 
