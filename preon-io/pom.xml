@@ -38,7 +38,7 @@
       <version>1.3.1</version>
     </dependency>
     <dependency>
-      <groupId>multithreadedtc</groupId>
+      <groupId>edu.umd.cs.mtc</groupId>
       <artifactId>multithreadedtc</artifactId>
       <version>1.01</version>
       <scope>test</scope>
