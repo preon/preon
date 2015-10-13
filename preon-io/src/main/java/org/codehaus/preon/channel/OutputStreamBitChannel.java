@@ -189,6 +189,10 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         }
     }
 
+    /**
+     * @Inherit
+     * <b>Note:</b> The current implementation assumes that the output is currently byte aligned and there will never be a non-byte aligned amount written. 
+     */
     public long write(@Nonnull ByteBuffer buffer) throws IOException {
         WritableByteChannel channel = null;
         try {
