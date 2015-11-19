@@ -50,6 +50,7 @@ import nl.flotsam.pecia.builder.base.DefaultDocumentBuilder;
 import nl.flotsam.pecia.builder.html.HtmlDocumentBuilder;
 import nl.flotsam.pecia.builder.xml.StreamingXmlWriter;
 import nl.flotsam.pecia.builder.xml.XmlWriter;
+import org.apache.commons.lang.mutable.MutableInt;
 import org.codehaus.preon.binding.BindingDecorator;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
@@ -242,7 +243,29 @@ public class Codecs {
             }
         }
     }
-    
+
+    /**
+     * Created an encoding routine that will return the number of bits that were encoded.
+     * It uses a MutableInt to return the numBits
+     *
+     * @param value The object that needs to be encoded.
+     * @param codec The codec to be used.
+     * @param byteOrder The byteOrder (necessary for final flush)
+     * @param numBits a mutable integer that stores the number of bits encoded
+     * @param <T> The type of object to be encoded.
+     * @return The encoded byte array
+     * @throws IOException If the {@link org.codehaus.preon.channel.BitChannel} no longer receives the data.
+     */
+    public static <T> byte[] encode(T value, Codec<T> codec, ByteOrder byteOrder, MutableInt numBits) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        int bitsUsedInLastByte = encode(value, codec, out, byteOrder);
+        byte[] finalBytes = out.toByteArray();
+
+        numBits.setValue((finalBytes.length - 1) * 8 + bitsUsedInLastByte);
+
+        return finalBytes;
+    }
+
     /**
      * Encodes the value to the channel passed in, using the given Codec. So why not have this operation on codec
      * instead? Well, it <em>is</em> actually there. However, there will be quite a few overloaded versions of this
@@ -256,9 +279,11 @@ public class Codecs {
      * @param <T>     The type of object to be encoded.
      * @throws IOException If the {@link org.codehaus.preon.channel.BitChannel} no longer receives the data.
      */
-    public static <T> void encode(T value, Codec<T> codec, BitChannel channel, ByteOrder byteOrder) throws IOException {
+    public static <T> int encode(T value, Codec<T> codec, BitChannel channel, ByteOrder byteOrder) throws IOException {
         codec.encode(value, channel, new NullResolver());
+        int bitsUsedInLastByte = channel.getRelativeBitPos();
         channel.flush(byteOrder);
+        return bitsUsedInLastByte;
     }
 
     public static <T> byte[] encode(T value, Codec<T> codec, ByteOrder byteOrder) throws IOException {
@@ -267,8 +292,8 @@ public class Codecs {
         return out.toByteArray();
     }
 
-    public static <T> void encode(T value, Codec<T> codec, OutputStream out, ByteOrder byteOrder) throws IOException {
-        encode(value, codec, new OutputStreamBitChannel(out), byteOrder);
+    public static <T> int encode(T value, Codec<T> codec, OutputStream out, ByteOrder byteOrder) throws IOException {
+        return encode(value, codec, new OutputStreamBitChannel(out), byteOrder);
     }
 
     /**
