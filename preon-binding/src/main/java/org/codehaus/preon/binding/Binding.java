@@ -80,6 +80,30 @@ public interface Binding {
               Builder builder) throws DecodingException;
 
     /**
+     * Loads a value from the {@link BitBuffer} and uses the value to populate a
+     * field on the object.
+     *
+     * @param object
+     *            The Object on which fields need to be populated.
+     * @param buffer
+     *            The buffer from which data will be taken.
+     * @param resolver
+     *            The object capable of returning values for references passed
+     *            in.
+     * @param builder
+     *            The builder that will be used when - while loading data from
+     *            the {@link BitBuffer} - the Binding is (indirectly) required
+     *            to create a default instance of a type.
+     * @param debug
+     *            Prints debug to screen while decoding.
+     * @throws DecodingException
+     *             If we fail to decode the fields value from the
+     *             {@link BitBuffer}.
+     */
+    void load(Object object, BitBuffer buffer, Resolver resolver,
+              Builder builder, boolean debug) throws DecodingException;
+
+    /**
      * Describes this {@link Binding} in the paragraph passed in.
      *
      * @param <T>

@@ -100,6 +100,11 @@ public class NumericCodec implements Codec<Object> {
 
     public Object decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public Object decode(BitBuffer buffer, Resolver resolver,
+                         Builder builder, boolean debug) throws DecodingException {
         int size = ((Number) (this.sizeExpr.eval(resolver))).intValue();
         Object result = type.decode(buffer, size, byteOrder);
         if (matchExpr != null) {

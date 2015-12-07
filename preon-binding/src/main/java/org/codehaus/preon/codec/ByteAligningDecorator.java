@@ -72,7 +72,12 @@ public class ByteAligningDecorator implements CodecDecorator {
 
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
-            T result = decorated.decode(buffer, resolver, builder);
+            return decode(buffer, resolver, builder, false);
+        }
+
+        public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+                throws DecodingException {
+            T result = decorated.decode(buffer, resolver, builder, debug);
             long pos = buffer.getBitPos() % 8;
             if (pos > 0) {
                 buffer.setBitPos(buffer.getBitPos() + 8 - pos);

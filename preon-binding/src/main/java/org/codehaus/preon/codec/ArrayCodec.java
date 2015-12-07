@@ -85,10 +85,15 @@ class ArrayCodec implements Codec<Object> {
 
     public Object decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public Object decode(BitBuffer buffer, Resolver resolver,
+                         Builder builder, boolean debug) throws DecodingException {
         int length = size.eval(resolver).intValue();
         Object result = Array.newInstance(type.getComponentType(), length);
         for (int i = 0; i < length; i++) {
-            Object value = codec.decode(buffer, resolver, builder);
+            Object value = codec.decode(buffer, resolver, builder, debug);
             Array.set(result, i, value);
         }
         return result;

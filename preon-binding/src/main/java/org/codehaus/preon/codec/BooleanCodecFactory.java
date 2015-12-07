@@ -93,6 +93,11 @@ public class BooleanCodecFactory implements CodecFactory {
             return buffer.readAsBoolean();
         }
 
+        public Boolean decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
+            return buffer.readAsBoolean();
+        }
+
         public void encode(Boolean value, BitChannel channel, Resolver resolver) throws IOException {
             channel.write(value, byteOrder);
         }

@@ -105,7 +105,12 @@ public class InitCodecDecorator implements CodecDecorator {
 
         public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
                 throws DecodingException {
-            T result = codec.decode(buffer, resolver, builder);
+            return decode(buffer, resolver, builder, false);
+        }
+
+        public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+                throws DecodingException {
+            T result = codec.decode(buffer, resolver, builder, debug);
             if (result != null) {
                 try {
                     method.invoke(result);

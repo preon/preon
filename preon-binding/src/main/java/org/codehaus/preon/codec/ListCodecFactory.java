@@ -263,6 +263,13 @@ public class ListCodecFactory implements CodecFactory {
                     buffer, size.eval(resolver), builder, resolver, elementSize.eval(resolver));
         }
 
+        @SuppressWarnings("unchecked")
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
+            return new EvenlyDistributedLazyList(codec, buffer.getBitPos(),
+                    buffer, size.eval(resolver), builder, resolver, elementSize.eval(resolver));
+        }
+
         public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
             for (T val : value) {
                 codec.encode(val, channel, resolver);
@@ -356,11 +363,16 @@ public class ListCodecFactory implements CodecFactory {
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
                               Builder builder) throws DecodingException {
+            return decode(buffer, resolver, builder, false);
+        }
+
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
             List<T> result = new LinkedList<T>();
             long mark = buffer.getBitPos();
             try {
                 while (true) {
-                    T value = codec.decode(buffer, resolver, builder);
+                    T value = codec.decode(buffer, resolver, builder, debug);
                     result.add(value);
                     mark = buffer.getBitPos();
                 }
@@ -466,12 +478,22 @@ public class ListCodecFactory implements CodecFactory {
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                              Builder builder) throws DecodingException {
+                                       Builder builder) throws DecodingException {
             Expression<Integer, Resolver> sizeExpr = skipListCodec.getSize();
             if (sizeExpr != null && sizeExpr.eval(resolver) >= 0) {
                 return skipListCodec.decode(buffer, resolver, builder);
             } else {
                 return nonSkipListCodec.decode(buffer, resolver, builder);
+            }
+        }
+
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
+            Expression<Integer, Resolver> sizeExpr = skipListCodec.getSize();
+            if (sizeExpr != null && sizeExpr.eval(resolver) >= 0) {
+                return skipListCodec.decode(buffer, resolver, builder, debug);
+            } else {
+                return nonSkipListCodec.decode(buffer, resolver, builder, debug);
             }
         }
 
@@ -686,6 +708,11 @@ public class ListCodecFactory implements CodecFactory {
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
                               Builder builder) throws DecodingException {
+            return decode(buffer, resolver, builder, false);
+        }
+
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
             int maxSize = size.eval(resolver);
             List<T> result = new ArrayList<T>(maxSize);
             long curPos = buffer.getBitPos();

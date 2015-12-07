@@ -79,6 +79,11 @@ public class NullTerminatedStringCodec implements Codec<String> {
 
     public String decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public String decode(BitBuffer buffer, Resolver resolver,
+                         Builder builder, boolean debug) throws DecodingException {
 		/* This has been gutted, and now uses Charsets to do decoding.
 		 * It opens the bitbuffer as a bytebuffer (taking care to note
 		 * and preserve positions), creates a CharBuffer with space for
@@ -97,31 +102,31 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		 * */
         CharsetDecoder decoder = encoding.newDecoder();
         ByteBuffer bytebuffer = ByteBuffer.allocate(BUFFER_SIZE); //Allocate a bytebuffer. We'll need this for multibyte encodings
-		CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
+        CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
         StringWriter sw = new StringWriter(); //This will eventually hold our string
         byte bytevalue;
         char charvalue;
         boolean readOK = true;
-		do {
-			bytevalue = byteConverter.convert(buffer.readAsByte(8)); //Convert our byte
-			bytebuffer.put(bytevalue); // and add it to the bytebuffer
-			bytebuffer.flip(); // Flip the buffer, so we can read it
-			decoder.decode(bytebuffer,charbuffer,false); // Decode up to one char from bytebuffer
-			if (charbuffer.position() == 1) {
-				charbuffer.rewind();
-				charvalue = charbuffer.get();
-				charbuffer.rewind();
-				if (charvalue == 0) { //If character is null, we're finished
-					readOK = false;
-				}
-				else {
-					sw.append(charvalue); //Write character to StringWriter
-				}
-			}
-			bytebuffer.compact(); //Compact the buffer, so we can write to it
-		}
-		while(readOK);
-		return sw.toString();
+        do {
+            bytevalue = byteConverter.convert(buffer.readAsByte(8)); //Convert our byte
+            bytebuffer.put(bytevalue); // and add it to the bytebuffer
+            bytebuffer.flip(); // Flip the buffer, so we can read it
+            decoder.decode(bytebuffer,charbuffer,false); // Decode up to one char from bytebuffer
+            if (charbuffer.position() == 1) {
+                charbuffer.rewind();
+                charvalue = charbuffer.get();
+                charbuffer.rewind();
+                if (charvalue == 0) { //If character is null, we're finished
+                    readOK = false;
+                }
+                else {
+                    sw.append(charvalue); //Write character to StringWriter
+                }
+            }
+            bytebuffer.compact(); //Compact the buffer, so we can write to it
+        }
+        while(readOK);
+        return sw.toString();
     }
 
     public void encode(String value, BitChannel channel, Resolver resolver) throws IOException {

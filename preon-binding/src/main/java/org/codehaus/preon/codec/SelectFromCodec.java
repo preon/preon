@@ -166,6 +166,30 @@ public class SelectFromCodec<T> implements Codec<T> {
         }
     }
 
+    public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException {
+        if (prefixSize <= 0) {
+            for (int i = 0; i < conditions.size(); i++) {
+                if (conditions.get(i).eval(resolver)) {
+                    return (T) codecs.get(i).decode(buffer, resolver, builder, debug);
+                }
+            }
+        } else {
+            int prefix = buffer.readAsInt(this.prefixSize, byteOrder);
+            for (int i = 0; i < conditions.size(); i++) {
+                if (conditions.get(i)
+                        .eval(new PrefixResolver(resolver, prefix))) {
+                    return (T) codecs.get(i).decode(buffer, resolver, builder, debug);
+                }
+            }
+        }
+        if (defaultCodec != null) {
+            return (T) defaultCodec.decode(buffer, resolver, builder, debug);
+        } else {
+            return null;
+        }
+    }
+
     public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
         if (prefixSize <= 0) {
             for (int i = 0; i < conditions.size(); i++) {

@@ -82,6 +82,11 @@ public class FixedLengthStringCodec implements Codec<String> {
 
     public String decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public String decode(BitBuffer buffer, Resolver resolver,
+                         Builder builder, boolean debug) throws DecodingException {
 		/* This takes a slice of the BitBuffer as a ByteBuffer,
 		 * and feeds it into encoding.decode.
 		 * */

@@ -80,6 +80,12 @@ public class SwitchingCodec implements Codec<Object> {
         return codec.decode(buffer, resolver, builder);
     }
 
+    public Object decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException {
+        Codec<?> codec = selector.select(buffer, resolver);
+        return codec.decode(buffer, resolver, builder, debug);
+    }
+
     public void encode(Object value, BitChannel channel, Resolver resolver) throws IOException {
         Codec codec = selector.select(value.getClass(), channel, resolver);
         codec.encode(value, channel, resolver);

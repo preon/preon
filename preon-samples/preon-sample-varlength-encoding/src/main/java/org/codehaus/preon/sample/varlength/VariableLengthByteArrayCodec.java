@@ -50,6 +50,10 @@ import nl.flotsam.pecia.SimpleContents;
 public class VariableLengthByteArrayCodec implements Codec<byte[]> {
 
     public byte[] decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public byte[] decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug) throws DecodingException {
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
         boolean cont = true;
         while (cont) {

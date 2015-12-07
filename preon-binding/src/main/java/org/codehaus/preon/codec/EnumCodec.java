@@ -85,6 +85,11 @@ public class EnumCodec<T> implements Codec<T> {
 
     public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
             throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException {
         long value = buffer.readAsLong(size.eval(resolver), byteOrder);
         T result = mapping.get(value);
         if (result == null) {
