@@ -58,7 +58,12 @@ public class ListBasedMapCodec<K,V> implements Codec<Map<K,V>> {
     }
 
     public Map<K,V> decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException {
-        return decode(buffer, resolver, builder, false);
+        List<? extends Map.Entry<K, V>> entries = listCodec.decode(buffer, resolver, builder);
+        Map<K,V> result = new HashMap(entries.size());
+        for (Map.Entry<K, V> entry : entries) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
     }
 
     public Map<K,V> decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
