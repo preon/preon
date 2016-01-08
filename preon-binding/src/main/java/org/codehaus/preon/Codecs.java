@@ -344,7 +344,11 @@ public class Codecs {
         int bitsUsedInLastByte = encode(value, codec, out, byteOrder);
         byte[] finalBytes = out.toByteArray();
 
-        numBits.setValue((finalBytes.length - 1) * 8 + bitsUsedInLastByte);
+        if(bitsUsedInLastByte == 0) {
+            numBits.setValue(finalBytes.length * 8);
+        } else {
+            numBits.setValue((finalBytes.length - 1) * 8 + bitsUsedInLastByte);
+        }
 
         return finalBytes;
     }
