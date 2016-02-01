@@ -17,29 +17,13 @@
     without knowing.
   </description>
   <issueManagement>
-    <system>JIRA</system>
+    <system>GitHub</system>
     <url>http://jira.codehaus.org/browse/preon</url>
   </issueManagement>
-  <ciManagement>
-    <system>jira</system>
-    <url>http://os.xebia.com/bamboo/browse/PREON-DEF</url>
-  </ciManagement>
-  <mailingLists>
-    <mailingList>
-      <name>Users</name>
-      <post>user@preon.codehaus.org</post>
-      <archive>http://archive.codehaus.org/lists/org.codehaus.preon.user</archive>
-    </mailingList>
-    <mailingList>
-      <name>Announcements</name>
-      <post>announce@preon.codehaus.org</post>
-      <archive>http://archive.codehaus.org/lists/org.codehaus.preon.announce</archive>
-    </mailingList>
-  </mailingLists>
   <scm>
-    <connection>scm:git:git://git@github.com:wspringer/preon.git</connection>
-    <developerConnection>scm:git:git://git@github.com:wspringer/preon.git</developerConnection>
-    <url>https://github.com/wspringer/preon</url>
+    <connection>scm:git:git://github.com/preon/preon.git</connection>
+    <developerConnection>scm:git:git:git@github.com/preon/preon.git</developerConnection>
+    <url>https://github.com/preon/preon.git</url>
   </scm>
   <repositories>
     <repository>
