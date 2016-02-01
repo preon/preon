@@ -1,6 +1,4 @@
-========
- README
-========
+# README
 
 **HEADS UP:** *Preon needs a new maintainer. In fact, I pretty much haven't worked on it for years now. Meanwhile, people are considering it to be useful. However I moved on, from Java to Scala and now Node.js, and I don't see myself return to Java in a while. If you happen to be interested to take over ownership of this project, then send me an email: wilfredspringer at gmail.com.*
 
@@ -20,8 +18,7 @@ decoder, hyperlinked documentation on the encoding format, and - if
 you want - annotated hexdumps explaining you *exactly* what you're
 looking at.
 
-Distinctive features
-====================
+## Distinctive features
 
 * Preon does *not* a assume a finite set of compression
   algorithms. There are many ways to compress data. Preon allows
@@ -41,8 +38,7 @@ Distinctive features
 * Preon was used to creata a Java bytecode parser without writing a
   single line of imperative code.
 
-More documentation
-==================
+## More documentation
 
 * `Bit Syntax for Java <http://dl.acm.org/citation.cfm?id=1639955>`_
   Wilfred Springer, 2009, Proceedings of the 24th ACM SIGPLAN
@@ -55,12 +51,14 @@ More documentation
 * `Preon Under the Hood
   <http://www.scribd.com/doc/7988375/Preon-Under-the-Hood>`_
 
-Issue tracker, JavaDocs, etc.
-=============================
+## A word on codehaus
 
-We gratefully use the issue tracker and other services provided by
-Codehaus. The Maven generated documentation can be found `over there
-<http://preon.codehaus.org/>`_, as well as the issue tracker, JavaDoc
-documentation and a bunch of other things.
+Preon used to be hosted at the [Codehaus](http://www.codehaus.org/). Unfortunately, the Codehaus no longer exists.
+You may still find reference to Codehaus in the source code. I might rename the package names of future versions to
+something that no longer references Codehaus.
 
+## Issue tracker, JavaDocs, etc.
+
+The issue tracker used to be based on the one hosted by Codehaus. With that one gone, future issues will be tracked
+in Github.
 
