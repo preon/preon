@@ -70,8 +70,8 @@
   </modules>
   <licenses>
     <license>
-      <name>GNU General Public License, version 2, with the Classpath Exception</name>
-      <url>http://preon.sourceforge.net/COPYING</url>
+      <name>MIT License</name>
+      <url>https://github.com/preon/preon</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -132,6 +132,11 @@
           <aggregate>true</aggregate>
           <includes>
             <include>**/*.java</include>
+            <include>**/*.css</include>
+            <include>**/*.properties</include>
+            <include>**/*.html</include>
+            <include>**/*.xsl</include>
+            <include>**/*.xml</include>
           </includes>
         </configuration>
         <executions>
