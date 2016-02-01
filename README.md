@@ -1,5 +1,7 @@
 # README
 
+**HEADS UP**:  *As of February 1, 2016, Preon switched from a GPL license to a permissive MIT license.*
+
 **HEADS UP:** *Preon needs a new maintainer. In fact, I pretty much haven't worked on it for years now. Meanwhile, people are considering it to be useful. However I moved on, from Java to Scala and now Node.js, and I don't see myself return to Java in a while. If you happen to be interested to take over ownership of this project, then send me an email: wilfredspringer at gmail.com.*
 
 Preon aims to provide a framework for dealing with binary encoded
