@@ -40,16 +40,13 @@ looking at.
 
 ## More documentation
 
-* `Bit Syntax for Java <http://dl.acm.org/citation.cfm?id=1639955>`_
+* [Bit Syntax for Java](http://dl.acm.org/citation.cfm?id=1639955)
   Wilfred Springer, 2009, Proceedings of the 24th ACM SIGPLAN
   conference companion on Object oriented programming systems
   languages and applications
-* `OOPSLA slides
-  <http://www.slideshare.net/springerw/oopsla-talk-on-preon>`_
-* `Preon Introduction
-  <http://www.scribd.com/doc/8128172/Preon-Introduction>`_
-* `Preon Under the Hood
-  <http://www.scribd.com/doc/7988375/Preon-Under-the-Hood>`_
+* [OOPSLA slides](http://www.slideshare.net/springerw/oopsla-talk-on-preon)
+* [Preon Introduction](http://www.scribd.com/doc/8128172/Preon-Introduction)
+* [Preon Under the Hood](http://www.scribd.com/doc/7988375/Preon-Under-the-Hood)
 
 ## A word on codehaus
 
