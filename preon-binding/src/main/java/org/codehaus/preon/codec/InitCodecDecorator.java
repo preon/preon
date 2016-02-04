@@ -56,16 +56,28 @@ public class InitCodecDecorator implements CodecDecorator {
 
     public <T> Codec<T> decorate(Codec<T> decorated, AnnotatedElement metadata, Class<T> type,
                                  ResolverContext context) {
-        for (Method method : type.getMethods()) {
-            if (!Modifier.isStatic(method.getModifiers()) && method.getParameterTypes().length == 0
-                    && method.isAnnotationPresent(Init.class)) {
-                method.setAccessible(true);
-                return new InitCodec<T>(decorated, method);
-            }
-        }
+        Method method = getInitMethod(type);
+        if (method != null) {
+          return new InitCodec<T>(decorated, method);
+        }        
         return decorated;
     }
 
+    private Method getInitMethod(Class<?> pType) {
+      if (pType == null) {
+        return null;
+      }
+      for (Method method : pType.getDeclaredMethods()) {
+        if (!Modifier.isStatic(method.getModifiers()) && method.getParameterTypes().length == 0
+            && method.isAnnotationPresent(Init.class)) {
+          method.setAccessible(true);
+          return method;
+        }
+      }
+      return getInitMethod(pType.getSuperclass());
+    }
+    
+    
     /**
      * A {@link Codec}, calling the method annotated with the {@link Init} annotation on the result, once all data of
      * that result has been read.
