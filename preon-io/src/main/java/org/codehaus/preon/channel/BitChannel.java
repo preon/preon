@@ -69,7 +69,16 @@ public interface BitChannel {
      */
     void write(byte[] src, int offset, int length) throws IOException;
 
-    /** Writes the contents of the {@link java.nio.ByteBuffer} to the channel. */
+    /**
+     * Writes the contents of the {@link java.nio.ByteBuffer} to the channel.
+     *
+     * This writes {@link java.nio.Buffer#remaining()} bytes from {@link java.nio.Buffer#position()}. 
+     *
+     * If the underlying output is non-blocking this could write fewer bits than are available for writing.
+     *
+     * @param buffer The buffer to write to the channel
+     * @return The number of bits written
+     */
     long write(ByteBuffer buffer) throws IOException;
 
     /** Returns the position of the bit pointer in the current byte. */

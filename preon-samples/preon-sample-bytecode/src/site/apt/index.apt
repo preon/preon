@@ -7,6 +7,6 @@ line of imperative code.
 
   This is a snippet from the ClassFile's definition:
 
-%{snippet|id=sample|file=src/main/java/nl/flotsam/preon/sample/bytecode/ClassFile.java}
+~~%{snippet|id=sample|file=src/main/java/nl/flotsam/preon/sample/bytecode/ClassFile.java}
 
   Check out the rest of the example {{{http://fisheye3.atlassian.com/browse/preon/trunk/preon-samples/preon-sample-bytecode/src/main/java/nl/flotsam/preon/sample/bytecode/ClassFile.java?r=HEAD}here}}, or {{{source-repository.html}download the sources}}. 
