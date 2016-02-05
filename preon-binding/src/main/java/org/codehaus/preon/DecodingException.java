@@ -24,9 +24,6 @@
  */
 package org.codehaus.preon;
 
-import java.io.UnsupportedEncodingException;
-
-import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.buffer.BitBuffer;
 
 /**
@@ -43,28 +40,16 @@ public class DecodingException extends CodecException {
      *
      * @param ie
      */
-    public DecodingException(InstantiationException ie) {
+    public DecodingException(Exception ie) {
         super(ie);
-    }
-
-    public DecodingException(IllegalAccessException iae) {
-        super(iae);
-    }
-
-    public DecodingException(BindingException be) {
-        super("Failed to decode data ", be);
-    }
-
-    public DecodingException(UnsupportedEncodingException uee) {
-        super(uee);
-    }
-
-    public DecodingException(IllegalStateException ise) {
-        super(ise);
     }
 
     public DecodingException(String message) {
         super(message);
+    }
+
+    public DecodingException(String message, Exception ex) {
+        super(message, ex);
     }
 
     public DecodingException(Class<?> type, InstantiationException ie) {

@@ -106,7 +106,6 @@ public class InitCodecDecorator implements CodecDecorator {
                 } catch (IllegalAccessException e) {
                     throw new DecodingException("Failed to invoke init method.");
                 } catch (InvocationTargetException e) {
-                    e.printStackTrace();
                     throw new DecodingException("Failed to invoke init method.");
                 }
             }
