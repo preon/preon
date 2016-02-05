@@ -73,11 +73,11 @@ public class ByteAligningDecorator implements CodecDecorator {
         }
 
         public void encode(T object, BitChannel channel, Resolver resolver) throws IOException {
+            decorated.encode(object, channel, resolver);
             int bits = 8 - channel.getRelativeBitPos();
             if (bits != 8) {
                 channel.write(bits, (byte) 0);
             }
-            decorated.encode(object, channel, resolver);
         }
 
         public Class<?>[] getTypes() {
