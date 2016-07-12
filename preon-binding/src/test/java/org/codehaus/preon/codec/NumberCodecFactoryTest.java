@@ -154,6 +154,11 @@ public class NumberCodecFactoryTest extends TestCase {
             expect(metadata.getAnnotation(BoundNumber.class))
                     .andReturn(boundNumber);
             expect(boundNumber.type()).andStubReturn(typeOverride);
+            expect(metadata.isAnnotationPresent(BoundNumber.class))
+            .andReturn(true);
+            expect(metadata.getAnnotation(BoundNumber.class))
+            .andReturn(boundNumber);
+            expect(boundNumber.unsinged()).andReturn(false);
             expect(metadata.isAnnotationPresent(Bound.class))
                     .andReturn(false);
             expect(metadata.isAnnotationPresent(BoundNumber.class))

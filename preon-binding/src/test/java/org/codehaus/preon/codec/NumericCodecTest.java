@@ -56,9 +56,9 @@ public class NumericCodecTest {
 
     @Test
     public void shouldEncodeCorrectly() throws IOException {
-        NumericCodec codec = new NumericCodec(size, ByteOrder.BigEndian, NumericCodec.NumericType.Long, matchExpression);
-        when(size.eval(resolver)).thenReturn(3);
+        NumericCodec codec = new NumericCodec(size, ByteOrder.BigEndian, NumericType.Long, matchExpression, false);
+        when(size.eval(resolver)).thenReturn(4);
         codec.encode(new Long(12L), channel, resolver);
-        Mockito.verify(channel).write(3, 12L, ByteOrder.BigEndian);
+        Mockito.verify(channel).write(4, 12L, ByteOrder.BigEndian);
     }
 }
