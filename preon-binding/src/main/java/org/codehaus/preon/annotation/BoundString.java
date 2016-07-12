@@ -77,6 +77,8 @@ public @interface BoundString {
      * but my feeling is that the aims of this code would be better
      * achieved by Charsets.
      * */
+    
+    boolean trim() default true;
 
     Class<? extends ByteConverter> converter() default NullConverter.class;
 

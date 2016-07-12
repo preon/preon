@@ -59,7 +59,8 @@ public class StringCodecFactory implements CodecFactory {
 							charset, //Note that this is a Charset, not an Encoding
 							expr,
 							settings.match(),
-							settings.converter().newInstance());
+							settings.converter().newInstance(),
+							settings.trim());
                 } else {
                     return (Codec<T>) new NullTerminatedStringCodec(
 							charset, //Note that this is a Charset, not an Encoding

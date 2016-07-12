@@ -60,7 +60,7 @@ public class StringCodecFactoryTest extends TestCase {
     private Builder builder;
 
     private Resolver resolver;
-
+    
     public void setUp() {
         settings = createMock(BoundString.class);
         metadata = createMock(AnnotatedElement.class);
@@ -76,10 +76,10 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.size()).andReturn("2").anyTimes();
         expect(settings.converter()).andStubReturn(NullConverter.class);
         expect(settings.match()).andReturn("");
+        expect(settings.trim()).andReturn(true);
         expect(buffer.readAsByte(8)).andReturn((byte) 'b');
 		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
         replay(settings, metadata, buffer, context, resolver);
-
         StringCodecFactory factory = new StringCodecFactory();
         Codec<String> codec = factory.create(metadata, String.class, context);
         // Null resolver, since the resolver isn't used (yet)
@@ -96,6 +96,7 @@ public class StringCodecFactoryTest extends TestCase {
         expect(settings.size()).andReturn("2").anyTimes();
         expect(settings.converter()).andStubReturn(NullConverter.class);
         expect(settings.match()).andReturn("fo");
+        expect(settings.trim()).andReturn(true);
         expect(buffer.readAsByte(8)).andReturn((byte) 'b');
 		expect(buffer.readAsByte(8)).andReturn((byte) 'm');
         replay(settings, metadata, buffer, context, resolver);
