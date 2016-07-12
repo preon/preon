@@ -43,9 +43,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 /** The {@link CodecFactory} for {@link ObjectCodec}s. */
 public class ObjectCodecFactory implements CodecFactory {
+	
+	private static final Logger LOGGER = Logger.getLogger(ObjectCodecFactory.class.getName());
 
     /** The object that will be used to construct {@link org.codehaus.preon.binding.Binding} instances. */
     private BindingFactory bindingFactory;
@@ -179,6 +183,7 @@ public class ObjectCodecFactory implements CodecFactory {
                     Binding binding = bindingFactory.create(field, field,
                             codec, context, reference);
                     context.add(field.getName(), binding);
+                    LOGGER.log(Level.FINE, "Codec for field " + field.getName() + " is " + codec.getClass());
                 }
             }
         }

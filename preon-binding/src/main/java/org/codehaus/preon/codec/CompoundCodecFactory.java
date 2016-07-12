@@ -27,6 +27,8 @@ package org.codehaus.preon.codec;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecFactory;
@@ -40,6 +42,8 @@ import org.codehaus.preon.ResolverContext;
  * @author Wilfred Springer
  */
 public class CompoundCodecFactory implements CodecFactory {
+	
+	private static final Logger LOGGER = Logger.getLogger(CompoundCodecFactory.class.getName());
 
     /** The sorted list of {@link CodecFactory CodecFactories} to which this {@link CodecFactory} will delegate. */
     private final List<CodecFactory> factories = new ArrayList<CodecFactory>();
@@ -50,6 +54,7 @@ public class CompoundCodecFactory implements CodecFactory {
         for (CodecFactory delegate : factories) {
             result = delegate.create(overrides, type, context);
             if (result != null) {
+            	LOGGER.log(Level.FINEST, "Codec for " + type.toString()  + " is " + delegate.getClass());
                 return result;
             }
         }
