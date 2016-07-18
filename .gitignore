@@ -18,3 +18,5 @@ preon-samples/preon-sample-rtp/preon-sample-rtp.iml
 .settings
 .project
 .classpath
+*.iml
+.idea
