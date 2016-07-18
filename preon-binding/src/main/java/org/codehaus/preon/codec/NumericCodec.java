@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2009-2016 Wilfred Springer
- *
+ * <p>
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -9,10 +9,10 @@
  * copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following
  * conditions:
- *
+ * <p>
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- *
+ * <p>
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -24,53 +24,48 @@
  */
 package org.codehaus.preon.codec;
 
-import java.io.IOException;
-import java.lang.reflect.AnnotatedElement;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.codehaus.preon.el.Document;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Expressions;
-import org.codehaus.preon.el.util.Converters;
-import org.codehaus.preon.el.util.StringBuilderDocument;
 import nl.flotsam.pecia.Documenter;
 import nl.flotsam.pecia.ParaContents;
 import nl.flotsam.pecia.SimpleContents;
-import org.codehaus.preon.Builder;
-import org.codehaus.preon.Codec;
-import org.codehaus.preon.CodecDescriptor;
-import org.codehaus.preon.CodecFactory;
-import org.codehaus.preon.DecodingException;
-import org.codehaus.preon.Resolver;
-import org.codehaus.preon.ResolverContext;
-import org.codehaus.preon.annotation.Bound;
-import org.codehaus.preon.annotation.BoundNumber;
+import org.codehaus.preon.*;
+import org.codehaus.preon.annotation.*;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
 import org.codehaus.preon.descriptor.NullDocumenter;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.util.Converters;
+import org.codehaus.preon.el.util.StringBuilderDocument;
 
-/** The {@link org.codehaus.preon.Codec} capable of decoding numeric types in a sensible way. */
+import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * The {@link org.codehaus.preon.Codec} capable of decoding numeric types in a sensible way.
+ */
 public class NumericCodec implements Codec<Object> {
 
     static Map<Class<?>, INumericType> NUMERIC_TYPES = new HashMap<Class<?>, INumericType>(
             8);
-    
+
     static Map<Class<?>, INumericType> UNSIGNED_TYPES = new HashMap<Class<?>, INumericType>(
             8);
 
     static {
-    	for (INumericType numType : NumericType.values()) {
-    		NUMERIC_TYPES.put(numType.getType(), numType);
-    		NUMERIC_TYPES.put(numType.getPrimitiveType(), numType);
-    	}
+        for (INumericType numType : NumericType.values()) {
+            NUMERIC_TYPES.put(numType.getType(), numType);
+            NUMERIC_TYPES.put(numType.getPrimitiveType(), numType);
+        }
 
-    	for (INumericType numType : NumericUnsignedType.values()) {
-    		UNSIGNED_TYPES.put(numType.getType(), numType);
-    		UNSIGNED_TYPES.put(numType.getPrimitiveType(), numType);
-    		}
+        for (INumericType numType : NumericUnsignedType.values()) {
+            UNSIGNED_TYPES.put(numType.getType(), numType);
+            UNSIGNED_TYPES.put(numType.getPrimitiveType(), numType);
+        }
     }
 
     protected Expression<Integer, Resolver> sizeExpr;
@@ -78,19 +73,19 @@ public class NumericCodec implements Codec<Object> {
     protected ByteOrder byteOrder;
 
     protected INumericType type;
-    
+
     protected boolean unsigned;
 
     private Expression<Integer, Resolver> matchExpr;
 
-	public NumericCodec(Expression<Integer, Resolver> sizeExpr, ByteOrder byteOrder, INumericType type,
-			Expression<Integer, Resolver> matchExpr, boolean unsigned) {
-		this.sizeExpr = sizeExpr;
-		this.byteOrder = byteOrder;
-		this.type = type;
-		this.matchExpr = matchExpr;
-		this.unsigned = unsigned;
-	}
+    public NumericCodec(Expression<Integer, Resolver> sizeExpr, ByteOrder byteOrder, INumericType type,
+                        Expression<Integer, Resolver> matchExpr, boolean unsigned) {
+        this.sizeExpr = sizeExpr;
+        this.byteOrder = byteOrder;
+        this.type = type;
+        this.matchExpr = matchExpr;
+        this.unsigned = unsigned;
+    }
 
     public Object decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
@@ -161,11 +156,11 @@ public class NumericCodec implements Codec<Object> {
                     final Adjective adjective, final boolean startWithCapital) {
                 return new Documenter<C>() {
                     public void document(C target) {
-                    	String unsignedDesc = "";
-                    	
-                    	if (unsigned)
-                    		unsignedDesc = "unsigned, ";
-                    	
+                        String unsignedDesc = "";
+
+                        if (unsigned)
+                            unsignedDesc = "unsigned, ";
+
                         if (sizeExpr.isParameterized()) {
                             target.text(adjective.asTextPreferAn(startWithCapital)).text(unsignedDesc).text(
                                     " integer value (").text(unsignedDesc).document(
@@ -219,10 +214,10 @@ public class NumericCodec implements Codec<Object> {
         public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type,
                                    ResolverContext context) {
 
-        	boolean unsigned = isUnsigned(overrides, type);
+            boolean unsigned = isUnsigned(overrides, type);
             Class<?> actualType = resolveActualType(overrides, type);
             INumericType numericType = resolveNumericType(overrides, actualType, unsigned);
-            
+
             if (numericType != null) {
                 if (overrides == null || overrides.isAnnotationPresent(Bound.class)) {
                     ByteOrder endian = ByteOrder.LittleEndian;
@@ -255,34 +250,44 @@ public class NumericCodec implements Codec<Object> {
                     return (Codec<T>) new NumericCodec(sizeExpr, endian,
                             numericType, matchExpr, unsigned);
                 }
+                if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides.isAnnotationPresent(BESigned.class))) {
+                    ByteOrder endian = ByteOrder.BigEndian;
+                    int size = numericType.getDefaultSize();
+                    Expression<Integer, Resolver> sizeExpr = Expressions
+                            .createInteger(context, Integer.toString(size));
+                    return (Codec<T>) new NumericCodec(sizeExpr, endian,
+                            numericType, null, unsigned);
+                }
             }
             return null;
         }
 
-		private INumericType resolveNumericType(AnnotatedElement overrides, Class<?> actualType, boolean isUnsigned) {
-			if (isUnsigned)
-				return UNSIGNED_TYPES.get(actualType);
-			return NUMERIC_TYPES.get(actualType);
+        private INumericType resolveNumericType(AnnotatedElement overrides, Class<?> actualType, boolean isUnsigned) {
+            if (isUnsigned)
+                return UNSIGNED_TYPES.get(actualType);
+            return NUMERIC_TYPES.get(actualType);
 
-		}
+        }
 
-		public boolean isUnsigned(AnnotatedElement overrides, Class<?> type) {
-			if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
-				BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
-				return numericMetadata.unsinged();
-			}
-			return false;
-		}
+        public boolean isUnsigned(AnnotatedElement overrides, Class<?> type) {
+            if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
+                BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
+                return numericMetadata.unsinged();
+            }
+            if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides.isAnnotationPresent(LEUnsigned.class)))
+                return true;
+            return false;
+        }
 
-		public Class<?> resolveActualType(AnnotatedElement overrides, Class<?> type) {
-			if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
-				BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
-				Class<?> typeOverride = numericMetadata.type();
-				if (typeOverride != Number.class) {
-					return typeOverride;
-				}
-			}
-			return type;
-		}
-	}
+        public Class<?> resolveActualType(AnnotatedElement overrides, Class<?> type) {
+            if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
+                BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
+                Class<?> typeOverride = numericMetadata.type();
+                if (typeOverride != Number.class) {
+                    return typeOverride;
+                }
+            }
+            return type;
+        }
+    }
 }
