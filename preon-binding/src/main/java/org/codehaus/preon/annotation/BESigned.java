@@ -22,43 +22,21 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
  * OTHER DEALINGS IN THE SOFTWARE.
  */
-package org.codehaus.preon.codec;
+package org.codehaus.preon.annotation;
 
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.Resolver;
-import org.codehaus.preon.buffer.ByteOrder;
-import org.codehaus.preon.channel.BitChannel;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import static org.mockito.Mockito.when;
 
-import org.mockito.runners.MockitoJUnitRunner;
+/**
+ * A shortcut for @BoundNumber(unsigned=false, byteOrder=ByteOrder.BigEndian)
+ *
+ * @author Christian Roeder, Synnefy GbR
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface BESigned {
 
-import java.io.IOException;
-
-@RunWith(MockitoJUnitRunner.class)
-public class NumericCodecTest {
-
-    @Mock
-    private Resolver resolver;
-
-    @Mock
-    private Expression<Integer, Resolver> size;
-
-    @Mock
-    private Expression<Integer, Resolver> matchExpression;
-
-    @Mock
-    private BitChannel channel;
-
-    @Test
-    public void shouldEncodeCorrectly() throws IOException {
-        NumericCodec codec = new NumericCodec(size, ByteOrder.BigEndian, NumericType.Long, matchExpression, false);
-        when(size.eval(resolver)).thenReturn(4);
-        codec.encode(new Long(12L), channel, resolver);
-        Mockito.verify(channel).write(4, 12L, ByteOrder.BigEndian);
-    }
 }

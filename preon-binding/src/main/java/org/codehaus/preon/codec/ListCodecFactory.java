@@ -158,7 +158,8 @@ public class ListCodecFactory implements CodecFactory {
     private <T> Codec<?> createElementCodec(ResolverContext context, BoundList settings) {
         if (settings.types().length > 0) {
             BoundObject objectSettings = getObjectSettings(settings);
-            return delegate.create(toAnnotatedElemented(objectSettings), objectSettings.type() == Void.class ? Object.class : objectSettings.type(), context);
+            Class<?> type = objectSettings.type() == Void.class ? Object.class : objectSettings.type();
+            return delegate.create(toAnnotatedElemented(objectSettings), type, context);
         } else if (settings.type() != null) {
             return delegate.create(null, settings.type(), context);
         } else {

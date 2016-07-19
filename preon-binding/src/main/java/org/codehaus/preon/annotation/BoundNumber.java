@@ -75,5 +75,7 @@ public @interface BoundNumber {
      * @return the type used in decoding/encoding
      */
     Class<? extends Number> type() default Number.class;
+    
+    boolean unsinged() default false;
 
 }
