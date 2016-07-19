@@ -50,11 +50,9 @@ import java.util.Map;
  */
 public class NumericCodec implements Codec<Object> {
 
-    static Map<Class<?>, INumericType> NUMERIC_TYPES = new HashMap<Class<?>, INumericType>(
-            8);
+    static Map<Class<?>, INumericType> NUMERIC_TYPES = new HashMap<Class<?>, INumericType>(8);
 
-    static Map<Class<?>, INumericType> UNSIGNED_TYPES = new HashMap<Class<?>, INumericType>(
-            8);
+    static Map<Class<?>, INumericType> UNSIGNED_TYPES = new HashMap<Class<?>, INumericType>(8);
 
     static {
         for (INumericType numType : NumericType.values()) {
@@ -87,8 +85,7 @@ public class NumericCodec implements Codec<Object> {
         this.unsigned = unsigned;
     }
 
-    public Object decode(BitBuffer buffer, Resolver resolver,
-                         Builder builder) throws DecodingException {
+    public Object decode(BitBuffer buffer, Resolver resolver, Builder builder) throws DecodingException {
         int size = ((Number) (this.sizeExpr.eval(resolver))).intValue();
         Object result = type.decode(buffer, size, byteOrder);
         if (matchExpr != null) {
@@ -96,8 +93,7 @@ public class NumericCodec implements Codec<Object> {
                 StringBuilder stringBuilder = new StringBuilder();
                 Document document = new StringBuilderDocument(stringBuilder);
                 if (matchExpr.isParameterized()) {
-                    stringBuilder.append("Expected different value than "
-                            + result);
+                    stringBuilder.append("Expected different value than " + result);
                 } else {
                     stringBuilder.append("Expected ");
                     matchExpr.document(document);
@@ -129,18 +125,12 @@ public class NumericCodec implements Codec<Object> {
     public CodecDescriptor getCodecDescriptor() {
         return new CodecDescriptor() {
 
-            public <C extends SimpleContents<?>> Documenter<C> details(
-                    String bufferReference) {
+            public <C extends SimpleContents<?>> Documenter<C> details(String bufferReference) {
                 if (sizeExpr.isParameterized()) {
                     return new Documenter<C>() {
                         public void document(C target) {
-                            target
-                                    .para()
-                                    .text("The number of bits is ")
-                                    .document(
-                                            Documenters
-                                                    .forExpression(sizeExpr))
-                                    .text(".").end();
+                            target.para().text("The number of bits is ").document(Documenters.forExpression(sizeExpr)
+                            ).text(".").end();
                         }
                     };
                 } else {
@@ -152,8 +142,8 @@ public class NumericCodec implements Codec<Object> {
                 return null;
             }
 
-            public <C extends ParaContents<?>> Documenter<C> reference(
-                    final Adjective adjective, final boolean startWithCapital) {
+            public <C extends ParaContents<?>> Documenter<C> reference(final Adjective adjective, final boolean
+                    startWithCapital) {
                 return new Documenter<C>() {
                     public void document(C target) {
                         String unsignedDesc = "";
@@ -162,21 +152,13 @@ public class NumericCodec implements Codec<Object> {
                             unsignedDesc = "unsigned, ";
 
                         if (sizeExpr.isParameterized()) {
-                            target.text(adjective.asTextPreferAn(startWithCapital)).text(unsignedDesc).text(
-                                    " integer value (").text(unsignedDesc).document(
-                                    Documenters.forByteOrder(byteOrder)).text(
-                                    ")");
+                            target.text(adjective.asTextPreferAn(startWithCapital)).text(unsignedDesc).text(" integer" +
+                                    " value (").text(unsignedDesc).document(Documenters.forByteOrder(byteOrder)).text
+                                    (")");
                         } else {
-                            target
-                                    .text(adjective.asTextPreferA(startWithCapital))
-                                    .text(" ")
-                                    .document(
-                                            Documenters
-                                                    .forExpression(sizeExpr))
-                                    .text("-bit integer value (").text(unsignedDesc).document(
-                                    Documenters
-                                            .forByteOrder(byteOrder))
-                                    .text(")");
+                            target.text(adjective.asTextPreferA(startWithCapital)).text(" ").document(Documenters
+                                    .forExpression(sizeExpr)).text("-bit integer value (").text(unsignedDesc)
+                                    .document(Documenters.forByteOrder(byteOrder)).text(")");
                         }
                     }
                 };
@@ -203,7 +185,8 @@ public class NumericCodec implements Codec<Object> {
 
     /**
      * A {@link org.codehaus.preon.CodecFactory} generating {@link org.codehaus.preon.Codec Codecs} capable of decoding
-     * numbers from the {@link org.codehaus.preon.buffer.BitBuffer}. Note that the {@link org.codehaus.preon.Codec Codecs}
+     * numbers from the {@link org.codehaus.preon.buffer.BitBuffer}. Note that the
+     * {@link org.codehaus.preon.Codec Codecs}
      * created by this class are capable to decode Longs, Integers, Shorts, Bytes, longs, ints, shorts and bytes.
      *
      * @author Wilfred Springer
@@ -211,8 +194,7 @@ public class NumericCodec implements Codec<Object> {
     public static class Factory implements CodecFactory {
 
         @SuppressWarnings({"unchecked"})
-        public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type,
-                                   ResolverContext context) {
+        public <T> Codec<T> create(AnnotatedElement overrides, Class<T> type, ResolverContext context) {
 
             boolean unsigned = isUnsigned(overrides, type);
             Class<?> actualType = resolveActualType(overrides, type);
@@ -222,15 +204,11 @@ public class NumericCodec implements Codec<Object> {
                 if (overrides == null || overrides.isAnnotationPresent(Bound.class)) {
                     ByteOrder endian = ByteOrder.LittleEndian;
                     int size = numericType.getDefaultSize();
-                    Expression<Integer, Resolver> sizeExpr = Expressions
-                            .createInteger(context, Integer.toString(size));
-                    return (Codec<T>) new NumericCodec(sizeExpr, endian,
-                            numericType, null, unsigned);
+                    Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, Integer.toString(size));
+                    return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, null, unsigned);
                 }
-                if (overrides != null
-                        && overrides.isAnnotationPresent(BoundNumber.class)) {
-                    BoundNumber numericMetadata = overrides
-                            .getAnnotation(BoundNumber.class);
+                if (overrides != null && overrides.isAnnotationPresent(BoundNumber.class)) {
+                    BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
                     ByteOrder endian = numericMetadata.byteOrder();
                     String size = numericMetadata.size();
 //                    if(NUMERIC_TYPES.containsKey(numericMetadata.type())) {
@@ -240,23 +218,19 @@ public class NumericCodec implements Codec<Object> {
                     if (size.length() == 0) {
                         size = Integer.toString(numericType.getDefaultSize());
                     }
-                    Expression<Integer, Resolver> sizeExpr = Expressions
-                            .createInteger(context, size);
+                    Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, size);
                     Expression<Integer, Resolver> matchExpr = null;
                     if (numericMetadata.match().trim().length() != 0) {
-                        matchExpr = Expressions.createInteger(context,
-                                numericMetadata.match());
+                        matchExpr = Expressions.createInteger(context, numericMetadata.match());
                     }
-                    return (Codec<T>) new NumericCodec(sizeExpr, endian,
-                            numericType, matchExpr, unsigned);
+                    return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, matchExpr, unsigned);
                 }
-                if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides.isAnnotationPresent(BESigned.class))) {
+                if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides
+                        .isAnnotationPresent(BESigned.class))) {
                     ByteOrder endian = ByteOrder.BigEndian;
                     int size = numericType.getDefaultSize();
-                    Expression<Integer, Resolver> sizeExpr = Expressions
-                            .createInteger(context, Integer.toString(size));
-                    return (Codec<T>) new NumericCodec(sizeExpr, endian,
-                            numericType, null, unsigned);
+                    Expression<Integer, Resolver> sizeExpr = Expressions.createInteger(context, Integer.toString(size));
+                    return (Codec<T>) new NumericCodec(sizeExpr, endian, numericType, null, unsigned);
                 }
             }
             return null;
@@ -274,7 +248,8 @@ public class NumericCodec implements Codec<Object> {
                 BoundNumber numericMetadata = overrides.getAnnotation(BoundNumber.class);
                 return numericMetadata.unsinged();
             }
-            if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides.isAnnotationPresent(LEUnsigned.class)))
+            if (overrides != null && (overrides.isAnnotationPresent(BEUnsigned.class) || overrides
+                    .isAnnotationPresent(LEUnsigned.class)))
                 return true;
             return false;
         }
