@@ -116,7 +116,7 @@ public class StandardBindingFactory implements BindingFactory {
                 long afterPos = buffer.getActualBitPos();
 
                 if(debug) {
-                    System.out.println(field.getName() + " = " + value + " (bits: " + beforePos + " to " + afterPos + ")");
+                    System.out.println(field.getName() + " = " + value + " (bits: " + beforePos + " to " + (afterPos-1) + ")");
                 }
             } catch (IllegalAccessException iae) {
                 throw new DecodingException(iae);
