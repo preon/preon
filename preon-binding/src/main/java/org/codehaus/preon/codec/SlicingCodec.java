@@ -70,6 +70,13 @@ class SlicingCodec<T> implements Codec<T> {
         return wrapped.decode(slice, resolver, builder);
     }
 
+    public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException {
+        BitBuffer slice = buffer
+                .slice(sizeExpr.eval(resolver));
+        return wrapped.decode(slice, resolver, builder, debug);
+    }
+
     public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
         wrapped.encode(value, new BoundedBitChannel(channel, sizeExpr.eval(resolver)), resolver);
     }

@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -335,18 +336,21 @@ public class DefaultBitBuffer implements BitBuffer {
      * @param nrBits    number of bits to read
      * @return shifted integer buffer
      */
-    private static long getRightShiftedNumberBufAsLong(long numberBuf,
+    private static long getRightShiftedNumberBufAsLong(BigInteger numberBuf,
                                                        long bitPos, int nrBits, ByteOrder byteOrder) throws BitBufferException {
 
         // number of bits integer buffer needs to be shifted to the right in
         // order to reach the last bit in last byte
-        long shiftBits;
+        int shiftBits;
         if (byteOrder == ByteOrder.BigEndian)
-            shiftBits = 7 - ((nrBits + bitPos + 7) % 8);
+            shiftBits = (int)(7 - ((nrBits + bitPos + 7) % 8));
         else
-            shiftBits = bitPos % 8;
+            shiftBits = (int)(bitPos % 8);
 
-        return numberBuf >> shiftBits;
+
+        numberBuf = numberBuf.shiftRight(shiftBits);
+
+        return numberBuf.longValue();
     }
 
     /**
@@ -383,19 +387,30 @@ public class DefaultBitBuffer implements BitBuffer {
      * @param firstBytePos position of the first byte that is necessary to be read
      * @return value of all read bytes, containing specified bits
      */
-    private long getNumberBufAsLong(ByteOrder byteOrder, int nrReadBytes,
+    private BigInteger getNumberBufAsLong(ByteOrder byteOrder, int nrReadBytes,
                                     int firstBytePos) {
-
-        long result = 0L;
-        long bytePortion = 0L;
+        BigInteger result = BigInteger.valueOf(0);
+        long bytePortion = 0;
         for (int i = 0; i < nrReadBytes; i++) {
             bytePortion = 0xFF & (byteBuffer.get(firstBytePos++));
 
-            if (byteOrder == ByteOrder.LittleEndian)
-                // reshift bytes
-                result = result | bytePortion << (i << 3);
-            else
-                result = bytePortion << ((nrReadBytes - i - 1) << 3) | result;
+            //Need to use BigInteger because it is possible that a 64-bit field spans 9 bytes
+            if (byteOrder == ByteOrder.LittleEndian) {
+                BigInteger shifter = BigInteger.valueOf(2);
+                shifter = shifter.pow(i*8);
+
+                BigInteger bytePortionBigInt = BigInteger.valueOf(bytePortion);
+                bytePortionBigInt = bytePortionBigInt.multiply(shifter);
+                result = result.add(bytePortionBigInt);
+            }
+            else {
+                BigInteger shifter = BigInteger.valueOf(2);
+                shifter = shifter.pow(8);
+                BigInteger bytePortionBigInt = BigInteger.valueOf(bytePortion);
+
+                result = result.multiply(shifter);
+                result = result.add(bytePortionBigInt);
+            }
         }
 
         return result;
@@ -515,7 +530,7 @@ public class DefaultBitBuffer implements BitBuffer {
         int nrReadBytes = getNrNecessaryBytes(bitPos, nrBits);
 
         // buffer containing specified bits
-        long numberBuf = getNumberBufAsLong(byteOrder, nrReadBytes,
+        BigInteger numberBuf = getNumberBufAsLong(byteOrder, nrReadBytes,
                 (int) (bitPos >> 3));
 
         // mask leaving only specified bits

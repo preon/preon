@@ -106,6 +106,13 @@ public class ConditionalBindingFactory implements BindingFactory {
             }
         }
 
+        public void load(Object object, BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+                throws DecodingException {
+            if (expr.eval(resolver)) {
+                binding.load(object, buffer, resolver, builder, debug);
+            }
+        }
+
         public <T, V extends ParaContents<T>> V describe(final V contents) {
             contents.text(" Only if ");
             expr.document(new Document() {

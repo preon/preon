@@ -56,6 +56,13 @@ public class EmittingBinding implements Binding {
         emitter.markEndLoad();
     }
 
+    public void load(Object object, BitBuffer buffer, Resolver resolver, Builder builder,
+                     boolean debug) throws DecodingException {
+        emitter.markStartLoad(binding.getName(), object);
+        binding.load(object, buffer, resolver, builder, debug);
+        emitter.markEndLoad();
+    }
+
     public <V extends SimpleContents<?>> V describe(V contents) {
         return binding.describe(contents);
     }

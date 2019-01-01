@@ -50,15 +50,15 @@ public class OutputStreamBitChannelTest {
     @Test
     public void shouldAcceptBooleans() throws IOException {
         OutputStreamBitChannel channel = new OutputStreamBitChannel(out);
-        channel.write(true);
-        channel.write(true);
-        channel.write(true);
-        channel.write(true);
-        channel.write(false);
-        channel.write(false);
-        channel.write(false);
-        channel.write(false);
-        channel.write(false);
+        channel.write(true, ByteOrder.BigEndian);
+        channel.write(true, ByteOrder.BigEndian);
+        channel.write(true, ByteOrder.BigEndian);
+        channel.write(true, ByteOrder.BigEndian);
+        channel.write(false, ByteOrder.BigEndian);
+        channel.write(false, ByteOrder.BigEndian);
+        channel.write(false, ByteOrder.BigEndian);
+        channel.write(false, ByteOrder.BigEndian);
+        channel.write(false, ByteOrder.BigEndian);
         verify(out).write((byte) 0xf0);
         verifyNoMoreInteractions(out);
     }
@@ -128,9 +128,9 @@ public class OutputStreamBitChannelTest {
         channel.write(12, (int) 0xf00, ByteOrder.LittleEndian); // 1111 0000 0000 
         channel.write(4, (int) 0x0, ByteOrder.LittleEndian); // 0000
         // What I expect:
-        // 0000 0000 1111 0000
+        // 0000 0000 0000 1111
         verify(out).write((byte) Integer.parseInt("00000000", 2));
-        verify(out).write((byte) Integer.parseInt("11110000", 2));
+        verify(out).write((byte) Integer.parseInt("00001111", 2));
         verifyNoMoreInteractions(out);
     }
 

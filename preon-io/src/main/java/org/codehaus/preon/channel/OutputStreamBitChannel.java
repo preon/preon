@@ -65,16 +65,57 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         this.out = out;
     }
 
-    public void write(boolean value) throws IOException {
-        if (value) {
-            buffer = (byte) (0xff & ((buffer << 1) | 0x01));
+    public void write(boolean value, ByteOrder byteOrder) throws IOException {
+        if (byteOrder == ByteOrder.LittleEndian) {
+            if (value) {
+          	    buffer = (byte) (0xff & (buffer | (0x01 << bitPos)));
+            }
         } else {
-            buffer = (byte) (0xff & (buffer << 1));
+            if (value) {
+                buffer = (byte) (0xff & ((buffer << 1) | 0x01));
+            } else {
+                buffer = (byte) (0xff & (buffer << 1));
+            }
         }
+
         if (++bitPos == 8) {
             bitPos = 0;
             out.write(buffer);
             buffer = 0;
+        }
+    }
+
+    public void writeLE(@Nonnegative int nrbits, byte value) throws IOException {
+        assert nrbits > 0;
+        assert nrbits <= 8;
+
+        // The number of bits to copy into the buffer
+        int length = Math.min(8 - bitPos, nrbits);
+
+        // Chop off bits not required
+        value = (byte) (0xff & MASK_UPPER[nrbits] & value);
+
+        // Fill the buffer
+        buffer = (byte) (buffer | (0xff & value) << bitPos);
+
+        bitPos = bitPos + length;
+
+        // Check if the buffer needs to be flushed
+        if (bitPos > 7) {
+            out.write(buffer);
+            buffer = 0;
+            bitPos = 0;
+        }
+
+        // Check if there is something else left to copy
+        if (length < nrbits) {
+        	bitPos = nrbits - length;
+
+          // Chop off bits not required
+          value = (byte) (0xff & MASK_UPPER[bitPos] & (value >> length));
+
+          // Fill the buffer
+          buffer = (byte) (buffer | (0xff & value));
         }
     }
 
@@ -108,6 +149,16 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
             bitPos = nrbits - length;
         }
     }
+    
+    public void write(@Nonnegative int nrbits, float value, ByteOrder byteOrder)
+            throws IOException {
+    	write(nrbits, Float.floatToIntBits(value), byteOrder);
+    }
+
+    public void write(@Nonnegative int nrbits, double value, ByteOrder byteOrder)
+            throws IOException {
+    	write(nrbits, Double.doubleToLongBits(value), byteOrder);
+    }
 
     public void write(@Nonnegative int nrbits, int value, ByteOrder byteOrder)
             throws IOException {
@@ -115,18 +166,18 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         int remainder = nrbits % 8;
         if (byteOrder == ByteOrder.LittleEndian) {
             for (int i = 0; i < steps; i++) {
-                write(8, (byte) (0xff & value));
+                writeLE(8, (byte) (0xff & value));
                 value = value >> 8;
             }
             if (remainder != 0) {
-                write(remainder, (byte) (MASK_UPPER[remainder] & value));
+            	writeLE(remainder, (byte) (MASK_UPPER[remainder] & value));
             }
         } else {
             if (remainder != 0) {
                 write(remainder, (byte) (MASK_UPPER[remainder] & (value >> (steps * 8))));
             }
             for (int i = steps - 1; i >= 0; i--) {
-                write(8, (byte) (0xff & (value >> i * 8)));
+            	write(8, (byte) (0xff & (value >> i * 8)));
             }
         }
     }
@@ -137,11 +188,11 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         int remainder = nrbits % 8;
         if (byteOrder == ByteOrder.LittleEndian) {
             for (int i = 0; i < steps; i++) {
-                write(8, (byte) (0xff & value));
+                writeLE(8, (byte) (0xff & value));
                 value = value >> 8;
             }
             if (remainder != 0) {
-                write(remainder, (byte) (MASK_UPPER[remainder] & value));
+                writeLE(remainder, (byte) (MASK_UPPER[remainder] & value));
             }
         } else {
             if (remainder != 0) {
@@ -159,11 +210,11 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         int remainder = nrbits % 8;
         if (byteOrder == ByteOrder.LittleEndian) {
             for (int i = 0; i < steps; i++) {
-                write(8, (byte) (0xff & value));
+                writeLE(8, (byte) (0xff & value));
                 value = (short) (value >> 8);
             }
             if (remainder != 0) {
-                write(remainder, (byte) (MASK_UPPER[remainder] & value));
+                writeLE(remainder, (byte) (MASK_UPPER[remainder] & value));
             }
         } else {
             if (remainder != 0) {
@@ -201,4 +252,16 @@ public class OutputStreamBitChannel implements BitChannel, Closeable {
         out.close();
     }
 
+    public void flush(ByteOrder byteOrder) throws IOException {
+    		assert bitPos < 8;
+    		if (bitPos > 0) {
+    	  				int remaining = 8 - bitPos;
+    	  				if (byteOrder == ByteOrder.LittleEndian) {
+    	  				    writeLE(remaining, (byte)0);
+    	  				} else {
+    	  					  write(remaining, (byte)0);
+    	  				}
+    	  }
+    	  out.flush();
+    }
 }

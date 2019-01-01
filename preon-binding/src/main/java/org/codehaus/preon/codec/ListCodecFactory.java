@@ -24,21 +24,13 @@
  */
 package org.codehaus.preon.codec;
 
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.codehaus.preon.el.BindingException;
-import org.codehaus.preon.el.Document;
-import org.codehaus.preon.el.Expression;
-import org.codehaus.preon.el.Expressions;
-import org.codehaus.preon.el.Reference;
-import org.codehaus.preon.el.ReferenceContext;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.pecia.SimpleContents;
 import org.codehaus.preon.Builder;
 import org.codehaus.preon.Codec;
 import org.codehaus.preon.CodecConstructionException;
@@ -57,13 +49,21 @@ import org.codehaus.preon.buffer.SlicedBitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
 import org.codehaus.preon.descriptor.NullCodecDescriptor2;
+import org.codehaus.preon.el.BindingException;
 import org.codehaus.preon.el.ContextReplacingReference;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 import org.codehaus.preon.util.AnnotationWrapper;
 import org.codehaus.preon.util.CodecDescriptorHolder;
 import org.codehaus.preon.util.EvenlyDistributedLazyList;
 import org.codehaus.preon.util.ParaContentsDocument;
 
-import javax.annotation.Nullable;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 
 /**
  * A {@link CodecFactory} capable of supporting Lists. <p/> <p> There are a couple of cases that we need to clarify.
@@ -255,8 +255,17 @@ public class ListCodecFactory implements CodecFactory {
                     buffer, size.eval(resolver), builder, resolver, elementSize.eval(resolver));
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        @SuppressWarnings("unchecked")
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
+            return new EvenlyDistributedLazyList(codec, buffer.getBitPos(),
+                    buffer, size.eval(resolver), builder, resolver, elementSize.eval(resolver));
+        }
+
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
+            for (T val : value) {
+                codec.encode(val, channel, resolver);
+            }
         }
 
         public Class<?>[] getTypes() {
@@ -346,11 +355,16 @@ public class ListCodecFactory implements CodecFactory {
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
                               Builder builder) throws DecodingException {
+            return decode(buffer, resolver, builder, false);
+        }
+
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
             List<T> result = new LinkedList<T>();
             long mark = buffer.getBitPos();
             try {
                 while (true) {
-                    T value = codec.decode(buffer, resolver, builder);
+                    T value = codec.decode(buffer, resolver, builder, debug);
                     result.add(value);
                     mark = buffer.getBitPos();
                 }
@@ -367,8 +381,10 @@ public class ListCodecFactory implements CodecFactory {
             return result;
         }
 
-        public void encode(List<T> value, BitChannel channel, Resolver resolver) {
-            throw new UnsupportedOperationException();
+        public void encode(List<T> value, BitChannel channel, Resolver resolver) throws IOException {
+            for (T val : value) {
+                codec.encode(val, channel, resolver);
+            }
         }
 
         public Class<?>[] getTypes() {
@@ -454,12 +470,22 @@ public class ListCodecFactory implements CodecFactory {
         }
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
-                              Builder builder) throws DecodingException {
+                                       Builder builder) throws DecodingException {
             Expression<Integer, Resolver> sizeExpr = skipListCodec.getSize();
             if (sizeExpr != null && sizeExpr.eval(resolver) >= 0) {
                 return skipListCodec.decode(buffer, resolver, builder);
             } else {
                 return nonSkipListCodec.decode(buffer, resolver, builder);
+            }
+        }
+
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
+            Expression<Integer, Resolver> sizeExpr = skipListCodec.getSize();
+            if (sizeExpr != null && sizeExpr.eval(resolver) >= 0) {
+                return skipListCodec.decode(buffer, resolver, builder, debug);
+            } else {
+                return nonSkipListCodec.decode(buffer, resolver, builder, debug);
             }
         }
 
@@ -674,6 +700,11 @@ public class ListCodecFactory implements CodecFactory {
 
         public List<T> decode(BitBuffer buffer, Resolver resolver,
                               Builder builder) throws DecodingException {
+            return decode(buffer, resolver, builder, false);
+        }
+
+        public List<T> decode(BitBuffer buffer, Resolver resolver,
+                              Builder builder, boolean debug) throws DecodingException {
             int maxSize = size.eval(resolver);
             List<T> result = new ArrayList<T>(maxSize);
             long curPos = buffer.getBitPos();

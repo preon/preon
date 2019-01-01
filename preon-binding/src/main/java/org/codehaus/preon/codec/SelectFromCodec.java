@@ -24,21 +24,35 @@
  */
 package org.codehaus.preon.codec;
 
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.pecia.Table2Cols;
-import org.codehaus.preon.*;
+import java.io.IOException;
+import java.lang.reflect.AnnotatedElement;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.CodecFactory;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.ResolverContext;
 import org.codehaus.preon.annotation.Choices;
 import org.codehaus.preon.buffer.BitBuffer;
 import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.descriptor.Documenters;
-import org.codehaus.preon.el.*;
+import org.codehaus.preon.el.BindingException;
+import org.codehaus.preon.el.ContextReplacingReference;
+import org.codehaus.preon.el.Document;
+import org.codehaus.preon.el.Expression;
+import org.codehaus.preon.el.Expressions;
+import org.codehaus.preon.el.Reference;
+import org.codehaus.preon.el.ReferenceContext;
 
-import java.lang.reflect.AnnotatedElement;
-import java.util.ArrayList;
-import java.util.List;
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
+import nl.flotsam.pecia.Table2Cols;
 
 /**
  * A Codec supporting the {@link Choices} annotation.
@@ -144,8 +158,46 @@ public class SelectFromCodec<T> implements Codec<T> {
         }
     }
 
-    public void encode(T value, BitChannel channel, Resolver resolver) {
-        throw new UnsupportedOperationException();
+    public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException {
+        if (prefixSize <= 0) {
+            for (int i = 0; i < conditions.size(); i++) {
+                if (conditions.get(i).eval(resolver)) {
+                    return (T) codecs.get(i).decode(buffer, resolver, builder, debug);
+                }
+            }
+        } else {
+            int prefix = buffer.readAsInt(this.prefixSize, byteOrder);
+            for (int i = 0; i < conditions.size(); i++) {
+                if (conditions.get(i)
+                        .eval(new PrefixResolver(resolver, prefix))) {
+                    return (T) codecs.get(i).decode(buffer, resolver, builder, debug);
+                }
+            }
+        }
+        if (defaultCodec != null) {
+            return (T) defaultCodec.decode(buffer, resolver, builder, debug);
+        } else {
+            return null;
+        }
+    }
+
+    public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
+        if (prefixSize <= 0) {
+            for (int i = 0; i < conditions.size(); i++) {
+                if (conditions.get(i).eval(resolver)) {
+                    Codec<T> c = (Codec<T>) codecs.get(i);
+                    c.encode(value, channel, resolver);
+                    return;
+                }
+            }
+        }
+        if (defaultCodec != null) {
+            Codec<T> c = (Codec<T>) defaultCodec;
+            c.encode(value, channel, resolver);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 
     public Expression<Integer, Resolver> getSize() {

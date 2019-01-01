@@ -91,11 +91,25 @@ public class StandardBindingFactory implements BindingFactory {
 
         public void load(Object object, BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
+            load(object, buffer, resolver, builder, false);
+        }
+
+        public void load(Object object, BitBuffer buffer, Resolver resolver,
+                         Builder builder, boolean debug) throws DecodingException {
             try {
                 ReflectionUtils.makeAssessible(field);
+
+                long beforePos = buffer.getActualBitPos();
+
                 Object value = codec.decode(buffer, resolver, builderDecorator
-                        .decorate(builder, object));
+                        .decorate(builder, object), debug);
                 field.set(object, value);
+
+                long afterPos = buffer.getActualBitPos();
+
+                if(debug) {
+                    System.out.println(field.getName() + " = " + value + " (bits: " + beforePos + " to " + (afterPos-1) + ")");
+                }
             } catch (IllegalAccessException iae) {
                 throw new DecodingException(iae);
             } catch (DecodingException de) {

@@ -42,8 +42,10 @@ import nl.flotsam.pecia.builder.base.DefaultDocumentBuilder;
 import nl.flotsam.pecia.builder.html.HtmlDocumentBuilder;
 import nl.flotsam.pecia.builder.xml.StreamingXmlWriter;
 import nl.flotsam.pecia.builder.xml.XmlWriter;
+import org.apache.commons.lang.mutable.MutableInt;
 import org.codehaus.preon.binding.BindingDecorator;
 import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.buffer.ByteOrder;
 import org.codehaus.preon.buffer.DefaultBitBuffer;
 import org.codehaus.preon.channel.BitChannel;
 import org.codehaus.preon.channel.OutputStreamBitChannel;
@@ -156,6 +158,89 @@ public class Codecs {
 
     /**
      * Decodes an object from the buffer passed in.
+     * Also prints Debug to System out
+     *
+     * @param <T>    The of object to be decoded.
+     * @param codec  The {@link Codec} that will take care of the actual work.
+     * @param buffer An array of bytes holding the encoded data.
+     * @return The decoded object.
+     * @throws DecodingException If the {@link Codec} fails to decode a value from the buffer passed in.
+     */
+    public static <T> T decodeDebug(Codec<T> codec, byte... buffer)
+            throws DecodingException {
+        return decodeDebug(codec, ByteBuffer.wrap(buffer));
+    }
+
+    public static <T> T decodeDebug(Codec<T> codec, Builder builder, byte... buffer)
+            throws DecodingException {
+        return decodeDebug(codec, ByteBuffer.wrap(buffer), builder);
+    }
+
+    /**
+     * Decodes an object from the buffer passed in.
+     * Also prints Debug to System out
+     *
+     * @param <T>    The of object to be decoded.
+     * @param codec  The {@link Codec} that will take care of the actual work.
+     * @param buffer An array of bytes holding the encoded data.
+     * @return The decoded object.
+     * @throws DecodingException If the {@link Codec} fails to decode a value from the buffer passed in.
+     */
+    public static <T> T decodeDebug(Codec<T> codec, ByteBuffer buffer)
+            throws DecodingException {
+        return decodeDebug(codec, new DefaultBitBuffer(buffer), null, null);
+    }
+
+    public static <T> T decodeDebug(Codec<T> codec, ByteBuffer buffer, Builder builder)
+            throws DecodingException {
+        return decodeDebug(codec, new DefaultBitBuffer(buffer), builder, null);
+    }
+
+    public static <T> T decodeDebug(Codec<T> codec, BitBuffer buffer, Builder builder, Resolver resolver)
+            throws DecodingException {
+        if (builder == null) {
+            builder = DEFAULT_BUILDER;
+        }
+        return codec.decode(buffer, resolver, builder, true);
+    }
+
+    /**
+     * Decodes an object from the buffer passed in.
+     * Also prints Debug to System out
+     *
+     * @param <T>   The of object to be decoded.
+     * @param codec The {@link Codec} that will take care of the actual work.
+     * @param file  The {@link File} providing the data to be decoded.
+     * @return The decoded object.
+     * @throws FileNotFoundException If the {@link File} does not exist.
+     * @throws IOException           If the system fails to read data from the file.
+     * @throws DecodingException     If the {@link Codec} fails to decode a value from the buffer passed in.
+     */
+    public static <T> T decodeDebug(Codec<T> codec, File file)
+            throws FileNotFoundException, IOException, DecodingException {
+        return decodeDebug(codec, null, file);
+    }
+
+    public static <T> T decodeDebug(Codec<T> codec, Builder builder, File file)
+            throws FileNotFoundException, IOException, DecodingException {
+        FileInputStream in = null;
+        FileChannel channel = null;
+        try {
+            in = new FileInputStream(file);
+            channel = in.getChannel();
+            int fileSize = (int) channel.size();
+            ByteBuffer buffer = channel.map(FileChannel.MapMode.READ_ONLY, 0,
+                    fileSize);
+            return decodeDebug(codec, buffer, builder);
+        } finally {
+            if (channel != null) {
+                channel.close();
+            }
+        }
+    }
+
+    /**
+     * Decodes an object from the buffer passed in.
      *
      * @param <T>    The of object to be decoded.
      * @param codec  The {@link Codec} that will take care of the actual work.
@@ -235,6 +320,32 @@ public class Codecs {
     }
 
     /**
+     * Created an encoding routine that will return the number of bits that were encoded.
+     * It uses a MutableInt to return the numBits
+     *
+     * @param value The object that needs to be encoded.
+     * @param codec The codec to be used.
+     * @param byteOrder The byteOrder (necessary for final flush)
+     * @param numBits a mutable integer that stores the number of bits encoded
+     * @param <T> The type of object to be encoded.
+     * @return The encoded byte array
+     * @throws IOException If the {@link org.codehaus.preon.channel.BitChannel} no longer receives the data.
+     */
+    public static <T> byte[] encode(T value, Codec<T> codec, ByteOrder byteOrder, MutableInt numBits) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        int bitsUsedInLastByte = encode(value, codec, out, byteOrder);
+        byte[] finalBytes = out.toByteArray();
+
+        if(bitsUsedInLastByte == 0) {
+            numBits.setValue(finalBytes.length * 8);
+        } else {
+            numBits.setValue((finalBytes.length - 1) * 8 + bitsUsedInLastByte);
+        }
+
+        return finalBytes;
+    }
+
+    /**
      * Encodes the value to the channel passed in, using the given Codec. So why not have this operation on codec
      * instead? Well, it <em>is</em> actually there. However, there will be quite a few overloaded versions of this
      * operation, and Java would force you to implement these operations on <em>every Codec</em>. That's not a very
@@ -243,21 +354,50 @@ public class Codecs {
      * @param value   The object that needs to be encoded.
      * @param codec   The codec to be used.
      * @param channel The target {@link org.codehaus.preon.channel.BitChannel}.
+     * @param byteOrder The byteOrder (necessary for final flush)
+     * @param <T>     The type of object to be encoded.
+     * @throws IOException If the {@link org.codehaus.preon.channel.BitChannel} no longer receives the data.
+     */
+    public static <T> int encode(T value, Codec<T> codec, BitChannel channel, ByteOrder byteOrder) throws IOException {
+        codec.encode(value, channel, new NullResolver());
+        int bitsUsedInLastByte = channel.getRelativeBitPos();
+        channel.flush(byteOrder);
+        return bitsUsedInLastByte;
+    }
+
+    public static <T> byte[] encode(T value, Codec<T> codec, ByteOrder byteOrder) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        encode(value, codec, out, byteOrder);
+        return out.toByteArray();
+    }
+
+    public static <T> int encode(T value, Codec<T> codec, OutputStream out, ByteOrder byteOrder) throws IOException {
+        return encode(value, codec, new OutputStreamBitChannel(out), byteOrder);
+    }
+
+    /**
+     * Encodes the value to the channel passed in, using the given Codec. So why not have this operation on codec
+     * instead? Well, it <em>is</em> actually there. However, there will be quite a few overloaded versions of this
+     * operation, and Java would force you to implement these operations on <em>every Codec</em>. That's not a very
+     * attractive objection. So instead of inheritance, it's all delegation now.  Be aware, this method will always 
+     * flush the last byte as ByteOrder.BigEndian.
+     *
+     * @param value   The object that needs to be encoded.
+     * @param codec   The codec to be used.
+     * @param channel The target {@link org.codehaus.preon.channel.BitChannel}.
      * @param <T>     The type of object to be encoded.
      * @throws IOException If the {@link org.codehaus.preon.channel.BitChannel} no longer receives the data.
      */
     public static <T> void encode(T value, Codec<T> codec, BitChannel channel) throws IOException {
-        codec.encode(value, channel, new NullResolver());
+        encode(value, codec, channel, ByteOrder.BigEndian);
     }
 
     public static <T> byte[] encode(T value, Codec<T> codec) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        encode(value, codec, out);
-        return out.toByteArray();
+    	  return encode(value, codec, ByteOrder.BigEndian);
     }
 
     public static <T> void encode(T value, Codec<T> codec, OutputStream out) throws IOException {
-        encode(value, codec, new OutputStreamBitChannel(out));
+    	  encode(value, codec, out, ByteOrder.BigEndian);
     }
 
     /**

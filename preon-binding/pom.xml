@@ -21,7 +21,7 @@
   </repositories>
   <dependencies>
     <dependency>
-      <groupId>multithreadedtc</groupId>
+      <groupId>edu.umd.cs.mtc</groupId>
       <artifactId>multithreadedtc</artifactId>
       <version>1.01</version>
       <scope>test</scope>
@@ -40,6 +40,11 @@
       <groupId>org.codehaus.preon</groupId>
       <artifactId>preon-io</artifactId>
       <version>1.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
+      <version>2.6</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

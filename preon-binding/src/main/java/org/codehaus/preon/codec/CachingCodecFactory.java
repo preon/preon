@@ -163,6 +163,11 @@ public class CachingCodecFactory implements CodecFactory {
             return codec.decode(buffer, resolver, builder);
         }
 
+        public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+                throws DecodingException {
+            return codec.decode(buffer, resolver, builder, debug);
+        }
+
         public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
             codec.encode(value, channel, resolver);
         }

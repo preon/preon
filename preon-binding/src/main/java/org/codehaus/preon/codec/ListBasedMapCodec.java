@@ -58,6 +58,16 @@ public class ListBasedMapCodec<K,V> implements Codec<Map<K,V>> {
         return result;
     }
 
+    public Map<K,V> decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException {
+        List<? extends Map.Entry<K, V>> entries = listCodec.decode(buffer, resolver, builder, debug);
+        Map<K,V> result = new HashMap(entries.size());
+        for (Map.Entry<K, V> entry : entries) {
+            result.put(entry.getKey(), entry.getValue());
+        }
+        return result;
+    }
+
     public void encode(Map value, BitChannel channel, Resolver resolver) throws IOException {
         throw new UnsupportedOperationException();
     }

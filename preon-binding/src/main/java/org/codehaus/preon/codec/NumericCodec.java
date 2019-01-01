@@ -92,6 +92,11 @@ public class NumericCodec implements Codec<Object> {
 
     public Object decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public Object decode(BitBuffer buffer, Resolver resolver,
+                         Builder builder, boolean debug) throws DecodingException {
         int size = ((Number) (this.sizeExpr.eval(resolver))).intValue();
         Object result = type.decode(buffer, size, byteOrder);
         if (matchExpr != null) {
@@ -212,8 +217,8 @@ public class NumericCodec implements Codec<Object> {
                 return java.lang.Float.intBitsToFloat(value);
             }
 
-            public void encode(BitChannel channel, int size, ByteOrder endian, Object value) {
-                throw new UnsupportedOperationException("Encoding not supported for floats.");
+            public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
+            	channel.write(size, (Float) value, endian);
             }
 
             public Class<?> getType() {
@@ -233,8 +238,8 @@ public class NumericCodec implements Codec<Object> {
                         size, endian));
             }
 
-            public void encode(BitChannel channel, int size, ByteOrder endian, Object value) {
-                throw new UnsupportedOperationException("Encoding not supported for doubles.");
+            public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
+                channel.write(size, (Double) value, endian);
             }
 
             public Class<?> getType() {
@@ -307,7 +312,13 @@ public class NumericCodec implements Codec<Object> {
             }
 
             public void encode(BitChannel channel, int size, ByteOrder endian, Object value) throws IOException {
-                channel.write(size, (Byte) value);
+            	if(value != null) {
+            		if (endian == ByteOrder.LittleEndian) {
+            			channel.writeLE(size, (Byte) value);
+            		} else {
+            			channel.write(size, (Byte) value);
+            		}
+            	}
             }
 
             public Class<?> getType() {

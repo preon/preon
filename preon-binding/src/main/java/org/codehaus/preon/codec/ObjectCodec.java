@@ -67,6 +67,11 @@ public class ObjectCodec<T> implements Codec<T> {
 
     public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
             throws DecodingException {
+        return decode(buffer,resolver, builder, false);
+    }
+
+    public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException {
         assert buffer != null;
         assert builder != null;
         try {
@@ -74,7 +79,7 @@ public class ObjectCodec<T> implements Codec<T> {
             resolver = context.getResolver(result, resolver);
             // TODO: I think I need a replacement resolver here.
             for (Binding binding : context.getBindings()) {
-                binding.load(result, buffer, resolver, builder);
+                binding.load(result, buffer, resolver, builder, debug);
             }
             return result;
         }

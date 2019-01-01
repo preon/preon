@@ -63,6 +63,11 @@ public class BoundBufferCodecFactory implements CodecFactory {
 
         public Object decode(BitBuffer buffer, Resolver resolver,
                              Builder builder) throws DecodingException {
+            return decode(buffer, resolver, builder, false);
+        }
+
+        public Object decode(BitBuffer buffer, Resolver resolver,
+                             Builder builder, boolean debug) throws DecodingException {
             for (int i = 0; i < criterion.length; i++) {
                 if (criterion[i] != buffer.readAsByte(8)) {
                     throw new DecodingException("First " + criterion.length

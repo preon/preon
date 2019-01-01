@@ -66,6 +66,11 @@ public class EmittingCodec<T> implements Codec<T> {
 
     public T decode(BitBuffer buffer, Resolver resolver, Builder builder)
             throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException {
         T result = null;
         long pos = buffer.getActualBitPos();
         emitter.markStart(codec, pos, buffer);

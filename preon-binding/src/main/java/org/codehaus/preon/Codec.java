@@ -54,6 +54,22 @@ public interface Codec<T> {
             throws DecodingException;
 
     /**
+     * Decodes a value from the {@link BitBuffer}.
+     *
+     * @param buffer   The {@link BitBuffer} containing the data from which a value will be decoded.
+     * @param resolver The object capable of resolving variable references, when required.
+     * @param builder  The object responsible for creating default instances of objects, when needed. (In reality, this
+     *                 is most likely going to be important to {@link org.codehaus.preon.codec.ObjectCodecFactory
+     *                 ObjectCodecFactories} only, but in order to make sure the {@link Builder} arrives there, we need
+     *                 to have the ability to pass it in.
+     * @param debug    Prints debug to screen while decoding.
+     * @return The decoded value.
+     * @throws DecodingException If the {@link Codec} fails to decode the value.
+     */
+    T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+            throws DecodingException;
+
+    /**
      * Encodes the object to the {@link org.codehaus.preon.channel.BitChannel}.
      *
      * @param value    The object to encode.

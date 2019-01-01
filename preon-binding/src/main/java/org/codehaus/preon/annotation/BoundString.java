@@ -24,8 +24,6 @@
  */
 package org.codehaus.preon.annotation;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -68,12 +66,12 @@ public @interface BoundString {
      *
      * @return The String that needs to be matched. Or the empty String if matching is not important.
      */
-     
+
     String match() default "";
-    
+
     /* I've left this in, but I don't use this code anywhere in the actual
      * factory. It might be possible to alter the factories to use
-     * ByteConverters, by wrapping around ByteBuffer in some clever way, 
+     * ByteConverters, by wrapping around ByteBuffer in some clever way,
      * but my feeling is that the aims of this code would be better
      * achieved by Charsets.
      * */

@@ -100,6 +100,12 @@ public class LazyLoadingCodecDecorator implements CodecDecorator {
         @SuppressWarnings("unchecked")
         public T decode(final BitBuffer buffer, final Resolver resolver,
                         final Builder builder) throws DecodingException {
+            return decode(buffer, resolver, builder, false);
+        }
+
+        @SuppressWarnings("unchecked")
+        public T decode(final BitBuffer buffer, final Resolver resolver,
+                        final Builder builder, boolean debug) throws DecodingException {
             final int size = wrapped.getSize().eval(resolver);
             final long pos = buffer.getBitPos();
             ClassLoader loader = this.getClass().getClassLoader();

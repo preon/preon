@@ -24,26 +24,26 @@
  */
 package org.codehaus.preon.codec;
 
-import org.codehaus.preon.*;
-import org.codehaus.preon.channel.BitChannel;
-import org.codehaus.preon.buffer.BitBuffer;
-import org.codehaus.preon.annotation.BoundString;
-import org.codehaus.preon.el.Expression;
-import nl.flotsam.pecia.SimpleContents;
-import nl.flotsam.pecia.Documenter;
-import nl.flotsam.pecia.ParaContents;
-
-import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
-
+import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CharsetDecoder;
-import java.nio.BufferUnderflowException;
-import java.io.StringWriter;
-import java.io.IOException;
+
+import org.codehaus.preon.Builder;
+import org.codehaus.preon.Codec;
+import org.codehaus.preon.CodecDescriptor;
+import org.codehaus.preon.DecodingException;
+import org.codehaus.preon.Resolver;
+import org.codehaus.preon.annotation.BoundString;
+import org.codehaus.preon.buffer.BitBuffer;
+import org.codehaus.preon.channel.BitChannel;
+import org.codehaus.preon.el.Expression;
+
+import nl.flotsam.pecia.Documenter;
+import nl.flotsam.pecia.ParaContents;
+import nl.flotsam.pecia.SimpleContents;
 
 /**
  * A {@link org.codehaus.preon.Codec} that reads null-terminated Strings. Basically, it will read bytes until it
@@ -71,6 +71,11 @@ public class NullTerminatedStringCodec implements Codec<String> {
 
     public String decode(BitBuffer buffer, Resolver resolver,
                          Builder builder) throws DecodingException {
+        return decode(buffer, resolver, builder, false);
+    }
+
+    public String decode(BitBuffer buffer, Resolver resolver,
+                         Builder builder, boolean debug) throws DecodingException {
 		/* This has been gutted, and now uses Charsets to do decoding.
 		 * It opens the bitbuffer as a bytebuffer (taking care to note
 		 * and preserve positions), creates a CharBuffer with space for
@@ -78,10 +83,10 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		 * time. If the character decoded is NULL, it finishes up (it has
 		 * to use the decoded character, not the byte, as multibyte
 		 * encodings can include null bytes in non-null characters).
-		 * 
+		 *
 		 * I used a StringWriter for the string, as it's more memory
 		 * efficient, for what it's worth.
-		 * 
+		 *
 		 * I wasn't able to find a way to include the byteConverter in
 		 * the decoding process. I'm guessing the main use for byteConverter
 		 * was encoding conversion anyway, but if it's needed, it might
@@ -89,31 +94,31 @@ public class NullTerminatedStringCodec implements Codec<String> {
 		 * */
         CharsetDecoder decoder = encoding.newDecoder();
         ByteBuffer bytebuffer = ByteBuffer.allocate(BUFFER_SIZE); //Allocate a bytebuffer. We'll need this for multibyte encodings
-		CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
+        CharBuffer charbuffer = CharBuffer.allocate(1); //Decode one character at a time
         StringWriter sw = new StringWriter(); //This will eventually hold our string
         byte bytevalue;
         char charvalue;
         boolean readOK = true;
-		do {
-			bytevalue = byteConverter.convert(buffer.readAsByte(8)); //Convert our byte
-			bytebuffer.put(bytevalue); // and add it to the bytebuffer
-			bytebuffer.flip(); // Flip the buffer, so we can read it
-			decoder.decode(bytebuffer,charbuffer,false); // Decode up to one char from bytebuffer
-			if (charbuffer.position() == 1) {
-				charbuffer.rewind();
-				charvalue = charbuffer.get();
-				charbuffer.rewind();
-				if (charvalue == 0) { //If character is null, we're finished
-					readOK = false;
-				}
-				else {
-					sw.append(charvalue); //Write character to StringWriter
-				}
-			}
-			bytebuffer.compact(); //Compact the buffer, so we can write to it
-		}
-		while(readOK);
-		return sw.toString();
+        do {
+            bytevalue = byteConverter.convert(buffer.readAsByte(8)); //Convert our byte
+            bytebuffer.put(bytevalue); // and add it to the bytebuffer
+            bytebuffer.flip(); // Flip the buffer, so we can read it
+            decoder.decode(bytebuffer,charbuffer,false); // Decode up to one char from bytebuffer
+            if (charbuffer.position() == 1) {
+                charbuffer.rewind();
+                charvalue = charbuffer.get();
+                charbuffer.rewind();
+                if (charvalue == 0) { //If character is null, we're finished
+                    readOK = false;
+                }
+                else {
+                    sw.append(charvalue); //Write character to StringWriter
+                }
+            }
+            bytebuffer.compact(); //Compact the buffer, so we can write to it
+        }
+        while(readOK);
+        return sw.toString();
     }
 
     public void encode(String value, BitChannel channel, Resolver resolver) throws IOException {

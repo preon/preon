@@ -151,6 +151,11 @@ public class DefaultCodecFactory implements CodecFactory {
             return delegate.decode(buffer, resolver, builder);
         }
 
+        public T decode(BitBuffer buffer, Resolver resolver, Builder builder, boolean debug)
+                throws DecodingException {
+            return delegate.decode(buffer, resolver, builder, debug);
+        }
+
         public void encode(T value, BitChannel channel, Resolver resolver) throws IOException {
             delegate.encode(value, channel, resolver);
         }

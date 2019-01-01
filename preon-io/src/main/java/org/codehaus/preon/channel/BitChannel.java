@@ -40,10 +40,25 @@ public interface BitChannel {
      * Writes the boolean value as a bit to the channel. (Writes an 1 in case of <code>true</code> value, and 0
      * otherwise.)
      */
-    void write(boolean value) throws IOException;
+    void write(boolean value, ByteOrder byteOrder) throws IOException;
 
-    /** Writes <code>nrbits</code> bits of the byte to the channel. */
+    /** Writes <code>nrbits</code> bits of the byte to the channel in Big Endian. */
     void write(int nrbits, byte value) throws IOException;
+
+    /** Writes <code>nrbits</code> bits of the byte to the channel in Little Endian. */
+    void writeLE(int nrbits, byte value) throws IOException;
+    
+    /**
+     * Writes <code>nrbits</code> bits of the float value to the channel, based on the {@link ByteOrder} passed in, in
+     * case the number of bits exceeds 8.
+     */
+    void write(int nrbits, float value, ByteOrder byteOrder) throws IOException;
+
+    /**
+     * Writes <code>nrbits</code> bits of the double value to the channel, based on the {@link ByteOrder} passed in, in
+     * case the number of bits exceeds 8.
+     */
+    void write(int nrbits, double value, ByteOrder byteOrder) throws IOException;
 
     /**
      * Writes <code>nrbits</code> bits of the int value to the channel, based on the {@link ByteOrder} passed in, in
@@ -78,4 +93,6 @@ public interface BitChannel {
     /** Closes the channel. */
     void close() throws IOException;
 
+    /** Flush any remaining bits. */
+    void flush(ByteOrder byteOrder) throws IOException;
 }
